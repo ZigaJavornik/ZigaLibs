@@ -12,6 +12,8 @@
     <Implicit_KindOfTask>{8724d9ed-6b07-4c23-a8ed-72910621ef1f}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{2e6dd937-4569-48ae-ba60-26d6abd7fd49}</Implicit_Jitter_Distribution>
     <LibraryReferences>{73e44afd-1d40-4a02-8e1a-36e8342e110a}</LibraryReferences>
+    <Released>false</Released>
+    <CombineIds>true</CombineIds>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
