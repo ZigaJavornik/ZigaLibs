@@ -1,4 +1,26 @@
 <?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.60">
-	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" ShowHideConfigurations="#x6"/>
+	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" Target64Bit="true" ShowHideConfigurations="#x347">
+		<System>
+			<Tasks>
+				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
+					<Name>TestsTask</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Plc>
+			<Project GUID="{5AB6837C-9B83-4477-98DA-9D69DBF054C4}" Name="IO" PrjFilePath="IO\IO.plcproj" TmcFilePath="IO\IO.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+					<Name>IO Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
+				</Instance>
+			</Project>
+		</Plc>
+	</Project>
 </TcSmProject>
