@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_FileHandler_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK FB_FileHandler_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+	_fileHandler		: FB_FileHandler;
+	_writeFileState		: (WRITE, CHECK_WRITE_ERROR, WRITE_DONE);
+	_readFileState		: (CLEAR_PREVIOUS_RESULT, READ, READ_DONE);
+	_deleteFileState	: (DELETE, CHECK_FILE_EXIST, DELETE_DONE);
+	_existFileState		: (EXIST_CREATE, EXIST_CHECK, EXIST_DELETE, EXIST_DONE);
+END_VAR
+
+VAR CONSTANT
+	FOLDER_PATH 				: Tc2_System.T_MaxString := 'C:\Work\GitHub\TwinCAT\ZigaCAT\Tests\FileHandler';
+	FILE_NAME					: Tc2_System.T_MaxString := 'FileName.txt';
+	TEST_FILE_CONTENT_TO_WRITE 	: Tc2_System.T_MaxString := 'This is a test file content!$n';
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+_fileHandler.FileProperties.FolderPath := FOLDER_PATH;
+_fileHandler.FileProperties.Name := FILE_NAME;
+
+Test_01_WriteToFile_ExpectNoError();
+Test_02_ReadFileContent();
+Test_03_DeleteFile_ExpectFileNotExist();
+Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete();]]></ST>
+    </Implementation>
+    <Method Name="Test_01_WriteToFile_ExpectNoError" Id="{9819c488-f7a6-0097-2c71-c7704f4f6dbe}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_01_WriteToFile_ExpectNoError
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	delay	: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_01_WriteToFile_ExpectNoError');
+
+CASE _writeFileState OF
+	WRITE:
+		IF _fileHandler.Write(sContent := TEST_FILE_CONTENT_TO_WRITE) THEN
+			_writeFileState := CHECK_WRITE_ERROR;
+			delay(IN := FALSE);
+		END_IF
+
+	CHECK_WRITE_ERROR:
+		AssertFalse(Condition := _fileHandler.Error, Message := 'Writing to file cause an unexpected error!');
+		_writeFileState := WRITE_DONE;
+		
+	WRITE_DONE:
+		TcUnit.TEST_FINISHED();
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_02_ReadFileContent" Id="{dc2bd1a7-f449-09c2-2f9e-7981284f1078}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_02_ReadFileContent
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	sFileReadContentResult	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_02_ReadFileContent');
+
+CASE _readFileState OF
+	CLEAR_PREVIOUS_RESULT:
+		sFileReadContentResult := '';
+		_readFileState := READ;
+
+	READ:
+		IF _writeFileState = WRITE_DONE THEN
+			IF _fileHandler.Read(
+					nBufferSize := SIZEOF(sFileReadContentResult), 
+					ptrBuffer := ADR(sFileReadContentResult)) 
+			THEN
+				AssertEquals_STRING(
+					Expected := TEST_FILE_CONTENT_TO_WRITE,
+					Actual := sFileReadContentResult,
+					Message := 'Reading content from file failed - content differs!');
+			
+				AssertFalse(
+					Condition := _fileHandler.Error, 
+					Message := 'Reading file content triggered an unexpected error!');
+					
+				_readFileState := READ_DONE;
+			END_IF
+		END_IF
+
+	READ_DONE:
+		TcUnit.TEST_FINISHED();
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_03_DeleteFile_ExpectFileNotExist" Id="{4c9f5adb-3b67-0926-1e3e-5fe84d376065}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_03_DeleteFile_ExpectFileNotExist
+var
+	bFileExist	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_03_DeleteFile_ExpectFileNotExist');
+
+CASE _deleteFileState OF
+	DELETE:
+		IF _readFileState = READ_DONE THEN
+			IF _fileHandler.Delete() THEN
+				_deleteFileState := CHECK_FILE_EXIST;
+			END_IF
+		END_IF
+	
+	CHECK_FILE_EXIST:
+		IF _fileHandler.Exists(refFileExists := bFileExist) THEN
+			AssertFalse(Condition := bFileExist, Message := 'Deleting file failed - file still exists!');
+			_deleteFileState := DELETE_DONE;
+		END_IF
+	
+	DELETE_DONE:
+		TcUnit.TEST_FINISHED();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete" Id="{d99a879d-be5c-0c51-3162-eaf55589c80b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	bFileExists	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete');
+
+CASE _existFileState OF
+	EXIST_CREATE:
+		IF _deleteFileState = DELETE_DONE THEN
+			IF _fileHandler.Create(FALSE) THEN
+				AssertFalse(Condition := _fileHandler.Error, Message := 'An unexpected error occured while creating a file!');
+				_existFileState := EXIST_CHECK;
+			END_IF
+		END_IF
+	
+	EXIST_CHECK:
+		IF _fileHandler.Exists(refFileExists := bFileExists) THEN
+			AssertTrue(Condition := bFileExists, Message := 'Creating file failed! File was not found!');
+			_existFileState := EXIST_DELETE;
+		END_IF
+		
+	EXIST_DELETE:
+		IF _fileHandler.Delete() THEN
+			_existFileState := EXIST_DONE;
+		END_IF
+	
+	EXIST_DONE:
+		TcUnit.TEST_FINISHED();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_FileHandler_Tests">
+      <LineId Id="62" Count="0" />
+      <LineId Id="67" Count="2" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="72" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler_Tests.Test_01_WriteToFile_ExpectNoError">
+      <LineId Id="5" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler_Tests.Test_02_ReadFileContent">
+      <LineId Id="52" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="88" Count="1" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="54" Count="2" />
+      <LineId Id="78" Count="6" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="37" Count="3" />
+      <LineId Id="46" Count="2" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler_Tests.Test_03_DeleteFile_ExpectFileNotExist">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="2" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler_Tests.Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="31" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FileHandler IMPLEMENTS I_FileHandler, I_FileAccess
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+
+VAR
+	_fileHandle		: UINT;
+	_fileProperties	: ST_FileProperties;
+	_error			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="01_Public" Id="{a901709e-65ff-02ba-1882-954c90422ffe}">
+      <Folder Name="Methods" Id="{034eb1a8-371f-0bc2-0a83-68bfc92ab6ab}" />
+      <Folder Name="Properties" Id="{5388ddf0-eac1-06cd-1fbf-7a74eaf61001}" />
+    </Folder>
+    <Folder Name="02_Private" Id="{584ecc35-957c-0307-1ab8-e432c95fe82c}">
+      <Folder Name="Methods" Id="{261ded91-11d8-0a68-327b-879e68457faa}" />
+      <Folder Name="Properties" Id="{396770d2-ec2c-0c1a-0123-ad5c609c31f5}" />
+    </Folder>
+    <Method Name="Close" Id="{0ec740c9-72a4-0493-3594-94814e1098ab}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[(* Closes the file (if opened). Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD PRIVATE Close : BOOL
+
+VAR_INST
+	fbFileClose			: Tc2_System.FB_FileClose;
+	TonDelayClose		: Tc2_Standard.TON;
+	FtrigCloseFinished	: Tc2_Standard.F_TRIG;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.HandleCreated = FALSE THEN
+	Close := TRUE;
+	_error := _error OR fbFileClose.bError;
+	RETURN;
+END_IF
+
+
+fbFileClose(
+	bExecute := NOT fbFileClose.bBusy,
+	hFile := _fileHandle);
+	
+FtrigCloseFinished(CLK := fbFileClose.bBusy);
+IF FtrigCloseFinished.Q AND NOT fbFileClose.bError THEN
+	fbFileClose(bExecute := FALSE);
+	_fileHandle := 0;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Creates the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Create : BOOL
+VAR_INPUT
+	(* If file already exists, it will be deleted and crated once again (content will be lost!)*)
+	bOverwrite	: BOOL;
+END_VAR
+
+VAR_INST
+	fbFileOpen	: Tc2_System.FB_FileOpen;
+	nFileCreateState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_CREATE_STATE_START					: UINT := 0;
+	FILE_CREATE_STATE_OVERWRITE_OR_CREATE	: UINT := 10;
+	FILE_CREATE_STATE_WAIT_DONE				: UINT := 20;
+	FILE_CREATE_STATE_DONE					: UINT := 30;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nFileCreateState OF
+	FILE_CREATE_STATE_START:
+		fbFileOpen(bExecute := FALSE);
+		nFileCreateState := FILE_CREATE_STATE_OVERWRITE_OR_CREATE;
+		
+	FILE_CREATE_STATE_OVERWRITE_OR_CREATE:
+		IF bOverwrite THEN
+			fbFileOpen.nMode := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEPLUS;
+		ELSE
+			fbFileOpen.nMode := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS;
+		END_IF
+		
+		fbFileOpen(
+			bExecute := TRUE,
+			sNetId := _fileProperties.NetId,
+			sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath));
+			
+		nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
+		
+	FILE_CREATE_STATE_WAIT_DONE:
+		fbFileOpen(bExecute := FALSE, hFile => _fileHandle);
+		IF fbFileOpen.bBusy = FALSE THEN
+			IF THIS^.Close() THEN
+				nFileCreateState := FILE_CREATE_STATE_DONE;
+			END_IF
+		END_IF	
+		
+	FILE_CREATE_STATE_DONE:
+		nFileCreateState := FILE_CREATE_STATE_START;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Delete" Id="{f911ae8b-dfd7-01f7-2a6d-d94850bdc984}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Deletes the file, if it exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Delete : BOOL
+
+VAR_INST
+	fbFileDelete		: Tc2_System.FB_FileDelete;
+	FtrigDeleteFinished	: Tc2_Standard.F_TRIG;
+	bCheckIfFileExists	: BOOL;
+	bFileExists			: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileDelete(
+	bExecute := NOT fbFileDelete.bBusy,
+	sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath));
+	
+FtrigDeleteFinished(CLK := fbFileDelete.bBusy);
+IF FtrigDeleteFinished.Q THEN
+	fbFileDelete(bExecute := FALSE);
+	Delete := TRUE;
+END_IF
+
+_error := _error OR fbFileDelete.bError;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Error" Id="{bbad0e32-6daa-0a76-0a27-61712e257d88}" FolderPath="01_Public\Properties\">
+      <Declaration><![CDATA[(* Gets the error state, if any of the functions failed.*)
+PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{5168048e-7c3f-06a9-0acd-c39fff130fa4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Exists" Id="{005d094e-7014-05a1-0ced-6d59d6885282}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Checks if the file exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Exists : BOOL
+VAR_INPUT
+	(* When mehod is finished, the variable provided here will have the result, TRUE if file exists, FALSE if not.*)
+	refFileExists	: REFERENCE TO BOOL;
+END_VAR
+
+VAR_INST
+	fbFileExists			: Tc2_Utilities.FB_EnumFindFileEntry := (tTimeout := T#5S);
+	nCheckFileExistState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_EXIST_STATE_PREPARE	: UINT := 0;
+	FILE_EXIST_STATE_START		: UINT := 10;
+	FILE_EXIST_STATE_CHECK		: UINT := 20;
+	FILE_EXIST_STATE_DONE		: UINT := 30;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nCheckFileExistState OF
+	FILE_EXIST_STATE_PREPARE:
+		fbFileExists(bExecute := FALSE, eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_First);
+		refFileExists := FALSE;
+		nCheckFileExistState := FILE_EXIST_STATE_START;
+		
+	FILE_EXIST_STATE_START:
+		fbFileExists(bExecute := TRUE,
+			sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath),
+			sNetId := _fileProperties.NetId);
+		nCheckFileExistState := FILE_EXIST_STATE_CHECK;
+	
+	FILE_EXIST_STATE_CHECK:
+		fbFileExists(bExecute := FALSE);
+		IF NOT fbFileExists.bBusy THEN
+			IF NOT fbFileExists.bError THEN
+				IF fbFileExists.stFindFile.sFileName = _fileProperties.Name THEN
+					refFileExists := TRUE;
+					nCheckFileExistState := FILE_EXIST_STATE_DONE;
+				END_IF	
+				IF NOT fbFileExists.bEOE THEN
+					fbFileExists.eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_Next;
+				ELSE
+					refFileExists := FALSE;
+					nCheckFileExistState := FILE_EXIST_STATE_DONE;
+				END_IF
+			ELSE
+				nCheckFileExistState := FILE_EXIST_STATE_DONE;
+				refFileExists := FALSE;
+				_error := _error OR fbFileExists.bError;
+			END_IF
+		END_IF
+	
+	FILE_EXIST_STATE_DONE:
+		Exists := TRUE;
+		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}" FolderPath="01_Public\Properties\">
+      <Declaration><![CDATA[(* Gets or sets various file properties*)
+PROPERTY FileProperties : REFERENCE TO ST_FileProperties
+]]></Declaration>
+      <Get Name="Get" Id="{ac218c70-be3b-08df-3b3c-bd233df4aa85}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FileProperties ref= _fileProperties;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{4b6e007e-4413-0a84-2640-e0e33b3e0504}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fileProperties := FileProperties;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="HandleCreated" Id="{06b71810-8ae3-05fa-217b-930c580da831}" FolderPath="02_Private\Properties\">
+      <Declaration><![CDATA[(* Gets the state of the file handle - if file is opened and handle is created returns TRUE.*)
+PROPERTY PRIVATE HandleCreated : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{6fa4c1ea-f251-0fbb-076a-68693a4f77d3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[HandleCreated := _fileHandle <> 0;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Open" Id="{d86cbe39-6556-0969-3e02-0bf0863a7c05}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD PRIVATE Open : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	fbFileOpen	: Tc2_System.FB_FileOpen;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.HandleCreated THEN
+	Open := TRUE;
+	_error := _error OR fbFileOpen.bError;
+	RETURN;
+END_IF
+
+fbFileOpen(
+	bExecute := NOT fbFileOpen.bBusy,
+	sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath),
+	sNetId := _fileProperties.NetId,
+	nMode := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS,
+	hFile => _fileHandle);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Read" Id="{b10554be-8e89-07ac-2f05-1e80a59ec182}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Reads the content of the opened file to the target buffer.
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Read : BOOL
+VAR_INPUT
+	(* Pointer to the buffer, where the file content will be read to.*)
+	ptrBuffer	: PVOID;
+	(* Size of the buffer - SIZEOF()*)
+	nBufferSize	: UDINT;
+END_VAR
+
+
+VAR_INST
+	fbFileRead	: Tc2_System.FB_FileRead;
+	nReadState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	READ_STATE_OPEN		: UINT := 0;
+	READ_STATE_START	: UINT := 10;
+	READ_STATE_WAIT		: UINT := 20;
+	READ_STATE_DONE		: UINT := 30;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// An error is triggered if handle is not created or buffer pointer is invalid
+IF ptrBuffer = 0 OR nBufferSize = 0 THEN
+	_error := TRUE;
+	Read := TRUE;
+	RETURN;
+END_IF
+
+CASE nReadState OF
+	READ_STATE_OPEN:
+		IF THIS^.Open() THEN
+			nReadState := READ_STATE_START;
+		END_IF	
+
+	READ_STATE_START:
+		fbFileRead(bExecute := FALSE);
+		fbFileRead(
+			bExecute := TRUE,
+			hFile := _fileHandle,
+			pReadBuff := ptrBuffer,
+			cbReadLen := nBufferSize);
+			
+		nReadState := READ_STATE_WAIT;
+		
+	READ_STATE_WAIT:
+		fbFileRead(bExecute := FALSE);
+		IF fbFileRead.bBusy = FALSE THEN
+			IF THIS^.Close() THEN
+				nReadState := READ_STATE_DONE;
+			END_IF
+		END_IF	
+
+	READ_STATE_DONE:
+		_error := _error OR fbFileRead.bError;
+		Read := TRUE;
+		nReadState := READ_STATE_OPEN;
+		
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Write" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Writes the string content to the opened file. If the file does not exist, it will be created.
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Write : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR_INST
+	fbFileWrite				: Tc2_System.FB_FilePuts;
+	FtrigFileWriteBusyDone	: Tc2_Standard.F_TRIG;
+	TonDelayWrite			: Tc2_Standard.TON;
+	
+	writeState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	WRITE_STATE_OPEN	: UINT := 0;
+	WRITE_STATE_WRITE	: UINT := 1;
+	WRITE_STATE_CLOSE	: UINT := 2;
+	WRITE_STATE_DONE	: UINT := 3;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE writeState OF
+	WRITE_STATE_OPEN:
+		IF THIS^.Open() THEN
+			writeState := WRITE_STATE_WRITE;
+			fbFileWrite(bExecute := FALSE);
+			fbFileWrite(
+				bExecute := TRUE,
+				hFile := _fileHandle,
+				sLine := sContent,
+				sNetId := _fileProperties.NetId,
+				tTimeout := T#2S);
+		END_IF
+	
+	WRITE_STATE_WRITE:
+		fbFileWrite(bExecute := FALSE);
+		IF fbFileWrite.bBusy = FALSE THEN
+			writeState := WRITE_STATE_CLOSE;
+		END_IF
+	
+	WRITE_STATE_CLOSE:
+		IF THIS^.Close() THEN
+			writeState := WRITE_STATE_DONE;
+		END_IF
+	
+	WRITE_STATE_DONE:
+		Write := TRUE;
+END_CASE
+
+_error := _error OR fbFileWrite.bError;
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_FileHandler">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Close">
+      <LineId Id="5" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Create">
+      <LineId Id="173" Count="17" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="215" Count="2" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="218" Count="0" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Delete">
+      <LineId Id="13" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Error.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Exists">
+      <LineId Id="102" Count="35" />
+      <LineId Id="38" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.FileProperties.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.FileProperties.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.HandleCreated.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Open">
+      <LineId Id="73" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="74" Count="1" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="79" Count="1" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Read">
+      <LineId Id="55" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="45" Count="3" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="56" Count="4" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="94" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="31" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.Write">
+      <LineId Id="96" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="114" Count="4" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="120" Count="2" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="103" Count="1" />
+      <LineId Id="124" Count="1" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="105" Count="1" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
