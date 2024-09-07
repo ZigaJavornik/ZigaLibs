@@ -9,14 +9,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[F_CreateFilePath := Tc2_Standard.CONCAT(
-	STR1 := sFolderPath, 
-	STR2 := Tc2_Standard.CONCAT(STR1 := '\', STR2 := sFileName));]]></ST>
+      <ST><![CDATA[F_CreateFilePath := Tc2_Standard.CONCAT(STR1 := sFolderPath, STR2 := Tc2_Standard.CONCAT(STR1 := '\', STR2 := sFileName));]]></ST>
     </Implementation>
     <LineIds Name="F_CreateFilePath">
       <LineId Id="7" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="12" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
