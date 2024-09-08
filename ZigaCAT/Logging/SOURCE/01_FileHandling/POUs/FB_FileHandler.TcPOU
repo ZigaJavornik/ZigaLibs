@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_FileHandler IMPLEMENTS I_FileHandler, I_FileAccess
-VAR_INPUT
-END_VAR
-VAR_OUTPUT
-END_VAR
+    <Declaration><![CDATA[// A function block containing multiple file handling methods.
+// For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
+FUNCTION_BLOCK FB_FileHandler IMPLEMENTS I_FileHandler, I_FileAccess
 
 VAR
 	_fileHandle		: UINT;
@@ -30,27 +28,39 @@ METHOD PRIVATE Close : BOOL
 
 VAR_INST
 	fbFileClose			: Tc2_System.FB_FileClose;
-	TonDelayClose		: Tc2_Standard.TON;
-	FtrigCloseFinished	: Tc2_Standard.F_TRIG;
+	nCloseFileState		: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_CLOSE_START 		: UINT := 0;
+	FILE_CLOSE_WAIT_BUSY	: UINT := 10;
+	FILE_CLOSE_DONE			: UINT := 20;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF THIS^.HandleCreated = FALSE THEN
 	Close := TRUE;
-	_error := _error OR fbFileClose.bError;
 	RETURN;
 END_IF
 
+_error := _error OR fbFileClose.bError;
 
-fbFileClose(
-	bExecute := NOT fbFileClose.bBusy,
-	hFile := _fileHandle);
-	
-FtrigCloseFinished(CLK := fbFileClose.bBusy);
-IF FtrigCloseFinished.Q AND NOT fbFileClose.bError THEN
-	fbFileClose(bExecute := FALSE);
-	_fileHandle := 0;
-END_IF
-]]></ST>
+CASE nCloseFileState OF
+	FILE_CLOSE_START:
+		fbFileClose(bExecute := FALSE);
+		fbFileClose(bExecute := TRUE, hFile := _fileHandle);
+		nCloseFileState := FILE_CLOSE_WAIT_BUSY;
+		
+	FILE_CLOSE_WAIT_BUSY:
+		fbFileClose(bExecute := FALSE);
+		IF NOT fbFileClose.bBusy AND NOT fbFileClose.bError THEN
+			nCloseFileState := FILE_CLOSE_DONE;
+		END_IF
+
+	FILE_CLOSE_DONE:
+		Close := TRUE;
+		_fileHandle := 0;
+		nCloseFileState := FILE_CLOSE_START;
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}" FolderPath="01_Public\Methods\">
@@ -75,32 +85,27 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE nFileCreateState OF
 	FILE_CREATE_STATE_START:
-		fbFileOpen(bExecute := FALSE);
 		nFileCreateState := FILE_CREATE_STATE_OVERWRITE_OR_CREATE;
 		
 	FILE_CREATE_STATE_OVERWRITE_OR_CREATE:
 		IF bOverwrite THEN
-			fbFileOpen.nMode := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEPLUS;
+			IF THIS^.Open(mode := E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
+				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
+			END_IF
 		ELSE
-			fbFileOpen.nMode := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS;
+			IF THIS^.Open(mode := E_FileOpenMode.BINARY_APPEND) THEN
+				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
+			END_IF
 		END_IF
 		
-		fbFileOpen(
-			bExecute := TRUE,
-			sNetId := _fileProperties.NetId,
-			sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath));
-			
-		nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
-		
 	FILE_CREATE_STATE_WAIT_DONE:
-		fbFileOpen(bExecute := FALSE, hFile => _fileHandle);
-		IF fbFileOpen.bBusy = FALSE THEN
-			IF THIS^.Close() THEN
-				nFileCreateState := FILE_CREATE_STATE_DONE;
-			END_IF
-		END_IF	
+	IF THIS^.Close() THEN
+		nFileCreateState := FILE_CREATE_STATE_DONE;
+	END_IF
+
 		
 	FILE_CREATE_STATE_DONE:
+		Create := TRUE;
 		nFileCreateState := FILE_CREATE_STATE_START;
 END_CASE]]></ST>
       </Implementation>
@@ -239,6 +244,7 @@ END_VAR
       <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD PRIVATE Open : BOOL
 VAR_INPUT
+	mode	: E_FileOpenMode;	// Mode in which the file is opened
 END_VAR
 
 VAR_INST
@@ -256,7 +262,7 @@ fbFileOpen(
 	bExecute := NOT fbFileOpen.bBusy,
 	sPathName := F_CreateFilePath(sFileName := _fileProperties.Name, sFolderPath := _fileProperties.FolderPath),
 	sNetId := _fileProperties.NetId,
-	nMode := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS,
+	nMode := mode,
 	hFile => _fileHandle);
 ]]></ST>
       </Implementation>
@@ -294,7 +300,7 @@ END_IF
 
 CASE nReadState OF
 	READ_STATE_OPEN:
-		IF THIS^.Open() THEN
+		IF THIS^.Open(mode := E_FileOpenMode.BINARY_READ) THEN
 			nReadState := READ_STATE_START;
 		END_IF	
 
@@ -326,36 +332,120 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Write" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">
-      <Declaration><![CDATA[(* Writes the string content to the opened file. If the file does not exist, it will be created.
- Returns TRUE when done - method needs to be called until it returns TRUE!*)
-METHOD Write : BOOL
+    <Method Name="WriteBinary" Id="{780c681b-a718-05c7-104f-35fd68ebb2e9}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE WriteBinary : BOOL
 VAR_INPUT
-	(* Text to be written.*)
-	sContent	: Tc2_System.T_MaxString;
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	mode		: E_FileOpenMode;
 END_VAR
 
 VAR_INST
-	fbFileWrite				: Tc2_System.FB_FilePuts;
-	FtrigFileWriteBusyDone	: Tc2_Standard.F_TRIG;
-	TonDelayWrite			: Tc2_Standard.TON;
-	
-	writeState	: UINT;
+	fbFileWrite	: Tc2_System.FB_FileWrite;
+	nWriteState	: UINT;
 END_VAR
 
 VAR CONSTANT
-	WRITE_STATE_OPEN	: UINT := 0;
-	WRITE_STATE_WRITE	: UINT := 1;
-	WRITE_STATE_CLOSE	: UINT := 2;
-	WRITE_STATE_DONE	: UINT := 3;
+	WRITE_OPEN_FILE	: UINT := 0;
+	WRITE_START 	: UINT := 10;
+	WRITE_WAIT_DONE	: UINT := 20;
+	WRITE_DONE		: UINT := 30;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nWriteState OF
+	WRITE_OPEN_FILE:
+		IF THIS^.Open(mode := mode) THEN
+			nWriteState := WRITE_START;
+		END_IF
+
+	WRITE_START:
+		fbFileWrite(bExecute := FALSE);
+		fbFileWrite(
+			bExecute := TRUE,
+			hFile := _fileHandle,
+			pWriteBuff := ptrSource,
+			cbWriteLen := nSize);
+			
+		nWriteState := WRITE_WAIT_DONE;
+	
+	WRITE_WAIT_DONE:
+		fbFileWrite(bExecute := FALSE);
+		IF NOT fbFileWrite.bBusy THEN
+			IF THIS^.Close() THEN
+				nWriteState := WRITE_DONE;
+			END_IF
+		END_IF 
+	
+	WRITE_DONE:
+		WriteBinary := TRUE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary_Append" Id="{e6cf0183-f5bc-06db-3d81-64cf9e0ad080}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[// Writes the content to the end of the file (appends).
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteBinary_Append : BOOL
+VAR_INPUT
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+END_VAR
+
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteBinary_Append := THIS^.WriteBinary(
+	nSize := nSize, 
+	ptrSource := ptrSource, 
+	mode := E_FileOpenMode.BINARY_APPEND);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary_Overwrite" Id="{2506679e-eb24-02ab-23c7-ef5c2927e463}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Writes the content to the the file (overwrites any existing content).
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD WriteBinary_Overwrite : BOOL
+VAR_INPUT
+	(* Pointer to the source to be written - use ADR().*)
+	ptrSource	: POINTER TO BYTE;
+	(* Size of the source variable - use SIZEOF().*)
+	nSize	: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteBinary_Overwrite := THIS^.WriteBinary(
+	nSize := nSize, 
+	ptrSource := ptrSource, 
+	mode := E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine" Id="{56b8797f-ee5e-07a9-241c-a9d8422ac6d2}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE WriteLine : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+	mode		: E_FileOpenMode;
+END_VAR
+
+VAR_INST
+	fbFilePuts		: Tc2_System.FB_FilePuts;
+	nWriteLineState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	WRITE_LINE_STATE_OPEN	: UINT := 0;
+	WRITE_LINE_STATE_WRITE	: UINT := 10;
+	WRITE_LINE_STATE_CLOSE	: UINT := 20;
+	WRITE_LINE_STATE_DONE	: UINT := 30;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE writeState OF
-	WRITE_STATE_OPEN:
-		IF THIS^.Open() THEN
-			writeState := WRITE_STATE_WRITE;
-			fbFileWrite(bExecute := FALSE);
-			fbFileWrite(
+        <ST><![CDATA[CASE nWriteLineState OF
+	WRITE_LINE_STATE_OPEN:
+		IF THIS^.Open(mode := mode) THEN
+			nWriteLineState := WRITE_LINE_STATE_WRITE;
+			fbFilePuts(bExecute := FALSE);
+			fbFilePuts(
 				bExecute := TRUE,
 				hFile := _fileHandle,
 				sLine := sContent,
@@ -363,25 +453,58 @@ END_VAR]]></Declaration>
 				tTimeout := T#2S);
 		END_IF
 	
-	WRITE_STATE_WRITE:
-		fbFileWrite(bExecute := FALSE);
-		IF fbFileWrite.bBusy = FALSE THEN
-			writeState := WRITE_STATE_CLOSE;
+	WRITE_LINE_STATE_WRITE:
+		fbFilePuts(bExecute := FALSE);
+		IF fbFilePuts.bBusy = FALSE THEN
+			nWriteLineState := WRITE_LINE_STATE_CLOSE;
 		END_IF
 	
-	WRITE_STATE_CLOSE:
+	WRITE_LINE_STATE_CLOSE:
 		IF THIS^.Close() THEN
-			writeState := WRITE_STATE_DONE;
+			nWriteLineState := WRITE_LINE_STATE_DONE;
 		END_IF
 	
-	WRITE_STATE_DONE:
-		Write := TRUE;
+	WRITE_LINE_STATE_DONE:
+		WriteLine := TRUE;
 END_CASE
 
-_error := _error OR fbFileWrite.bError;
+_error := _error OR fbFilePuts.bError;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine_Append" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[// Writes the string content to the end of the file (appends). If the file does not exist, it will be created.
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteLine_Append : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteLine_Append := THIS^.WriteLine(
+	sContent := sContent, 
+	mode := E_FileOpenMode.TEXT_APPEND);
+
+
 
 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine_Overwrite" Id="{8513e561-b0db-0b1e-3304-e5853254ce5a}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Writes the string content to file and overwrites any existing content. If the file does not exist, it will be created.
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD WriteLine_Overwrite : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteLine_Overwrite := THIS^.WriteLine(
+	sContent := sContent,
+	mode := E_FileOpenMode.TEXT_APPEND);]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_FileHandler">
@@ -389,30 +512,38 @@ _error := _error OR fbFileWrite.bError;
     </LineIds>
     <LineIds Name="FB_FileHandler.Close">
       <LineId Id="5" Count="1" />
-      <LineId Id="24" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="14" Count="1" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="9" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="63" Count="1" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="67" Count="3" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="65" Count="0" />
     </LineIds>
     <LineIds Name="FB_FileHandler.Create">
-      <LineId Id="173" Count="17" />
-      <LineId Id="211" Count="0" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="176" Count="4" />
+      <LineId Id="238" Count="1" />
+      <LineId Id="181" Count="1" />
+      <LineId Id="240" Count="1" />
+      <LineId Id="183" Count="1" />
       <LineId Id="191" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="192" Count="0" />
       <LineId Id="215" Count="2" />
       <LineId Id="214" Count="0" />
       <LineId Id="219" Count="0" />
       <LineId Id="193" Count="0" />
+      <LineId Id="237" Count="0" />
       <LineId Id="218" Count="0" />
       <LineId Id="21" Count="0" />
     </LineIds>
@@ -487,28 +618,33 @@ _error := _error OR fbFileWrite.bError;
       <LineId Id="40" Count="0" />
       <LineId Id="31" Count="0" />
     </LineIds>
-    <LineIds Name="FB_FileHandler.Write">
-      <LineId Id="96" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="100" Count="0" />
-      <LineId Id="110" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="114" Count="4" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="109" Count="0" />
-      <LineId Id="101" Count="1" />
-      <LineId Id="120" Count="2" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="103" Count="1" />
-      <LineId Id="124" Count="1" />
-      <LineId Id="123" Count="0" />
-      <LineId Id="105" Count="1" />
-      <LineId Id="99" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="31" Count="1" />
-      <LineId Id="26" Count="0" />
+    <LineIds Name="FB_FileHandler.WriteBinary">
+      <LineId Id="9" Count="25" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.WriteBinary_Append">
+      <LineId Id="35" Count="0" />
+      <LineId Id="108" Count="2" />
+      <LineId Id="107" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.WriteBinary_Overwrite">
+      <LineId Id="13" Count="3" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.WriteLine">
+      <LineId Id="9" Count="27" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.WriteLine_Append">
+      <LineId Id="561" Count="0" />
+      <LineId Id="563" Count="1" />
+      <LineId Id="562" Count="0" />
+      <LineId Id="557" Count="2" />
       <LineId Id="25" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler.WriteLine_Overwrite">
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="1" />
     </LineIds>
   </POU>
 </TcPlcObject>

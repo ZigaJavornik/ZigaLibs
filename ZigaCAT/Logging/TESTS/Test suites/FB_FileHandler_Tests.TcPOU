@@ -6,17 +6,19 @@ FUNCTION_BLOCK FB_FileHandler_Tests EXTENDS FB_TestSuite
 
 // Create instance variables that will be accesible for all tests
 VAR
-	_fileHandler		: FB_FileHandler;
-	_writeFileState		: (WRITE, CHECK_WRITE_ERROR, WRITE_DONE);
-	_readFileState		: (CLEAR_PREVIOUS_RESULT, READ, READ_DONE);
-	_deleteFileState	: (DELETE, CHECK_FILE_EXIST, DELETE_DONE);
-	_existFileState		: (EXIST_CREATE, EXIST_CHECK, EXIST_DELETE, EXIST_DONE);
+	_fileHandler			: FB_FileHandler;
+	_writeFileLineState		: (WRITE, CHECK_WRITE_ERROR, WRITE_DONE);
+	_readFileState			: (CLEAR_PREVIOUS_RESULT, READ, READ_DONE);
+	_deleteFileState		: (DELETE, CHECK_FILE_EXIST, DELETE_DONE);
+	_existFileState			: (EXIST_CREATE, EXIST_CHECK, EXIST_DELETE, EXIST_DONE);
+	_writeFileBytesState	: (WRITEBYTES_START, WRITEBYTES_WAIT, WRITEBYTES_CHECK_CONTENT, WRITEBYTES_DELETE, WRITEBYTES_DONE);
 END_VAR
 
 VAR CONSTANT
 	FOLDER_PATH 				: Tc2_System.T_MaxString := 'C:\Work\GitHub\TwinCAT\ZigaCAT\Tests\FileHandler';
 	FILE_NAME					: Tc2_System.T_MaxString := 'FileName.txt';
-	TEST_FILE_CONTENT_TO_WRITE 	: Tc2_System.T_MaxString := 'This is a test file content!$n';
+	TEST_FILE_CONTENT_TEXT 		: Tc2_System.T_MaxString := 'This is a test file content!';
+	TEST_FILE_CONTENT_BINARY	: STRING(300) := 'In a world full of possibilities, every moment is a chance to embrace growth, explore new horizons, and ignite your inner potential. Believe in the power of change, stay curious, and never stop learning. Your journey is unique, and every step forward brings you closer to your dreams.';
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -24,13 +26,14 @@ END_VAR
 _fileHandler.FileProperties.FolderPath := FOLDER_PATH;
 _fileHandler.FileProperties.Name := FILE_NAME;
 
-Test_01_WriteToFile_ExpectNoError();
+Test_01_WriteLineAppend_ExpectNoError();
 Test_02_ReadFileContent();
 Test_03_DeleteFile_ExpectFileNotExist();
-Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete();]]></ST>
+Test_04_CheckFileDoesNotExist_WriteToFile_ExpectFileExist_Delete();
+Test_05_WriteBinaryAppend_NewFile_ExpectSameContent();]]></ST>
     </Implementation>
-    <Method Name="Test_01_WriteToFile_ExpectNoError" Id="{9819c488-f7a6-0097-2c71-c7704f4f6dbe}">
-      <Declaration><![CDATA[METHOD PRIVATE Test_01_WriteToFile_ExpectNoError
+    <Method Name="Test_01_WriteLineAppend_ExpectNoError" Id="{9819c488-f7a6-0097-2c71-c7704f4f6dbe}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_01_WriteLineAppend_ExpectNoError
 VAR_INPUT
 END_VAR
 
@@ -39,18 +42,18 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test_01_WriteToFile_ExpectNoError');
+        <ST><![CDATA[TcUnit.TEST('Test_01_WriteLineAppend_ExpectNoError');
 
-CASE _writeFileState OF
+CASE _writeFileLineState OF
 	WRITE:
-		IF _fileHandler.Write(sContent := TEST_FILE_CONTENT_TO_WRITE) THEN
-			_writeFileState := CHECK_WRITE_ERROR;
+		IF _fileHandler.WriteLine_Append(sContent := TEST_FILE_CONTENT_TEXT) THEN
+			_writeFileLineState := CHECK_WRITE_ERROR;
 			delay(IN := FALSE);
 		END_IF
 
 	CHECK_WRITE_ERROR:
 		AssertFalse(Condition := _fileHandler.Error, Message := 'Writing to file cause an unexpected error!');
-		_writeFileState := WRITE_DONE;
+		_writeFileLineState := WRITE_DONE;
 		
 	WRITE_DONE:
 		TcUnit.TEST_FINISHED();
@@ -76,13 +79,13 @@ CASE _readFileState OF
 		_readFileState := READ;
 
 	READ:
-		IF _writeFileState = WRITE_DONE THEN
+		IF _writeFileLineState = WRITE_DONE THEN
 			IF _fileHandler.Read(
 					nBufferSize := SIZEOF(sFileReadContentResult), 
 					ptrBuffer := ADR(sFileReadContentResult)) 
 			THEN
 				AssertEquals_STRING(
-					Expected := TEST_FILE_CONTENT_TO_WRITE,
+					Expected := TEST_FILE_CONTENT_TEXT,
 					Actual := sFileReadContentResult,
 					Message := 'Reading content from file failed - content differs!');
 			
@@ -163,15 +166,54 @@ CASE _existFileState OF
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Test_05_WriteBinaryAppend_NewFile_ExpectSameContent" Id="{0d4cd11d-8975-0c07-22b4-2ba3e69e52df}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_05_WriteBinaryAppend_NewFile_ExpectSameContent
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	sReadResult		: STRING(300);
+	sExpectedResult	: STRING(300) := TEST_FILE_CONTENT_BINARY;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_05_WriteBinaryAppend_NewFile_ExpectSameContent');
+
+CASE _writeFileBytesState OF
+	WRITEBYTES_START:
+		sReadResult := '';
+		IF _existFileState = EXIST_DONE THEN
+			_writeFileBytesState := WRITEBYTES_WAIT;
+		END_IF
+		
+	WRITEBYTES_WAIT:
+		IF _fileHandler.WriteBinary_Append(nSize := SIZEOF(TEST_FILE_CONTENT_BINARY), ptrSource := ADR(TEST_FILE_CONTENT_BINARY)) THEN
+			AssertFalse(Condition := _fileHandler.Error, Message := 'An unexpected error occured while writing bytes to a file!');
+			_writeFileBytesState := WRITEBYTES_CHECK_CONTENT;
+		END_IF
+	
+	WRITEBYTES_CHECK_CONTENT:
+		IF _fileHandler.Read(nBufferSize := SIZEOF(sReadResult), ptrBuffer := ADR(sReadResult)) THEN
+			AssertEquals(Expected := sExpectedResult, Actual := sReadResult, Message := 'Writing multiple bytes to a file failed!');
+			_writeFileBytesState := WRITEBYTES_DELETE;
+		END_IF
+	
+	WRITEBYTES_DELETE:
+		IF _fileHandler.Delete() THEN
+			_writeFileBytesState := WRITEBYTES_DONE;
+		END_IF
+	
+	WRITEBYTES_DONE:
+		TcUnit.TEST_FINISHED();
+		
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_FileHandler_Tests">
-      <LineId Id="62" Count="0" />
-      <LineId Id="67" Count="2" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="66" Count="0" />
+      <LineId Id="117" Count="6" />
       <LineId Id="72" Count="0" />
+      <LineId Id="162" Count="0" />
     </LineIds>
-    <LineIds Name="FB_FileHandler_Tests.Test_01_WriteToFile_ExpectNoError">
+    <LineIds Name="FB_FileHandler_Tests.Test_01_WriteLineAppend_ExpectNoError">
       <LineId Id="5" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="6" Count="0" />
@@ -233,6 +275,34 @@ END_CASE]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileHandler_Tests.Test_05_WriteBinaryAppend_NewFile_ExpectSameContent">
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

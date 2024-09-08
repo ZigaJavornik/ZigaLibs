@@ -16,6 +16,9 @@
     <LibraryReferences>{b4e87170-0c7a-4df3-9dc5-e3afe647b07b}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\01_FileHandling\DUTs\E_FileOpenMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\01_FileHandling\POUs\FB_FileHandler.TcPOU">
       <SubType>Code</SubType>
     </Compile>

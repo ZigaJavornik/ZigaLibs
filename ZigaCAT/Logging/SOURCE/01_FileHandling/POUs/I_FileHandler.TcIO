@@ -40,10 +40,38 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Method Name="Write" Id="{a7d31bb1-3d2e-0774-2e5b-de4112925f65}">
-      <Declaration><![CDATA[// Writes the string content to the opened file. If the file does not exist, it will be created.
+    <Method Name="WriteBinary_Append" Id="{b12151c7-19f1-0487-35c3-7d39348a832f}">
+      <Declaration><![CDATA[// Writes the content to the end of the file (appends).
 // Returns TRUE when done - method needs to be called until it returns TRUE!
-METHOD Write : BOOL
+METHOD WriteBinary_Append : BOOL
+VAR_INPUT
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="WriteBinary_Overwrite" Id="{b797a373-2575-086a-0c90-2cab40d8d804}">
+      <Declaration><![CDATA[// Writes the content to the the file (overwrites any existing content).
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteBinary_Overwrite : BOOL
+VAR_INPUT
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="WriteLine_Append" Id="{a7d31bb1-3d2e-0774-2e5b-de4112925f65}">
+      <Declaration><![CDATA[// Writes the string content to the end of the file (appends). If the file does not exist, it will be created.
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteLine_Append : BOOL
+VAR_INPUT
+	sContent	: Tc2_System.T_MaxString;	// Text to be written.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="WriteLine_Overwrite" Id="{0f47c073-4a01-0770-238b-441ab0b7e38a}">
+      <Declaration><![CDATA[// Writes the string content to file and overwrites any existing content. If the file does not exist, it will be created.
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteLine_Overwrite : BOOL
 VAR_INPUT
 	sContent	: Tc2_System.T_MaxString;	// Text to be written.
 END_VAR
