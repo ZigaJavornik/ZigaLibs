@@ -6,13 +6,9 @@ FUNCTION F_CreateFilePath : Tc2_System.T_MaxString
 VAR_INPUT
 	sFileName	: Tc2_System.T_MaxString;
 	sFolderPath	: Tc2_System.T_MaxString;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[F_CreateFilePath := Tc2_Standard.CONCAT(STR1 := sFolderPath, STR2 := Tc2_Standard.CONCAT(STR1 := '\', STR2 := sFileName));]]></ST>
     </Implementation>
-    <LineIds Name="F_CreateFilePath">
-      <LineId Id="7" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

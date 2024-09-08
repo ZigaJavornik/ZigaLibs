@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <Itf Name="I_FileAccess" Id="{f6e2d3cb-8903-0f1f-08af-c71e2f897578}">
-    <Declaration><![CDATA[INTERFACE I_FileAccess
-]]></Declaration>
+    <Declaration><![CDATA[INTERFACE I_FileAccess]]></Declaration>
     <Property Name="FileProperties" Id="{3d266cd2-f99a-09d0-2792-cabadc23f86c}">
       <Declaration><![CDATA[PROPERTY FileProperties : REFERENCE TO ST_FileProperties]]></Declaration>
       <Get Name="Get" Id="{bc2f37ba-44fe-0293-08d8-3751aba78ca4}">

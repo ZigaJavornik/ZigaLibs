@@ -33,9 +33,5 @@ TcUnit.RUN();
         </TypeList>
       </XmlArchive>
     </ObjectProperties>
-    <LineIds Name="PRG_TESTS">
-      <LineId Id="3" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

@@ -8,8 +8,7 @@ VAR_OUTPUT
 END_VAR
 VAR
 	_fileProperties	: ST_FileProperties;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
@@ -61,26 +60,5 @@ METHOD LogWarning
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Logger">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.FileProperties.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.FileProperties.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.LogError">
-      <LineId Id="4" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.LogGeneric">
-      <LineId Id="4" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.LogInfo">
-      <LineId Id="4" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Logger.LogWarning">
-      <LineId Id="4" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

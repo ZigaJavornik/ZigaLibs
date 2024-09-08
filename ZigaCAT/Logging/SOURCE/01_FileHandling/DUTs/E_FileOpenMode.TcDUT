@@ -4,6 +4,7 @@
     <Declaration><![CDATA[// A combination of file open modes, based on available options.
 // Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/30977547.html&id=
 
+
 TYPE E_FileOpenMode :
 (
 	(* r: Opens a file for reading. An error is returned if the file cannot be found or does not exist.*)

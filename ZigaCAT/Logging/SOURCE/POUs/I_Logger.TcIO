@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <Itf Name="I_Logger" Id="{0db69b78-3cea-0d64-1476-a39aaa2ee03e}">
-    <Declaration><![CDATA[INTERFACE I_Logger EXTENDS I_FileAccess
-]]></Declaration>
+    <Declaration><![CDATA[INTERFACE I_Logger EXTENDS I_FileAccess]]></Declaration>
     <Method Name="LogError" Id="{df7195e3-abce-008e-317c-131e25ddee27}">
       <Declaration><![CDATA[METHOD LogError
 VAR_INPUT

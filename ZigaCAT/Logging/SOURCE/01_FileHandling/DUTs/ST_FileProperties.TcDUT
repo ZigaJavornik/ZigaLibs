@@ -8,7 +8,6 @@ STRUCT
 	FolderPath	: Tc2_System.T_MaxString;	// Folder path where the file is located.
 	NetId		: Tc2_System.T_MaxString;	// NetId of the machine.
 END_STRUCT
-END_TYPE
-]]></Declaration>
+END_TYPE]]></Declaration>
   </DUT>
 </TcPlcObject>
