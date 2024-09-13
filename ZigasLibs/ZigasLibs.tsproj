@@ -9,18 +9,6 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{5AB6837C-9B83-4477-98DA-9D69DBF054C4}" Name="IO" PrjFilePath="IO\IO.plcproj" TmcFilePath="IO\IO.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="IO\IO.tmc" TmcHash="{21979718-FE34-DC60-205B-8DADE868818C}">
-					<Name>IO Instance</Name>
-					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
-					<Contexts>
-						<Context>
-							<Id>1</Id>
-							<Name>Default</Name>
-						</Context>
-					</Contexts>
-				</Instance>
-			</Project>
 			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Libraries" PrjFilePath="Libraries\Libraries.plcproj" TmcFilePath="Libraries\Libraries.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Libraries\Libraries.tmc" TmcHash="{1C2B0B86-4FC1-E259-BB02-BA5059DB30DF}">
 					<Name>Libraries Instance</Name>
