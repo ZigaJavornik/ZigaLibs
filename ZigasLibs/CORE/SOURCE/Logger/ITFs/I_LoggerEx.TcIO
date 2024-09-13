@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_LoggerEx" Id="{48d93d73-46a3-0e0b-1618-a89180a9d2c2}">
+    <Declaration><![CDATA[// Provides extended logger with log levels
+INTERFACE I_LoggerEx EXTENDS I_Logger
+]]></Declaration>
+    <Method Name="LogError" Id="{2cf7cb30-c1cb-0d5f-128f-ea18bc5ed76b}">
+      <Declaration><![CDATA[// Logs the message by adding the error header to the start.
+METHOD LogError
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="LogInfo" Id="{1af56a65-d4ee-0683-346e-dd528b8b4048}">
+      <Declaration><![CDATA[// Logs the message by adding the info header to the start.
+METHOD LogInfo
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="LogLevelHeaders" Id="{f0ceafa0-0ae6-0ef7-3976-1ac588dfc336}">
+      <Declaration><![CDATA[// Gets or sets the headers which are applied to logs for their coresponding log levels.
+PROPERTY LogLevelHeaders : REFERENCE TO ST_LogLevelHeaders]]></Declaration>
+      <Get Name="Get" Id="{f0d507bc-4cf8-07bd-38f8-ce7c11e6d8ab}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{903aa61c-91d7-05c3-0b7a-8988192f8b53}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="LogWarning" Id="{3c88e12d-991b-0b9f-38c1-fa148bfa8609}">
+      <Declaration><![CDATA[// Logs the message by adding the info header to the start.
+METHOD LogWarning
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

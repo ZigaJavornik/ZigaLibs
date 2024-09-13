@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LocalSystemTimeProvider" Id="{5429ddc3-78d0-058e-1e56-29d8805b55eb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LocalSystemTimeProvider
+VAR
+	_systemTime		: Tc2_Utilities.FB_LocalSystemTime;
+	_currentTime	: ST_CurrentSystemTimeInfo;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_systemTime(
+	sNetID:= '', 
+	bEnable:= TRUE, 
+	dwCycle:= 1,
+	bValid=> _currentTime.Value, 
+	systemTime=> _currentTime.Value);]]></ST>
+    </Implementation>
+    <Property Name="CurrentTime" Id="{6c4e9ddf-27e1-0836-04f5-9138aa3c0289}">
+      <Declaration><![CDATA[// Gets current system timo info as a <ST_CurrentSystemTimeInfo>
+PROPERTY CurrentTime : REFERENCE TO ST_CurrentSystemTimeInfo]]></Declaration>
+      <Get Name="Get" Id="{1dc69109-a2fc-07e6-33f1-0d17b5b22722}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CurrentTime REF= _currentTime;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="CurrentTimeToString" Id="{335d77a6-b83f-05d4-1805-cf8620704700}">
+      <Declaration><![CDATA[// Returns current system time as string, formated according to the provided parameters
+METHOD CurrentTimeToString : T_MaxString
+VAR_INPUT
+	timeFormat			: E_TimeFormat;	// Time format to apply to the timestruct conversion
+	timeOfDaySeperator	: STRING(1);	// Specifies how time of day is split
+	dateSeperator		: STRING(1);	// Specifies how date is split
+	fillWithZeros		: BOOL;	// If set to true: month, day hour, minute and second will have 0 added when only a single digit is present
+	IncludeMilliseconds	: BOOL; // If set to true, milliseconds will also be displayed in the result, else they are ignored
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CurrentTimeToString := TimeHelper.TimeStructToString(
+	dateSeperator := dateSeperator,
+	fillWithZeros := fillWithZeros,
+	IncludeMilliseconds := IncludeMilliseconds,
+	timeFormat := timeFormat,
+	timeOfDaySeperator := timeOfDaySeperator,
+	timestructIn := _currentTime.Value);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

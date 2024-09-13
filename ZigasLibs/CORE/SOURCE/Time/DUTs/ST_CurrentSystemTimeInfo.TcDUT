@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_CurrentSystemTimeInfo" Id="{7dc312cd-49f9-0348-31ec-e757f091223d}">
+    <Declaration><![CDATA[TYPE ST_CurrentSystemTimeInfo :
+STRUCT
+	IsValid	: BOOL;
+	Value	: Tc2_Utilities.TIMESTRUCT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_StringBuilderBase" Id="{4af2ae7b-34e5-0402-2ab5-b787ed381493}" SpecialFunc="None">
+    <Declaration><![CDATA[// Provides basic string builder implementation
+FUNCTION_BLOCK FB_StringBuilderBase IMPLEMENTS I_StringBuilder;
+VAR
+	_string	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddString" Id="{a1f2665a-9e23-0057-3cb2-001019efbfb5}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence.*)
+METHOD AddString : I_StringBuilder
+VAR_INPUT
+	(* String to be added.*)
+	str	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := str);
+	
+AddString := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{837ad951-dde3-0ecc-1e91-80edffc6563f}">
+      <Declaration><![CDATA[(* Finishes string generation and returns the generated string*)
+METHOD Create : Tc2_System.T_MaxString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Create := _string;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{c0b64bb0-ab5a-04e6-313f-3575f6a54110}">
+      <Declaration><![CDATA[(* Reset the string build sequence, clear any string built so far.*)
+METHOD Reset : I_StringBuilder
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := '';
+Reset := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

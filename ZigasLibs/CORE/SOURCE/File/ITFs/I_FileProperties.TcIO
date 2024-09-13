@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_FileProperties" Id="{48c6fead-5114-0488-0fb4-ef75ebc9ec47}">
+    <Declaration><![CDATA[// Provies interface to properties required for file access
+INTERFACE I_FileProperties
+]]></Declaration>
+    <Property Name="FileProperties" Id="{ec9861a9-4e32-0443-1bd2-a47790c96b07}">
+      <Declaration><![CDATA[// Gets or set file properties.
+PROPERTY FileProperties : REFERENCE TO ST_FileProperties]]></Declaration>
+      <Get Name="Get" Id="{fde9c63d-afb5-0ac9-15c2-ddc3e531f4a7}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{58f44111-772d-080a-1c3c-93f51a0fd80d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+  </Itf>
+</TcPlcObject>
