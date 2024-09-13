@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_TimeFormat" Id="{6c81a3b9-8ceb-0896-12b0-d6771d2f387b}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_TimeFormat :
+(
+	HHMMSS,
+	DDMMYY,
+	YYMMDD,
+	MMDDYY,
+	DDMMYY_HHMMSS,
+	YYMMDD_HHMMSS,
+	MMDDYY_HHMMSS
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

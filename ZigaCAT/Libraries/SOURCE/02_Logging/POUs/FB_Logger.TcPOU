@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Logger" Id="{86b60fa4-cbc9-0995-00ad-63ce008210aa}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger IMPLEMENTS ZigasLibs_Core.I_LoggerEx
+VAR
+	_fileProperties			: ST_FileProperties;
+	_logLevelHeaders		: ZigasLibs_Core.ST_LogLevelHeaders;
+	_fileHandler			: FB_FileHandler;
+	_events					: ARRAY[0..100] OF Tc2_System.T_MaxString;
+	_state					: E_LoggerState;
+	_fileExists				: BOOL;
+	_localSystemTime		: ZigasLibs_Core.FB_LocalSystemTimeProvider;
+	_localSystemTimeString	: Tc2_System.T_MaxString;
+	_stringBuilder			: ZigasLibs_Core.FB_StringBuilderBase;
+	_bufferFull				: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_localSystemTime();
+_localSystemTimeString := _localSystemTime.CurrentTimeToString(
+	dateSeperator := '.',
+	fillWithZeros := TRUE,
+	IncludeMilliseconds := FALSE,
+	timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
+	timeOfDaySeperator := ':');
+
+IF _fileHandler.Error THEN
+	_state := E_LoggerState.Error;
+END_IF
+
+CASE _state OF 
+	E_LoggerState.IDLE:
+		IF _events[0] <> '' AND _localSystemTime.CurrentTime.IsValid THEN
+			_state := E_LoggerState.WRITE_TO_FILE;
+		END_IF		
+		
+	E_LoggerState.WRITE_TO_FILE:
+		_fileHandler.FileProperties.FileLocation := _fileProperties.FileLocation;
+		_fileHandler.FileProperties.NetId := _fileProperties.NetId;
+		_fileHandler.FileProperties.Name := CONCAT(STR1 := _fileProperties.Name, STR2 := DT_TO_STRING(_systemTime.systemTime));;
+		
+		IF _fileHandler.WriteLine_Append(sContent := _eventMessage) AND _fileHandler.Error = FALSE THEN
+			THIS^.RemoveEvent();
+			_state := E_LoggerState.IDLE;
+		END_IF
+		
+	E_LoggerState.ERROR:
+	
+END_CASE]]></ST>
+    </Implementation>
+    <Method Name="AddLogMessage" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}">
+      <Declaration><![CDATA[METHOD PRIVATE AddLogMessage
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	i	: UINT;
+	eventsMaxIndex	: UINT := DINT_TO_UINT(ZigasLibs_Core.ArrayHelper.GetArrayMaxIndex(arrayIn := _events, dataType := _events[0]));
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO eventsMaxIndex BY 1 DO
+	IF _events[i] = '' THEN
+		_events[i] := message;
+		_bufferFull := FALSE;
+		RETURN;
+	END_IF
+END_FOR
+
+_bufferFull := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="AmsAddress" Id="{2ff23ff9-8aca-06ba-18c7-b3a879ccb01f}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+(* Gets or sets the Ams address structure*)
+PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
+]]></Declaration>
+      <Get Name="Get" Id="{87378494-b48f-041e-0273-a8548009f45b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{03e2518e-8422-04ec-3ebc-7cb2c93733f2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="BufferFull" Id="{6b3f66ce-c8e6-0c2b-1325-e4b5c4b64233}">
+      <Declaration><![CDATA[PROPERTY PUBLIC BufferFull : BOOL]]></Declaration>
+      <Get Name="Get" Id="{52e4ece1-202f-0628-2423-dc2032edb2da}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BufferFull := _bufferFull;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="FileProperties" Id="{673c7f63-7643-01c5-0bc9-18642143b735}">
+      <Declaration><![CDATA[(* Gets or set file properties.*)
+PROPERTY FileProperties : REFERENCE TO ZigasLibs_Core.ST_FileProperties
+]]></Declaration>
+      <Get Name="Get" Id="{ed145f69-492a-0c2c-1788-7460771a661c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FileProperties REF= _fileProperties;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{80c6a351-e367-0411-01ac-b6ae657e0bcb}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fileProperties := FileProperties;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="LogDefault" Id="{03e59e35-6844-0202-3974-90f98220400a}">
+      <Declaration><![CDATA[(* Logs the message without any additions.*)
+METHOD LogDefault
+VAR_INPUT
+	message	: ZigasLibs_Core.Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+	.AddString(str := _localSystemTimeString)
+	.AddString(str := ': ')
+	.AddString(str := message)
+	.Create());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogError" Id="{60e0135f-a63a-002e-056e-f6dc14cffeb1}">
+      <Declaration><![CDATA[(* Logs the message by adding the error header to the start.*)
+METHOD LogError
+VAR_INPUT
+	message	: ZigasLibs_Core.Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+	.AddString(str := _localSystemTimeString)
+	.AddString(str := ': ')
+	.AddString(str := _logLevelHeaders.Error)
+	.AddString(str := message)
+	.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogInfo" Id="{fd97ce6f-9592-08da-013c-a727bade2e2b}">
+      <Declaration><![CDATA[(* Logs the message by adding the info header to the start.*)
+METHOD LogInfo
+VAR_INPUT
+	message	: ZigasLibs_Core.Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+	.AddString(str := _localSystemTimeString)
+	.AddString(str := ': ')
+	.AddString(str := _logLevelHeaders.Info)
+	.AddString(str := message)
+	.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="LogLevelHeaders" Id="{4a2eeb1a-7fb2-0f80-3c56-845a85555842}">
+      <Declaration><![CDATA[(* Gets or sets the headers which are applied to logs for their coresponding log levels.*)
+PROPERTY LogLevelHeaders : REFERENCE TO ZigasLibs_Core.ST_LogLevelHeaders
+]]></Declaration>
+      <Get Name="Get" Id="{659c25b1-4b2a-01f1-1505-fdb1e25ebd68}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[LogLevelHeaders ref= _logLevelHeaders;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{96e644fb-2cc5-081c-3f64-8981e592adf9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_logLevelHeaders := LogLevelHeaders;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="LogWarning" Id="{76f0a31c-738d-0885-349f-e0df017a7e19}">
+      <Declaration><![CDATA[(* Logs the message by adding the info header to the start.*)
+METHOD LogWarning
+VAR_INPUT
+	message	: ZigasLibs_Core.Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+	.AddString(str := _localSystemTimeString)
+	.AddString(str := ': ')
+	.AddString(str := _logLevelHeaders.Warning)
+	.AddString(str := message)
+	.Create());]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
