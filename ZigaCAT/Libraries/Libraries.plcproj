@@ -23,19 +23,16 @@
     <Description>A library containing file/logging functionalities.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\01_FileHandling\DUTs\E_FileOpenMode.TcDUT">
+    <Compile Include="SOURCE\FileHandler\POUs\FB_FileHandler.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\01_FileHandling\POUs\FB_FileHandler.TcPOU">
+    <Compile Include="SOURCE\FileHandler\POUs\I_FileHandler.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\01_FileHandling\POUs\I_FileHandler.TcIO">
+    <Compile Include="SOURCE\Logger\DUTs\E_LoggerState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\02_Logging\DUTs\E_LoggerState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\02_Logging\POUs\FB_Logger.TcPOU">
+    <Compile Include="SOURCE\Logger\POUs\FB_Logger.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -54,12 +51,11 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\01_FileHandling" />
-    <Folder Include="SOURCE\01_FileHandling\DUTs" />
-    <Folder Include="SOURCE\01_FileHandling\POUs" />
-    <Folder Include="SOURCE\02_Logging" />
-    <Folder Include="SOURCE\02_Logging\DUTs" />
-    <Folder Include="SOURCE\02_Logging\POUs" />
+    <Folder Include="SOURCE\FileHandler" />
+    <Folder Include="SOURCE\FileHandler\POUs" />
+    <Folder Include="SOURCE\Logger" />
+    <Folder Include="SOURCE\Logger\DUTs" />
+    <Folder Include="SOURCE\Logger\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
     <Folder Include="Version" />

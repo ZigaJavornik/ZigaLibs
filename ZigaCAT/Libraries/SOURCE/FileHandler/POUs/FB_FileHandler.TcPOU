@@ -110,11 +110,11 @@ END_VAR]]></Declaration>
 		
 	FILE_CREATE_STATE_OVERWRITE_OR_CREATE:
 		IF bOverwrite THEN
-			IF THIS^.Open(mode := E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
+			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
 				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
 			END_IF
 		ELSE
-			IF THIS^.Open(mode := E_FileOpenMode.BINARY_APPEND) THEN
+			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_APPEND) THEN
 				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
 			END_IF
 		END_IF
@@ -265,7 +265,7 @@ END_VAR
       <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD PRIVATE Open : BOOL
 VAR_INPUT
-	mode	: E_FileOpenMode;	// Mode in which the file is opened
+	mode	: ZigasLibs_Core.E_FileOpenMode;	// Mode in which the file is opened
 END_VAR
 
 VAR_INST

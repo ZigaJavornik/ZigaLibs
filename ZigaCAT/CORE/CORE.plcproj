@@ -50,6 +50,9 @@
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\File\DUTs\ST_FileProperties.TcDUT">
       <SubType>Code</SubType>
     </Compile>

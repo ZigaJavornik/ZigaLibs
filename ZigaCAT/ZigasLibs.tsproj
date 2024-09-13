@@ -22,7 +22,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Libraries" PrjFilePath="Libraries\Libraries.plcproj" TmcFilePath="Libraries\Libraries.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Libraries\Libraries.tmc" TmcHash="{10684FBC-9A43-255F-DDF5-27C2502FF4A3}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Libraries\Libraries.tmc" TmcHash="{1C2B0B86-4FC1-E259-BB02-BA5059DB30DF}">
 					<Name>Libraries Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
