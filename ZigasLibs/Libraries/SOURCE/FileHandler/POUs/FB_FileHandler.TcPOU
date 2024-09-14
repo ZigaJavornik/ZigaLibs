@@ -3,7 +3,7 @@
   <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
     <Declaration><![CDATA[// A function block containing multiple file handling methods.
 // For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
-FUNCTION_BLOCK FB_FileHandler IMPLEMENTS I_FileHandler
+FUNCTION_BLOCK FB_FileHandler EXTENDS ZigasLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
 
 VAR
 	_fileHandle		: UINT;
@@ -23,7 +23,8 @@ END_VAR]]></Declaration>
       <Folder Name="Properties" Id="{396770d2-ec2c-0c1a-0123-ad5c609c31f5}" />
     </Folder>
     <Property Name="AmsAddress" Id="{aa2c0e77-cb1f-05b3-0b95-3148b235b704}" FolderPath="01_Public\Properties\">
-      <Declaration><![CDATA[(* Gets or sets the Ams address structure*)
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets the Ams address structure*)
 PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
 ]]></Declaration>
       <Get Name="Get" Id="{de2f0481-ed4f-097b-2c1d-b66092ab0976}">
@@ -81,7 +82,12 @@ CASE nCloseFileState OF
 		Close := TRUE;
 		_fileHandle := 0;
 		nCloseFileState := FILE_CLOSE_START;
-END_CASE]]></ST>
+END_CASE
+
+_error := _error OR fbFileClose.bError;
+IF fbFileClose.bError THEN
+	_errorSource.ErrorCode := fbFileClose.nErrId;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}" FolderPath="01_Public\Methods\">
@@ -93,7 +99,6 @@ VAR_INPUT
 END_VAR
 
 VAR_INST
-	fbFileOpen	: Tc2_System.FB_FileOpen;
 	nFileCreateState	: UINT;
 END_VAR
 
@@ -120,13 +125,11 @@ END_VAR]]></Declaration>
 		END_IF
 		
 	FILE_CREATE_STATE_WAIT_DONE:
-	IF THIS^.Close() THEN
-		nFileCreateState := FILE_CREATE_STATE_DONE;
-	END_IF
+		IF THIS^.Close() THEN
+			nFileCreateState := FILE_CREATE_STATE_DONE;
+		END_IF
 
-		
 	FILE_CREATE_STATE_DONE:
-		Create := TRUE;
 		nFileCreateState := FILE_CREATE_STATE_START;
 END_CASE]]></ST>
       </Implementation>
@@ -156,7 +159,8 @@ _error := _error OR fbFileDelete.bError;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Error" Id="{bbad0e32-6daa-0a76-0a27-61712e257d88}" FolderPath="01_Public\Properties\">
-      <Declaration><![CDATA[(* Gets the error state, if any of the functions failed.*)
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets the error state, if any of the functions failed.*)
 PROPERTY Error : BOOL
 ]]></Declaration>
       <Get Name="Get" Id="{5168048e-7c3f-06a9-0acd-c39fff130fa4}">
@@ -186,6 +190,7 @@ VAR CONSTANT
 	FILE_EXIST_STATE_START		: UINT := 10;
 	FILE_EXIST_STATE_CHECK		: UINT := 20;
 	FILE_EXIST_STATE_DONE		: UINT := 30;
+	FILE_EXIST_STATE_ERROR		: uint := 9999;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE nCheckFileExistState OF
@@ -215,20 +220,26 @@ END_VAR]]></Declaration>
 					nCheckFileExistState := FILE_EXIST_STATE_DONE;
 				END_IF
 			ELSE
-				nCheckFileExistState := FILE_EXIST_STATE_DONE;
-				refFileExists := FALSE;
-				_error := _error OR fbFileExists.bError;
+				nCheckFileExistState := FILE_EXIST_STATE_ERROR;
 			END_IF
 		END_IF
 	
 	FILE_EXIST_STATE_DONE:
 		Exists := TRUE;
 		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
-END_CASE]]></ST>
+		
+	FILE_EXIST_STATE_ERROR:
+		_errorSource.ErrorCode := fbFileExists.nErrID;
+		nCheckFileExistState := FILE_EXIST_STATE_DONE;
+		refFileExists := FALSE;
+END_CASE
+
+_error := _error OR fbFileExists.bError;]]></ST>
       </Implementation>
     </Method>
     <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}" FolderPath="01_Public\Properties\">
-      <Declaration><![CDATA[(* Gets or sets various file properties*)
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets various file properties*)
 PROPERTY FileProperties : REFERENCE TO ZigasLibs_Core.ST_FileProperties
 ]]></Declaration>
       <Get Name="Get" Id="{ac218c70-be3b-08df-3b3c-bd233df4aa85}">
@@ -275,7 +286,6 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF THIS^.HandleCreated THEN
 	Open := TRUE;
-	_error := _error OR fbFileOpen.bError;
 	RETURN;
 END_IF
 
@@ -285,7 +295,11 @@ fbFileOpen(
 	sNetId :=  ZigasLibs_Core.AmsHelper.NetIdToString(_amsAddress.netId),
 	nMode := mode,
 	hFile => _fileHandle);
-]]></ST>
+	
+_error := _error OR fbFileOpen.bError;	
+IF fbFileOpen.bError THEN
+	_errorSource.ErrorCode := fbFileOpen.nErrId;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Read" Id="{b10554be-8e89-07ac-2f05-1e80a59ec182}" FolderPath="01_Public\Methods\">
@@ -310,6 +324,7 @@ VAR CONSTANT
 	READ_STATE_START	: UINT := 10;
 	READ_STATE_WAIT		: UINT := 20;
 	READ_STATE_DONE		: UINT := 30;
+	READ_STATE_ERROR	: uint := 9999;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// An error is triggered if handle is not created or buffer pointer is invalid
@@ -337,19 +352,24 @@ CASE nReadState OF
 		
 	READ_STATE_WAIT:
 		fbFileRead(bExecute := FALSE);
-		IF fbFileRead.bBusy = FALSE THEN
+		IF fbFileRead.bError THEN
+			nReadState := READ_STATE_ERROR;
+		ELSIF fbFileRead.bBusy = FALSE THEN
 			IF THIS^.Close() THEN
 				nReadState := READ_STATE_DONE;
 			END_IF
 		END_IF	
 
 	READ_STATE_DONE:
-		_error := _error OR fbFileRead.bError;
 		Read := TRUE;
 		nReadState := READ_STATE_OPEN;
 		
+	READ_STATE_ERROR:
+		nReadState := READ_STATE_DONE;
+		_errorSource.ErrorCode := fbFileRead.nErrId;
 END_CASE
 
+_error := _error OR fbFileRead.bError;
 ]]></ST>
       </Implementation>
     </Method>
@@ -400,7 +420,13 @@ END_VAR
 	
 	WRITE_DONE:
 		WriteBinary := TRUE;
-END_CASE]]></ST>
+END_CASE
+
+_error := _error OR fbFileWrite.bError;
+
+IF fbFileWrite.bError THEN
+	_errorSource.ErrorCode := fbFileWrite.nErrId;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="WriteBinary_Append" Id="{e6cf0183-f5bc-06db-3d81-64cf9e0ad080}" FolderPath="01_Public\Methods\">
@@ -487,9 +513,13 @@ END_VAR]]></Declaration>
 	
 	WRITE_LINE_STATE_DONE:
 		WriteLine := TRUE;
+		nWriteLineState := WRITE_LINE_STATE_OPEN;
 END_CASE
 
-_error := _error OR fbFilePuts.bError;]]></ST>
+_error := _error OR fbFilePuts.bError;
+IF fbFilePuts.bError THEN
+	_errorSource.ErrorCode := fbFilePuts.nErrId;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="WriteLine_Append" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">

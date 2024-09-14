@@ -58,6 +58,18 @@
     <Compile Include="SOURCE\Array\Helpers\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Errors\FB_ErrorSource.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\FB_HasInstanceName.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\ST_ErrorSource.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -133,6 +145,7 @@
     <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Aliases" />
+    <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\String\Helpers" />
     <Folder Include="SOURCE\String\ITFs" />
     <Folder Include="SOURCE\String\POUs" />

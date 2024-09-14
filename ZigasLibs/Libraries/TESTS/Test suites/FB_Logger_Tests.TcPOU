@@ -7,10 +7,13 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
+	fbLogger	: FB_Logger;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test_LogError();
+      <ST><![CDATA[fbLogger();
+
+Test_LogError();
 Test_LogWarning();
 Test_LogInfo();
 Test_LogGeneric();]]></ST>
@@ -19,9 +22,22 @@ Test_LogGeneric();]]></ST>
       <Declaration><![CDATA[METHOD Test_LogError
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR_INST
+	bWrite	: BOOL;
+	
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[TcUnit.TEST('Test_LogError');
+fbLogger.FileProperties.FileLocation := 'C:\';
+fbLogger.FileProperties.FileName := 'TestLog';
+
+IF bWrite THEN
+	fbLogger.LogError('Test2');
+END_IF
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test_LogGeneric" Id="{85c6ce0a-a15b-043a-2e4c-eb245e65cfdf}">

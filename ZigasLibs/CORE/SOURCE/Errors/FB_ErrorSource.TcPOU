@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_ErrorSource" Id="{39c13ed9-6860-004f-28d1-bfe8a964ba5b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
+VAR
+	_errorSource	: ST_ErrorSource;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_errorSource.InstanceName := GetInstanceName();]]></ST>
+    </Implementation>
+    <Property Name="ErrorSource" Id="{15c87816-e531-04de-26f6-1439ba97e2e1}">
+      <Declaration><![CDATA[PROPERTY ErrorSource : REFERENCE TO ST_ErrorSource
+]]></Declaration>
+      <Get Name="Get" Id="{02786464-5879-0c4a-39ea-a502d632abf5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ErrorSource := _errorSource;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -7,6 +7,7 @@
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
 	FileHandlerTests	: FB_FileHandler_Tests;
+	LoggerTests			: FB_Logger_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

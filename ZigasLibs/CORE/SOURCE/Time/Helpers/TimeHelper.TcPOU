@@ -76,25 +76,25 @@ END_IF
 _ddmmyy := stringBuilder.Reset()
 	.AddString(day).AddString(dateSeperator)
 	.AddString(month).AddString(dateSeperator)
-	.AddString(year).AddString(dateSeperator)
+	.AddString(year)
 	.Create();
 
 _mmddyy := stringBuilder.Reset()
 	.AddString(month).AddString(dateSeperator)
 	.AddString(day).AddString(dateSeperator)
-	.AddString(year).AddString(dateSeperator)
+	.AddString(year)
 	.Create();
 
 _yymmdd := stringBuilder.Reset()
 	.AddString(year).AddString(dateSeperator)
 	.AddString(month).AddString(dateSeperator)
-	.AddString(day).AddString(dateSeperator)
+	.AddString(day)
 	.Create();
 
 _hhmmss := stringBuilder.Reset()
 	.AddString(hour).AddString(timeOfDaySeperator)
 	.AddString(minute).AddString(timeOfDaySeperator)
-	.AddString(second).AddString(timeOfDaySeperator)
+	.AddString(second)
 	.Create();
 	
 CASE timeFormat OF
@@ -141,6 +141,7 @@ END_IF
 
 TimeStructToString := stringBuilder.Reset()
 	.AddString(resultWithoutMilliseconds)
+	.AddString(timeOfDaySeperator)
 	.AddString(milliseconds)
 	.Create();
 

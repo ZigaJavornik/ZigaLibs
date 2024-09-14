@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasInstanceName" Id="{87d42491-7a36-0b06-1027-fbe6e5b19dcf}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK ABSTRACT FB_HasInstanceName
+VAR
+	{attribute 'instance-path'} 
+    {attribute 'noinit'} 
+	_instancePath	: Tc2_System.T_MaxString;
+	
+	_instanceName	: Tc2_System.T_MaxString;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetInstanceName" Id="{d24ef87c-cf7f-0ad5-241f-9344f720eb7a}">
+      <Declaration><![CDATA[METHOD PROTECTED GetInstanceName : T_MaxString
+VAR
+	instanceName	: Tc2_System.T_MaxString;
+	dotPosition		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[instanceName := _instancePath;
+
+WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> 0 DO
+	dotPosition := Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.');
+	instanceName := Tc2_Standard.DELETE(
+		STR := instanceName,
+		POS := 0,	
+		LEN := dotPosition);
+END_WHILE
+
+GetInstanceName := instanceName;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="InstancePath" Id="{9665f2f7-723f-06f2-2fd9-4941869795b6}">
+      <Declaration><![CDATA[PROPERTY InstancePath : Tc2_System.T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{280f29c4-2287-0abd-1386-09c1556898dc}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[InstancePath := _instancePath;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

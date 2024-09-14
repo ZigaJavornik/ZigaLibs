@@ -14,8 +14,38 @@ Test03_InsertNumber();
 Test04_InsertString();
 Test05_InsertStruct();
 Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
-Test07_SetAtFirstEmptySlot();]]></ST>
+Test07_SetAtFirstEmptySlot();
+Tes08_AllMethods_provideNonArrayVar_ExpectNothing();]]></ST>
     </Implementation>
+    <Method Name="Tes08_AllMethods_provideNonArrayVar_ExpectNothing" Id="{3ee8021c-32e6-0293-3123-601800a244ac}">
+      <Declaration><![CDATA[METHOD Tes08_AllMethods_provideNonArrayVar_ExpectNothing
+VAR_INPUT
+END_VAR
+VAR
+	notAnArray	: BOOL := TRUE;
+	val			: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Tes08_AllMethods_provideNonArrayVar_ExpectNothing');
+
+ArrayHelper.GetElementCount(arr := notAnArray, dataType := val);
+AssertTrue(
+	Condition := notAnArray, 
+	Message := 'When non-array is provided to any method, the method should not execute anything!');
+
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(arr := notAnArray, dataType := val, startIndex := 0),
+	Expected := 0,
+	Message := 'When non-array is provided, max index returned should be 0!');
+	
+AssertTrue(
+	Condition := notAnArray, 
+	Message := 'When non-array is provided to any method, the method should not execute anything!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
 VAR_INPUT
