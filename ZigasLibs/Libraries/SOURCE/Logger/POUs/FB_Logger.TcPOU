@@ -13,6 +13,7 @@ VAR
 	_localSystemTimeString	: Tc2_System.T_MaxString;
 	_stringBuilder			: ZigasLibs_Core.FB_StringBuilderBase;
 	_bufferFull				: BOOL;
+	_amsAddress				: Tc2_System.ST_AmsAddr;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_localSystemTime();
@@ -35,10 +36,13 @@ CASE _state OF
 		
 	E_LoggerState.WRITE_TO_FILE:
 		_fileHandler.FileProperties.FileLocation := _fileProperties.FileLocation;
-		_fileHandler.FileProperties.NetId := _fileProperties.NetId;
-		_fileHandler.FileProperties.Name := CONCAT(STR1 := _fileProperties.Name, STR2 := DT_TO_STRING(_systemTime.systemTime));;
+		_fileHandler.AmsAddress.netId := AmsAddress.netId;
+		_fileHandler.FileProperties.FileName := _stringBuilder.Reset()
+			.AddString(str := _fileProperties.FileName)
+			.AddString(str := TimeForLogName())
+			
 		
-		IF _fileHandler.WriteLine_Append(sContent := _eventMessage) AND _fileHandler.Error = FALSE THEN
+		IF _fileHandler.WriteLine_Append(sContent := _events[0]) AND _fileHandler.Error = FALSE THEN
 			THIS^.RemoveEvent();
 			_state := E_LoggerState.IDLE;
 		END_IF
@@ -47,26 +51,30 @@ CASE _state OF
 	
 END_CASE]]></ST>
     </Implementation>
-    <Method Name="AddLogMessage" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}">
-      <Declaration><![CDATA[METHOD PRIVATE AddLogMessage
+    <Folder Name="Private" Id="{a06b4692-a5ee-0c61-115f-ec297f5c95cb}">
+      <Folder Name="Methods" Id="{860ab4e4-17f1-06ee-0699-9813d104f279}" />
+    </Folder>
+    <Method Name="AddLogEntry" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE AddLogEntry
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
 END_VAR
 
 VAR
-	i	: UINT;
-	eventsMaxIndex	: UINT := DINT_TO_UINT(ZigasLibs_Core.ArrayHelper.GetArrayMaxIndex(arrayIn := _events, dataType := _events[0]));
+	i				: ZigasLibs_Core.T_ArrayIndexer;
+	eventsMaxIndex	: ZigasLibs_Core.T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR i := 0 TO eventsMaxIndex BY 1 DO
-	IF _events[i] = '' THEN
-		_events[i] := message;
-		_bufferFull := FALSE;
-		RETURN;
-	END_IF
-END_FOR
+        <ST><![CDATA[ZigasLibs_Core.ArrayHelper.SetAtFirstEmptySlot(
+	arr := _events,
+	item := message);
 
-_bufferFull := TRUE;]]></ST>
+IF _events[100] <> '' THEN
+	_bufferFull := TRUE;
+ELSE
+	_bufferFull := FALSE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Property Name="AmsAddress" Id="{2ff23ff9-8aca-06ba-18c7-b3a879ccb01f}">
@@ -79,7 +87,7 @@ PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[]]></ST>
+          <ST><![CDATA[AmsAddress ref= _amsAddress;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{03e2518e-8422-04ec-3ebc-7cb2c93733f2}">
@@ -87,7 +95,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[]]></ST>
+          <ST><![CDATA[_amsAddress := AmsAddress;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -131,7 +139,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := message)
@@ -147,7 +155,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Error)
@@ -163,7 +171,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Info)
@@ -200,12 +208,32 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogMessage(_stringBuilder.Reset() 
+        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Warning)
 	.AddString(str := message)
 	.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveLogEntry" Id="{134d7547-21a2-03bc-1ab5-77c94d18ef87}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD RemoveLogEntry
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ZigasLibs_Core.ArrayHelper.ShiftDown(
+	arr := _events, 
+	element := _events[0]);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimeForLogName" Id="{02f4b7c4-160a-013f-0277-3c10823160e9}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE TimeForLogName : STRING]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TimeForLogName :=_localSystemTime.CurrentTimeToString(
+	timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
+	timeOfDaySeperator := '_',
+	dateSeperator := '',
+	fillWithZeros := TRUE,
+	IncludeMilliseconds := FALSE)]]></ST>
       </Implementation>
     </Method>
   </POU>

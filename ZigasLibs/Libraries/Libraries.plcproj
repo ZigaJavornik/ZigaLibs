@@ -44,6 +44,9 @@
     <Compile Include="TESTS\Test suites\FB_FileHandler_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_Logger_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Version\Global_Version.TcGVL">
       <SubType>Code</SubType>
     </Compile>
@@ -173,6 +176,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="ZigasLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigasLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

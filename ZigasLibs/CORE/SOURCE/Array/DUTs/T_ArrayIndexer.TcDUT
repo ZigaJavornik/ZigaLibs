@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="T_ArrayIndexer" Id="{37e123c0-cbb8-0437-110f-b35e6004e643}">
+    <Declaration><![CDATA[// Should be used when accessing array index.
+TYPE T_ArrayIndexer : DINT; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

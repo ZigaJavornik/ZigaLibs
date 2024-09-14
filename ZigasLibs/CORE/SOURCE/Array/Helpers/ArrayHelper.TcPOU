@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="ArrayHelper" Id="{1d7a0d08-3c88-00ea-2870-5cdbd9795f9a}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
+// Provides array helper methods for easier work with arrays accross programming.
+PROGRAM ArrayHelper
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetElementCount" Id="{be71fb45-3c58-0314-18ef-9118e35efd5e}">
+      <Declaration><![CDATA[// Returns the number of elements in the array.
+METHOD PUBLIC GetElementCount : DINT
+VAR_INPUT
+	arr			: ANY;	// Array to be checked.
+	dataType	: ANY;	// Data type of the array elements.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+IF dataType.diSize = 0 THEN
+	RETURN;
+END_IF
+GetElementCount := arr.diSize / dataType.diSize;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetMaxIndex" Id="{edabc55d-cc53-030c-3bc1-e981a29138e7}">
+      <Declaration><![CDATA[// Gets the maximum array index that can be used for looping or index accessing
+METHOD PUBLIC GetMaxIndex : DINT
+VAR_INPUT
+	arr			: ANY;
+	dataType	: ANY;
+	startIndex	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+GetMaxIndex := startIndex + GetElementCount(arr := arr, dataType := dataType) - 1;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InsertAtStart" Id="{0f3f90b7-bf52-0373-102d-0814471c7b79}">
+      <Declaration><![CDATA[// Inserts the item to the start of the array. 
+// Array contents are shifted by 1, last item is deleted.
+METHOD InsertAtStart : BOOL
+VAR_INPUT	
+	arr		: ANY;
+	item	: ANY;
+ END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+ShiftUp(
+	arr := arr,
+	element := item);
+
+// Set first element value
+Tc2_System.MEMCPY(
+	destAddr := arr.pValue,
+	srcAddr := item.pValue,
+	n := DINT_TO_UDINT(item.diSize));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetAtFirstEmptySlot" Id="{8d93fb02-0d20-05a7-18f0-70a436d31e09}">
+      <Declaration><![CDATA[// Iterates the array and sets the value when first empty slot is found. 
+// Note that this method uses memmory allocation. All occupied memory is released after method finishes.
+METHOD SetAtFirstEmptySlot
+VAR_INPUT
+	arr		: ANY;
+	item	: ANY;
+END_VAR
+
+VAR
+	ptrByte 			: POINTER TO BYTE;
+	i					: T_ArrayIndexer;
+	maxIndex			: T_ArrayIndexer;
+	ptrAllocatedBytes	: POINTER TO BYTE;
+	cmpResult			: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+maxIndex :=  GetElementCount(arr := arr, dataType := item) - 1;
+ptrAllocatedBytes := __NEW(BYTE, arr.diSize);
+
+FOR i := 0 TO maxIndex BY 1 DO
+	ptrByte := arr.pValue + DINT_TO_UDINT(item.diSize * i);	
+	
+	cmpResult := Tc2_System.MEMCMP(
+			n := DINT_TO_UDINT(item.diSize),
+			pBuf1 := ptrAllocatedBytes,
+			pBuf2 := ptrByte);
+			
+	IF cmpResult = 0 THEN
+		Tc2_System.MEMCPY(
+			destAddr := ptrByte,
+			n := DINT_TO_UDINT(item.diSize),
+			srcAddr := item.pValue);
+		EXIT;
+	END_IF
+END_FOR
+
+__DELETE(ptrAllocatedBytes);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetAtIndex" Id="{4e90c91b-dce8-0a78-1e55-30ac0855858c}">
+      <Declaration><![CDATA[METHOD SetAtIndex
+VAR_INPUT
+	arr		: ANY;
+	value	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ShiftDown" Id="{bf9c2e03-6302-0e64-05d0-eb3dbb49d451}">
+      <Declaration><![CDATA[// Shifts the array down, losing first element and clearing last element in the process.
+METHOD ShiftDown
+VAR_INPUT
+	arr		: ANY;
+	element	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+// Shift items by copying
+Tc2_System.MEMCPY(
+	destAddr := arr.pValue,
+	srcAddr := arr.pValue + DINT_TO_UDINT(element.diSize),
+	n := DINT_TO_UDINT(arr.diSize - element.diSize));
+
+// Clear last element
+Tc2_System.MEMSET(
+	fillByte := 0,
+	n := DINT_TO_UDINT(element.diSize),
+	destAddr := arr.pValue + DINT_TO_UDINT(arr.diSize - element.diSize));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ShiftUp" Id="{55cff527-a1ec-0ba7-3953-cd8958d2ceb2}">
+      <Declaration><![CDATA[// Shifts the array up, losing last element and clearing first element in the process.
+METHOD ShiftUp
+VAR_INPUT
+	arr		: ANY;
+	element	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
+	RETURN;
+END_IF
+
+// Shift items by copying
+Tc2_System.MEMCPY(
+	destAddr := arr.pValue + DINT_TO_UDINT(element.diSize),
+	srcAddr := arr.pValue,
+	n := DINT_TO_UDINT(arr.diSize - element.diSize));
+
+// Clear first element
+Tc2_System.MEMSET(
+	fillByte := 0,
+	n := DINT_TO_UDINT(element.diSize),
+	destAddr := arr.pValue);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateArrayVar" Id="{b9ef476c-b27f-0470-04c9-84ac8b60f534}">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateArrayVar : BOOL
+VAR_INPUT
+	arr	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateArrayVar := UDINT_TO_INT(arr.TypeClass) = IBaseLibrary.TypeClass.TYPE_ARRAY;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

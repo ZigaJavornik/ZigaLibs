@@ -17,15 +17,17 @@ VAR_INPUT
 END_VAR
 
 VAR
-	i	: dint;
+	arrayMaxIndex	: DINT;
+	i				: DINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-FOR i := 0 TO ArrayHelper.GetArrayMaxIndex(arrayIn := netId, dataType := netId[0]) BY 1 DO
+        <ST><![CDATA[arrayMaxIndex := ArrayHelper.GetMaxIndex(arr := netId, dataType := netId[0], startIndex := 0);
+
+FOR i := 0 TO arrayMaxIndex BY 1 DO
 	IF netId[i] <> 0 THEN
 		EXIT;
 	END_IF
-	IF i = ArrayHelper.GetArrayMaxIndex(arrayIn := netId, dataType := netId[0]) THEN
+	IF i = ArrayHelper.GetMaxIndex(arr := netId, dataType := netId[0], startIndex := 0) THEN
 		NetIdToString := '';
 		RETURN;
 	END_IF

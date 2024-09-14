@@ -22,12 +22,12 @@
     <Author>Ziga Javornik</Author>
     <Description>A collection of core objects for work with further libraries implementations.</Description>
     <LibraryCategories>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         <Version>1.0.0.0</Version>
         <DefaultName>ZigasLibs</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -37,17 +37,25 @@
       </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id xmlns="">{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
+      <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
     </SelectedLibraryCategories>
+    <DocFormat>
+    </DocFormat>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Ams\Helpers\AmsHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Ams\ITFs\I_RequiresAmsAddress.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
+    <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Array\Helpers\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
@@ -104,12 +112,17 @@
     <Compile Include="TESTS\Test suites\FB_AmsHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\Ams\ITFs" />
     <Folder Include="SOURCE\Ams\Helpers" />
+    <Folder Include="SOURCE\Array\Helpers" />
+    <Folder Include="SOURCE\Array\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />
     <Folder Include="SOURCE\File\ITFs" />
@@ -119,6 +132,7 @@
     <Folder Include="SOURCE\Logger\ITFs" />
     <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
+    <Folder Include="SOURCE\Aliases" />
     <Folder Include="SOURCE\String\Helpers" />
     <Folder Include="SOURCE\String\ITFs" />
     <Folder Include="SOURCE\String\POUs" />
@@ -206,39 +220,39 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFTESTSUITES</Key>
           <Value>1000</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
           <Value>100</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
           <Value>1000</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>LOGEXTENDEDRESULTS</Key>
           <Value>TRUE</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
+          <Value>TRUE</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>XUNITBUFFERSIZE</Key>
           <Value>65535</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>XUNITFILEPATH</Key>
           <Value>'C:\tcunit_xunit_testresults.xml'</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
           <Value>2000</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
           <Value>TIME#0ms</Value>
         </Parameter>
@@ -250,6 +264,11 @@
     <None Include="CORE.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryReference Include="Base Interfaces,newest,System">
+      <Namespace>IBaseLibrary</Namespace>
+    </LibraryReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

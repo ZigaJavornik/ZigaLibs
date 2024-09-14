@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_ArrayHelper_Tests" Id="{6e9b477f-91da-07b8-384b-0f33de518108}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ArrayHelper_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_GetArrayElementCount();
+Test02_GetArrayMaxIndex();
+Test03_InsertNumber();
+Test04_InsertString();
+Test05_InsertStruct();
+Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
+Test07_SetAtFirstEmptySlot();]]></ST>
+    </Implementation>
+    <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
+      <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
+VAR_INPUT
+END_VAR
+VAR
+	arr		: ARRAY[0..99] OF REAL;
+	arr2	: ARRAY[22..33] OF REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_GetArrayElementCount');
+
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := arr, dataType := arr[0]),
+	Expected := 100,
+	Message := 'Getting array element count failed!');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := arr2, dataType := arr2[22]),
+	Expected := 33 - 22 + 1,
+	Message := 'Getting array element count for array with non-zero start element index failed!');
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_GetArrayMaxIndex" Id="{bc1d8f1a-639c-0a77-144a-0a527e117e1d}">
+      <Declaration><![CDATA[METHOD Test02_GetArrayMaxIndex
+VAR_INPUT
+END_VAR
+VAR
+	arr		: ARRAY[0..99] OF REAL;
+	arr2	: ARRAY[22..33] OF REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_GetArrayMaxIndex');
+
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(arr := arr, dataType := arr[0], startIndex := 0),
+	Expected := 99,
+	Message := 'Getting array maximum index failed!');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(arr := arr2, dataType := arr2[22], startIndex := 22),
+	Expected := 33,
+	Message := 'Getting array maximum index for array with non-zero start element index failed!');
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_InsertNumber" Id="{0bc2a11d-75c0-04a1-3c2e-0d3eb1417ca6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test03_InsertNumber
+VAR_INPUT
+END_VAR
+
+VAR
+	i		: INT;
+	value	: INT := 99;
+	arr		: ARRAY [0..10] OF INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_InsertNumber');
+
+FOR i := 0 TO 10 BY 1 DO
+	arr[i] := i;
+END_FOR
+
+ArrayHelper.InsertAtStart(
+	arr := arr,
+	item := value);
+	
+AssertEquals_INT(
+	Expected := value,
+	Actual := arr[0],
+	Message := 'First item was not inserted properly!');
+	
+AssertEquals_INT(
+	Expected := 9,
+	Actual := arr[10],
+	Message := 'Last item was not removed from the array!!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_InsertString" Id="{df991e0c-a369-0719-2350-4b8343f2f03b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test04_InsertString
+VAR_INPUT
+END_VAR
+
+VAR
+	i		: INT;
+	value	: STRING := '9';
+	arr		: ARRAY [0..10] OF STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_InsertString');
+
+FOR i := 0 TO 10 BY 1 DO
+	arr[i] := INT_TO_STRING(i);
+END_FOR
+
+ArrayHelper.InsertAtStart(
+	arr := arr,
+	item := value);
+	
+AssertEquals_STRING(
+ 	Actual:= arr[0],
+	Expected := value,
+	Message := 'First item was not inserted properly!');
+	
+AssertEquals_STRING(
+	Expected := '9',
+	Actual := arr[10],
+	Message := 'Last item was not removed from the array!!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_InsertStruct" Id="{f4b22831-ae98-024d-016e-1c50385778ff}">
+      <Declaration><![CDATA[METHOD Test05_InsertStruct
+
+VAR
+	i		: INT;
+	value	: ST_FileProperties := (FileLocation := '99',FileName := '99');
+	arr		: ARRAY [0..10] OF ST_FileProperties;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_InsertStruct');
+
+FOR i := 0 TO 10 BY 1 DO
+	arr[i].FileLocation := INT_TO_STRING(i);
+	arr[i].FileName := INT_TO_STRING(i);
+END_FOR
+
+ArrayHelper.InsertAtStart(
+	arr := arr,
+	item := value);
+	
+AssertEquals(
+	Expected := value,
+	Actual := arr[0],
+	Message := 'First item was not inserted properly!');
+	
+AssertEquals_STRING(
+	Expected := '9',
+	Actual := arr[10].FileLocation,
+	Message := 'Last item was not removed from the array!');
+	
+AssertEquals_STRING(
+	Expected := '9',
+	Actual := arr[10].FileName,
+	Message := 'Last item was not removed from the array!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero" Id="{67ea1074-796a-03e4-1529-5e485181dbca}">
+      <Declaration><![CDATA[METHOD Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero
+VAR_INPUT
+END_VAR
+
+VAR
+	arr	: ARRAY[0..100] OF INT;
+	i	: int;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero');
+
+FOR i := 0 TO 100 BY 1 DO
+	arr[i] := i;
+END_FOR
+
+ArrayHelper.ShiftUp(
+	arr := arr,
+	element := arr[0]);
+
+AssertEquals_INT(
+	Actual := arr[0],
+	Expected := 0,
+	Message := 'Shifting up, first element is not correct!');
+	
+AssertEquals_INT(
+	Actual := arr[1],
+	Expected := 0,
+	Message := 'Shifting up, second element is not correct!');
+	
+AssertEquals_INT(
+	Actual := arr[2],
+	Expected := 1,
+	Message := 'Shifting up, third element is not correct!');
+	
+AssertEquals_INT(
+	Actual := arr[100],
+	Expected := 99,
+	Message := 'Shifting up, last element is not correct!');
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_SetAtFirstEmptySlot" Id="{378655a2-db0d-0d65-1026-2faa831ee346}">
+      <Declaration><![CDATA[METHOD Test07_SetAtFirstEmptySlot
+VAR_INPUT
+END_VAR
+
+VAR
+	arr	: ARRAY[0..69] OF T_ArrayIndexer;
+	valueToSet	: T_ArrayIndexer := 9999;
+	i	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_SetAtFirstEmptySlot');
+
+FOR i := 0 TO 30 BY 1 DO
+	arr[i] := i + 1;
+END_FOR
+
+ArrayHelper.SetAtFirstEmptySlot(
+	arr := arr,
+	item := valueToSet);
+
+FOR i := 0 TO 30 BY 1 DO
+	AssertEquals_dint(
+		Expected := i + 1,
+		Actual := arr[i],
+		Message := 'Setting first empty slot should not have changed non-empty fields!');
+END_FOR
+
+AssertEquals(
+	Expected := valueToSet,
+	Actual := arr[31],
+	Message := 'Setting first empty slot failed, first empty element differs!');
+	
+AssertEquals_DINT(
+	Expected := 0,
+	Actual := arr[32],
+	Message := 'Setting first empty slot failed, item after the inserted slot should be empty!');
+	
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

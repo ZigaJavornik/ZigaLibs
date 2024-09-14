@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Logger_Tests" Id="{56576e73-0b8d-04b4-2a1d-ddaf5d4df6a5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_LogError();
+Test_LogWarning();
+Test_LogInfo();
+Test_LogGeneric();]]></ST>
+    </Implementation>
+    <Method Name="Test_LogError" Id="{d8907491-afae-0e50-10f7-6c16a49476f3}">
+      <Declaration><![CDATA[METHOD Test_LogError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogGeneric" Id="{85c6ce0a-a15b-043a-2e4c-eb245e65cfdf}">
+      <Declaration><![CDATA[METHOD Test_LogGeneric
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogInfo" Id="{36be4fe7-4f92-0086-3d7c-e81a29d0db62}">
+      <Declaration><![CDATA[METHOD Test_LogInfo
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogWarning" Id="{4fe293bd-ef31-0f9e-0f9c-a610eddd16dc}">
+      <Declaration><![CDATA[METHOD Test_LogWarning
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
