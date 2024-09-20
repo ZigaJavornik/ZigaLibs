@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_Temperature" Id="{54220d98-1953-4332-8e57-dcc18aaafd02}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_Temperature :
+STRUCT
+	TemperatureSetpoint				: STRING	 := 'IN_SP_00';
+	BathTemperatureOutflow_01C		: STRING	 := 'IN_PV_00';
+	BathTemperatureOutflow_001C		: STRING	 := 'IN_PV_10';
+	QueryControlledTemperature		: STRING	 := 'IN_PV_01';
+	ExternalTemperature_Pt_C		: STRING	 := 'IN_PV_03';
+	ExternalTemperature_AnalogInput	: STRING	 := 'IN_PV_04';
+	ExternalTemperature_Pt_001_C	: STRING	 := 'IN_PV_13';
+	OvertemperatureTurnoffPoint_Tmax: STRING	 := 'IN_SP_03';
+	OutflowLimmitHigh				: STRING	 := 'IN_SP_04';
+	OutflowLimmitLow				: STRING	 := 'IN_SP_05';
+	SafetyModeTemperature 			: STRING	 := 'IN_SP_07';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

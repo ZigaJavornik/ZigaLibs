@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands_Pump" Id="{7108522c-e68a-4f62-866a-519edf0f5311}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_Pump :
+STRUCT
+	Stage	: STRING := 'OUT_SP_01_';	// Pump stage 1-6 or 1-8 (device specific)
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

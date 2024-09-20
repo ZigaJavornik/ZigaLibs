@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Bronkhorst_MassFlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Bronkhorst_MassFlowController EXTENDS ZigasLibs_Core.FB_HasInstanceName
+VAR_INPUT
+	enable			: BOOL;
+	flowSetpoint	: REAL;
+	readCoeList		: BOOL;
+	options			: ST_BronkhorstMassFlowController_Options;
+END_VAR
+
+VAR_OUTPUT
+	actualFlow		: REAL;
+	valvePosition	: REAL;
+END_VAR
+
+VAR
+	Inputs	AT %I*: ST_BronkhorstMassFlowController_Inputs;
+	Outputs	AT %Q* : ST_BronkhorstMassFlowController_Outputs;
+	
+
+	fMaxFlowPredicted	: REAL;
+	sGasTypePredicted	: STRING;
+	bFirstExecution		: BOOL := TRUE;
+	eReadParametersStep	: E_ParameterReadingStep;
+	RtrigReadCoeRequest	: Tc2_Standard.R_TRIG;
+	fbStringBuilder		: ZigasLibs_Core.FB_StringBuilderBase;
+	bCoeReadError		: BOOL;
+	iLogger				: ZigasLibs_Core.I_LoggerEx;
+END_VAR
+
+VAR CONSTANT
+
+	COE_DICTIONARY	: ST_BronkhorstMassFlowController_CoE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT enable THEN
+	Outputs.ControlByte := BOOL_TO_BYTE(FALSE);
+	Outputs.FlowSetpoint := 0;
+END_IF
+
+RtrigReadCoeRequest(CLK := readCoeList);
+IF bFirstExecution OR RtrigReadCoeRequest.Q THEN
+	iLogger.LogInfo(message := fbStringBuilder.Reset()
+		.AddString(str := 'Reading CoE parameters for instance $'')
+		.AddString(str := GetInstanceName())
+		.AddString(str := '$'.')
+		.Create());
+		
+	eReadParametersStep := E_ParameterReadingStep.GET_DEVICE_ETHERCAT_NAME;
+END_IF
+(*
+CASE eReadParametersStep OF
+	E_ParameterReadingStep.IDLE:
+		;
+	E_ParameterReadingStep.GET_DEVICE_ETHERCAT_NAME:
+		IF NOT bCoeReadError AND_THEN ZigasLibs_Core.EthercatHelper.GetBoxNameByAddress(
+			BoxAddress := Inputs.AmsAddr.port,
+			PlcRuntimeNetId := '',
+			EthercatMasterNetId := )
+END_IF*)]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{1fe8449f-b94f-0219-22c8-3649cc7cb3b5}" />
+    <Method Name="FB_init" Id="{452560b1-3dd5-07ef-1f9c-d7749fdaa339}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	maxFlow	: REAL;
+	gasType	: STRING;
+	logger	: ZigasLibs_Core.I_LoggerEx;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fMaxFlowPredicted := maxFlow;
+sGasTypePredicted := gasType;
+iLogger := logger;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadWriteError" Id="{7ddfda9e-1d40-07e1-298c-3f9564840c2a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ST_LaudaReadWriteError :
+STRUCT
+	SendCommand			: STRING(100);
+	ResponseErrorInfo	: E_LaudaResponseError;
+END_STRUCT
+END_TYPE
+
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

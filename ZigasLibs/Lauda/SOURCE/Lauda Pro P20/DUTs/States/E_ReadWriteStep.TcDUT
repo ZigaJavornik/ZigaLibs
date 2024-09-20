@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_ReadWriteStep" Id="{1bdffba7-d41b-0132-0591-708a664b5010}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ReadWriteStep :
+(
+	SEND,
+	AWAIT_RESPONSE
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

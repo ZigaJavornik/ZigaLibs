@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="AdsHelper" Id="{6d6b745e-a376-00e4-05e8-9f698802219e}" SpecialFunc="None">
+    <Declaration><![CDATA[// A helper class providing various helpful methods when working with ads data
+PROGRAM AdsHelper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetEthercatMasterIdFromNetIdString" Id="{d0b00449-c04d-050b-3761-41fbb72549f5}">
+      <Declaration><![CDATA[// Returns last part of the netId, which is the ID of the etherCAT master.
+METHOD PUBLIC GetEthercatMasterIdFromNetIdString : UDINT
+VAR_INPUT
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+
+VAR
+	sNetIdResult	: T_AmsNetID;
+	nMasterAddress	: UDINT;
+	nDotPosition	: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sNetIdResult := netId;
+nDotPosition := Tc2_Standard.FIND(sNetIdResult, '.');
+
+WHILE nDotPosition <> 0 DO
+	nDotPosition := Tc2_Standard.FIND(sNetIdResult, '.');
+	IF nDotPosition = 0 THEN
+		EXIT;
+	END_IF
+	sNetIdResult := Tc2_Standard.DELETE(STR := sNetIdResult, POS := 0, LEN := nDotPosition);
+END_WHILE
+
+GetEthercatMasterIdFromNetIdString := STRING_TO_UDINT(sNetIdResult);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="NetIdToString" Id="{6a8678c3-457e-04b0-30f5-773ba24b8108}">
+      <Declaration><![CDATA[// Converts netId of type <Tc2_System.T_AmsNetIdArr> to <T_AmsNetID>, which equates to <STRING(23)>.
+METHOD PUBLIC NetIdToString : T_AmsNetID
+VAR_INPUT
+	netId	: Tc2_System.T_AmsNetIdArr;	// NetId to be converted
+END_VAR
+
+VAR
+	arrayMaxIndex	: DINT;
+	i				: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[arrayMaxIndex := ArrayHelper.GetMaxIndex(
+	arr := netId, 
+	dataType := netId[0], 
+	startIndex := 0);
+
+FOR i := 0 TO arrayMaxIndex BY 1 DO
+	// If any element is not 0, exit and call the system function to convert
+	IF netId[i] <> 0 THEN
+		EXIT;
+	END_IF
+	// If reaching last element in the array, this means only 0s are present, indicating local netId - return empty string
+	IF i = ArrayHelper.GetMaxIndex(arr := netId, dataType := netId[0], startIndex := 0) THEN
+		NetIdToString := '';
+		RETURN;
+	END_IF
+END_FOR
+
+NetIdToString := Tc2_System.F_CreateAmsNetId(nIds := netId);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

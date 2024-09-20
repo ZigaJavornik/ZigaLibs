@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LaudaHelperTests" Id="{5faf94d7-691e-03a1-0f67-bb8801813ad7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaHelperTests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	fbLauda	: FB_LaudaPro_P20(8);
+	COMMAND_SUFFIX				: STRING := '$R$L';
+	SEND_COMMAND_RESPONSE_OK	: STRING := 'OK';
+	READ_COMMAND_RESPONSE_NOK	: STRING := 'ERR_'; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_AddSuffix();
+Test02_RemoveSuffix();
+Test03_ValidateReadCommandResponse();
+Test04_ValidateSendCommandResponse();
+Test05_ParseFault();
+Test06_ParseResponseError();]]></ST>
+    </Implementation>
+    <Method Name="test" Id="{617f9ff0-20ef-0663-1b45-95b96fe85d3a}">
+      <Declaration><![CDATA[METHOD test
+VAR_INPUT
+	tmp	: REFERENCE TO enum;
+END_VAR
+VAR
+	sTest	: STRING;	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sTest := TO_STRING(tmp);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test01_AddSuffix" Id="{57e38a39-631d-0734-2ce9-7cbe16cf498c}">
+      <Declaration><![CDATA[METHOD Test01_AddSuffix
+VAR_INPUT
+END_VAR
+VAR
+	noSuffix			: STRING := 'suffixMissing';
+	shouldHaveSuffix	: STRING;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_AddSuffix');
+
+shouldHaveSuffix := LaudaHelper.AddSuffix(sData := noSuffix);
+
+AssertEquals_STRING(
+	Actual := shouldHaveSuffix,
+	Expected := 'suffixMissing$R$L',
+	Message := 'Adding suffix to the command should result in $R$L added to the end of the given string!');
+	
+TcUnit.TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_RemoveSuffix" Id="{df7e5406-5315-02e5-3268-aabe9d04a2c6}">
+      <Declaration><![CDATA[METHOD Test02_RemoveSuffix
+VAR_INPUT
+END_VAR
+VAR
+	hasSuffix			: STRING := Tc2_Standard.CONCAT('iHaveSuffix', COMMAND_SUFFIX);
+	shouldHaveNoSuffix	: STRING;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_RemoveSuffix');
+
+shouldHaveNoSuffix := LaudaHelper.RemoveSuffix(sData := hasSuffix);
+
+AssertEquals_STRING(
+	Actual := shouldHaveNoSuffix,
+	Expected := 'iHaveSuffix',
+	Message := 'Removing suffix from the command should result in $R$L removed from the given string!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_ValidateReadCommandResponse" Id="{4b2c7154-abba-0039-331c-118b210ab9c7}">
+      <Declaration><![CDATA[METHOD Test03_ValidateReadCommandResponse
+VAR_INPUT
+END_VAR
+
+VAR
+	responseOk			: STRING := '55$R$L';
+	responseNok			: STRING := '55_ERR_4$R$L';
+	responseOkNoSuffix	: STRING := '55';
+	responseNokNoSuffix	: STRING := '55_ERR_8';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_ValidateReadCommandResponse');
+
+AssertTrue(
+	Condition := LaudaHelper.ValidateReadCommandResponse(responseOk),
+	Message := 'Message without any ERR_ and with suffix $R$L is a valid read response!');
+
+AssertFalse(
+	Condition := LaudaHelper.ValidateReadCommandResponse(responseNok),
+	Message :=  '55_ERR_4$R$L is considered invalid due to ERR_!');	
+	
+AssertFalse(
+	Condition := LaudaHelper.ValidateReadCommandResponse(responseOkNoSuffix),
+	Message :=  '55 is considered invalid due to no suffix ($R$L)!');	
+
+AssertFalse(
+	Condition := LaudaHelper.ValidateReadCommandResponse(responseNokNoSuffix),
+	Message :=  '55_ERR_8 is considered invalid due to ERR_ and no suffix ($R$L)!');
+		
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_ValidateSendCommandResponse" Id="{288e4caa-c716-0e2a-3242-a4ff786f141e}">
+      <Declaration><![CDATA[METHOD Test04_ValidateSendCommandResponse
+VAR_INPUT
+END_VAR
+
+VAR
+	responseOk			: STRING := 'OK$R$L';
+	responseOkNoSuffix	: STRING := 'OK';
+	responseNok			: STRING := '__$R$L';
+	responseNokNoSuffix	: STRING := '__';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_ValidateSendCommandResponse');
+
+AssertTrue(
+	Condition := LaudaHelper.ValidateSendCommandResponse(responseOk),
+	Message := 'OK$R$L should be a valid response!');
+	
+AssertFalse(
+	Condition := LaudaHelper.ValidateSendCommandResponse(responseOkNoSuffix),
+	Message := 'OK is invalid response due to missing suffix in the response string!');	
+
+AssertFalse(
+	Condition := LaudaHelper.ValidateSendCommandResponse(responseNok),
+	Message := '__$R$L is invalid response due to missing OK in the response string!');
+	
+AssertFalse(
+	Condition := LaudaHelper.ValidateSendCommandResponse(responseNokNoSuffix),
+	Message := '__ is invalid response due to missing OK and missing suffix in the response string!');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_ParseFault" Id="{ba55a42c-b389-070a-21af-d582ebc6c842}">
+      <Declaration><![CDATA[METHOD Test05_ParseFault
+VAR_INPUT
+END_VAR
+VAR
+	laudaFaultsExpected	: ST_LaudaFaults;
+	laudaFaultsActual	: ST_LaudaFaults;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_ParseFault');
+(* Fault is detected by looking at positions in the response string with the 7 digit value
+XXXXXXX, if any of the valu is not 0, it inidicates the fault is active for that particular fault index
+1 -> Error
+2 -> Alarm
+3 -> Warning
+4 -> Overtemp
+5 -> sublevel
+6 -> higherLevel
+7 -> ExternalControlValueMissing*)
+
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0000000$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0000000$R$L should have no faults active!');
+	
+laudaFaultsExpected.Error := TRUE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '1000000$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '1000000$R$L should have Error fault set to TRUE!');
+	
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := TRUE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0100000$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0100000$R$L should have Alarm fault set to TRUE!');
+	
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := TRUE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0010000$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '00100000$R$L should have Warning fault set to TRUE!');
+
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := TRUE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0001000$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0001000$R$L should have Overtemp fault set to TRUE!');	
+	
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := TRUE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0000100$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0000100$R$L should have Sublevel fault set to TRUE!');	
+
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := TRUE;
+laudaFaultsExpected.ExternalControlValueMissing := FALSE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0000010$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0000010$R$L should have HigherLevel fault set to TRUE!');	
+	
+laudaFaultsExpected.Error := FALSE;
+laudaFaultsExpected.Alarm := FALSE;
+laudaFaultsExpected.Warning := FALSE;
+laudaFaultsExpected.Overtemp := FALSE;
+laudaFaultsExpected.Sublevel := FALSE;
+laudaFaultsExpected.HigherLevel := FALSE;
+laudaFaultsExpected.ExternalControlValueMissing := TRUE;
+laudaFaultsActual := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := '0000001$R$L');
+AssertEquals(
+	Expected := laudaFaultsExpected,
+	Actual := laudaFaultsActual,
+	Message := '0000001$R$L should have ExternalControlValueMissing fault set to TRUE!');
+
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_ParseResponseError" Id="{d229e486-adcc-008c-2705-f1f0203ce80d}">
+      <Declaration><![CDATA[METHOD Test06_ParseResponseError
+VAR_INPUT
+END_VAR
+
+VAR
+	WrongEntry	 								: STRING := 'ERR_2';
+	WrongCommand								: STRING := 'ERR_3';
+	SyntaxError	 								: STRING := 'ERR_5';
+	ImpermissableValue	 						: STRING := 'ERR_6';
+	ModuleOrValueNotAvailable					: STRING := 'ERR_8';
+	AllSegmentsInTheProgrammerAreOccupied		: STRING := 'ERR_30';
+	SetpointNotPossible_AnalogSetpointIsUsed	: STRING := 'ERR_31';
+	ExternalTemperatureProbeMissing	 			: STRING := 'ERR_33';
+	AnalogValueNotPresent	 					: STRING := 'ERR_34';
+	SafetyModeCantBeStarted_ItIsNotEnabled	 	: STRING := 'ERR_35';
+	CantSetValue_ProgrammerRunningOrPaused	 	: STRING := 'ERR_36';
+	CantStartProgrammer_AnalogSetpointIsUsed	: STRING := 'ERR_37';
+	CantActivateFromSafetyMode	 				: STRING := 'ERR_38';
+	
+	parsedResponseActual	: E_LaudaResponseError;
+	parsedResponseExpected	: E_LaudaResponseError;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_ParseResponseError');
+
+parsedResponseActual := LaudaHelper.ParseResponseError(WrongEntry);
+parsedResponseExpected := E_LaudaResponseError.WRONG_ENTRY;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', WrongEntry));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(WrongCommand);
+parsedResponseExpected := E_LaudaResponseError.WRONG_COMMAND;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', WrongCommand));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(SyntaxError);
+parsedResponseExpected := E_LaudaResponseError.SYNTAX_ERROR;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', SyntaxError));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(ImpermissableValue);
+parsedResponseExpected := E_LaudaResponseError.IMPERMISSABLE_VALUE;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', ImpermissableValue));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(ModuleOrValueNotAvailable);
+parsedResponseExpected := E_LaudaResponseError.MODULE_OR_VALUE_NOT_AVAILABLE;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', ModuleOrValueNotAvailable));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(AllSegmentsInTheProgrammerAreOccupied);
+parsedResponseExpected := E_LaudaResponseError.ALL_SEGMENTS_IN_THE_PROGRAMMER_OCCUPIED;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', AllSegmentsInTheProgrammerAreOccupied));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(SetpointNotPossible_AnalogSetpointIsUsed);
+parsedResponseExpected := E_LaudaResponseError.SETPOINT_NOT_POSSIBLE_WITH_ANALOG_SETPOINT_USED;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', SetpointNotPossible_AnalogSetpointIsUsed));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(ExternalTemperatureProbeMissing);
+parsedResponseExpected := E_LaudaResponseError.EXTERNAL_TEMPERATURE_PROBE_MISSING;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', ExternalTemperatureProbeMissing));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(AnalogValueNotPresent);
+parsedResponseExpected := E_LaudaResponseError.ANALOG_VALUE_NOT_PRESENT;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', AnalogValueNotPresent));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(SafetyModeCantBeStarted_ItIsNotEnabled);
+parsedResponseExpected := E_LaudaResponseError.SAFETY_MODE_CANT_START_IF_NOT_ENABLED;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', SafetyModeCantBeStarted_ItIsNotEnabled));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(CantSetValue_ProgrammerRunningOrPaused);
+parsedResponseExpected := E_LaudaResponseError.CANT_SET_VALUE_PROGRAMMER_RUNNING_OR_PAUSED;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', CantSetValue_ProgrammerRunningOrPaused));
+
+
+parsedResponseActual := LaudaHelper.ParseResponseError(CantStartProgrammer_AnalogSetpointIsUsed);
+parsedResponseExpected := E_LaudaResponseError.CANT_START_PROGRAMMER_ANALOG_SETPOINT_USED;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', CantStartProgrammer_AnalogSetpointIsUsed));
+
+parsedResponseActual := LaudaHelper.ParseResponseError(CantActivateFromSafetyMode);
+parsedResponseExpected := E_LaudaResponseError.CANT_ACTIVATE_FROM_SAFETY_MODE;
+AssertEquals(
+	Actual := parsedResponseActual,
+	Expected := parsedResponseExpected,
+	Message := Tc2_Standard.CONCAT('Invalid value returned for response with', CantActivateFromSafetyMode));
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

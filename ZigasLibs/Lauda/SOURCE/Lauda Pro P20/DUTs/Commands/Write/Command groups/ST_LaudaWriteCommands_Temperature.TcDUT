@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands_Temperature" Id="{3ca9cdce-1981-4ade-bfa8-37abba91d15e}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_Temperature :
+STRUCT
+	TemperatureSet				: STRING := 'OUT_SP_00_';
+	ActualExternalTemperature	: STRING := 'OUT_PV_05_';
+	OutflowLimmitHigh			: STRING := 'OUT_SP_04_';
+	OutflowLimmitLow			: STRING := 'OUT_SP_05_';
+	SafetyModeTemperature		: STRING := 'OUT_SP_07_';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="EthercatHelper" Id="{18c8e82e-8363-065e-3a67-80a80ad75944}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+PROGRAM EthercatHelper
+VAR
+	fbReadDeviceName	: Tc2_IoFunctions.IOF_GetBoxNameByAddr;
+	nMasterId			: UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetBoxNameByAddress" Id="{05a15158-8102-075e-26df-9833faf2f947}">
+      <Declaration><![CDATA[METHOD PUBLIC GetBoxNameByAddress : T_MaxString
+VAR_INPUT
+	PlcRuntimeNetId		: Tc2_System.T_AmsNetID; // NetId of the PLC where the devuce is located
+	EthercatMasterNetId	: Tc2_System.T_AmsNetID; // NetId of the EtherCAT master where the box is located under
+	BoxAddress			: UINT;
+	outError			: REFERENCE TO BOOL;	// If an error occurs while executing, method will provide the error flag here. This is a pointer to YOUR boolean error variable.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbReadDeviceName(
+	NETID := AdsHelper.NetIdToString(netId := PlcRuntimeNetId),
+	DEVICEID := AdsHelper.GetEthercatMasterIdFromNetIdString(netId := EthercatMasterNetId),
+	BOXADDR := BoxAddress,
+	START := NOT fbReadDeviceName.BUSY);
+	
+outError := fbReadDeviceName.ERR;
+GetBoxNameByAddress := fbReadDeviceName.BOXNAME;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

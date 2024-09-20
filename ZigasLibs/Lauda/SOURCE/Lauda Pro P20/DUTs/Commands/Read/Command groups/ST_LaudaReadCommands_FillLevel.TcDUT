@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_FillLevel" Id="{defd4625-a0d9-4582-8e1d-8b471f90af4c}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_FillLevel :
+STRUCT
+	BathLevel	: STRING := 'IN_PV_05';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

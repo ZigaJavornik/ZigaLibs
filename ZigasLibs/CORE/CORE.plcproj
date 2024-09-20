@@ -17,8 +17,8 @@
     <Company>Ziga</Company>
     <Title>Core</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
-    <DefaultNamespace>ZigasLibs_Core</DefaultNamespace>
-    <Placeholder>ZigasLibs_Core</Placeholder>
+    <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
+    <Placeholder>ZigaLibs_Core</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>A collection of core objects for work with further libraries implementations.</Description>
     <LibraryCategories>
@@ -41,21 +41,23 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Ams\Helpers\AmsHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Ams\ITFs\I_RequiresAmsAddress.TcIO">
+    <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Array\Helpers\ArrayHelper.TcPOU">
+    <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\DUTs\ST_ErrorSource.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Errors\FB_ErrorSource.TcPOU">
@@ -67,7 +69,16 @@
     <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\ST_ErrorSource.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\AdsHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EthercatHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\I_RequiresAmsAddress.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\ST_CoeEntry.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
@@ -76,31 +87,34 @@
     <Compile Include="SOURCE\File\DUTs\ST_FileProperties.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\Helpers\FileHelper.TcPOU">
+    <Compile Include="SOURCE\File\FileHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\ITFs\I_FileProperties.TcIO">
+    <Compile Include="SOURCE\File\I_FileProperties.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\ITFs\I_Logger.TcIO">
+    <Compile Include="SOURCE\Logger\I_Logger.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\ITFs\I_LoggerEx.TcIO">
+    <Compile Include="SOURCE\Logger\I_LoggerEx.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\Helpers\StringHelper.TcPOU">
+    <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\ITFs\I_StringBuilder.TcIO">
+    <Compile Include="SOURCE\String\FB_StringBuilderBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\POUs\FB_StringBuilderBase.TcPOU">
+    <Compile Include="SOURCE\String\I_StringBuilder.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\POUs\StringConstants.TcPOU">
+    <Compile Include="SOURCE\String\StringConstants.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\StringHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Time\DUTs\E_TimeFormat.TcDUT">
@@ -109,10 +123,15 @@
     <Compile Include="SOURCE\Time\DUTs\ST_CurrentSystemTimeInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Time\Helpers\TimeHelper.TcPOU">
+    <Compile Include="SOURCE\Time\FB_DateTimeToStringConverter.TcPOU">
       <SubType>Code</SubType>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
-    <Compile Include="SOURCE\Time\POUs\FB_LocalSystemTimeProvider.TcPOU">
+    <Compile Include="SOURCE\Time\FB_LocalSystemTimeProvider.TcPOU">
+      <SubType>Code</SubType>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
+    </Compile>
+    <Compile Include="SOURCE\Time\I_DateTimeToStringConverter.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -127,41 +146,44 @@
     <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_DateTimeToStringConverter_Tests.TcPOU">
+      <SubType>Code</SubType>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\Ams\ITFs" />
-    <Folder Include="SOURCE\Ams\Helpers" />
-    <Folder Include="SOURCE\Array\Helpers" />
     <Folder Include="SOURCE\Array\DUTs" />
+    <Folder Include="SOURCE\Errors\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />
-    <Folder Include="SOURCE\File\ITFs" />
-    <Folder Include="SOURCE\File\Helpers" />
     <Folder Include="SOURCE\Logger" />
-    <Folder Include="SOURCE\Ams" />
-    <Folder Include="SOURCE\Logger\ITFs" />
     <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Aliases" />
     <Folder Include="SOURCE\Errors" />
-    <Folder Include="SOURCE\String\Helpers" />
-    <Folder Include="SOURCE\String\ITFs" />
-    <Folder Include="SOURCE\String\POUs" />
+    <Folder Include="SOURCE\Beckhoff" />
+    <Folder Include="SOURCE\DataType" />
+    <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
-    <Folder Include="SOURCE\Time\Helpers" />
     <Folder Include="SOURCE\Time\DUTs" />
-    <Folder Include="SOURCE\Time\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="Tc2_EtherCAT">
+      <DefaultResolution>Tc2_EtherCAT, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_EtherCAT</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_IoFunctions">
+      <DefaultResolution>Tc2_IoFunctions, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_IoFunctions</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Standard</Namespace>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -192,7 +214,6 @@
           <Value>FALSE</Value>
         </Parameter>
       </Parameters>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -223,12 +244,10 @@
         </Parameter>
       </Parameters>
       <Namespace>Tc2_Utilities</Namespace>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
@@ -271,6 +290,7 @@
         </Parameter>
       </Parameters>
       <Namespace>TcUnit</Namespace>
+      <Condition>UnitTests</Condition>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

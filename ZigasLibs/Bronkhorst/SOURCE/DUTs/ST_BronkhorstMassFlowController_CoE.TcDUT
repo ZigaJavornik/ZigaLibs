@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_BronkhorstMassFlowController_CoE" Id="{07592a42-9fc5-0eb9-1f52-2c09efd9255d}">
+    <Declaration><![CDATA[// Contains CoE indexes and sub indexes for Bronkhorst EtherCAT mass flow controller
+TYPE ST_BronkhorstMassFlowController_CoE :
+STRUCT
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

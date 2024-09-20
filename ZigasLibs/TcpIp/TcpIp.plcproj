@@ -1,0 +1,257 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{af58e887-5514-4cde-89b6-ca58f29477ce}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <Released>false</Released>
+    <CombineIds>true</CombineIds>
+    <Name>TcpIp</Name>
+    <ProgramVersion>3.1.4024.0</ProgramVersion>
+    <Application>{aa0bc09d-bed0-4370-bfa9-19022431929d}</Application>
+    <TypeSystem>{7a770813-4cfd-4087-b1c9-27b9bb232ca4}</TypeSystem>
+    <Implicit_Task_Info>{cbba6d57-8eb6-4a3a-8db0-0c7c4e87bbda}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{9e6222ee-c4c9-4a32-b197-5c9668d32f2d}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{9b6c4fe7-d2be-4585-a684-d4f214dfce80}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{c491a77c-4145-4306-8ed1-01557af11e68}</LibraryReferences>
+    <Company>Ziga</Company>
+    <Title>TcpIp</Title>
+    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <LibraryCategories>
+      <LibraryCategory xmlns="">
+        <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        <Version>1.0.0.0</Version>
+        <DefaultName>ZigasLibs</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Core</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Comm</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Vendors</DefaultName>
+      </LibraryCategory>
+    </LibraryCategories>
+    <SelectedLibraryCategories>
+      <Id xmlns="">{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
+    </SelectedLibraryCategories>
+    <DefaultNamespace>ZigaLibs_TcpIp</DefaultNamespace>
+    <Author>Žiga Javornik</Author>
+    <Placeholder>ZigaLibs_TcpIp</Placeholder>
+    <Description>TcpIp communication protocol implementation and various encapsulations of already existing system functions.</Description>
+    <DocFormat>
+    </DocFormat>
+    <CompilerDefines>
+    </CompilerDefines>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="SOURCE\TcpIp\DUTs\E_SocketReceiveState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\TcpIp\DUTs\E_SocketSendState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestsTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\PRG_TESTS.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_SUT_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GVLs" />
+    <Folder Include="SOURCE" />
+    <Folder Include="SOURCE\TcpIp" />
+    <Folder Include="SOURCE\TcpIp\DUTs" />
+    <Folder Include="SOURCE\TcpIp\POUs" />
+    <Folder Include="TESTS\Test suites" />
+    <Folder Include="TESTS" />
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="Tc2_Standard">
+      <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Standard</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_UPPER_BOUND</Key>
+          <Value>15</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_EXP</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_ADDRESS</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_COMMENT</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_OUTSTRING</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_SHOW_VALID_ITEMS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_TcpIp">
+      <DefaultResolution>Tc2_TcpIp, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_TcpIp</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_MAXUDP_BUFFSIZE</Key>
+          <Value>16#2000</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_HOSTNAME_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_CERTIFICATE_PATH_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_KEY_PASSWORD_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_PSK_IDENTITY_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_MAX_PSK_KEY_SIZE</Key>
+          <Value>128</Value>
+        </Parameter>
+      </Parameters>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Module">
+      <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
+          <Value>100</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>LOGEXTENDEDRESULTS</Key>
+          <Value>TRUE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITENABLEPUBLISH</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITBUFFERSIZE</Key>
+          <Value>65535</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>2000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#0ms</Value>
+        </Parameter>
+      </Parameters>
+      <Condition>UnitTests</Condition>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TcpIp.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+        <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
+        <o>
+          <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
+        <o>
+          <v n="Name">"{29BD8D0C-3586-4548-BB48-497B9A01693F}"</v>
+          <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+            <v>Rules</v>
+            <o>
+              <v n="Name">"Rules"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+          </d>
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
+        <o>
+          <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>ActiveVisuProfile</v>
+            <v>IR0whWr8bwfwBwAAiD2qpQAAAABVAgAA37x72QAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDBUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgA0AC4ANwAFFlAAcgBvAGYAaQBsAGUARABhAHQAYQAGTHsAMQA2AGUANQA1AGIANgAwAC0ANwAwADQAMwAtADQAYQA2ADMALQBiADYANQBiAC0ANgAxADQANwAxADMAOAA3ADgAZAA0ADIAfQAHEkwAaQBiAHIAYQByAGkAZQBzAAhMewAzAGIAZgBkADUANAA1ADkALQBiADAANwBmAC0ANABkADYAZQAtAGEAZQAxAGEALQBhADgAMwAzADUANgBhADUANQAxADQAMgB9AAlMewA5AGMAOQA1ADgAOQA2ADgALQAyAGMAOAA1AC0ANAAxAGIAYgAtADgAOAA3ADEALQA4ADkANQBmAGYAMQBmAGUAZABlADEAYQB9AAoOVgBlAHIAcwBpAG8AbgALBmkAbgB0AAwKVQBzAGEAZwBlAA0KVABpAHQAbABlAA4aVgBpAHMAdQBFAGwAZQBtAE0AZQB0AGUAcgAPDkMAbwBtAHAAYQBuAHkAEAxTAHkAcwB0AGUAbQARElYAaQBzAHUARQBsAGUAbQBzABIwVgBpAHMAdQBFAGwAZQBtAHMAUwBwAGUAYwBpAGEAbABDAG8AbgB0AHIAbwBsAHMAEyhWAGkAcwB1AEUAbABlAG0AcwBXAGkAbgBDAG8AbgB0AHIAbwBsAHMAFCRWAGkAcwB1AEUAbABlAG0AVABlAHgAdABFAGQAaQB0AG8AcgAVIlYAaQBzAHUATgBhAHQAaQB2AGUAQwBvAG4AdAByAG8AbAAWFHYAaQBzAHUAaQBuAHAAdQB0AHMAFwxzAHkAcwB0AGUAbQAYGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABkmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAaCGIAbwBvAGwAGyJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAHEx7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHRxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHhRQAGwAdQBnAGkAbgBHAHUAaQBkAB8WUwB5AHMAdABlAG0ALgBHAHUAaQBkACBIYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIRRVAHAAZABhAHQAZQBJAG4AZgBvACJMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACMOVQBwAGQAYQB0AGUAcwAkTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAlTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAmFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAnVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACgQTABpAGIAVABpAHQAbABlACkUTABpAGIAQwBvAG0AcABhAG4AeQAqHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACs4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQAsEnYAaQBzAHUAZQBsAGUAbQBzAC1INgBjAGIAMQBjAGQAZQAxAC0AZAA1AGQAYwAtADQAYQAzAGIALQA5ADAANQA0AC0AMgAxAGYAYQA3ADUANgBhADMAZgBhADQALihJAG4AdABlAHIAZgBhAGMAZQBWAGUAcgBzAGkAbwBuAEkAbgBmAG8AL0x7AGMANgAxADEAZQA0ADAAMAAtADcAZgBiADkALQA0AGMAMwA1AC0AYgA5AGEAYwAtADQAZQAzADEANABiADUAOQA5ADYANAAzAH0AMBhNAGEAagBvAHIAVgBlAHIAcwBpAG8AbgAxGE0AaQBuAG8AcgBWAGUAcgBzAGkAbwBuADIMTABlAGcAYQBjAHkAMzBMAGEAbgBnAHUAYQBnAGUATQBvAGQAZQBsAFYAZQByAHMAaQBvAG4ASQBuAGYAbwA0MEwAbwBhAGQATABpAGIAcgBhAHIAaQBlAHMASQBuAHQAbwBQAHIAbwBqAGUAYwB0ADUaQwBvAG0AcABhAHQAaQBiAGkAbABpAHQAeQDQAAIaA9ADAS0E0AUGGgfQBwgaAUUHCQjQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtDtAPAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60BAAAA0A0BLRHQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0S0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAUAAAA0AwLrQIAAADQDQEtE9APAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAAAAAANAMC60CAAAA0A0BLRTQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0V0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtFtAPAS0X0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60EAAAA0A0BLRjQDwEtENAZGq0BRRscAdAAHBoCRR0LBAMAAAAFAAAADQAAAAAAAADQHh8tINAhIhoCRSMkAtAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAAAAANADAS0n0CgBLRHQKQEtENAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAQAAANADAS0n0CgBLRHQKQEtEJoqKwFFAAEC0AABLSzQAAEtF9AAHy0t0C4vGgPQMAutAQAAANAxC60XAAAA0DIarQDQMy8aA9AwC60CAAAA0DELrQMAAADQMhqtANA0Gq0A0DUarQA=</v>
+          </d>
+        </o>
+      </d>
+      <d n="Values" t="Hashtable" />
+    </o>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

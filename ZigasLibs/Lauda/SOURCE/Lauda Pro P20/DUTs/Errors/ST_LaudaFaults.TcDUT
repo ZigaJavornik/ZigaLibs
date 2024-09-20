@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaFaults" Id="{ea70753c-2739-0c51-30c9-b15dc3a5c3a1}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ST_LaudaFaults :
+STRUCT
+	Error						: BOOL;
+	Alarm						: BOOL;
+	Warning						: BOOL;
+	Overtemp					: BOOL;
+	Sublevel					: BOOL;
+	HigherLevel					: BOOL;
+	ExternalControlValueMissing	: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

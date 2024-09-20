@@ -1,0 +1,561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
+    <Declaration><![CDATA[// A function block containing multiple file handling methods.
+// For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
+FUNCTION_BLOCK FB_FileHandler EXTENDS ZigasLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
+
+VAR
+	_fileHandle		: UINT;
+	_fileProperties	: ZigasLibs_Core.ST_FileProperties;
+	_error			: BOOL;
+	_amsAddress		: Tc2_System.ST_AmsAddr;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="01_Public" Id="{a901709e-65ff-02ba-1882-954c90422ffe}">
+      <Folder Name="Methods" Id="{034eb1a8-371f-0bc2-0a83-68bfc92ab6ab}" />
+      <Folder Name="Properties" Id="{5388ddf0-eac1-06cd-1fbf-7a74eaf61001}" />
+    </Folder>
+    <Folder Name="02_Private" Id="{584ecc35-957c-0307-1ab8-e432c95fe82c}">
+      <Folder Name="Methods" Id="{261ded91-11d8-0a68-327b-879e68457faa}" />
+      <Folder Name="Properties" Id="{396770d2-ec2c-0c1a-0123-ad5c609c31f5}" />
+    </Folder>
+    <Property Name="AmsAddress" Id="{aa2c0e77-cb1f-05b3-0b95-3148b235b704}" FolderPath="01_Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets the Ams address structure*)
+PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
+]]></Declaration>
+      <Get Name="Get" Id="{de2f0481-ed4f-097b-2c1d-b66092ab0976}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AmsAddress ref= _amsAddress;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8db19588-505e-0ad9-03c8-3a137afc80b1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_amsAddress := AmsAddress;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Close" Id="{0ec740c9-72a4-0493-3594-94814e1098ab}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[(* Closes the file (if opened). Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD PRIVATE Close : BOOL
+
+VAR_INST
+	fbFileClose			: Tc2_System.FB_FileClose;
+	nCloseFileState		: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_CLOSE_START 		: UINT := 0;
+	FILE_CLOSE_WAIT_BUSY	: UINT := 10;
+	FILE_CLOSE_DONE			: UINT := 20;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.HandleCreated = FALSE THEN
+	Close := TRUE;
+	RETURN;
+END_IF
+
+_error := _error OR fbFileClose.bError;
+
+CASE nCloseFileState OF
+	FILE_CLOSE_START:
+		fbFileClose(bExecute := FALSE);
+		fbFileClose(bExecute := TRUE, hFile := _fileHandle);
+		nCloseFileState := FILE_CLOSE_WAIT_BUSY;
+		
+	FILE_CLOSE_WAIT_BUSY:
+		fbFileClose(bExecute := FALSE);
+		IF NOT fbFileClose.bBusy AND NOT fbFileClose.bError THEN
+			nCloseFileState := FILE_CLOSE_DONE;
+		END_IF
+
+	FILE_CLOSE_DONE:
+		Close := TRUE;
+		_fileHandle := 0;
+		nCloseFileState := FILE_CLOSE_START;
+END_CASE
+
+_error := _error OR fbFileClose.bError;
+IF fbFileClose.bError THEN
+	_errorSource.ErrorCode := fbFileClose.nErrId;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Creates the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Create : BOOL
+VAR_INPUT
+	(* If file already exists, it will be deleted and crated once again (content will be lost!)*)
+	bOverwrite	: BOOL;
+END_VAR
+
+VAR_INST
+	nFileCreateState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_CREATE_STATE_START					: UINT := 0;
+	FILE_CREATE_STATE_OVERWRITE_OR_CREATE	: UINT := 10;
+	FILE_CREATE_STATE_WAIT_DONE				: UINT := 20;
+	FILE_CREATE_STATE_DONE					: UINT := 30;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nFileCreateState OF
+	FILE_CREATE_STATE_START:
+		nFileCreateState := FILE_CREATE_STATE_OVERWRITE_OR_CREATE;
+		
+	FILE_CREATE_STATE_OVERWRITE_OR_CREATE:
+		IF bOverwrite THEN
+			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
+				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
+			END_IF
+		ELSE
+			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_APPEND) THEN
+				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
+			END_IF
+		END_IF
+		
+	FILE_CREATE_STATE_WAIT_DONE:
+		IF THIS^.Close() THEN
+			nFileCreateState := FILE_CREATE_STATE_DONE;
+		END_IF
+
+	FILE_CREATE_STATE_DONE:
+		nFileCreateState := FILE_CREATE_STATE_START;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Delete" Id="{f911ae8b-dfd7-01f7-2a6d-d94850bdc984}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Deletes the file, if it exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Delete : BOOL
+
+VAR_INST
+	fbFileDelete		: Tc2_System.FB_FileDelete;
+	FtrigDeleteFinished	: Tc2_Standard.F_TRIG;
+	bCheckIfFileExists	: BOOL;
+	bFileExists			: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileDelete(
+	bExecute := NOT fbFileDelete.bBusy,
+	sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''));
+	
+FtrigDeleteFinished(CLK := fbFileDelete.bBusy);
+IF FtrigDeleteFinished.Q THEN
+	fbFileDelete(bExecute := FALSE);
+	Delete := TRUE;
+END_IF
+
+_error := _error OR fbFileDelete.bError;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Error" Id="{bbad0e32-6daa-0a76-0a27-61712e257d88}" FolderPath="01_Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets the error state, if any of the functions failed.*)
+PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{5168048e-7c3f-06a9-0acd-c39fff130fa4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Exists" Id="{005d094e-7014-05a1-0ced-6d59d6885282}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Checks if the file exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Exists : BOOL
+VAR_INPUT
+	(* When mehod is finished, the variable provided here will have the result, TRUE if file exists, FALSE if not.*)
+	refFileExists	: REFERENCE TO BOOL;
+END_VAR
+
+VAR_INST
+	fbFileExists			: Tc2_Utilities.FB_EnumFindFileEntry := (tTimeout := T#5S);
+	nCheckFileExistState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	FILE_EXIST_STATE_PREPARE	: UINT := 0;
+	FILE_EXIST_STATE_START		: UINT := 10;
+	FILE_EXIST_STATE_CHECK		: UINT := 20;
+	FILE_EXIST_STATE_DONE		: UINT := 30;
+	FILE_EXIST_STATE_ERROR		: uint := 9999;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nCheckFileExistState OF
+	FILE_EXIST_STATE_PREPARE:
+		fbFileExists(bExecute := FALSE, eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_First);
+		refFileExists := FALSE;
+		nCheckFileExistState := FILE_EXIST_STATE_START;
+
+	FILE_EXIST_STATE_START:
+		fbFileExists(bExecute := TRUE,
+			sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
+			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId));
+		nCheckFileExistState := FILE_EXIST_STATE_CHECK;
+	
+	FILE_EXIST_STATE_CHECK:
+		fbFileExists(bExecute := FALSE);
+		IF NOT fbFileExists.bBusy THEN
+			IF NOT fbFileExists.bError THEN
+				IF fbFileExists.stFindFile.sFileName = _fileProperties.FileName THEN
+					refFileExists := TRUE;
+					nCheckFileExistState := FILE_EXIST_STATE_DONE;
+				END_IF	
+				IF NOT fbFileExists.bEOE THEN
+					fbFileExists.eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_Next;
+				ELSE
+					refFileExists := FALSE;
+					nCheckFileExistState := FILE_EXIST_STATE_DONE;
+				END_IF
+			ELSE
+				nCheckFileExistState := FILE_EXIST_STATE_ERROR;
+			END_IF
+		END_IF
+	
+	FILE_EXIST_STATE_DONE:
+		Exists := TRUE;
+		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
+		
+	FILE_EXIST_STATE_ERROR:
+		_errorSource.ErrorCode := fbFileExists.nErrID;
+		nCheckFileExistState := FILE_EXIST_STATE_DONE;
+		refFileExists := FALSE;
+END_CASE
+
+_error := _error OR fbFileExists.bError;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}" FolderPath="01_Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets various file properties*)
+PROPERTY FileProperties : REFERENCE TO ZigasLibs_Core.ST_FileProperties
+]]></Declaration>
+      <Get Name="Get" Id="{ac218c70-be3b-08df-3b3c-bd233df4aa85}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FileProperties ref= _fileProperties;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{4b6e007e-4413-0a84-2640-e0e33b3e0504}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fileProperties := FileProperties;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="HandleCreated" Id="{06b71810-8ae3-05fa-217b-930c580da831}" FolderPath="02_Private\Properties\">
+      <Declaration><![CDATA[(* Gets the state of the file handle - if file is opened and handle is created returns TRUE.*)
+PROPERTY PRIVATE HandleCreated : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{6fa4c1ea-f251-0fbb-076a-68693a4f77d3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[HandleCreated := _fileHandle <> 0;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Open" Id="{d86cbe39-6556-0969-3e02-0bf0863a7c05}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD PRIVATE Open : BOOL
+VAR_INPUT
+	mode	: ZigasLibs_Core.E_FileOpenMode;	// Mode in which the file is opened
+END_VAR
+
+VAR_INST
+	fbFileOpen	: Tc2_System.FB_FileOpen;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.HandleCreated THEN
+	Open := TRUE;
+	RETURN;
+END_IF
+
+fbFileOpen(
+	bExecute := NOT fbFileOpen.bBusy,
+	sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
+	sNetId :=  ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+	nMode := mode,
+	hFile => _fileHandle);
+	
+_error := _error OR fbFileOpen.bError;	
+IF fbFileOpen.bError THEN
+	_errorSource.ErrorCode := fbFileOpen.nErrId;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Read" Id="{b10554be-8e89-07ac-2f05-1e80a59ec182}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Reads the content of the opened file to the target buffer.
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD Read : BOOL
+VAR_INPUT
+	(* Pointer to the buffer, where the file content will be read to.*)
+	ptrBuffer	: PVOID;
+	(* Size of the buffer - SIZEOF()*)
+	nBufferSize	: UDINT;
+END_VAR
+
+
+VAR_INST
+	fbFileRead	: Tc2_System.FB_FileRead;
+	nReadState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	READ_STATE_OPEN		: UINT := 0;
+	READ_STATE_START	: UINT := 10;
+	READ_STATE_WAIT		: UINT := 20;
+	READ_STATE_DONE		: UINT := 30;
+	READ_STATE_ERROR	: uint := 9999;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// An error is triggered if handle is not created or buffer pointer is invalid
+IF ptrBuffer = 0 OR nBufferSize = 0 THEN
+	_error := TRUE;
+	Read := TRUE;
+	RETURN;
+END_IF
+
+CASE nReadState OF
+	READ_STATE_OPEN:
+		IF THIS^.Open(mode := E_FileOpenMode.BINARY_READ) THEN
+			nReadState := READ_STATE_START;
+		END_IF	
+
+	READ_STATE_START:
+		fbFileRead(bExecute := FALSE);
+		fbFileRead(
+			bExecute := TRUE,
+			hFile := _fileHandle,
+			pReadBuff := ptrBuffer,
+			cbReadLen := nBufferSize);
+			
+		nReadState := READ_STATE_WAIT;
+		
+	READ_STATE_WAIT:
+		fbFileRead(bExecute := FALSE);
+		IF fbFileRead.bError THEN
+			nReadState := READ_STATE_ERROR;
+		ELSIF fbFileRead.bBusy = FALSE THEN
+			IF THIS^.Close() THEN
+				nReadState := READ_STATE_DONE;
+			END_IF
+		END_IF	
+
+	READ_STATE_DONE:
+		Read := TRUE;
+		nReadState := READ_STATE_OPEN;
+		
+	READ_STATE_ERROR:
+		nReadState := READ_STATE_DONE;
+		_errorSource.ErrorCode := fbFileRead.nErrId;
+END_CASE
+
+_error := _error OR fbFileRead.bError;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary" Id="{780c681b-a718-05c7-104f-35fd68ebb2e9}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE WriteBinary : BOOL
+VAR_INPUT
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	mode		: E_FileOpenMode;
+END_VAR
+
+VAR_INST
+	fbFileWrite	: Tc2_System.FB_FileWrite;
+	nWriteState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	WRITE_OPEN_FILE	: UINT := 0;
+	WRITE_START 	: UINT := 10;
+	WRITE_WAIT_DONE	: UINT := 20;
+	WRITE_DONE		: UINT := 30;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nWriteState OF
+	WRITE_OPEN_FILE:
+		IF THIS^.Open(mode := mode) THEN
+			nWriteState := WRITE_START;
+		END_IF
+
+	WRITE_START:
+		fbFileWrite(bExecute := FALSE);
+		fbFileWrite(
+			bExecute := TRUE,
+			hFile := _fileHandle,
+			pWriteBuff := ptrSource,
+			cbWriteLen := nSize);
+			
+		nWriteState := WRITE_WAIT_DONE;
+	
+	WRITE_WAIT_DONE:
+		fbFileWrite(bExecute := FALSE);
+		IF NOT fbFileWrite.bBusy THEN
+			IF THIS^.Close() THEN
+				nWriteState := WRITE_DONE;
+			END_IF
+		END_IF 
+	
+	WRITE_DONE:
+		WriteBinary := TRUE;
+END_CASE
+
+_error := _error OR fbFileWrite.bError;
+IF fbFileWrite.bError THEN
+	_errorSource.ErrorCode := fbFileWrite.nErrId;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary_Append" Id="{e6cf0183-f5bc-06db-3d81-64cf9e0ad080}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[// Writes the content to the end of the file (appends).
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteBinary_Append : BOOL
+VAR_INPUT
+	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
+	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+END_VAR
+
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteBinary_Append := THIS^.WriteBinary(
+	nSize := nSize, 
+	ptrSource := ptrSource, 
+	mode := E_FileOpenMode.BINARY_APPEND);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary_Overwrite" Id="{2506679e-eb24-02ab-23c7-ef5c2927e463}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Writes the content to the the file (overwrites any existing content).
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD WriteBinary_Overwrite : BOOL
+VAR_INPUT
+	(* Pointer to the source to be written - use ADR().*)
+	ptrSource	: POINTER TO BYTE;
+	(* Size of the source variable - use SIZEOF().*)
+	nSize	: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteBinary_Overwrite := THIS^.WriteBinary(
+	nSize := nSize, 
+	ptrSource := ptrSource, 
+	mode := E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine" Id="{56b8797f-ee5e-07a9-241c-a9d8422ac6d2}" FolderPath="02_Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE WriteLine : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+	mode		: E_FileOpenMode;
+END_VAR
+
+VAR_INST
+	fbFilePuts		: Tc2_System.FB_FilePuts;
+	nWriteLineState	: UINT;
+END_VAR
+
+VAR CONSTANT
+	WRITE_LINE_STATE_OPEN	: UINT := 0;
+	WRITE_LINE_STATE_WRITE	: UINT := 10;
+	WRITE_LINE_STATE_CLOSE	: UINT := 20;
+	WRITE_LINE_STATE_DONE	: UINT := 30;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nWriteLineState OF
+	WRITE_LINE_STATE_OPEN:
+		IF THIS^.Open(mode := mode) THEN
+			nWriteLineState := WRITE_LINE_STATE_WRITE;
+			fbFilePuts(bExecute := FALSE);
+			fbFilePuts(
+				bExecute := TRUE,
+				hFile := _fileHandle,
+				sLine := sContent,
+				sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+				tTimeout := T#2S);
+		END_IF
+	
+	WRITE_LINE_STATE_WRITE:
+		fbFilePuts(bExecute := FALSE);
+		IF fbFilePuts.bBusy = FALSE THEN
+			nWriteLineState := WRITE_LINE_STATE_CLOSE;
+		END_IF
+	
+	WRITE_LINE_STATE_CLOSE:
+		IF THIS^.Close() THEN
+			nWriteLineState := WRITE_LINE_STATE_DONE;
+		END_IF
+	
+	WRITE_LINE_STATE_DONE:
+		WriteLine := TRUE;
+		nWriteLineState := WRITE_LINE_STATE_OPEN;
+END_CASE
+
+_error := _error OR fbFilePuts.bError;
+IF fbFilePuts.bError THEN
+	_errorSource.ErrorCode := fbFilePuts.nErrId;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine_Append" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[// Writes the string content to the end of the file (appends). If the file does not exist, it will be created.
+// Returns TRUE when done - method needs to be called until it returns TRUE!
+METHOD WriteLine_Append : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteLine_Append := THIS^.WriteLine(
+	sContent := sContent, 
+	mode := E_FileOpenMode.TEXT_APPEND);
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine_Overwrite" Id="{8513e561-b0db-0b1e-3304-e5853254ce5a}" FolderPath="01_Public\Methods\">
+      <Declaration><![CDATA[(* Writes the string content to file and overwrites any existing content. If the file does not exist, it will be created.
+ Returns TRUE when done - method needs to be called until it returns TRUE!*)
+METHOD WriteLine_Overwrite : BOOL
+VAR_INPUT
+	(* Text to be written.*)
+	sContent	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[WriteLine_Overwrite := THIS^.WriteLine(
+	sContent := sContent,
+	mode := E_FileOpenMode.TEXT_APPEND);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

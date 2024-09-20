@@ -3,7 +3,8 @@
   <DUT Name="E_FileOpenMode" Id="{0d439b0c-16b7-022e-37dd-1e924dcbddc2}">
     <Declaration><![CDATA[// A combination of file open modes, based on available options.
 // Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/30977547.html&id=
-
+{attribute 'strict'}
+{attribute 'qualified_only'}
 
 TYPE E_FileOpenMode :
 (

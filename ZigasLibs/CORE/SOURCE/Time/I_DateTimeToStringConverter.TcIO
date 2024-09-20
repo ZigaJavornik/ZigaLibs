@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_DateTimeToStringConverter" Id="{c6d6360a-fc46-03eb-1c0c-49318f49179d}">
+    <Declaration><![CDATA[INTERFACE I_DateTimeToStringConverter
+]]></Declaration>
+    <Method Name="DateTime" Id="{dfaf1e00-1073-0f35-2924-14f5bb0f1777}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT to STRING.*)
+METHOD DateTime : STRING
+VAR_INPUT
+	timeFormat			: E_TimeFormat;	// Time format to apply to the timestruct conversion
+	timeOfDaySeperator	: STRING(1);	// Specifies how time of day is split
+	dateSeperator		: STRING(1);	// Specifies how date is split
+	fillWithZeros		: BOOL;	// If set to true: month, day hour, minute and second will have 0 added when only a single digit is present
+	IncludeMilliseconds	: BOOL; // If set to true, milliseconds will also be displayed in the result, else they are ignored
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Day" Id="{f92aaaed-d124-0485-0bf9-f5bcadaf327b}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wDay to STRING.*)
+METHOD Day : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Hour" Id="{3717bfcf-7b3e-0c54-18c2-271a2f0ae309}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wHour to STRING.*)
+METHOD Hour : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Millisecond" Id="{16f52ffd-eb6e-00cc-0c89-bb02e2070ded}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMillisecond to STRING.*)
+METHOD Millisecond : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Minute" Id="{2c06d055-d5b2-0dcc-315d-2d4c7a9c8d2c}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMinute to STRING.*)
+METHOD Minute : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Month" Id="{c4003193-a87f-01f6-1d78-e31081f5ecb9}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMonth to STRING.*)
+METHOD Month : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Second" Id="{70047a2a-7e2f-0679-0935-f2f0903bb659}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wSecond to STRING.*)
+METHOD Second : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Year" Id="{117ecb2a-48e6-0ccf-3bcd-b2c6ce86ba24}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wYear to STRING.*)
+METHOD Year : STRING]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

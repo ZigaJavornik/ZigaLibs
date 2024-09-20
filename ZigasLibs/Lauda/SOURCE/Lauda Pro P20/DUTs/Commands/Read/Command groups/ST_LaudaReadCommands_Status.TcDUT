@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_Status" Id="{c94b7224-7aea-4f6a-b2a3-b518c18bfc11}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_Status :
+STRUCT
+	StandBy			: STRING := 'IN_MODE_02';
+	DeviceType		: STRING := 'TYPE';
+	DeviceStatus	: STRING := 'STATUS';
+	FaultDiagnosis	: STRING := 'STAT';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

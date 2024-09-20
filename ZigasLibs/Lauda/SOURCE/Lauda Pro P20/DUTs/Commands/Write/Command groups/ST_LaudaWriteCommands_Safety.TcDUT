@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands_Safety" Id="{a23c542b-b14d-4b67-a286-32da085054af}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_Safety :
+STRUCT
+	CommTimeoutViaInterface : STRING := 'OUT_SP_08_';
+	ActivateSafetyMode		: STRING := 'OUT_MODE_06_';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

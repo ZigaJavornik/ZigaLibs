@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LocalSystemTimeProvider" Id="{5429ddc3-78d0-058e-1e56-29d8805b55eb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LocalSystemTimeProvider
+VAR
+	_localSystemTime			: Tc2_Utilities.FB_LocalSystemTime;
+	_currentSystemTimeInfo		: ST_CurrentSystemTimeInfo;
+	_dateTimeToStringCovnerter	: FB_DateTimeToStringConverter;
+	_iDateTimeToStringConverter	: I_DateTimeToStringConverter := _dateTimeToStringCovnerter;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_localSystemTime(
+	sNetID:= '', 
+	bEnable:= TRUE, 
+	dwCycle:= 1,
+	bValid=> _currentSystemTimeInfo.IsValid, 
+	systemTime=> _currentSystemTimeInfo.Value);
+	
+_dateTimeToStringCovnerter(
+	localSystemTime := _localSystemTime);]]></ST>
+    </Implementation>
+    <Method Name="ConvertToString" Id="{58bacec0-cbb6-06a5-2496-f57f6a7d0a7f}">
+      <Declaration><![CDATA[METHOD PUBLIC ConvertToString : I_DateTimeToStringConverter
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ConvertToString := _iDateTimeToStringConverter;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="CurrentTime" Id="{6c4e9ddf-27e1-0836-04f5-9138aa3c0289}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+// Gets current system timo info as a <ST_CurrentSystemTimeInfo>
+PROPERTY CurrentTime : REFERENCE TO ST_CurrentSystemTimeInfo]]></Declaration>
+      <Get Name="Get" Id="{1dc69109-a2fc-07e6-33f1-0d17b5b22722}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CurrentTime REF= _currentSystemTimeInfo;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

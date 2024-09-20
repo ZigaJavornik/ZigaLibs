@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands_ControlParameters" Id="{968d6b3c-b9ad-4c96-9ae0-37c14eb4e97d}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_ControlParameters :
+STRUCT
+	Xp						: STRING := 'OUT_PAR_00_';
+	Tn						: STRING := 'OUT_PAR_01_';
+	Tv						: STRING := 'OUT_PAR_02_';
+	Td						: STRING := 'OUT_PAR_03_';
+	KpE						: STRING := 'OUT_PAR_04_';
+	TnE						: STRING := 'OUT_PAR_05_';
+	TvE						: STRING := 'OUT_PAR_06_';
+	TdE						: STRING := 'OUT_PAR_07_';
+	CorrectionLimitation	: STRING := 'OUT_PAR_09_';
+	XpF						: STRING := 'OUT_PAR_10_';
+	Prop_E					: STRING := 'OUT_PAR_15_';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

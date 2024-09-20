@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaCommParameters" Id="{cb0030db-06a0-4f22-ba7b-a12205297b15}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ST_LaudaCommParameters :
+STRUCT
+	ReadCycle		: TIME := T#500MS;			// Cyclic reading of certain values is executed within the interval defined by this parameter.
+	ReconnectPeriod	: TIME := T#45S;			// Reconnect period for TCP/IP. Don't set too low (30s should be the lowest)
+	Ipv4Address		: Tc2_System.T_IPv4Addr;	// IPV4 address of the device.
+	Port			: UINT;						// Port of the device.
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

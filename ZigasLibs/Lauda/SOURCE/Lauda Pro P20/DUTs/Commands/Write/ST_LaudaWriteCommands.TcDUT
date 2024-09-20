@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands" Id="{533b32f2-d49c-4817-b2d0-ce6131c163ae}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands :
+STRUCT
+	Temperature			: ST_LaudaWriteCommands_Temperature;
+	Control				: ST_LaudaWriteCommands_Control;
+	ControlParameters	: ST_LaudaWriteCommands_ControlParameters;
+	Cooling				: ST_LaudaWriteCommands_Cooling;
+	Pump				: ST_LaudaWriteCommands_Pump;
+	Rights				: ST_LaudaWriteCommands_Rights;
+	Safety				: ST_LaudaWriteCommands_Safety;
+	Status				: ST_LaudaWriteCommands_Status;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

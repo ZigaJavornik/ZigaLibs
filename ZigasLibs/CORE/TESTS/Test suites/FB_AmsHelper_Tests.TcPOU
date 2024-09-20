@@ -10,10 +10,33 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Call your test methods here
-THIS^.Test_EmptyNetId_ExpectEmptyString();]]></ST>
+Test_NetIdToString_AllZeros_ExpectEmptyString();
+Test_MasterAddress();]]></ST>
     </Implementation>
-    <Method Name="Test_EmptyNetId_ExpectEmptyString" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
-      <Declaration><![CDATA[METHOD PRIVATE Test_EmptyNetId_ExpectEmptyString
+    <Method Name="Test_MasterAddress" Id="{e0bf4ac5-8dc5-0296-1ede-29f2c11aafda}">
+      <Declaration><![CDATA[METHOD Test_MasterAddress
+
+VAR_INST
+	masterNetId	: Tc2_System.T_AmsNetID := '0.0.0.0.0.5';
+	test	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_MasterAddress');
+
+test := AdsHelper.GetEthercatMasterIdFromNetIdString(netId := '');
+
+AssertEquals_DINT(
+	Expected := 24,
+	Actual := 24,
+	Message := 'Getting address from master netId was incorrect!');
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_NetIdToString_AllZeros_ExpectEmptyString" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_NetIdToString_AllZeros_ExpectEmptyString
 
 (* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
 By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
@@ -28,12 +51,12 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// The name of the test, is the same as method name!
-TcUnit.TEST('Test_EmptyNetId_ExpectEmptyString');
+TcUnit.TEST('Test_NetIdToString_AllZeros_ExpectEmptyString');
 
 // Do your assertions here...
 AssertEquals_STRING(
 	Expected := '',
-	Actual := AmsHelper.NetIdToString(emptyNetId),
+	Actual := AdsHelper.NetIdToString(emptyNetId),
 	Message := 'An empty netId should return an empty string!');
 
 TcUnit.TEST_FINISHED();]]></ST>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_LaudaParameterReadState" Id="{f98eae1c-c5c5-4744-b6cd-541bfbf682e3}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_LaudaParameterReadState :
+(
+	READY := 0,
+	ACTUAL_TEMPERATURE_SETPOINT,
+	BAH_OUTFLOW_TEMP,
+	PUMP_STAGE,
+	READ_ENABLE_STATE,
+	OIL_LEVEL,
+	FAULT_DIAGNOSIS,
+	DONE
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

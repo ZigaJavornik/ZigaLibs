@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_DateTimeToStringConverter" Id="{9a295ef9-8010-0191-1f0a-28c7bd5d6c3c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DateTimeToStringConverter IMPLEMENTS I_DateTimeToStringConverter
+VAR
+	_stringBuilder		: FB_StringBuilderBase;
+END_VAR
+VAR_IN_OUT
+	localSystemTime	: Tc2_Utilities.FB_LocalSystemTime;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="DateTime" Id="{0e587f3c-6f02-0178-3375-e8d355d3bf27}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT to STRING.*)
+METHOD DateTime : STRING
+VAR_INPUT
+	timeFormat			: E_TimeFormat;	// Time format to apply to the timestruct conversion
+	timeOfDaySeperator	: STRING(1);	// Specifies how time of day is split
+	dateSeperator		: STRING(1);	// Specifies how date is split
+	fillWithZeros		: BOOL;	// If set to true: month, day hour, minute and second will have 0 added when only a single digit is present
+	IncludeMilliseconds	: BOOL; // If set to true, milliseconds will also be displayed in the result, else they are ignored
+END_VAR
+
+VAR
+	result			: Tc2_System.T_MaxString;
+	stringBuilder	: FB_StringBuilderBase;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+(*CASE timeFormat OF
+	E_TimeFormat.DDMMYY:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Year())
+			.Create();
+
+	E_TimeFormat.HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Hour(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Minute(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Second(fillWithZeros))
+			.Create();
+			
+		IF IncludeMilliseconds THEN
+			result := stringBuilder.AddString(timeOfDaySeperator)
+				.AddString(THIS^.Millisecond(fillWithZeros))
+				.Create();
+		END_IF
+			
+	E_TimeFormat.MMDDYY:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Year())
+			.Create();
+
+	E_TimeFormat.YYMMDD:	
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Year())
+			.Create();
+		
+	E_TimeFormat.DDMMYY_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Year())
+			.AddString('_')
+			.AddString(THIS^.Hour(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Minute(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Second(fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.Millisecond(fillWithZeros))
+					.Create();
+			END_IF
+
+	E_TimeFormat.MMDDYY_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Year())
+			.AddString('_')
+			.AddString(THIS^.Hour(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Minute(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Second(fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.Millisecond(fillWithZeros))
+					.Create();
+			END_IF
+
+	E_TimeFormat.YYMMDD_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.Year())
+			.AddString(dateSeperator)
+			.AddString(THIS^.Month(fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.Day(fillWithZeros))
+			.AddString('_')
+			.AddString(THIS^.Hour(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Minute(fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.Second(fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.Millisecond(fillWithZeros))
+					.Create();
+			END_IF				
+END_CASE
+
+DateTime := result;
+*)
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Day" Id="{f3223817-0a36-0f06-3388-3d92f651559b}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wDay to STRING.*)
+METHOD Day : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wDay);
+
+IF NOT fillWithZeros THEN
+	Day := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+Day := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Hour" Id="{b9c03467-294f-063a-3e4b-64061bbd11d3}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wHour to STRING.*)
+METHOD Hour : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wHour);
+
+IF NOT fillWithZeros THEN
+	Hour := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+Hour := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Millisecond" Id="{11d8c68f-2cd2-04be-3f19-37f22c84fa0d}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMillisecond to STRING.*)
+METHOD Millisecond : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wMilliseconds);
+
+IF NOT fillWithZeros THEN
+	Millisecond := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 3 THEN
+	// _10 => 010
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+ELSIF Tc2_Standard.LEN(STR := result) < 2 THEN
+	// __5 => 005
+	result := Tc2_Standard.CONCAT(STR1 := '00', STR2 := result);
+END_IF
+
+Millisecond := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Minute" Id="{61ec46a5-b7b5-03f6-1d01-d6cd758e7c31}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMinute to STRING.*)
+METHOD Minute : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wMinute);
+
+IF NOT fillWithZeros THEN
+	Minute := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+Minute := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Month" Id="{755bc311-bfcb-0342-1f40-49f21ebbbc81}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMonth to STRING.*)
+METHOD Month : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wMonth);
+
+IF NOT fillWithZeros THEN
+	Month := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+Month := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Second" Id="{5b771226-0e0a-02d6-3143-2f60a230c961}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wSecond to STRING.*)
+METHOD Second : STRING
+VAR_INPUT
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wSecond);
+
+IF NOT fillWithZeros THEN
+	Second := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+Second := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Year" Id="{6a427e48-e032-0bbf-11c3-82c5fa944741}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wYear to STRING.*)
+METHOD Year : STRING
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF NOT __ISVALIDREF(localSystemTime) THEN
+	RETURN;
+END_IF
+
+result := WORD_TO_STRING(localSystemTime.systemTime.wYear);
+Year := result;
+
+{warning restore C0371}]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_Pump" Id="{7ee2966e-0155-4872-844b-dd4480af2131}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_Pump :
+STRUCT
+	FlowRate	: STRING := 'IN_PV_07';
+	PowerStage	: STRING := 'IN_SP_01';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

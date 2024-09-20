@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LaudaPro_P20" Id="{cecc2dfb-a781-4ff5-89b2-b84a5abfedf0}" SpecialFunc="None">
+    <Declaration><![CDATA[(* LaudaPro P20 control via TCP/IP
+Includes constructor parameters:
+ - nMaxPumpLevel	: UINT;	// Max pump setting, value ranges from 1-6/8 depending on the device type*)
+ 
+FUNCTION_BLOCK FB_LaudaPro_P20
+
+VAR_INPUT
+	fTemperatureSet	: REAL;	// Temperature setpoint
+	bSafetyOk		: BOOL;	// Safety mode actiation when FALSE
+	bEnable			: BOOL;	// Enable temperature setting
+	nPumpStage		: UINT := 2;	// Set pump stage 1-8
+	bConnect		: BOOL;	// Connects to the device via TCP or disconnects if set to FALSE
+	bKeyboardUnlock	: BOOL;	// Unlocks keyboard control
+	bResendValues	: BOOL;	// Resends all current values to the device
+	logger			: ZigaLibs_Core.I_LoggerEx;
+END_VAR
+
+VAR
+	fbTcpIpControl		: ZigaLibs_TcpIp.FB_TcpIpCommControl;
+	TonReconnectTimer	: Tc2_Standard.TON;
+	bFirstExecution		: BOOL := TRUE;
+
+	// Writing
+	fPrevTemperatureSet		: REAL;
+	bPrevSafetyOk			: BOOL;
+	bPrevEnable				: BOOL;
+	nPrevPumpStage			: UINT;
+	bPrevKeyboardUnlock		: BOOL;
+	RtrigResendValues		: Tc2_Standard.R_TRIG;
+	eWriteParameterState	: E_LaudaParameterWriteState;
+	sWriteResponse			: Tc2_System.T_MaxString;
+	arrCommandBuffer		: ARRAY[0..100] OF Tc2_System.T_MaxString;
+	
+	// Reading
+	TonReadCycleTimer		: Tc2_Standard.TON;
+	eReadParametersState	: E_LaudaParameterReadState;
+	eReadParametersSubStep	: E_ReadWriteStep;
+	sReadResponseString		: Tc2_System.T_MaxString;
+	arrReadBufferErrors		: ARRAY[0..100] OF ST_LaudaReadWriteError;
+	sCurrentReadCommand		: STRING;
+		
+	// Property access fields
+	_actualValues				: ST_LaudaActualValuesCollection;	// Actual values, reported back from the unit
+	_error						: BOOL;	// Error flag
+	_tcpIpConnectionEstablished	: BOOL;	// Connection indicator
+	_commParameters				: ST_LaudaCommParameters;	// Parameters for TcpIp connection
+	_maxPumpLevel				: UINT;
+	_faultsStatus				: ST_LaudaFaults;
+	_errorBuffer			: ARRAY[0..100] OF ST_LaudaReadWriteError;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_error := FALSE;
+
+TonReconnectTimer(IN := NOT TonReconnectTimer.Q, PT := _commParameters.ReconnectPeriod);
+RtrigResendValues(CLK := bResendValues);
+
+// Set reconnect period
+fbTcpIpControl.ReconnectPeriod := _commParameters.ReconnectPeriod;
+fbTcpIpControl();
+
+IF bConnect THEN
+	// Connect/disconnect/error
+	IF fbTcpIpControl.Error AND NOT TonReconnectTimer.Q THEN
+		fbTcpIpControl.Disconnect();
+	ELSIF fbTcpIpControl.IsConnected = FALSE THEN
+		fbTcpIpControl.Connect(Ipv4Address := _commParameters.Ipv4Address, Port := _commParameters.Port);
+	END_IF
+ELSE
+	fbTcpIpControl.Disconnect();
+END_IF
+
+IF fbTcpIpControl.Error THEN
+	_error := TRUE;
+END_IF
+
+
+// Enqueue commands
+
+// Temperature setpoint
+IF fPrevTemperatureSet <> fTemperatureSet OR bFirstExecution OR RtrigResendValues.Q THEN
+	EnqueueCommand(Command :=
+		LaudaHelper.GenerateComand().SetTemperature(fTemperature := fTemperatureSet));
+END_IF
+
+// Enable/Disable
+IF bPrevEnable <> bEnable OR bFirstExecution OR RtrigResendValues.Q THEN
+	IF bEnable THEN
+		EnqueueCommand(Command := LaudaHelper.AddSuffix(LaudaHelper.Commands.Write.Status.Start));
+	ELSE
+		EnqueueCommand(Command := LaudaHelper.AddSuffix(LaudaHelper.Commands.Write.Status.Stop));	
+	END_IF	
+END_IF
+
+// Safety
+IF bPrevSafetyOk <> bSafetyOk OR bFirstExecution OR RtrigResendValues.Q THEN
+	IF bSafetyOk THEN
+		EnqueueCommand(LaudaHelper.GenerateComand().SafetyDeactivate());
+	ELSE
+		EnqueueCommand(LaudaHelper.GenerateComand().SafetyActivate());
+	END_IF
+END_IF
+
+// Pump stage, limited between 1 and max value (6/8)
+IF nPrevPumpStage <> nPumpStage OR bFirstExecution OR RtrigResendValues.Q THEN
+	EnqueueCommand(LaudaHelper.GenerateComand()
+		.SetPumpStage(nStage := MAX(MIN(nPumpStage, 1), _maxPumpLevel)));
+END_IF
+
+// Keyobard locking
+IF bPrevKeyboardUnlock <> bKeyboardUnlock OR bFirstExecution OR RtrigResendValues.Q THEN
+	IF bKeyboardUnlock THEN
+		EnqueueCommand(Command := LaudaHelper.GenerateComand().KeyboardMasterUnlock());
+		EnqueueCommand(Command := LaudaHelper.GenerateComand().KeyboardRemoteUnitUnlock());
+	ELSE
+		EnqueueCommand(Command := LaudaHelper.GenerateComand().KeyboardMasterLock());
+		EnqueueCommand(Command := LaudaHelper.GenerateComand().KeyboardRemoteUnitLock());
+	END_IF
+END_IF
+
+CASE eWriteParameterState OF
+	E_LaudaParameterWriteState.READY:
+		IF arrCommandBuffer[0] <> '' AND eReadParametersState = E_LaudaParameterReadState.READY THEN
+			eWriteParameterState := E_LaudaParameterWriteState.SEND;
+		END_IF
+	
+	E_LaudaParameterWriteState.SEND:
+		IF NOT fbTcpIpControl.Error AND fbTcpIpControl.Send(arrCommandBuffer[0]) THEN
+			eWriteParameterState := E_LaudaParameterWriteState.AWAIT_RESPONSE;
+		END_IF
+		
+	 E_LaudaParameterWriteState.AWAIT_RESPONSE:
+		 IF fbTcpIpControl.Receive(refResponse := sWriteResponse) THEN
+			 eWriteParameterState := E_LaudaParameterWriteState.VALIDATE_RESPONSE;
+		 END_IF
+	 
+	E_LaudaParameterWriteState.VALIDATE_RESPONSE:
+		IF NOT LaudaHelper.ValidateSendCommandResponse(sResponse := sWriteResponse) THEN
+			AddToErrorBuffer(sendCommand := arrCommandBuffer[0], response := sWriteResponse);
+		END_IF
+		
+		
+		DequeueCommand();
+		eWriteParameterState := E_LaudaParameterWriteState.READY;
+END_CASE
+
+fPrevTemperatureSet := fTemperatureSet;
+bPrevEnable := bEnable;
+bPrevSafetyOk := bSafetyOk;
+nPrevPumpStage := nPumpStage;
+bPrevKeyboardUnlock := bKeyboardUnlock;
+
+// Cyclic reading of values
+TonReadCycleTimer(
+	IN := NOT TonReadCycleTimer.Q AND (eWriteParameterState = E_LaudaParameterWriteState.READY), 
+	PT := _commParameters.ReadCycle);
+
+CASE eReadParametersState OF
+	E_LaudaParameterReadState.READY:
+		IF eWriteParameterState = E_LaudaParameterReadState.READY AND TonReadCycleTimer.Q THEN
+			eReadParametersSubStep := E_ReadWriteStep.SEND;
+			eReadParametersState := E_LaudaParameterReadState.BAH_OUTFLOW_TEMP;
+		END_IF
+		
+	E_LaudaParameterReadState.BAH_OUTFLOW_TEMP:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Temperature.BathTemperatureOutflow_01C);
+				IF fbTcpIpControl.Send(sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_actualValues.BathTemperature := STRING_TO_REAL(LaudaHelper.RemoveSuffix(sReadResponseString));
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+					eReadParametersState := E_LaudaParameterReadState.ACTUAL_TEMPERATURE_SETPOINT;
+				END_IF
+		END_CASE
+
+	E_LaudaParameterReadState.ACTUAL_TEMPERATURE_SETPOINT:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Temperature.TemperatureSetpoint);
+				IF fbTcpIpControl.Send(sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_actualValues.TemperatureSetpoint := STRING_TO_REAL(LaudaHelper.RemoveSuffix(sReadResponseString));
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+					eReadParametersState := E_LaudaParameterReadState.PUMP_STAGE;
+				END_IF
+		END_CASE
+
+		
+	E_LaudaParameterReadState.PUMP_STAGE:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Pump.PowerStage);
+				IF fbTcpIpControl.Send(sCommand := sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_actualValues.PumpStage := STRING_TO_UINT(Tc2_Standard.LEFT(
+							STR := LaudaHelper.RemoveSuffix(sReadResponseString), 
+							SIZE := 1));
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersState := E_LaudaParameterReadState.READ_ENABLE_STATE;
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+				END_IF
+		END_CASE
+	
+	E_LaudaParameterReadState.READ_ENABLE_STATE:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Status.StandBy);
+				IF fbTcpIpControl.Send(sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_actualValues.StandBy := STRING_TO_BOOL(LaudaHelper.RemoveSuffix(sReadResponseString));
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+					eReadParametersState := E_LaudaParameterReadState.OIL_LEVEL;
+				END_IF
+		END_CASE
+	
+	E_LaudaParameterReadState.OIL_LEVEL:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand :=  LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.FillLevel.BathLevel);
+				IF fbTcpIpControl.Send(sCommand := sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_actualValues.LiquidLevel := STRING_TO_UINT(LaudaHelper.RemoveSuffix(sReadResponseString));
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersState := E_LaudaParameterReadState.FAULT_DIAGNOSIS;
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+				END_IF
+		END_CASE
+		
+	E_LaudaParameterReadState.FAULT_DIAGNOSIS:
+		CASE eReadParametersSubStep OF
+			E_ReadWriteStep.SEND:
+				sCurrentReadCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Status.FaultDiagnosis);
+				IF fbTcpIpControl.Send(sCurrentReadCommand) THEN
+					eReadParametersSubStep := E_ReadWriteStep.AWAIT_RESPONSE;			
+				END_IF
+				
+			E_ReadWriteStep.AWAIT_RESPONSE:
+				IF fbTcpIpControl.Receive(refResponse := sReadResponseString) THEN
+					IF LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString) THEN
+						_faultsStatus := LaudaHelper.ParseLaudaFaultDiagnosis(sDiagnosisResposne := sReadResponseString);
+					ELSE
+						AddToErrorBuffer(response := sReadResponseString, sendCommand := sCurrentReadCommand);
+					END_IF
+					eReadParametersState := E_LaudaParameterReadState.DONE;
+					eReadParametersSubStep := E_ReadWriteStep.SEND;
+				END_IF
+		END_CASE	
+		
+	E_LaudaParameterReadState.DONE:
+		eReadParametersState := E_LaudaParameterReadState.READY;
+END_CASE
+
+_tcpIpConnectionEstablished := fbTcpIpControl.IsConnected;
+bFirstExecution := FALSE;]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{930423c6-eb3c-0340-0da6-1df733a903c3}" />
+    <Folder Name="Private" Id="{362a7506-08c5-0459-3ea0-54e0d23cde50}">
+      <Folder Name="Methods" Id="{2019d598-d864-0b52-1e73-b395eaf45f5d}" />
+      <Folder Name="Properties" Id="{850d9d35-2f67-0c9f-3f98-3e4a2bbaa79d}" />
+    </Folder>
+    <Folder Name="Pulic" Id="{6dfc71e1-8bf8-0cc1-3484-92e295fa98da}">
+      <Folder Name="Methods" Id="{1864e2cc-038f-0e98-33e2-05675b3aa2f0}" />
+      <Folder Name="Properties" Id="{a4c6a11e-2947-0e9b-21d9-ac2a83070dd1}" />
+    </Folder>
+    <Property Name="ActualValues" Id="{2af5756f-4ca9-0675-0479-405044333687}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+// Collection of actual values reported back from Lauda device
+PROPERTY PUBLIC ActualValues : REFERENCE TO ST_LaudaActualValuesCollection]]></Declaration>
+      <Get Name="Get" Id="{980c64c3-ca0c-0c84-0899-eafdb423bef1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActualValues ref= _actualValues;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="AddToErrorBuffer" Id="{b1e40b92-e194-06e8-3a5e-1953c50948be}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[// Adds the data to the error buffer and sets the _error to TRUE
+METHOD PRIVATE AddToErrorBuffer
+VAR_INPUT
+	sendCommand	: Tc2_System.T_MaxString;
+	response	: Tc2_System.T_MaxString;
+END_VAR
+VAR
+	i	: int;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO 99 BY 1 DO
+	// Limit looping not to abuse PLC task
+	IF _errorBuffer[i].ResponseErrorInfo = E_LaudaResponseError.NO_ERROR AND _errorBuffer[i].SendCommand = '' THEN
+		EXIT;
+	END_IF
+	_errorBuffer[i] := _errorBuffer[i + 1];
+END_FOR
+
+_errorBuffer[0].SendCommand := sendCommand;
+_errorBuffer[0].ResponseErrorInfo := LaudaHelper.ParseResponseError(Response := response);
+
+_error := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="CommParameters" Id="{c6d3f0ff-1704-4f17-a5fb-0389c36977f6}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+// Gets or sets various communication specific parameters
+PROPERTY CommParameters : REFERENCE TO ST_LaudaCommParameters]]></Declaration>
+      <Get Name="Get" Id="{e4588796-3b03-4adc-a313-fada346ba915}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CommParameters ref= _commParameters;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{eb117b24-c360-46c7-a9da-94375e01f228}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_commParameters := CommParameters;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="DequeueCommand" Id="{d0cceada-daaf-4352-8c81-82e23136a984}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE DequeueCommand
+VAR_INPUT
+END_VAR
+
+VAR
+	i	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO 99 BY 1 DO
+	arrCommandBuffer[i] := arrCommandBuffer[i+1];
+	IF i = 99 THEN
+		arrCommandBuffer[100] := '';
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="DeviceFaultDiagnosis" Id="{d8dfa965-a181-06d6-04de-843e9d58c727}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[// Gets the fault diagnosis from Lauda
+PROPERTY DeviceFaultDiagnosis : REFERENCE TO ST_LaudaFaults]]></Declaration>
+      <Get Name="Get" Id="{16c862e9-f80d-02c6-3381-d9274b5bb971}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DeviceFaultDiagnosis ref= _faultsStatus;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="EnqueueCommand" Id="{f2cf245d-9d9a-46ca-b23a-6eea98a90518}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD PRIVATE EnqueueCommand
+VAR_INPUT
+	Command	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	i	: UINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO 100 BY 1 DO
+	// If finding an empty or same command in queue, enter it here
+	IF arrCommandBuffer[i] = '' OR arrCommandBuffer[i] = Command THEN
+		arrCommandBuffer[i] := Command;
+		EXIT;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Error" Id="{fb2c1c95-d8ba-037a-2040-922fb4c62578}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+// Error flag, provided if there was an error with the Tcp connection 
+// or the response from the device was not valid (error response).
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{cc06a169-7053-00f5-00b4-f0a07c4c35e8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ErrorBuffer" Id="{9d4342d2-a250-05c6-33bb-6824029f4c1c}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[// Gets the error buffer, containing last 100 send commands that were parsed returning an error.
+PROPERTY ErrorBuffer : REFERENCE TO ARRAY[0..100] OF ST_LaudaReadWriteError]]></Declaration>
+      <Get Name="Get" Id="{d992faeb-cfad-083f-33c8-df03210d66fc}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ErrorBuffer := _errorBuffer;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{1879b883-d063-0132-2e2d-3072b44b3bbc}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	nMaxPumpLevel	: UINT;	// Max pump setting, value ranges from 1-6/8 depending on the device type
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_maxPumpLevel := nMaxPumpLevel;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="TcpIpConnectionEstablished" Id="{db151c09-b364-0827-1327-1d6faf06d5b9}" FolderPath="Pulic\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+// TcpIp connection status, TRUE if connected
+PROPERTY PUBLIC TcpIpConnectionEstablished : BOOL]]></Declaration>
+      <Get Name="Get" Id="{dfb31560-d6f9-048e-2744-2312fc32a0cf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[TcpIpConnectionEstablished := _tcpIpConnectionEstablished;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

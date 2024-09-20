@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_DateTimeToStringConverter_Tests" Id="{4d7048e5-b18f-0b71-1ecc-59fcd87aef92}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DateTimeToStringConverter_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_localSystemTime			: Tc2_Utilities.FB_LocalSystemTime;
+	_dateTimeToStringConverter	: FB_DateTimeToStringConverter;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_localSystemTime(
+	sNetID:= '', 
+	bEnable:= TRUE, 
+	dwCycle:= 1);
+	
+_dateTimeToStringConverter(localSystemTime := _localSystemTime);
+
+Test01_Year();
+Test02_Month();
+Test03_Day();
+Test04_Hour();
+Test05_Minute();
+Test06_Second();
+Test07_Millisecond();
+]]></ST>
+    </Implementation>
+    <Method Name="Test01_Year" Id="{502e0431-dfbb-0bac-2e28-304a921f0018}">
+      <Declaration><![CDATA[METHOD Test01_Year
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_Year');
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Year(),
+	Expected := WORD_TO_STRING(_localSystemTime.systemTime.wYear),
+	Message := 'Conversion to string for year was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Month" Id="{8f7bc3a8-87e8-03e4-11d0-5d048fe604db}">
+      <Declaration><![CDATA[METHOD Test02_Month
+VAR_INPUT
+END_VAR
+
+VAR
+	expected	: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_Month');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wMonth);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Month(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for month without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wMonth));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Month(fillWithZeros := TRUE),
+	Message := 'Conversion to string for month with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_Day" Id="{f4486213-4527-0ca2-0c1e-0e6c8ba42633}">
+      <Declaration><![CDATA[METHOD PUBLIC Test03_Day
+
+VAR
+	expected : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_Day');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wDay);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Day(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for day without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wDay));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Day(fillWithZeros := TRUE),
+	Message := 'Conversion to string for day with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_Hour" Id="{3b68424d-06b2-0e18-2f30-682c44be26d9}">
+      <Declaration><![CDATA[METHOD PUBLIC Test04_Hour
+
+VAR
+	expected : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_Hour');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wHour);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Hour(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for hour without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wHour));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Hour(fillWithZeros := TRUE),
+	Message := 'Conversion to string for hour with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_Minute" Id="{edb9d359-b7ee-03e9-27b1-77fdaac2f10f}">
+      <Declaration><![CDATA[METHOD PUBLIC Test05_Minute
+
+VAR
+	expected : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_Minute');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wMinute);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Minute(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for minute without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wMinute));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Minute(fillWithZeros := TRUE),
+	Message := 'Conversion to string for minute with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_Second" Id="{12a5392a-4430-0fbf-3b63-d3ef8c4606bb}">
+      <Declaration><![CDATA[METHOD PUBLIC Test06_Second
+
+VAR
+	expected : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_Second');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wSecond);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Second(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for second without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wSecond));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Second(fillWithZeros := TRUE),
+	Message := 'Conversion to string for second with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_Millisecond" Id="{d1a1b253-6b09-03b5-29e2-d909f4023d42}">
+      <Declaration><![CDATA[METHOD PUBLIC Test07_Millisecond
+
+VAR
+	expected : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_Millisecond');
+
+expected := WORD_TO_STRING(_localSystemTime.systemTime.wMilliseconds);
+
+AssertEquals_STRING(
+	Actual := _dateTimeToStringConverter.Millisecond(fillWithZeros := FALSE),
+	Expected := expected,
+	Message := 'Conversion to string for millisecond without zeros was incorrect!');
+	
+IF LEN(expected) = 1 THEN
+	expected := CONCAT('0', WORD_TO_STRING(_localSystemTime.systemTime.wMilliseconds));
+END_IF
+
+AssertEquals_STRING(
+	Expected := expected,
+	Actual := _dateTimeToStringConverter.Second(fillWithZeros := TRUE),
+	Message := 'Conversion to string for millisecond with zeros was incorrect!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

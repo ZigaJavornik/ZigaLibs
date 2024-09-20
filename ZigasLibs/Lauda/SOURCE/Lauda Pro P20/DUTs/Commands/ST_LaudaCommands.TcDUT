@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaCommands" Id="{5dc7fab2-1189-40e7-8fd0-1e41780a90e4}">
+    <Declaration><![CDATA[TYPE ST_LaudaCommands :
+STRUCT
+	Read	: ST_LaudaReadCommands;
+	Write	: ST_LaudaWriteCommands;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

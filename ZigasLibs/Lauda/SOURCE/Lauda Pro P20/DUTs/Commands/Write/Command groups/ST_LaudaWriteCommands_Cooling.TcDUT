@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaWriteCommands_Cooling" Id="{fd924279-9f9c-4d77-8df0-9219fc3c9ab2}">
+    <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_Cooling :
+STRUCT
+	CoolingMode	: STRING := 'OUT_SP_02';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

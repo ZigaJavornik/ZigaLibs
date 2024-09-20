@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaResponseErrors" Id="{017a0f37-ade3-0737-01c0-b5f9f6183ebc}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE ST_LaudaResponseErrors :
+STRUCT
+	WrongEntry	 								: STRING := 'ERR_2';
+	WrongCommand								: STRING := 'ERR_3';
+	SyntaxError	 								: STRING := 'ERR_5';
+	ImpermissableValue	 						: STRING := 'ERR_6';
+	ModuleOrValueNotAvailable					: STRING := 'ERR_8';
+	AllSegmentsInTheProgrammerAreOccupied		: STRING := 'ERR_30';
+	SetpointNotPossible_AnalogSetpointIsUsed	: STRING := 'ERR_31';
+	ExternalTemperatureProbeMissing	 			: STRING := 'ERR_33';
+	AnalogValueNotPresent	 					: STRING := 'ERR_34';
+	SafetyModeCantBeStarted_ItIsNotEnabled	 	: STRING := 'ERR_35';
+	CantSetValue_ProgrammerRunningOrPaused	 	: STRING := 'ERR_36';
+	CantStartProgrammer_AnalogSetpointIsUsed	: STRING := 'ERR_37';
+	CantActivateFromSafetyMode	 				: STRING := 'ERR_38';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

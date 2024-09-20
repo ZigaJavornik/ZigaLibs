@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_FileProperties" Id="{0cdbca5b-3276-032d-28cb-bb21295af8ab}">
-    <Declaration><![CDATA[TYPE ST_FileProperties :
+    <Declaration><![CDATA[{attribute 'strict'}
+TYPE ST_FileProperties :
 STRUCT
 	FileLocation 	: Tc2_System.T_MaxString;
 	FileName		: Tc2_System.T_MaxString;

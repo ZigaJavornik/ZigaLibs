@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_ParameterReadingStep" Id="{b99d93b6-da09-0c9a-1af0-8396853bc1e8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ParameterReadingStep :
+(
+	IDLE,
+	GET_DEVICE_ETHERCAT_NAME,
+	READ_COE_LIST
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

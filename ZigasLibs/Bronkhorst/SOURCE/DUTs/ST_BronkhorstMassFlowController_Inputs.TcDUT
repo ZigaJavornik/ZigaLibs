@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_BronkhorstMassFlowController_Inputs" Id="{2a37d0cc-0bc4-015f-2e64-184cf6af0532}">
+    <Declaration><![CDATA[TYPE ST_BronkhorstMassFlowController_Inputs :
+STRUCT
+	ActualFlow		: INT;
+	ValvePosition	: UINT;
+	AmsAddr			: Tc2_System.ST_AmsAddr;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

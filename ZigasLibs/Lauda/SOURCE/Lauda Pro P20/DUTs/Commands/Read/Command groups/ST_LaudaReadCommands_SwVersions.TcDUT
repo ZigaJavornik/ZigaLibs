@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_SwVersions" Id="{f2293473-3d88-4c6c-803c-25a5860a0a2b}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_SwVersions :
+STRUCT
+	ControlSyste							: STRING := 'VERSION_R';
+	ProtectionSystem						: STRING := 'VERSION_S';
+	RemoteControl							: STRING := 'VERSION_B';
+	CoolingSystem							: STRING := 'VERSION_T';
+	AnalogInterfaceModule					: STRING := 'VERSION_A';
+	RS232_422_Profibus_Profinet				: STRING := 'VERSION_V';
+	EtherCAT								: STRING := 'VERSION_Z';
+	ContactInterace							: STRING := 'VERSION_D';
+	SolenoidValveForCoolingWater			: STRING := 'VERSION_M_0';
+	SolenoidValveForAutomaticFillingDevice	: STRING := 'VERSION_M_1';
+	SolenoidValveForConstantLevelDevice		: STRING := 'VERSION_M_2';
+	SolenoidValve_ShutOffValve1				: STRING := 'VERSION_M_3';
+	SolenoidValve_ShutOffValve2				: STRING := 'VERSION_M_4';
+	ExternalPT100_interface1				: STRING := 'VERSION_E';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

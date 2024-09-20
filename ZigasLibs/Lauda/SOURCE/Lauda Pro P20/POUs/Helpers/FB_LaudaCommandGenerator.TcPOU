@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LaudaCommandGenerator" Id="{cefff616-22c6-43ae-8491-db34cfe691d3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaCommandGenerator
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_formatString	: Tc2_Utilities.FB_FormatString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{1848f3f0-afe2-0f83-2210-e878a4b34e1c}">
+      <Folder Name="Methods" Id="{742c1bfc-2169-060f-0c25-e60d38df0f5c}" />
+      <Folder Name="Properties" Id="{8908f424-471f-0575-0216-648e94d5d1e9}" />
+    </Folder>
+    <Folder Name="Public" Id="{56c972fe-e61a-0d93-28ab-e4297b535344}">
+      <Folder Name="Methods" Id="{129ad6bd-6668-0fa0-01d0-5fa7d26b7510}" />
+      <Folder Name="Properties" Id="{97b1a00e-2d31-03f9-0cc6-f9df9e115afc}" />
+    </Folder>
+    <Method Name="KeyboardMasterLock" Id="{8615bdb7-5786-0bc5-2b03-ce8ee4b1ddaa}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[METHOD KeyboardMasterLock : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardMasterLock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardMasterUnlock" Id="{36b00d39-6636-0673-3336-2f2841cd593c}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[METHOD KeyboardMasterUnlock : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardMasterUnlock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardRemoteUnitLock" Id="{c8eb4e60-0d78-0fe1-07e2-0784577d9c4e}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[METHOD KeyboardRemoteUnitLock : Tc2_System.T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardRemoteUnitLock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardRemoteControlUnit_UnlockLock, 
+	STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardRemoteUnitUnlock" Id="{995db477-8dee-0806-2583-eab73e6f848e}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[METHOD KeyboardRemoteUnitUnlock : Tc2_System.T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardRemoteUnitUnlock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardRemoteControlUnit_UnlockLock, 
+	STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SafetyActivate" Id="{ba51a25b-9b29-4fca-8788-976a508cc92a}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Activates safety mode.
+METHOD PUBLIC SafetyActivate : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SafetyActivate := LaudaHelper.AddSuffix(
+	sData := CONCAT(STR1 := LaudaHelper.Commands.Write.Safety.ActivateSafetyMode, STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SafetyDeactivate" Id="{dc5f01fa-e432-43b1-bfde-a4ced02d8460}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Deactivates safety mode
+METHOD PUBLIC SafetyDeactivate : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SafetyDeactivate := LaudaHelper.AddSuffix(
+	sData := CONCAT(STR1 := LaudaHelper.Commands.Write.Safety.ActivateSafetyMode, STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetPumpStage" Id="{d72ad150-de4b-44ae-a4f7-1094bb53c8a5}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Sets pump stage, 1-6/9, depending on device specification
+METHOD PUBLIC SetPumpStage : T_MaxString
+VAR_INPUT
+	nStage	: UINT;
+END_VAR
+
+VAR
+	nPumpStageWithLimits	: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nStage < 1 THEN
+	nPumpStageWithLimits := 1;
+ELSIF nStage > 8 THEN
+	nPumpStageWithLimits := 8;
+ELSE
+	nPumpStageWithLimits := nStage;
+END_IF
+
+SetPumpStage := LaudaHelper.AddSuffix(sData := Tc2_Standard.CONCAT(
+		STR1 := LaudaHelper.Commands.Write.Pump.Stage, 
+		STR2 := UINT_TO_STRING(nPumpStageWithLimits)));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetTemperature" Id="{0a330ab3-c7e7-4fb1-8a7b-76fef02ed3e9}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Creates the command for temperature setting.
+METHOD PUBLIC SetTemperature : T_maxstring
+VAR_INPUT
+	fTemperature	: REAL;	// Temperature setpoint to be set on the device.
+END_VAR
+
+VAR_INST
+	errorID	: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_formatString(
+	sFormat := CONCAT(LaudaHelper.Commands.Write.Temperature.TemperatureSet, '%06.2f'),
+	arg1 := Tc2_Utilities.F_REAL(in := fTemperature),
+	nErrId => errorID);
+
+SetTemperature := LaudaHelper.AddSuffix(_formatString.sOut);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{c16a294b-88a1-46bf-be5f-a5d20ec10107}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Starts the device
+METHOD PUBLIC Start : T_MaxString
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Start := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Start);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{f1f48e5c-7cc2-4836-9eb9-f12206bbea07}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Stops the device
+METHOD PUBLIC Stop : T_MaxString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Stop := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Stop);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

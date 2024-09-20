@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_Rights" Id="{ef369afa-7017-4028-b822-7e0422eb34e1}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_Rights :
+STRUCT
+	KeyboardMaster_Locked				: STRING := 'IN_MODE_00_';
+	KeyboardRemoveControlUnit_Locked	: STRING := 'IN_MODE_03';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

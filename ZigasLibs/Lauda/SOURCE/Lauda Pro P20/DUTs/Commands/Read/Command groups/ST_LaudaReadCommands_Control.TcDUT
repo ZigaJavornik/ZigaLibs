@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_Control" Id="{240d4285-135a-4c03-acfa-038ba8a0e62e}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_Control :
+STRUCT
+	SetpointOffset	: STRING := 'IN_PAR_14_';
+	ControlVariable	: STRING := 'IN_MODE_01';
+	OffsetSource	: STRING := 'IN_MODE_04';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

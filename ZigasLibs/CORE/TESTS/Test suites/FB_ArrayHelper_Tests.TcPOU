@@ -15,37 +15,8 @@ Test04_InsertString();
 Test05_InsertStruct();
 Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
 Test07_SetAtFirstEmptySlot();
-Tes08_AllMethods_provideNonArrayVar_ExpectNothing();]]></ST>
+Test08_AllMethods_provideNonArrayVar_ExpectNothing();]]></ST>
     </Implementation>
-    <Method Name="Tes08_AllMethods_provideNonArrayVar_ExpectNothing" Id="{3ee8021c-32e6-0293-3123-601800a244ac}">
-      <Declaration><![CDATA[METHOD Tes08_AllMethods_provideNonArrayVar_ExpectNothing
-VAR_INPUT
-END_VAR
-VAR
-	notAnArray	: BOOL := TRUE;
-	val			: BOOL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Tes08_AllMethods_provideNonArrayVar_ExpectNothing');
-
-ArrayHelper.GetElementCount(arr := notAnArray, dataType := val);
-AssertTrue(
-	Condition := notAnArray, 
-	Message := 'When non-array is provided to any method, the method should not execute anything!');
-
-AssertEquals_DINT(
-	Actual := ArrayHelper.GetMaxIndex(arr := notAnArray, dataType := val, startIndex := 0),
-	Expected := 0,
-	Message := 'When non-array is provided, max index returned should be 0!');
-	
-AssertTrue(
-	Condition := notAnArray, 
-	Message := 'When non-array is provided to any method, the method should not execute anything!');
-	
-TcUnit.TEST_FINISHED();]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
 VAR_INPUT
@@ -223,7 +194,7 @@ END_FOR
 
 ArrayHelper.ShiftUp(
 	arr := arr,
-	element := arr[0]);
+	dataType := arr[0]);
 
 AssertEquals_INT(
 	Actual := arr[0],
@@ -255,26 +226,37 @@ VAR_INPUT
 END_VAR
 
 VAR
-	arr	: ARRAY[0..69] OF T_ArrayIndexer;
+	arr		: ARRAY[0..69] OF T_ArrayIndexer;
+	arr2	: ARRAY[0..69] OF BOOL;
 	valueToSet	: T_ArrayIndexer := 9999;
 	i	: T_ArrayIndexer;
+	boolValueToSet	: BOOL := TRUE;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test07_SetAtFirstEmptySlot');
 
 FOR i := 0 TO 30 BY 1 DO
 	arr[i] := i + 1;
+	arr2[i] := TRUE;
 END_FOR
 
 ArrayHelper.SetAtFirstEmptySlot(
 	arr := arr,
 	item := valueToSet);
 
+ArrayHelper.SetAtFirstEmptySlot(
+	arr := arr2,
+	item := boolValueToSet);
+
 FOR i := 0 TO 30 BY 1 DO
 	AssertEquals_dint(
 		Expected := i + 1,
 		Actual := arr[i],
 		Message := 'Setting first empty slot should not have changed non-empty fields!');
+		
+	AssertTrue(
+		Condition := arr2[i],
+		Message := 'Setting first empty slot for array of booleans should not have changed non-empty fields!');
 END_FOR
 
 AssertEquals(
@@ -282,11 +264,48 @@ AssertEquals(
 	Actual := arr[31],
 	Message := 'Setting first empty slot failed, first empty element differs!');
 	
+AssertTrue(
+	Condition := arr2[31],
+	Message := 'Setting first empty slot failed, first empty element should be set to TRUE!');
+	
 AssertEquals_DINT(
 	Expected := 0,
 	Actual := arr[32],
 	Message := 'Setting first empty slot failed, item after the inserted slot should be empty!');
 	
+AssertFalse(
+	Condition := arr2[32],
+	Message := 'Setting first empty slot failed, item after the inserted slot should be empty!');	
+	
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_AllMethods_provideNonArrayVar_ExpectNothing" Id="{3ee8021c-32e6-0293-3123-601800a244ac}">
+      <Declaration><![CDATA[METHOD Test08_AllMethods_provideNonArrayVar_ExpectNothing
+VAR_INPUT
+END_VAR
+VAR
+	notAnArray	: BOOL := TRUE;
+	val			: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Tes08_AllMethods_provideNonArrayVar_ExpectNothing');
+
+ArrayHelper.GetElementCount(arr := notAnArray, dataType := val);
+AssertTrue(
+	Condition := notAnArray, 
+	Message := 'When non-array is provided to any method, the method should not execute anything!');
+
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(arr := notAnArray, dataType := val, startIndex := 0),
+	Expected := 0,
+	Message := 'When non-array is provided, max index returned should be 0!');
+	
+AssertTrue(
+	Condition := notAnArray, 
+	Message := 'When non-array is provided to any method, the method should not execute anything!');
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>

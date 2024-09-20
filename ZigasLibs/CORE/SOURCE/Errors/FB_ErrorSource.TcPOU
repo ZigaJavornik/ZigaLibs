@@ -3,10 +3,10 @@
   <POU Name="FB_ErrorSource" Id="{39c13ed9-6860-004f-28d1-bfe8a964ba5b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
 VAR
-	_errorSource	: ST_ErrorSource;
+	_errorSource	: ST_ErrorSource := (InstanceName := GetInstanceName());
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_errorSource.InstanceName := GetInstanceName();]]></ST>
+      <ST><![CDATA[]]></ST>
     </Implementation>
     <Property Name="ErrorSource" Id="{15c87816-e531-04de-26f6-1439ba97e2e1}">
       <Declaration><![CDATA[PROPERTY ErrorSource : REFERENCE TO ST_ErrorSource

@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="LaudaHelper" Id="{5acd5e62-03b6-479d-9df5-3168db57c12d}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+
+// Provides various helper methods for easier communication with Lauda Pro device. 
+// Program does not require being called, a simple access to methods is enough.
+PROGRAM LaudaHelper
+VAR
+	_formatString			: FB_FormatString;
+	_laudaCommandGenerator	: FB_LaudaCommandGenerator;	
+	_commands				: ST_LaudaCommands;
+	_responseErrors			: ST_LaudaResponseErrors;
+END_VAR
+
+VAR CONSTANT
+	COMMAND_SUFFIX				: STRING := '$R$L';
+	SEND_COMMAND_RESPONSE_OK	: STRING := 'OK';
+	COMMAND_RESPONSE_ERROR		: STRING := 'ERR_'; 
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{5c9e2e1c-123c-00b8-3629-f01ebd9a4ad5}">
+      <Folder Name="Methods" Id="{ba0a0270-4ff9-0f65-29db-10207a3f8a33}" />
+      <Folder Name="Properties" Id="{3faa6eac-9c4c-06a7-2ebe-7f171cb16b03}" />
+    </Folder>
+    <Folder Name="Public" Id="{529b492b-6a78-0a59-1be4-5e77ab9755b6}">
+      <Folder Name="Methods" Id="{09d0a086-a5a9-0373-3f4f-1b982e746ca3}" />
+      <Folder Name="Properties" Id="{060010de-b76d-01ee-3b57-77fee967de60}" />
+    </Folder>
+    <Method Name="AddSuffix" Id="{d18e6d12-3b1f-4075-82e5-c2b6674e9e64}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Adds suffix to the data command.
+METHOD PUBLIC AddSuffix : Tc2_System.T_MaxString
+VAR_INPUT
+	sData	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddSuffix := Tc2_Standard.CONCAT(STR1 := sData, STR2 := COMMAND_SUFFIX);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Commands" Id="{609b6c40-e36c-40e5-bda5-5b2af5700849}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[PROPERTY Commands : REFERENCE TO ST_LaudaCommands]]></Declaration>
+      <Get Name="Get" Id="{c5a0794f-4961-4c2b-b044-e2a5792a77f2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Commands ref= _commands;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="GenerateComand" Id="{b11d0ed1-8494-4d4e-a77b-b52d6dee4a60}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Provides access to command generation methods.
+METHOD PUBLIC GenerateComand : REFERENCE TO FB_LaudaCommandGenerator
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GenerateComand ref= _laudaCommandGenerator;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ParseLaudaFaultDiagnosis" Id="{61fdc476-affc-0f4c-0499-cf71f17ce974}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Parses the RAW data response for fault diagnosis and returns the faults structure.
+METHOD ParseLaudaFaultDiagnosis : ST_LaudaFaults
+VAR_INPUT
+	sDiagnosisResposne	: Tc2_System.T_MaxString;
+END_VAR
+VAR
+	sTmp		: Tc2_System.T_MaxString;
+	nResponse	: BYTE;
+	stFaults	: ST_LaudaFaults;
+END_VAR
+
+(*
+
+*)
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sTmp := RemoveSuffix(sData := sDiagnosisResposne);
+
+stFaults.Error := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 1, 
+	LEN := 1)));
+
+stFaults.Alarm := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 2, 
+	LEN := 1)));
+	
+stFaults.Warning := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 3, 
+	LEN := 1)));
+	
+stFaults.Overtemp := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 4, 
+	LEN := 1)));
+	
+stFaults.Sublevel := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 5, 
+	LEN := 1)));
+	
+stFaults.HigherLevel := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 6, 
+	LEN := 1)));
+	
+stFaults.ExternalControlValueMissing := INT_TO_BOOL(STRING_TO_INT(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 7, 
+	LEN := 1)));
+	
+ParseLaudaFaultDiagnosis := stFaults;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ParseResponseError" Id="{24af8483-37d5-0df8-3b52-b03cfe8521a7}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Parses the error and returns the error message for further diagnosis
+METHOD PUBLIC ParseResponseError : E_LaudaResponseError
+VAR_INPUT
+	Response	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Search the errors from highest to lowest to avoid case such as ERR_30 and you find it with ERR_3
+// If success, return
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantActivateFromSafetyMode) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.CANT_ACTIVATE_FROM_SAFETY_MODE;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantStartProgrammer_AnalogSetpointIsUsed) <> 0 
+THEN
+	ParseResponseError :=  E_LaudaResponseError.CANT_START_PROGRAMMER_ANALOG_SETPOINT_USED;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantSetValue_ProgrammerRunningOrPaused) <> 0 
+THEN
+	ParseResponseError :=  E_LaudaResponseError.CANT_SET_VALUE_PROGRAMMER_RUNNING_OR_PAUSED;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SafetyModeCantBeStarted_ItIsNotEnabled) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.SAFETY_MODE_CANT_START_IF_NOT_ENABLED;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.AnalogValueNotPresent) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.ANALOG_VALUE_NOT_PRESENT;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ExternalTemperatureProbeMissing) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.EXTERNAL_TEMPERATURE_PROBE_MISSING;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SetpointNotPossible_AnalogSetpointIsUsed) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.SETPOINT_NOT_POSSIBLE_WITH_ANALOG_SETPOINT_USED;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.AllSegmentsInTheProgrammerAreOccupied) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.ALL_SEGMENTS_IN_THE_PROGRAMMER_OCCUPIED;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ModuleOrValueNotAvailable) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.MODULE_OR_VALUE_NOT_AVAILABLE;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ImpermissableValue) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.IMPERMISSABLE_VALUE;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SyntaxError) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.SYNTAX_ERROR;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.WrongCommand) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.WRONG_COMMAND;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.WrongEntry) <> 0 
+THEN
+	ParseResponseError := E_LaudaResponseError.WRONG_ENTRY;
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveSuffix" Id="{d4f7fbc9-8f9a-48df-9e12-26c5de8bf8c1}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Removes suffix from the provided data string
+METHOD PUBLIC RemoveSuffix : Tc2_System.T_MaxString
+VAR_INPUT
+	sData	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	sDataWithoutSuffix	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Tc2_Utilities.FindAndDelete(
+	pDstString := ADR(sDataWithoutSuffix),
+	nDstSize := SIZEOF(sDataWithoutSuffix),
+	pDeleteString := ADR(COMMAND_SUFFIX),
+	pSrcString := ADR(sData));
+	
+RemoveSuffix := sDataWithoutSuffix;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ResponseErrors" Id="{86275407-4853-0487-14e8-ffd076fa8690}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[PROPERTY ResponseErrors : REFERENCE TO ST_LaudaResponseErrors]]></Declaration>
+      <Get Name="Get" Id="{6d9c4b67-fe3f-0efa-0ea8-74b5653cfcac}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ResponseErrors ref= _responseErrors;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ValidateReadCommandResponse" Id="{3ba92dc6-fc9a-41e4-8c50-d146ee9d3d99}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Validates the response when doing a read command to Lauda Pro Thermostat.
+// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.
+METHOD PUBLIC ValidateReadCommandResponse : BOOL
+VAR_INPUT
+	sResponse	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateReadCommandResponse := 
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_RESPONSE_ERROR) = 0 AND
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_SUFFIX) <> 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateSendCommandResponse" Id="{d1137581-17b6-4354-b04f-f3729937d89c}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Validates the response when doing a write command to Lauda Pro Thermostat.
+// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported
+METHOD PUBLIC ValidateSendCommandResponse : BOOL
+VAR_INPUT
+	sResponse	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateSendCommandResponse := 
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := SEND_COMMAND_RESPONSE_OK) <> 0 AND
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_RESPONSE_ERROR) = 0 AND
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_SUFFIX) <> 0;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

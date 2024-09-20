@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands" Id="{0bc333c8-8c3b-4e54-a2bf-f040fc2046ce}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands :
+STRUCT
+	Temperature			: ST_LaudaReadCommands_Temperature;
+	Pump				: ST_LaudaReadCommands_Pump;
+	FillLevel			: ST_LaudaReadCommands_FillLevel;
+	ActuatingSignal		: ST_LaudaReadCommands_ActuatingSignal;
+	Cooling				: ST_LaudaReadCommands_Cooling;
+	Safety				: ST_LaudaReadCommands_Safety;
+	ControlParameters	: ST_LaudaReadCommands_ControlParameters;
+	Control				: ST_LaudaReadCommands_Control;
+	Rights				: ST_LaudaReadCommands_Rights;
+	Status				: ST_LaudaReadCommands_Status;
+	SwVersion			: ST_LaudaReadCommands_SwVersions;	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_LaudaReadCommands_ActuatingSignal" Id="{38129f9c-1466-49d0-a70d-970bf3fc9b07}">
+    <Declaration><![CDATA[TYPE ST_LaudaReadCommands_ActuatingSignal :
+STRUCT
+	Value	: STRING := 'IN_PV_06';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
