@@ -14,15 +14,7 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Folder Name="01_Public" Id="{a901709e-65ff-02ba-1882-954c90422ffe}">
-      <Folder Name="Methods" Id="{034eb1a8-371f-0bc2-0a83-68bfc92ab6ab}" />
-      <Folder Name="Properties" Id="{5388ddf0-eac1-06cd-1fbf-7a74eaf61001}" />
-    </Folder>
-    <Folder Name="02_Private" Id="{584ecc35-957c-0307-1ab8-e432c95fe82c}">
-      <Folder Name="Methods" Id="{261ded91-11d8-0a68-327b-879e68457faa}" />
-      <Folder Name="Properties" Id="{396770d2-ec2c-0c1a-0123-ad5c609c31f5}" />
-    </Folder>
-    <Property Name="AmsAddress" Id="{aa2c0e77-cb1f-05b3-0b95-3148b235b704}" FolderPath="01_Public\Properties\">
+    <Property Name="AmsAddress" Id="{aa2c0e77-cb1f-05b3-0b95-3148b235b704}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets or sets the Ams address structure*)
 PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
@@ -44,7 +36,7 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <Method Name="Close" Id="{0ec740c9-72a4-0493-3594-94814e1098ab}" FolderPath="02_Private\Methods\">
+    <Method Name="Close" Id="{0ec740c9-72a4-0493-3594-94814e1098ab}">
       <Declaration><![CDATA[(* Closes the file (if opened). Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD PRIVATE Close : BOOL
 
@@ -90,7 +82,7 @@ IF fbFileClose.bError THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}" FolderPath="01_Public\Methods\">
+    <Method Name="Create" Id="{95b0bc4e-1d3a-0147-244a-689cdd48c01e}">
       <Declaration><![CDATA[(* Creates the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD Create : BOOL
 VAR_INPUT
@@ -131,10 +123,11 @@ END_VAR]]></Declaration>
 
 	FILE_CREATE_STATE_DONE:
 		nFileCreateState := FILE_CREATE_STATE_START;
+		Create := TRUE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Delete" Id="{f911ae8b-dfd7-01f7-2a6d-d94850bdc984}" FolderPath="01_Public\Methods\">
+    <Method Name="Delete" Id="{f911ae8b-dfd7-01f7-2a6d-d94850bdc984}">
       <Declaration><![CDATA[(* Deletes the file, if it exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD Delete : BOOL
 
@@ -158,7 +151,7 @@ END_IF
 _error := _error OR fbFileDelete.bError;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Error" Id="{bbad0e32-6daa-0a76-0a27-61712e257d88}" FolderPath="01_Public\Properties\">
+    <Property Name="Error" Id="{bbad0e32-6daa-0a76-0a27-61712e257d88}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets the error state, if any of the functions failed.*)
 PROPERTY Error : BOOL
@@ -172,7 +165,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Exists" Id="{005d094e-7014-05a1-0ced-6d59d6885282}" FolderPath="01_Public\Methods\">
+    <Method Name="Exists" Id="{005d094e-7014-05a1-0ced-6d59d6885282}">
       <Declaration><![CDATA[(* Checks if the file exists. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD Exists : BOOL
 VAR_INPUT
@@ -237,7 +230,7 @@ END_CASE
 _error := _error OR fbFileExists.bError;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}" FolderPath="01_Public\Properties\">
+    <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets or sets various file properties*)
 PROPERTY FileProperties : REFERENCE TO ZigasLibs_Core.ST_FileProperties
@@ -259,7 +252,7 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <Property Name="HandleCreated" Id="{06b71810-8ae3-05fa-217b-930c580da831}" FolderPath="02_Private\Properties\">
+    <Property Name="HandleCreated" Id="{06b71810-8ae3-05fa-217b-930c580da831}">
       <Declaration><![CDATA[(* Gets the state of the file handle - if file is opened and handle is created returns TRUE.*)
 PROPERTY PRIVATE HandleCreated : BOOL
 ]]></Declaration>
@@ -272,7 +265,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Open" Id="{d86cbe39-6556-0969-3e02-0bf0863a7c05}" FolderPath="02_Private\Methods\">
+    <Method Name="Open" Id="{d86cbe39-6556-0969-3e02-0bf0863a7c05}">
       <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD PRIVATE Open : BOOL
 VAR_INPUT
@@ -302,15 +295,12 @@ IF fbFileOpen.bError THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Read" Id="{b10554be-8e89-07ac-2f05-1e80a59ec182}" FolderPath="01_Public\Methods\">
+    <Method Name="Read" Id="{b10554be-8e89-07ac-2f05-1e80a59ec182}">
       <Declaration><![CDATA[(* Reads the content of the opened file to the target buffer.
  Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD Read : BOOL
 VAR_INPUT
-	(* Pointer to the buffer, where the file content will be read to.*)
-	ptrBuffer	: PVOID;
-	(* Size of the buffer - SIZEOF()*)
-	nBufferSize	: UDINT;
+	buffer	: ANY;
 END_VAR
 
 
@@ -328,7 +318,7 @@ VAR CONSTANT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// An error is triggered if handle is not created or buffer pointer is invalid
-IF ptrBuffer = 0 OR nBufferSize = 0 THEN
+IF buffer.pValue = 0 OR buffer.diSize = 0 THEN
 	_error := TRUE;
 	Read := TRUE;
 	RETURN;
@@ -345,8 +335,8 @@ CASE nReadState OF
 		fbFileRead(
 			bExecute := TRUE,
 			hFile := _fileHandle,
-			pReadBuff := ptrBuffer,
-			cbReadLen := nBufferSize);
+			pReadBuff := buffer.pValue,
+			cbReadLen := DINT_TO_UDINT(buffer.diSize));
 			
 		nReadState := READ_STATE_WAIT;
 		
@@ -373,11 +363,10 @@ _error := _error OR fbFileRead.bError;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteBinary" Id="{780c681b-a718-05c7-104f-35fd68ebb2e9}" FolderPath="02_Private\Methods\">
+    <Method Name="WriteBinary" Id="{780c681b-a718-05c7-104f-35fd68ebb2e9}">
       <Declaration><![CDATA[METHOD PRIVATE WriteBinary : BOOL
 VAR_INPUT
-	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
-	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	data		: ANY;
 	mode		: E_FileOpenMode;
 END_VAR
 
@@ -405,8 +394,8 @@ END_VAR
 		fbFileWrite(
 			bExecute := TRUE,
 			hFile := _fileHandle,
-			pWriteBuff := ptrSource,
-			cbWriteLen := nSize);
+			pWriteBuff := data.pValue,
+			cbWriteLen := data.diSize);
 			
 		nWriteState := WRITE_WAIT_DONE;
 	
@@ -428,45 +417,39 @@ IF fbFileWrite.bError THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteBinary_Append" Id="{e6cf0183-f5bc-06db-3d81-64cf9e0ad080}" FolderPath="01_Public\Methods\">
+    <Method Name="WriteBinary_Append" Id="{e6cf0183-f5bc-06db-3d81-64cf9e0ad080}">
       <Declaration><![CDATA[// Writes the content to the end of the file (appends).
 // Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD WriteBinary_Append : BOOL
 VAR_INPUT
-	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
-	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	data	: ANY;
 END_VAR
 
 
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[WriteBinary_Append := THIS^.WriteBinary(
-	nSize := nSize, 
-	ptrSource := ptrSource, 
+	data := data,
 	mode := E_FileOpenMode.BINARY_APPEND);
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteBinary_Overwrite" Id="{2506679e-eb24-02ab-23c7-ef5c2927e463}" FolderPath="01_Public\Methods\">
+    <Method Name="WriteBinary_Overwrite" Id="{2506679e-eb24-02ab-23c7-ef5c2927e463}">
       <Declaration><![CDATA[(* Writes the content to the the file (overwrites any existing content).
  Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD WriteBinary_Overwrite : BOOL
 VAR_INPUT
-	(* Pointer to the source to be written - use ADR().*)
-	ptrSource	: POINTER TO BYTE;
-	(* Size of the source variable - use SIZEOF().*)
-	nSize	: UDINT;
+	data		: ANY;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[WriteBinary_Overwrite := THIS^.WriteBinary(
-	nSize := nSize, 
-	ptrSource := ptrSource, 
+	data := data, 
 	mode := E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING);
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteLine" Id="{56b8797f-ee5e-07a9-241c-a9d8422ac6d2}" FolderPath="02_Private\Methods\">
+    <Method Name="WriteLine" Id="{56b8797f-ee5e-07a9-241c-a9d8422ac6d2}">
       <Declaration><![CDATA[METHOD PRIVATE WriteLine : BOOL
 VAR_INPUT
 	(* Text to be written.*)
@@ -521,7 +504,7 @@ IF fbFilePuts.bError THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteLine_Append" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}" FolderPath="01_Public\Methods\">
+    <Method Name="WriteLine_Append" Id="{01cbf5cb-08df-068e-329a-adcfa3841827}">
       <Declaration><![CDATA[// Writes the string content to the end of the file (appends). If the file does not exist, it will be created.
 // Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD WriteLine_Append : BOOL
@@ -542,7 +525,7 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="WriteLine_Overwrite" Id="{8513e561-b0db-0b1e-3304-e5853254ce5a}" FolderPath="01_Public\Methods\">
+    <Method Name="WriteLine_Overwrite" Id="{8513e561-b0db-0b1e-3304-e5853254ce5a}">
       <Declaration><![CDATA[(* Writes the string content to file and overwrites any existing content. If the file does not exist, it will be created.
  Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD WriteLine_Overwrite : BOOL

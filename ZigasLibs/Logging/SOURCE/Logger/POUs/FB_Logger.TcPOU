@@ -6,7 +6,7 @@ VAR
 	_fileProperties			: ST_FileProperties;
 	_logLevelHeaders		: ZigasLibs_Core.ST_LogLevelHeaders;
 	_fileHandler			: FB_FileHandler;
-	_events					: ARRAY[0..100] OF Tc2_System.T_MaxString;
+	_logEntries				: ARRAY[0..100] OF Tc2_System.T_MaxString;
 	_state					: E_LoggerState;
 	_oldState				: E_LoggerState;
 	_fileExists				: BOOL;
@@ -31,7 +31,7 @@ END_IF
 
 CASE _state OF 
 	E_LoggerState.IDLE:
-		IF _events[0] <> '' AND _localSystemTime.CurrentTime.IsValid THEN
+		IF _logEntries[0] <> '' AND _localSystemTime.CurrentTime.IsValid THEN
 			_state := E_LoggerState.WRITE_TO_FILE;
 		END_IF		
 		
@@ -58,7 +58,7 @@ CASE _state OF
 			.AddString(str := '.txt')
 			.Create();
 		
-		IF NOT _fileHandler.Error AND_THEN _fileHandler.WriteLine_Append(sContent := _events[0]) THEN
+		IF NOT _fileHandler.Error AND_THEN _fileHandler.WriteLine_Append(sContent := _logEntries[0]) THEN
 			RemoveLogEntry();
 			_state := E_LoggerState.IDLE;
 		END_IF
@@ -74,10 +74,7 @@ END_CASE
 
 _oldState := _state;]]></ST>
     </Implementation>
-    <Folder Name="Private" Id="{a06b4692-a5ee-0c61-115f-ec297f5c95cb}">
-      <Folder Name="Methods" Id="{860ab4e4-17f1-06ee-0699-9813d104f279}" />
-    </Folder>
-    <Method Name="AddLogEntry" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}" FolderPath="Private\Methods\">
+    <Method Name="AddLogEntry" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}">
       <Declaration><![CDATA[METHOD PRIVATE AddLogEntry
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
@@ -88,9 +85,12 @@ VAR
 	eventsMaxIndex	: ZigasLibs_Core.T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[message := CONCAT(STR1 := message, STR2 := ZigasLibs_Core.StringConstants.NewLine);
+        <ST><![CDATA[message := Tc2_Standard.CONCAT(
+	STR1 := message, 
+	STR2 := ZigasLibs_Core.StringConstants.NewLine);
+
 ZigasLibs_Core.ArrayHelper.SetAtFirstEmptySlot(
-	arr := _events,
+	arr := _logEntries,
 	item := message);
 ]]></ST>
       </Implementation>
@@ -125,7 +125,7 @@ PROPERTY PUBLIC BufferFull : BOOL]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[BufferFull := _events[100] <> '';]]></ST>
+          <ST><![CDATA[BufferFull := _logEntries[100] <> '';]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -159,7 +159,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
+        <ST><![CDATA[IF NOT Ready THEN
+	RETURN;
+END_IF
+
+AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := message)
@@ -175,7 +179,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
+        <ST><![CDATA[IF NOT Ready THEN
+	RETURN;
+END_IF
+
+AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Error)
@@ -191,7 +199,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
+        <ST><![CDATA[IF NOT Ready THEN
+	RETURN;
+END_IF
+
+AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Info)
@@ -229,7 +241,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[AddLogEntry(_stringBuilder.Reset() 
+        <ST><![CDATA[IF NOT Ready THEN
+	RETURN;
+END_IF
+
+AddLogEntry(_stringBuilder.Reset() 
 	.AddString(str := _localSystemTimeString)
 	.AddString(str := ': ')
 	.AddString(str := _logLevelHeaders.Warning)
@@ -237,13 +253,26 @@ END_VAR
 	.Create());]]></ST>
       </Implementation>
     </Method>
-    <Method Name="RemoveLogEntry" Id="{134d7547-21a2-03bc-1ab5-77c94d18ef87}" FolderPath="Private\Methods\">
+    <Property Name="Ready" Id="{c35840e3-946e-0c2d-2fef-3d51340adcda}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Returns TRUE if logger is ready to create logs. This mostly refers to system time being valid.
+PROPERTY PUBLIC Ready : BOOL]]></Declaration>
+      <Get Name="Get" Id="{19b5e194-d7eb-0906-3299-cb36db04d559}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Ready := _localSystemTime.CurrentTime.IsValid;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="RemoveLogEntry" Id="{134d7547-21a2-03bc-1ab5-77c94d18ef87}">
       <Declaration><![CDATA[METHOD RemoveLogEntry
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ZigasLibs_Core.ArrayHelper.ShiftDown(
-	arr := _events, 
-	dataType := _events[0]);]]></ST>
+	arr := _logEntries, 
+	dataType := _logEntries[0]);]]></ST>
       </Implementation>
     </Method>
   </POU>

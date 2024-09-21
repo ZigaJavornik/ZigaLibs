@@ -12,13 +12,13 @@ VAR
 	_deleteFileState		: (DELETE, CHECK_FILE_EXIST, DELETE_DONE);
 	_existFileState			: (EXIST_CREATE, EXIST_CHECK, EXIST_DELETE, EXIST_DONE);
 	_writeFileBytesState	: (WRITEBYTES_START, WRITEBYTES_WAIT, WRITEBYTES_CHECK_CONTENT, WRITEBYTES_DELETE, WRITEBYTES_DONE);
+	sContentForBinaryWriteTest	: STRING(300) := 'In a world full of possibilities, every moment is a chance to embrace growth, explore new horizons, and ignite your inner potential. Believe in the power of change, stay curious, and never stop learning. Your journey is unique, and every step forward brings you closer to your dreams.';
 END_VAR
 
 VAR CONSTANT
-	FOLDER_PATH 				: Tc2_System.T_MaxString := 'C:\Work\GitHub\TwinCAT\ZigaCAT\Tests\FileHandler';
+	FOLDER_PATH 				: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler';
 	FILE_NAME					: Tc2_System.T_MaxString := 'FileName.txt';
 	TEST_FILE_CONTENT_TEXT 		: Tc2_System.T_MaxString := 'This is a test file content!';
-	TEST_FILE_CONTENT_BINARY	: STRING(300) := 'In a world full of possibilities, every moment is a chance to embrace growth, explore new horizons, and ignite your inner potential. Believe in the power of change, stay curious, and never stop learning. Your journey is unique, and every step forward brings you closer to your dreams.';
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -87,9 +87,7 @@ CASE _readFileState OF
 
 	READ:
 		IF _writeFileLineState = WRITE_DONE THEN
-			IF _fileHandler.Read(
-					nBufferSize := SIZEOF(sFileReadContentResult), 
-					ptrBuffer := ADR(sFileReadContentResult)) 
+			IF _fileHandler.Read(sFileReadContentResult) 
 			THEN
 				AssertEquals_STRING(
 					Expected := TEST_FILE_CONTENT_TEXT,
@@ -180,7 +178,7 @@ END_VAR
 
 VAR_INST
 	sReadResult		: STRING(300);
-	sExpectedResult	: STRING(300) := TEST_FILE_CONTENT_BINARY;
+	sExpectedResult	: STRING(300) := sContentForBinaryWriteTest;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test_05_WriteBinaryAppend_NewFile_ExpectSameContent');
@@ -193,13 +191,13 @@ CASE _writeFileBytesState OF
 		END_IF
 		
 	WRITEBYTES_WAIT:
-		IF _fileHandler.WriteBinary_Append(nSize := SIZEOF(TEST_FILE_CONTENT_BINARY), ptrSource := ADR(TEST_FILE_CONTENT_BINARY)) THEN
+		IF _fileHandler.WriteBinary_Append(data := sContentForBinaryWriteTest) THEN
 			AssertFalse(Condition := _fileHandler.Error, Message := 'An unexpected error occured while writing bytes to a file!');
 			_writeFileBytesState := WRITEBYTES_CHECK_CONTENT;
 		END_IF
 	
 	WRITEBYTES_CHECK_CONTENT:
-		IF _fileHandler.Read(nBufferSize := SIZEOF(sReadResult), ptrBuffer := ADR(sReadResult)) THEN
+		IF _fileHandler.Read(sReadResult) THEN
 			AssertEquals(Expected := sExpectedResult, Actual := sReadResult, Message := 'Writing multiple bytes to a file failed!');
 			_writeFileBytesState := WRITEBYTES_DELETE;
 		END_IF

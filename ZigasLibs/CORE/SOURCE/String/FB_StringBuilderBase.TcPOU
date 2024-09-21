@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_StringBuilderBase" Id="{4af2ae7b-34e5-0402-2ab5-b787ed381493}" SpecialFunc="None">
-    <Declaration><![CDATA[// Provides basic string builder implementation
+    <Declaration><![CDATA[(* Provides basic string builder implementation.
+IMPORTANT NOTE! Doing too many method chains might cause the codesys compiler to either be very slow
+when doing the "generating code" part or even fail. Restrain to not using too many or too
+many nested methods ( method(fb.Method(fb2.Method())... ).
+*)
 FUNCTION_BLOCK FB_StringBuilderBase IMPLEMENTS I_StringBuilder;
 VAR
 	_string	: Tc2_System.T_MaxString;

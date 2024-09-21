@@ -34,8 +34,7 @@ END_VAR
 // Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD Read : BOOL
 VAR_INPUT
-	ptrBuffer	: PVOID;	// Pointer to the buffer, where the file content will be read to.
-	nBufferSize	: UDINT;	// Size of the buffer - SIZEOF()
+	buffer	: ANY;
 END_VAR
 ]]></Declaration>
     </Method>
@@ -44,8 +43,7 @@ END_VAR
 // Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD WriteBinary_Append : BOOL
 VAR_INPUT
-	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
-	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	data	: ANY;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="WriteBinary_Overwrite" Id="{b797a373-2575-086a-0c90-2cab40d8d804}">
@@ -53,8 +51,7 @@ END_VAR]]></Declaration>
 // Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD WriteBinary_Overwrite : BOOL
 VAR_INPUT
-	ptrSource	: POINTER TO BYTE;	// Pointer to the source to be written - use ADR().
-	nSize		: UDINT;	// Size of the source variable - use SIZEOF().
+	data	: ANY;
 END_VAR
 ]]></Declaration>
     </Method>

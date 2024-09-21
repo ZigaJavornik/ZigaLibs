@@ -13,9 +13,10 @@ END_VAR
       <ST><![CDATA[_localSystemTime(
 	sNetID:= '', 
 	bEnable:= TRUE, 
-	dwCycle:= 1,
-	bValid=> _currentSystemTimeInfo.IsValid, 
+	dwCycle:= 1, 
 	systemTime=> _currentSystemTimeInfo.Value);
+	
+_currentSystemTimeInfo.IsValid := _currentSystemTimeInfo.Value.wYear > 1970;
 	
 _dateTimeToStringCovnerter(
 	localSystemTime := _localSystemTime);]]></ST>

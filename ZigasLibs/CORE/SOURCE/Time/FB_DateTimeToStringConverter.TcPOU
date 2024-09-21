@@ -34,7 +34,7 @@ IF NOT __ISVALIDREF(localSystemTime) THEN
 	RETURN;
 END_IF
 
-(*CASE timeFormat OF
+CASE timeFormat OF
 	E_TimeFormat.DDMMYY:
 		result := stringBuilder.Reset()
 			.AddString(THIS^.Day(fillWithZeros))
@@ -142,7 +142,7 @@ END_IF
 END_CASE
 
 DateTime := result;
-*)
+
 {warning restore C0371}]]></ST>
       </Implementation>
     </Method>
