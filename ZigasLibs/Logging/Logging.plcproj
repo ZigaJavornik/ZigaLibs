@@ -193,6 +193,8 @@
           <Value>TIME#0ms</Value>
         </Parameter>
       </Parameters>
+      <Condition>UnitTests</Condition>
+      <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigasLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>
