@@ -1,11 +1,11 @@
-Various libraries for TwinCAT using OOP style. For example on usage see tests in the TESTS folder of the library project. Report any possible bugs :) 
-There are many project to choose from, but they all, for the most part, reference Core library - this is a library with core functionalities and interfaces.
+Various libraries for TwinCAT using OOP style. For example on usage see tests in the ```TESTS``` folder of the library project. Report any possible bugs :) 
+There are many project to choose from, but they all, for the most part, reference ```Core``` library - this is a library with core functionalities and interfaces.
 Current libraries include:
 
 ![image](https://github.com/user-attachments/assets/240a38a1-b08b-4952-b3ad-711e162df883)
 
 
-As a side note, the libraries contain "helper classes", which are programs that do not hold any body logic, thus they do not require being called. These "classes" have only methods and constants. As an example, this is a helper class for Ams:
+As a side note, the libraries contain "helper classes", which are programs that do not hold any body logic, thus they do not require being called. These "classes" have only ```methods``` and ```constants```. As an example, this is a helper class for Ams:
 
 ![image](https://github.com/user-attachments/assets/75aac691-a353-4d93-a660-af2455a43738)
 
@@ -29,6 +29,10 @@ IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
 ```
 
 
-With every release, the TcUnit is excluded via the "Compiler defines" due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148)
+With every release, the ```TcUnit``` is excluded via the```Compiler defines``` due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148). Entering ```UnitTests``` to the ```compiler defines``` field will enable the ```TcUnit``` library, which is required for compilation and test running, but not for execution of any library files.
+
+![image](https://github.com/user-attachments/assets/96ea302a-bb07-4d89-8e01-e3667cdce538)
+
+
 
 TwinCAT version: 4024.60 (08/09/2024)
