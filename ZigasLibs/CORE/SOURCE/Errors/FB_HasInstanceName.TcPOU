@@ -15,26 +15,52 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="FB_init" Id="{b1ecb943-9b1e-0f5b-3348-047bf079c662}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_instanceName := GetInstanceName();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetInstanceName" Id="{d24ef87c-cf7f-0ad5-241f-9344f720eb7a}">
-      <Declaration><![CDATA[METHOD PROTECTED GetInstanceName : T_MaxString
+      <Declaration><![CDATA[METHOD INTERNAL GetInstanceName : T_MaxString
 VAR
 	instanceName	: Tc2_System.T_MaxString;
 	dotPosition		: INT;
+	iteration	: INT;
+	maxAttempts	: INT := 10;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[instanceName := _instancePath;
 
-WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> 0 DO
+WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> 0 AND (iteration < maxAttempts) DO
 	dotPosition := Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.');
 	instanceName := Tc2_Standard.DELETE(
 		STR := instanceName,
-		POS := 0,	
+		POS := 1,	
 		LEN := dotPosition);
+		
+	iteration := iteration + 1;
 END_WHILE
 
 GetInstanceName := instanceName;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="InstanceName" Id="{0894143d-927f-0465-344c-14f9b9c738ea}">
+      <Declaration><![CDATA[PROPERTY InstanceName : Tc2_System.T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{b959f917-9381-0887-27aa-c909d33f58f6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[InstanceName := _instanceName;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="InstancePath" Id="{9665f2f7-723f-06f2-2fd9-4941869795b6}">
       <Declaration><![CDATA[PROPERTY InstancePath : Tc2_System.T_MaxString]]></Declaration>
       <Get Name="Get" Id="{280f29c4-2287-0abd-1386-09c1556898dc}">

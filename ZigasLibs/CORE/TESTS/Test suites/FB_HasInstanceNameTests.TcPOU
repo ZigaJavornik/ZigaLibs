@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasInstanceNameTests" Id="{fc7f1c45-4e05-0854-19c6-d70a4b102dae}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_HasInstanceNameTests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	fbHasInstanceName	:  FB_HasInstanceNameImpl;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_InstanceName();]]></ST>
+    </Implementation>
+    <Method Name="Test01_InstanceName" Id="{5d7d088d-abcc-0fd9-2182-97fbd3514b3d}">
+      <Declaration><![CDATA[METHOD Test01_InstanceName
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_InstanceName');
+
+AssertEquals_STRING(
+	Expected := 'fbHasInstanceName',
+	Actual := fbHasInstanceName.GetInstanceName(),
+	Message := 'GetInstanceName method returned incorrect instance name!');
+
+AssertEquals_STRING(
+	Expected := 'fbHasInstanceName',
+	Actual := fbHasInstanceName.InstanceName,
+	Message := 'InstanceName property returned incorret value!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_InstancePath" Id="{f581677f-1ea9-0956-3189-c0c8eb6c191a}">
+      <Declaration><![CDATA[METHOD Test02_InstancePath
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
