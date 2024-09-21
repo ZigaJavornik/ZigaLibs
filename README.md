@@ -21,7 +21,12 @@ Every project and object can and should have tests for them written. TcUnit fram
 
 Inside the "TEST" folder, there are test suites for  every ```FUNCTION_BLOCK```,```PROGRAM```,```FUNCTION```, etc... Example of how to create different logs with the logger tests:
 
-
+```
+IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
+  fbLogger.LogError('Error text....');
+  fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
+...
+```
 
 
 With every release, the TcUnit is excluded via the "Compiler defines" due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148)
