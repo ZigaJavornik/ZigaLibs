@@ -21,8 +21,7 @@
     <Placeholder>ZigaLibs_Logging</Placeholder>
     <Author>Žiga Javornik</Author>
     <Description>A library containing file/logging functionalities.</Description>
-    <CompilerDefines>
-    </CompilerDefines>
+    <CompilerDefines>UnitTests</CompilerDefines>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -61,10 +60,10 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_FileHandler_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_FileHandlerTests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_Logger_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_LoggerTests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Version\Global_Version.TcGVL">

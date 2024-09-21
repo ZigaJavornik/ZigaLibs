@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_FileHandler_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+  <POU Name="FB_FileHandlerTests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
-FUNCTION_BLOCK FB_FileHandler_Tests EXTENDS FB_TestSuite
+FUNCTION_BLOCK FB_FileHandlerTests EXTENDS FB_TestSuite
 
 // Create instance variables that will be accesible for all tests
 VAR
