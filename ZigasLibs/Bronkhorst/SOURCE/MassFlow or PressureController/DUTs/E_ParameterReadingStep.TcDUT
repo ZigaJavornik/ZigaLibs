@@ -6,8 +6,10 @@
 TYPE E_ParameterReadingStep :
 (
 	IDLE,
-	GET_DEVICE_ETHERCAT_NAME,
-	READ_COE_LIST
+	GAS_TYPE,
+	FLOW_UNIT,
+	DECIMAL_DIGITS,
+	FLOW_CAPACITY
 );
 END_TYPE
 ]]></Declaration>

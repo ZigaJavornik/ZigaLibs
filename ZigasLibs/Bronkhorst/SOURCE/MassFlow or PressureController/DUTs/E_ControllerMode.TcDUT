@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_ControllerMode" Id="{a82a0d98-5b9f-0956-0d93-111c2837644d}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_ControllerMode :
+(
+	Controlling 	:= 16#80,	// Control at setpoint value
+	ValveClosed		:= 16#83,	// No controller action, valve is closed
+	ControllerIdle	:= 16#84,	// No controller action, valve remains its position 
+	ValvePurge		:= 16#88	// No controller action, valve is fully open
+)USINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

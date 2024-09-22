@@ -62,10 +62,10 @@
 			<BaseType GUID="{18071995-0000-0000-0000-000000000042}">AMSADDR</BaseType>
 		</DataType>
 		<DataType>
-			<Name GUID="{12308137-8DC6-8A6D-8689-7BB32A9DCE1C}" AutoDeleteType="true">ST_BronkhorstMassFlowController_Inputs</Name>
-			<BitSize>96</BitSize>
+			<Name GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}" AutoDeleteType="true">ST_ControllerInputs</Name>
+			<BitSize>112</BitSize>
 			<SubItem>
-				<Name>ActualFlow</Name>
+				<Name>MeassuredValue</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>0</BitOffs>
@@ -77,15 +77,21 @@
 				<BitOffs>16</BitOffs>
 			</SubItem>
 			<SubItem>
+				<Name>StatusWord</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
 				<Name>AmsAddr</Name>
 				<Type GUID="{C92AF341-7BD6-622A-489B-93F78F170DEA}" Namespace="Tc2_System">ST_AmsAddr</Type>
 				<BitSize>64</BitSize>
-				<BitOffs>32</BitOffs>
+				<BitOffs>48</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{AE0AE09E-FF35-16E5-5093-B75B355E2A81}" AutoDeleteType="true">ST_BronkhorstMassFlowController_Outputs</Name>
-			<BitSize>32</BitSize>
+			<Name GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}" AutoDeleteType="true">ST_ControllerOutputs</Name>
+			<BitSize>48</BitSize>
 			<SubItem>
 				<Name>ControlByte</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
@@ -93,10 +99,16 @@
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>FlowSetpoint</Name>
+				<Name>Setpoint</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ControlMode</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000002}">USINT</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>32</BitOffs>
 			</SubItem>
 		</DataType>
 	</DataTypes>
@@ -150,21 +162,53 @@
 				</Instance>
 			</Project>
 			<Project GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{E3F8CE34-BB7E-96D2-C1D1-C21AF8DFEE71}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{70793DCA-9EA8-B681-15AA-DA7DC8F8D2C6}">
 					<Name>Bronkhorst Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
 						<Name>TestsTask Inputs</Name>
 						<Var>
-							<Name>PRG_TESTS.test.Inputs</Name>
-							<Type GUID="{12308137-8DC6-8A6D-8689-7BB32A9DCE1C}">ST_BronkhorstMassFlowController_Inputs</Type>
+							<Name>PRG_TESTS.FlowControllerTests._mfc.Inputs</Name>
+							<Type GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}">ST_ControllerInputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST02_MEASUREDVALUECONVERSION_32767__FBMFC.Inputs</Name>
+							<Type GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}">ST_ControllerInputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST04_MEASSUREDVALUECONVERSION_DECIMALDIGITS0__FBMFC.Inputs</Name>
+							<Type GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}">ST_ControllerInputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST06_SETPOINTVALUECONVERSION_10000__FBMFC.Inputs</Name>
+							<Type GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}">ST_ControllerInputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST08_SETPOINTVALUECONVERSION_DECIMALDIGITS0__FBMFC.Inputs</Name>
+							<Type GUID="{ABE01914-1DEC-1EBA-C896-357ED8AFBBB9}">ST_ControllerInputs</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>TestsTask Outputs</Name>
 						<Var>
-							<Name>PRG_TESTS.test.Outputs</Name>
-							<Type GUID="{AE0AE09E-FF35-16E5-5093-B75B355E2A81}">ST_BronkhorstMassFlowController_Outputs</Type>
+							<Name>PRG_TESTS.FlowControllerTests._mfc.Outputs</Name>
+							<Type GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}">ST_ControllerOutputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST02_MEASUREDVALUECONVERSION_32767__FBMFC.Outputs</Name>
+							<Type GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}">ST_ControllerOutputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST04_MEASSUREDVALUECONVERSION_DECIMALDIGITS0__FBMFC.Outputs</Name>
+							<Type GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}">ST_ControllerOutputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST06_SETPOINTVALUECONVERSION_10000__FBMFC.Outputs</Name>
+							<Type GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}">ST_ControllerOutputs</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.FlowControllerTests.__FB_FLOWCONTROLLER_TESTS__TEST08_SETPOINTVALUECONVERSION_DECIMALDIGITS0__FBMFC.Outputs</Name>
+							<Type GUID="{121F76AF-8FE9-F1FF-BC22-EEC3899A3AA5}">ST_ControllerOutputs</Type>
 						</Var>
 					</Vars>
 					<Contexts>
@@ -183,7 +227,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{19D99D19-0AF8-EB77-3237-60CEB4B8329A}">
 					<Name>Lauda Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -203,7 +247,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502100" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcpIp\TcpIp.tmc" TmcHash="{AB463B0E-BFA4-E21D-2046-92DFE9DDB751}">
 					<Name>TcpIp Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>

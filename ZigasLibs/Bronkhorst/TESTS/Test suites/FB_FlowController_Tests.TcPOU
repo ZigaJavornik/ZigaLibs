@@ -1,0 +1,529 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_FlowController_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK FB_FlowController_Tests EXTENDS TcUnit.FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+	_mfc : FB_FlowController(	
+		bWriteLogs				:= TRUE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		mode					:= E_ControllerMode.Controlling);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+Test01_MeasuredValueConversion_1000();
+Test02_MeasuredValueConversion_32767();
+Test03_MeasuredValueConversion_0();
+Test04_MeassuredValueConversion_decimalDigits0();
+Test05_SetpointValueConversion_1000();
+Test06_SetpointValueConversion_10000();
+Test07_SetpointValueConversion_0();
+Test08_SetpointValueConversion_decimalDigits0();
+Test09_EnablePreventsOutoutFlowAndSetsControlByteToZero();
+Test10_ControllerStatusConversion();]]></ST>
+    </Implementation>
+    <Method Name="Test01_MeasuredValueConversion_1000" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_MeasuredValueConversion_1000
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test01_MeasuredValueConversion_1000');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc.Inputs),
+	Value := 1000);
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 2);
+	
+_mfc();	
+
+AssertEquals_REAL(
+	Actual := _mfc.fMeassuredValue,
+	Expected := 1000.0 / EXPT(10,2),
+	Delta := 0.1,
+	Message := 'Masured flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_MeasuredValueConversion_32767" Id="{fc2f24ef-ba15-042a-0451-3767d5c0c889}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_MeasuredValueConversion_32767
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	fbMfc : FB_FlowController(	
+		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		mode					:= E_ControllerMode.Controlling);
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test02_MeasuredValueConversion_32767');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc.Inputs),
+	Value := 32767);
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 2);
+	
+_mfc();	
+
+AssertEquals_REAL(
+	Actual := _mfc.fMeassuredValue,
+	Expected := 32767.0 / EXPT(10,2),
+	Delta := 0.1,
+	Message := 'Masured flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_MeasuredValueConversion_0" Id="{03814540-38be-07ef-0bcc-8c17af498a9b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test03_MeasuredValueConversion_0
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test03_MeasuredValueConversion_0');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc.Inputs),
+	Value := 0);
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 2);
+	
+_mfc();	
+
+AssertEquals_REAL(
+	Actual := _mfc.fMeassuredValue,
+	Expected := 0,
+	Delta := 0.1,
+	Message := 'Masured flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_MeassuredValueConversion_decimalDigits0" Id="{9cd3c449-2420-090a-0523-06f56050136d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test04_MeassuredValueConversion_decimalDigits0
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	fbMfc : FB_FlowController(	
+		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		mode					:= E_ControllerMode.Controlling);
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test04_MeassuredValueConversion_decimalDigits0');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc.Inputs),
+	Value := 30000);
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 0);
+	
+_mfc();	
+
+AssertEquals_REAL(
+	Actual := _mfc.fMeassuredValue,
+	Expected := 30000,
+	Delta := 0.1,
+	Message := 'Masured flow with decimal digits value being 0 is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_SetpointValueConversion_1000" Id="{b851b4de-8187-0631-0115-fcf0c190bcb5}">
+      <Declaration><![CDATA[METHOD PRIVATE Test05_SetpointValueConversion_1000
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test05_SetpointValueConversion_1000');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 1);
+	
+_mfc(bEnable := TRUE, fSetpoint := 1000);	
+
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 1000.0 * EXPT(10,1),
+	Delta := 0.1,
+	Message := 'Setpoint flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_SetpointValueConversion_10000" Id="{6c985a98-8b8d-0616-23d8-d39d511c3d54}">
+      <Declaration><![CDATA[METHOD PRIVATE Test06_SetpointValueConversion_10000
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	fbMfc : FB_FlowController(	
+		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		mode					:= E_ControllerMode.Controlling);
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test06_SetpointValueConversion_32767');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 0);
+	
+_mfc(bEnable := TRUE, fSetpoint := 10_000.0);	
+
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 10_000.0,
+	Delta := 0.1,
+	Message := 'Setpoint flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_SetpointValueConversion_0" Id="{8fed3406-acd1-02b8-0ba4-b2f5a592f2a9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test07_SetpointValueConversion_0
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test07_SetpointValueConversion_0');
+
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 3);
+	
+_mfc(bEnable := TRUE, fSetpoint := 0.0);	
+
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 0,
+	Delta := 0.1,
+	Message := 'Setpoint flow is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_SetpointValueConversion_decimalDigits0" Id="{6b4f9db9-0079-0783-2d8f-d1fba39a8ddc}">
+      <Declaration><![CDATA[METHOD PRIVATE Test08_SetpointValueConversion_decimalDigits0
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	fbMfc : FB_FlowController(	
+		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		mode					:= E_ControllerMode.Controlling);
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test08_SetpointValueConversion_decimalDigits0');
+	
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 0);
+	
+_mfc(bEnable := TRUE, fSetpoint := 30_000.0);	
+
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 30000,
+	Delta := 0.1,
+	Message := 'Masured flow with decimal digits value being 0 is calculated incorectly!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test09_EnablePreventsOutoutFlowAndSetsControlByteToZero" Id="{ef5a97f2-63d8-09b3-3aa5-0155e43825d0}">
+      <Declaration><![CDATA[METHOD Test09_EnablePreventsOutoutFlowAndSetsControlByteToZero
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test09_EnablePreventsOutoutFlowAndSetsControlByteToZero');
+
+TcUnit.WRITE_PROTECTED_INT(
+	Ptr := ADR(_mfc._coeList.DecimalDigits.Value),
+	Value := 0);
+	
+_mfc(bEnable := TRUE, fSetpoint := 10_000.0);
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 10_000.0,
+	Delta := 0.1,
+	Message := 'When controller is enabled, flow should be set to the output!');
+	
+AssertEquals_BYTE(
+	Actual := _mfc.Outputs.ControlByte,
+	Expected := 1,
+	Message := 'If controller is enabled, control byte value should be 1');
+	
+_mfc(bEnable := FALSE, fSetpoint := 10_000.0);
+AssertEquals_REAL(
+	Actual := _mfc.Outputs.Setpoint,
+	Expected := 0.0,
+	Delta := 0.1,
+	Message := 'When controller is disabled, flow should be set to zero!');
+	
+AssertEquals_BYTE(
+	Actual := _mfc.Outputs.ControlByte,
+	Expected :=0,
+	Message := 'If controller is disabled, control byte value should be 0');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test10_ControllerStatusConversion" Id="{81485f0c-9967-062d-26b6-33e1372bcbce}">
+      <Declaration><![CDATA[METHOD Test10_ControllerStatusConversion
+VAR_INPUT
+END_VAR
+VAR_INST
+	statusWord	: WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test10_ControllerStatusConversion');
+
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+	
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = FALSE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.ManualMode = FALSE AND
+				_mfc.Status.NetOverload = FALSE AND
+				_mfc.Status.OptimizationError = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.SelfOptimization = FALSE AND
+				_mfc.Status.SetpointSwitch = FALSE,
+	Message := 'Incorrect status conversion for all status false!');	
+	
+statusWord.0 := TRUE;	
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = FALSE AND
+				_mfc.Status.ManualMode = FALSE AND
+				_mfc.Status.SetpointSwitch = FALSE AND
+				_mfc.Status.OptimizationError = FALSE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion for Controller On!');	
+	
+statusWord.1 := TRUE;		
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = FALSE AND
+				_mfc.Status.SetpointSwitch = FALSE AND
+				_mfc.Status.OptimizationError = FALSE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion SelfOptimization!');	
+
+statusWord.2 := TRUE;		
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = FALSE AND
+				_mfc.Status.OptimizationError = FALSE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion ManualMode!');	
+
+statusWord.3 := TRUE;		
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = TRUE AND
+				_mfc.Status.OptimizationError = FALSE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion for SetpointSwitch!');	
+
+statusWord.4 := TRUE;
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = TRUE AND
+				_mfc.Status.OptimizationError = TRUE AND
+				_mfc.Status.DataNotValid = FALSE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion OptimizationError!');	
+
+statusWord.8 := TRUE;	
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = TRUE AND
+				_mfc.Status.OptimizationError = TRUE AND
+				_mfc.Status.DataNotValid = TRUE AND
+				_mfc.Status.Overload = FALSE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion for DataNotValid!');	
+
+statusWord.9 := TRUE;		
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = TRUE AND
+				_mfc.Status.OptimizationError = TRUE AND
+				_mfc.Status.DataNotValid = TRUE AND
+				_mfc.Status.Overload = TRUE AND
+				_mfc.Status.NetOverload = FALSE,
+	Message := 'Incorrect status conversion for Overload!');	
+
+statusWord.10 := TRUE;
+TcUnit.WRITE_PROTECTED_WORD(
+	Ptr := ADR(_mfc.Inputs.StatusWord),
+	Value := statusWord);
+
+_mfc();
+AssertTrue(
+	Condition := _mfc.Status.ControllerOn = TRUE AND
+				_mfc.Status.SelfOptimization = TRUE AND
+				_mfc.Status.ManualMode = TRUE AND
+				_mfc.Status.SetpointSwitch = TRUE AND
+				_mfc.Status.OptimizationError = TRUE AND
+				_mfc.Status.DataNotValid = TRUE AND
+				_mfc.Status.Overload = TRUE AND
+				_mfc.Status.NetOverload = TRUE,
+	Message := 'Incorrect status conversion for NetOverload!');	
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

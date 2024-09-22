@@ -58,22 +58,29 @@
     <Description>Various bronkhorst device impleentations.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\DUTs\ST_BronkhorstMassFlowController_CoE.TcDUT">
+    <Compile Include="GVLs\GVL_Bronkhorst.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ControllerMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DUTs\ST_BronkhorstMassFlowController_Inputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ParameterReadingStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DUTs\ST_BronkhorstMassFlowController_Options.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerCoeList.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DUTs\ST_BronkhorstMassFlowController_Outputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DUTs\E_ParameterReadingStep.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerInputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\POUs\FB_Bronkhorst_MassFlowController.TcPOU">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerOutputs.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\FB_FlowController.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -82,15 +89,16 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_SUT_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_FlowController_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\DUTs" />
-    <Folder Include="SOURCE\POUs" />
+    <Folder Include="SOURCE\MassFlow or PressureController" />
+    <Folder Include="SOURCE\MassFlow or PressureController\DUTs" />
+    <Folder Include="SOURCE\MassFlow or PressureController\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
