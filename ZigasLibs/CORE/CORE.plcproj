@@ -54,6 +54,9 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\I_ReadsCoE.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
       <SubType>Code</SubType>
     </Compile>

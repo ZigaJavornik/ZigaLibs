@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_ReadsCoE" Id="{71c7565e-7a5a-0ce8-1771-914bbec0cb12}">
+    <Declaration><![CDATA[INTERFACE I_ReadsCoE
+]]></Declaration>
+    <Method Name="ReadCoE" Id="{f5fbab1a-3f9e-04ef-17f2-a212e15a7e4a}">
+      <Declaration><![CDATA[// Reads CoE items and updates them. Returns TRUE when done,
+// Needs to be called until the method finishes, indicating via the return value. 
+METHOD PUBLIC ReadCoE : BOOL
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
