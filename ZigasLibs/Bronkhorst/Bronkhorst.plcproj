@@ -14,7 +14,8 @@
     <Implicit_KindOfTask>{268242b0-5e2b-4dee-9232-d9e6ae2dded0}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{008f79df-4c57-46a9-8ead-6dc085c42926}</Implicit_Jitter_Distribution>
     <LibraryReferences>{a1bc4204-6e2f-49f0-947e-3075d4bfd72a}</LibraryReferences>
-    <CompilerDefines>UnitTests</CompilerDefines>
+    <CompilerDefines>
+    </CompilerDefines>
     <Company>Ziga</Company>
     <Title>Bronkhorst devices implementation</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
