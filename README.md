@@ -2,7 +2,8 @@ Various libraries for TwinCAT using OOP style. For example on usage see tests in
 There are many project to choose from, but they all, for the most part, reference ```Core``` library - this is a library with core functionalities and interfaces.
 Current libraries include:
 
-![image](https://github.com/user-attachments/assets/240a38a1-b08b-4952-b3ad-711e162df883)
+![image](https://github.com/user-attachments/assets/bf4680c3-8d59-4b66-9030-134ba29e08c1)
+
 
 
 As a side note, the libraries contain "helper classes", which are programs that do not hold any body logic, thus they do not require being called. These "classes" have only ```methods``` and ```constants```. As an example, this is a helper class for Ams:
