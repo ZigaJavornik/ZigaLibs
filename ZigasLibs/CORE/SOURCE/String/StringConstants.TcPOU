@@ -16,6 +16,7 @@ VAR CONSTANT
 	Tab					: STRING := '$T';
 	DollarSign			: STRING := '$$';
 	SingleQuotationMark	: STRING := '$'';
+	DoubleQuotationMark	: STRING := '$'$'';
 END_VAR
 ]]></Declaration>
     <Implementation>
