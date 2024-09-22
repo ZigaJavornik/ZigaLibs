@@ -17,7 +17,7 @@
     <CompilerDefines>
     </CompilerDefines>
     <Company>Ziga</Company>
-    <Title>Bronkhorst devices implementation</Title>
+    <Title>Bronkhorst</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
@@ -53,8 +53,8 @@
     <SelectedLibraryCategories>
       <Id xmlns="">{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigasLibs_Bronkhorst</DefaultNamespace>
-    <Placeholder>ZigasLibs_Bronkhorst</Placeholder>
+    <DefaultNamespace>ZigaLibs_Bronkhorst</DefaultNamespace>
+    <Placeholder>ZigaLibs_Bronkhorst</Placeholder>
     <Author>Žiga Javornik</Author>
     <Description>Various bronkhorst device impleentations.</Description>
   </PropertyGroup>
