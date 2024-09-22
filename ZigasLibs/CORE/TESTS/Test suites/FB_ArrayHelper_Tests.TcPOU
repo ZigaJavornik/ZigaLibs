@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_ArrayHelper_Tests" Id="{6e9b477f-91da-07b8-384b-0f33de518108}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_ArrayHelper_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ArrayHelper_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT

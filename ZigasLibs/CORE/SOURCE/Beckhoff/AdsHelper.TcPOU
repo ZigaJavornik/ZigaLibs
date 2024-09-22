@@ -3,8 +3,7 @@
   <POU Name="AdsHelper" Id="{6d6b745e-a376-00e4-05e8-9f698802219e}" SpecialFunc="None">
     <Declaration><![CDATA[// A helper class providing various helpful methods when working with ads data
 PROGRAM AdsHelper
-VAR
-END_VAR
+
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -31,7 +30,7 @@ WHILE nDotPosition <> 0 DO
 	IF nDotPosition = 0 THEN
 		EXIT;
 	END_IF
-	sNetIdResult := Tc2_Standard.DELETE(STR := sNetIdResult, POS := 0, LEN := nDotPosition);
+	sNetIdResult := Tc2_Standard.DELETE(STR := sNetIdResult, POS := 1, LEN := nDotPosition);
 END_WHILE
 
 GetEthercatMasterIdFromNetIdString := STRING_TO_UDINT(sNetIdResult);

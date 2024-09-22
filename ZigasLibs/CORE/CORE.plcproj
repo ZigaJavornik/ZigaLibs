@@ -54,7 +54,25 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\I_ReadsCoE.TcIO">
+    <Compile Include="SOURCE\Beckhoff\CoE\FB_CoE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_DINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_INT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_REAL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_STRING.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
@@ -79,9 +97,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\I_RequiresAmsAddress.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Beckhoff\ST_CoeEntry.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
@@ -164,6 +179,8 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\Array\DUTs" />
+    <Folder Include="SOURCE\Beckhoff\CoE" />
+    <Folder Include="SOURCE\Beckhoff\CoE\DUTs" />
     <Folder Include="SOURCE\Errors\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />

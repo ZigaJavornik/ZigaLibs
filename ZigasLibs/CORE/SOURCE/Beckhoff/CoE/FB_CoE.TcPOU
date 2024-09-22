@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_CoE" Id="{ce2c41e1-ef6c-0e2a-1397-146748892c85}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CoE
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="ReadAny" Id="{a1207831-e360-0fc0-1a12-7d4ca05e1baf}">
+      <Declaration><![CDATA[// Reads the CoE parameter at Index:Subindex and writes the value to Value.
+METHOD PUBLIC ReadAny : BOOL
+VAR_INPUT
+	CoeEntry	: POINTER TO ST_CoeEntry;	// CoE entry, index and subindex
+	Value		: ANY;	// Value to where the read result is stored
+	SlaveAddr	: AMSADDR;		// Slave AMS address of the device
+END_VAR
+
+VAR_INST
+	fbCoeRead		: Tc2_EtherCAT.FB_EcCoESdoRead;
+	FtrigReadDone	: Tc2_Standard.F_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbCoeRead(
+	sNetId:= AdsHelper.NetIdToString(SlaveAddr.netId), 
+	nSlaveAddr:= SlaveAddr.port, 
+	nSubIndex:= CoeEntry^.Subindex, 
+	nIndex:= CoeEntry^.Subindex, 
+	pDstBuf:= Value.pValue, 
+	cbBufLen:= DINT_TO_UDINT(Value.diSize), 
+	bExecute:= NOT fbCoeRead.bBusy, 
+	tTimeout:= T#5S, 
+	bError=> , 
+	nErrId=> , 
+	cbRead=> );
+
+FtrigReadDone(CLK := fbCoeRead.bBusy);
+ReadAny := FtrigReadDone.Q;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

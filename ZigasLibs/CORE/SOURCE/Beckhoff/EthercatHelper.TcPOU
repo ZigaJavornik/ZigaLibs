@@ -6,25 +6,38 @@ PROGRAM EthercatHelper
 VAR
 	fbReadDeviceName	: Tc2_IoFunctions.IOF_GetBoxNameByAddr;
 	nMasterId			: UDINT;
+	fbCoe				: FB_CoE;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="CoE" Id="{64b56a36-5c04-024e-00fa-396319932b60}">
+      <Declaration><![CDATA[METHOD CoE : REFERENCE TO FB_CoE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CoE REF= fbCoE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetBoxNameByAddress" Id="{05a15158-8102-075e-26df-9833faf2f947}">
       <Declaration><![CDATA[METHOD PUBLIC GetBoxNameByAddress : T_MaxString
 VAR_INPUT
 	PlcRuntimeNetId		: Tc2_System.T_AmsNetID; // NetId of the PLC where the devuce is located
-	EthercatMasterNetId	: Tc2_System.T_AmsNetID; // NetId of the EtherCAT master where the box is located under
-	BoxAddress			: UINT;
+	AmsNetId			: AMSADDR; // NetId of the box
 	outError			: REFERENCE TO BOOL;	// If an error occurs while executing, method will provide the error flag here. This is a pointer to YOUR boolean error variable.
 END_VAR
-]]></Declaration>
+
+VAR
+	sNetId	: Tc2_System.T_AmsNetID;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbReadDeviceName(
-	NETID := AdsHelper.NetIdToString(netId := PlcRuntimeNetId),
-	DEVICEID := AdsHelper.GetEthercatMasterIdFromNetIdString(netId := EthercatMasterNetId),
-	BOXADDR := BoxAddress,
+        <ST><![CDATA[sNetId := AdsHelper.NetIdToString(AmsNetId.netId);
+fbReadDeviceName(
+	NETID := PlcRuntimeNetId,
+	DEVICEID := AdsHelper.GetEthercatMasterIdFromNetIdString(netId := sNetId),
+	BOXADDR := AmsNetId.port,
 	START := NOT fbReadDeviceName.BUSY);
 	
 outError := fbReadDeviceName.ERR;

@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_AmsHelper_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
-FUNCTION_BLOCK FB_AmsHelper_Tests EXTENDS FB_TestSuite
+FUNCTION_BLOCK INTERNAL FB_AmsHelper_Tests EXTENDS FB_TestSuite
 
 // Create instance variables that will be accesible for all tests
 VAR
