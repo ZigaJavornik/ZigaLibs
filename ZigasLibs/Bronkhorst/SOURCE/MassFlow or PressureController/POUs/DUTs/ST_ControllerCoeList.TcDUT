@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_ControllerCoeList" Id="{07592a42-9fc5-0eb9-1f52-2c09efd9255d}">
+    <Declaration><![CDATA[// Contains CoE indexes and sub indexes for Bronkhorst EtherCAT mass flow controller
+TYPE ST_ControllerCoeList :
+STRUCT
+	FluidName		: ZigasLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#12);
+	Capacity 		: ZigasLibs_Core.ST_CoeEntry_REAL 		:= (Index := 16#2001, SubIndex := 16#0E);
+	CapacityUnit 	: ZigasLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#20);
+	DecimalDigits 	: ZigasLibs_Core.ST_CoeEntry_INT 		:= (Index := 16#6407, SubIndex := 16#01);
+	ControlMode 	: ZigasLibs_Core.ST_CoeEntry_USINT 		:= (Index := 16#6423, SubIndex := 16#01);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

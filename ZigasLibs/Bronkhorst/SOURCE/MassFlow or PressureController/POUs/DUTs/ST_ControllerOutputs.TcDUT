@@ -5,7 +5,6 @@
 STRUCT
 	ControlByte	: BYTE;
 	Setpoint	: INT;
-	ControlMode	: USINT;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

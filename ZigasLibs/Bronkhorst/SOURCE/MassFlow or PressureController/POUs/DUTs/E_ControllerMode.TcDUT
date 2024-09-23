@@ -2,7 +2,6 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="E_ControllerMode" Id="{a82a0d98-5b9f-0956-0d93-111c2837644d}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
-{attribute 'strict'}
 {attribute 'to_string'}
 TYPE E_ControllerMode :
 (

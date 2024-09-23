@@ -63,22 +63,22 @@
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ControllerMode.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ControllerMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ParameterReadingStep.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ParameterReadingStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerCoeList.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerCoeList.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerStatus.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerInputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerInputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerOutputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerOutputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\MassFlow or PressureController\POUs\FB_FlowController.TcPOU">
@@ -98,8 +98,8 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\MassFlow or PressureController" />
-    <Folder Include="SOURCE\MassFlow or PressureController\DUTs" />
     <Folder Include="SOURCE\MassFlow or PressureController\POUs" />
+    <Folder Include="SOURCE\MassFlow or PressureController\POUs\DUTs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>

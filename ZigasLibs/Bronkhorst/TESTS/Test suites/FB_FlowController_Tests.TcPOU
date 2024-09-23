@@ -69,13 +69,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
 you make sure that the SUT is not changed by some other test. *)
 VAR_INST
-	fbMfc : FB_FlowController(	
-		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
-		mode					:= E_ControllerMode.Controlling);
+
 END_VAR
 
 // Place temporary variables here
@@ -146,13 +140,6 @@ TcUnit.TEST_FINISHED();]]></ST>
 By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
 you make sure that the SUT is not changed by some other test. *)
 VAR_INST
-	fbMfc : FB_FlowController(	
-		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
-		mode					:= E_ControllerMode.Controlling);
 END_VAR
 
 // Place temporary variables here
@@ -219,13 +206,7 @@ TcUnit.TEST_FINISHED();]]></ST>
 By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
 you make sure that the SUT is not changed by some other test. *)
 VAR_INST
-	fbMfc : FB_FlowController(	
-		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
-		mode					:= E_ControllerMode.Controlling);
+	
 END_VAR
 
 // Place temporary variables here
@@ -289,13 +270,6 @@ TcUnit.TEST_FINISHED();]]></ST>
 By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
 you make sure that the SUT is not changed by some other test. *)
 VAR_INST
-	fbMfc : FB_FlowController(	
-		bWriteLogs				:= FALSE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
-		mode					:= E_ControllerMode.Controlling);
 END_VAR
 
 // Place temporary variables here

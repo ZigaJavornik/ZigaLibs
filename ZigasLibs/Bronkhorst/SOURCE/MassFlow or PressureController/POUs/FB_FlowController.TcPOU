@@ -3,14 +3,12 @@
   <POU Name="FB_FlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
     <Declaration><![CDATA[(* Bronkhorst mass flow/pressure controller device implementation.
 Includes constructor parameters:
-	bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-	sPredictedGasType		: STRING;// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-	iLogger					: ZigasLibs_Core.I_LoggerEx;	// Logger implementation provided
-	mode					: E_ControllerMode;	// Controller initial mode
-
-*)
+bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
+fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
+sPredictedGasType		: STRING;// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
+sPredictedFlowUnit		: STRING; // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+iLogger					: ZigasLibs_Core.I_LoggerEx;	// Logger implementation provided
+mode					: E_ControllerMode;	// Controller initial mode *)
 
 FUNCTION_BLOCK FB_FlowController EXTENDS ZigasLibs_Core.FB_HasInstanceName IMPLEMENTS ZigasLibs_Core.I_ReadsCoE
 VAR_INPUT
@@ -43,6 +41,10 @@ VAR
 	_predictedFlowCapacity	: REAL;
 	_predictedGasType		: STRING;
 	_predictedFlowUnit		: STRING;
+	_writeModeRequired		: BOOL;
+	_validateModeWrite		: BOOL;
+	_controlModeTmp			: E_ControllerMode;
+	_coeReadWrite			: ZigasLibs_Core.FB_CoeReadWrite;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -62,7 +64,52 @@ IF bFirstExecution THEN
 	END_IF
 END_IF
 
-Outputs.ControlMode := _mode;
+IF _writeModeRequired THEN
+	IF _coeReadWrite.WriteAny(
+		CoeEntry := ADR(_CoeList.ControlMode),
+		Value := _mode,
+		SlaveAddr := Inputs.AmsAddr)
+	THEN
+		IF _writeLogs THEN
+			_logger.LogInfo(message := _stringBuilder.Reset()
+				.AddString(str := _logPrefix)
+				.AddString(str := 'Finished writing control mode for EtherCAT device ')
+				.AddWithDblQuotationMarks(str := _ethercatBoxName)
+				.AddString(str := '.')
+				.Create());
+			END_IF
+		_validateModeWrite := TRUE;
+		_writeModeRequired := FALSE;
+	END_IF
+END_IF
+
+IF _validateModeWrite THEN
+	IF _coeReadWrite.ReadAny(
+		CoeEntry := ADR(_CoeList.ControlMode),
+		Value := _CoeList.ControlMode.Value,
+		SlaveAddr := Inputs.AmsAddr)
+	THEN
+		_validateModeWrite := FALSE;
+		IF _writeLogs THEN
+			IF _CoeList.ControlMode.Value <> _mode THEN
+				// This allows for using TO_STRING on the enum value for better logging experience.
+				_controlModeTmp := _CoeList.ControlMode.Value;
+				_logger.LogError(message := _stringBuilder.Reset()
+					.AddString(str := _logPRefix)
+					.AddString('Control mode validation failed! Actual mode read is ')
+					.AddWithDblQuotationMarks(str := TO_STRING(_controlModeTmp))
+					.AddString(' required mode is ')
+					.AddWithDblQuotationMarks(str := TO_STRING(_mode))
+					.Create());
+			ELSE
+				_logger.LogInfo(message := _stringBuilder.Reset()
+					.AddString(str := _logPrefix)
+					.AddString('Control mode setting validation successful.')
+					.Create());
+			END_IF
+		END_IF
+	END_IF
+END_IF
 
 // Status of the controller
 _status.ControllerOn := Inputs.StatusWord.0;
@@ -100,9 +147,9 @@ VAR_INPUT
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
 	
 	bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-	sPredictedGasType		: STRING;// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
+	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bWriteLogs is set to TRUE and the read capacity differs, the error will be reported by the logger.
+	sPredictedGasType		: STRING;// Predicted gas type. If bWriteLogs is set to TRUE and the read gas type differs, the error will be reported by the logger.
+	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bWriteLogs is set to TRUE and the read flow unit differs, the error will be reported by the logger.
 	iLogger					: ZigasLibs_Core.I_LoggerEx;	// Logger implementation provided
 	mode					: E_ControllerMode;	// Controller initial mode
 END_VAR
@@ -137,10 +184,10 @@ END_VAR
           <ST><![CDATA[IF _mode <> Mode THEN
 	_logger.LogInfo(_stringBuilder.Reset()
 		.AddString(str := _logPrefix)
-		.AddString('Switching controller mode from $'$'')
-		.AddString(TO_STRING(_mode))
-		.AddString(' to $'$'')
-		.AddString(TO_STRING(Mode))
+		.AddString('Switching controller mode from ')
+		.AddWithDblQuotationMarks(TO_STRING(_mode))
+		.AddString(' to ')
+		.AddWithDblQuotationMarks(TO_STRING(Mode))
 		.Create());
 END_IF
 
@@ -155,44 +202,52 @@ VAR_INST
 	eReadCoeStep	: E_ParameterReadingStep;
 	bCoeReadError	: BOOL;
 	bError			: BOOL;
+	fbCoeReadWrite	: ZigasLibs_Core.FB_CoeReadWrite;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReadCoeStep OF
 	E_ParameterReadingStep.IDLE:
-		eReadCoeStep := E_ParameterReadingStep.GAS_TYPE;
-		IF NOT bError THEN 
+		IF _ethercatBoxName = '' THEN
 			_ethercatBoxName := ZigasLibs_Core.EthercatHelper.GetBoxNameByAddress(
 				outError := bError,
 				PlcRuntimeNetId := '',
 				AmsNetId := Inputs.AmsAddr);
-			IF _ethercatBoxName <> '' THEN
-				_logger.LogInfo(message := _stringBuilder.Reset()	
-					.AddString(str := _logPrefix)
-					.AddString(str := 'Reading CoE parameters for Bronkhorst device ')
-					.AddString(str := ZigasLibs_Core.StringConstants.DoubleQuotationMark)
-					.AddString(str := _ethercatBoxName)
-					.AddString(str := ZigasLibs_Core.StringConstants.DoubleQuotationMark)
-					.AddString(str := '...')
-					.Create());
+		ELSIF _ethercatBoxName <> '' OR bError THEN
+			eReadCoeStep := E_ParameterReadingStep.GAS_TYPE;
+			IF _writeLogs THEN
+				IF NOT bError THEN
+					_logger.LogInfo(message := _stringBuilder.Reset()	
+						.AddString(str := _logPrefix)
+						.AddString(str := 'Reading CoE parameters for Bronkhorst device ')
+						.AddWithDblQuotationMarks(str := _ethercatBoxName)
+						.AddString(str := '...')
+						.Create());
+				ELSE
+					_logger.LogInfo(message := _stringBuilder.Reset()	
+						.AddString(str := _logPrefix)
+						.AddString(str := 'Reading CoE parameters for Bronkhorst device ')
+						.AddWithDblQuotationMarks(str := '<Error reading EC box name>')
+						.AddString(str := '...')
+						.Create());
+				END_IF
+
 			END_IF
 		END_IF
-			
-
 		
 	E_ParameterReadingStep.GAS_TYPE:
-		IF ZigasLibs_Core.EthercatHelper.CoE().ReadAny(
-			CoeEntry := ADR(_CoeList.GasType),
-			Value := _CoeList.GasType.Value,
+		IF fbCoeReadWrite.ReadAny(
+			CoeEntry := ADR(_CoeList.FluidName),
+			Value := _CoeList.FluidName.Value,
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
-			IF WriteLogsAllowed() THEN
-				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.GasType.Value) <> _predictedGasType THEN
+			IF _writeLogs THEN
+				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.FluidName.Value) <> _predictedGasType THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid gas type found! Predicted gas type is ')
 						.AddString(_predictedGasType)
 						.AddString(' and actual gas type found is ')
-						.AddString(_coeList.GasType.Value)
+						.AddString(_coeList.FluidName.Value)
 						.Create());
 				END_IF
 			END_IF
@@ -200,19 +255,19 @@ END_VAR]]></Declaration>
 		END_IF
 		
 	E_ParameterReadingStep.FLOW_UNIT:
-		IF ZigasLibs_Core.EthercatHelper.CoE().ReadAny(
-			CoeEntry := ADR(_CoeList.FlowUnit),
-			Value := _CoeList.FlowUnit.Value,
+		IF fbCoeReadWrite.ReadAny(
+			CoeEntry := ADR(_CoeList.CapacityUnit),
+			Value := _CoeList.CapacityUnit.Value,
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
-			IF WriteLogsAllowed() THEN
-				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.FlowUnit.Value) <> _predictedFlowUnit THEN
+			IF _writeLogs THEN
+				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.CapacityUnit.Value) <> _predictedFlowUnit THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow unit found! Predicted unit is ')
-						.AddString(_predictedFlowUnit)
+						.AddWithDblQuotationMarks(_predictedFlowUnit)
 						.AddString(' and actual flow unit found is ')
-						.AddString(_coeList.FlowUnit.Value)
+						.AddWithDblQuotationMarks(_coeList.CapacityUnit.Value)
 						.Create());
 				END_IF
 			END_IF
@@ -220,7 +275,7 @@ END_VAR]]></Declaration>
 		END_IF
 		
 	E_ParameterReadingStep.DECIMAL_DIGITS:
-		IF ZigasLibs_Core.EthercatHelper.CoE().ReadAny(
+		IF fbCoeReadWrite.ReadAny(
 			CoeEntry := ADR(_CoeList.DecimalDigits),
 			Value := _CoeList.DecimalDigits.Value,
 			SlaveAddr := Inputs.AmsAddr)
@@ -229,19 +284,23 @@ END_VAR]]></Declaration>
 		END_IF
 		
 	E_ParameterReadingStep.FLOW_CAPACITY:
-		IF ZigasLibs_Core.EthercatHelper.CoE().ReadAny(
-			CoeEntry := ADR(_CoeList.FlowCapacity),
-			Value := _CoeList.FlowCapacity.Value,
+		IF fbCoeReadWrite.ReadAny(
+			CoeEntry := ADR(_CoeList.Capacity),
+			Value := _CoeList.Capacity.Value,
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
-			IF WriteLogsAllowed() THEN
-				IF _CoeList.FlowCapacity.Value <> _predictedFlowCapacity THEN
+			IF _writeLogs THEN
+				IF _CoeList.Capacity.Value <> _predictedFlowCapacity THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow capacity found! Predicted capacity is ')
-						.AddString(REAL_TO_STRING(_predictedFlowCapacity)).AddString(' ').AddString(_coeList.FlowUnit.Value)
+						.AddWithDblQuotationMarks('')
+						.AddString(REAL_TO_STRING(_predictedFlowCapacity)).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+						.AddWithDblQuotationMarks('')
 						.AddString(' and actual flow capacity found is ')
-						.AddString(REAL_TO_STRING(_coeList.FlowCapacity.Value)).AddString(' ').AddString(_coeList.FlowUnit.Value)
+						.AddWithDblQuotationMarks('')
+						.AddString(REAL_TO_STRING(_CoeList.Capacity.Value)).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+						.AddWithDblQuotationMarks('')
 						.Create());
 					END_IF
 				END_IF
@@ -266,14 +325,5 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="WriteLogsAllowed" Id="{b1e8ef8b-7cf2-0054-33c1-13271676d0b1}">
-      <Declaration><![CDATA[METHOD PRIVATE WriteLogsAllowed : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[WriteLogsAllowed := _writeLogs;]]></ST>
-      </Implementation>
-    </Method>
   </POU>
 </TcPlcObject>
