@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_CoeEntry_String30" Id="{eea9ed80-ddfe-05f5-0d33-d62c19628bc7}">
+    <Declaration><![CDATA[TYPE ST_CoeEntry_String30 EXTENDS ST_CoeEntry :
+STRUCT
+	Value	: STRING(30);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
