@@ -54,6 +54,9 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_String30.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_USINT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -72,7 +75,7 @@
     <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_REAL.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_STRING.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_String255.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
