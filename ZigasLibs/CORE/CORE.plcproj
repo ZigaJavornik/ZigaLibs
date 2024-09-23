@@ -41,8 +41,7 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>
-    </CompilerDefines>
+    <CompilerDefines>UnitTests</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
@@ -172,6 +171,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_HasInstanceNameTests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

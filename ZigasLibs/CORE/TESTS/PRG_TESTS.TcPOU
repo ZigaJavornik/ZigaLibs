@@ -10,6 +10,7 @@ VAR
 	ArrayHelperTests				: FB_ArrayHelper_Tests;
 	DateTimeToStringConverterTest	: FB_DateTimeToStringConverter_Tests;
 	HasInstanceNameTests			: FB_HasInstanceNameTests;
+	StringBuilderBaseTest			: FB_StringBuilder_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

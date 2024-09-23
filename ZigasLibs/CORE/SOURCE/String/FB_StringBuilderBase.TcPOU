@@ -31,6 +31,44 @@ AddString := THIS^;
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="AddWithDblQuotationMarks" Id="{0e9fd4de-15c4-07a9-0872-3820188174d7}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence and wraps the str in double quotation marks "str"*)
+METHOD AddWithDblQuotationMarks : I_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := Tc2_Standard.CONCAT(
+		STR1 := StringConstants.DoubleQuotationMark, 
+		STR2 := Tc2_Standard.CONCAT(
+			STR1 := str, 
+			STR2 := StringConstants.DoubleQuotationMark))); 
+	
+AddWithDblQuotationMarks := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddWithQuotationMark" Id="{71b839a6-f4de-0e1d-0723-bae3b89369d5}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence and wraps the str in quotation marks 'str'*)
+METHOD AddWithQuotationMark : I_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := Tc2_Standard.CONCAT(
+		STR1 := StringConstants.SingleQuotationMark, 
+		STR2 := Tc2_Standard.CONCAT(
+			STR1 := str, 
+			STR2 := StringConstants.SingleQuotationMark))); 
+		
+AddWithQuotationMark := THIS^;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Create" Id="{837ad951-dde3-0ecc-1e91-80edffc6563f}">
       <Declaration><![CDATA[(* Finishes string generation and returns the generated string*)
 METHOD Create : Tc2_System.T_MaxString
