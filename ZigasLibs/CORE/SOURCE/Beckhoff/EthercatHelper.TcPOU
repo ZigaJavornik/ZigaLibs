@@ -6,14 +6,14 @@ PROGRAM EthercatHelper
 VAR
 	fbReadDeviceName	: Tc2_IoFunctions.IOF_GetBoxNameByAddr;
 	nMasterId			: UDINT;
-	fbCoe				: FB_CoE;
+	fbCoe				: FB_CoeReadWrite;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="CoE" Id="{64b56a36-5c04-024e-00fa-396319932b60}">
-      <Declaration><![CDATA[METHOD CoE : REFERENCE TO FB_CoE
+      <Declaration><![CDATA[METHOD CoE : REFERENCE TO FB_CoeReadWrite
 VAR_INPUT
 END_VAR
 ]]></Declaration>

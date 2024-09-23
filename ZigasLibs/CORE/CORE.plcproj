@@ -41,7 +41,8 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>UnitTests</CompilerDefines>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
@@ -53,7 +54,7 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\FB_CoE.TcPOU">
+    <Compile Include="SOURCE\Beckhoff\CoE\FB_CoeReadWrite.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry.TcDUT">
