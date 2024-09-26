@@ -41,8 +41,7 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>
-    </CompilerDefines>
+    <CompilerDefines>UnitTests</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
@@ -79,6 +78,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\DataType\DataTypeHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
@@ -164,7 +166,7 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_AmsHelper_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_AdsHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
@@ -326,6 +328,7 @@
       </Parameters>
       <Namespace>TcUnit</Namespace>
       <Condition>UnitTests</Condition>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

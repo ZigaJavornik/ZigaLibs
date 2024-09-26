@@ -15,7 +15,8 @@ Test04_InsertString();
 Test05_InsertStruct();
 Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
 Test07_SetAtFirstEmptySlot();
-Test08_AllMethods_provideNonArrayVar_ExpectNothing();]]></ST>
+Test08_AllMethods_provideNonArrayVar_ExpectNothing();
+Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();]]></ST>
     </Implementation>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
@@ -307,6 +308,41 @@ AssertTrue(
 	Condition := notAnArray, 
 	Message := 'When non-array is provided to any method, the method should not execute anything!');
 	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem" Id="{a8d8434e-596a-00a0-21e3-47c7bf1b2911}">
+      <Declaration><![CDATA[METHOD Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	arr		: ARRAY[0..20] OF ST_FileProperties;
+	item	: ST_FileProperties := (FileLocation := 'test', FileName := 'test2');
+	emptyItem	: ST_FileProperties;
+	i : T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem');
+
+FOR i := 0 TO 20 BY 1 DO
+	AssertEquals(Actual := arr[i], Expected := emptyItem, Message := 'Wrong array initialization1');
+END_FOR
+
+ArrayHelper.InsertAtStart(arr := arr, item := item);
+
+AssertEquals(
+	Actual := arr[0], 
+	Expected := item, 
+	Message := 'InsertAtStart should have first item in array the same as item being inserted!');
+	
+FOR i := 1 TO 20 BY 1 DO
+	AssertEquals(
+		Actual := arr[i],
+		Expected := emptyItem, 
+		Message := Tc2_Standard.CONCAT(STR1 := 'InsertAtStart should have left other elements unchanged! Changed element at index ', STR2 := TO_STRING(i) ));
+END_FOR
+
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="DataTypeHelper" Id="{392e1e55-8767-0f5a-3a80-45b5c4c6ac81}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM DataTypeHelper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="CompareTypeClassWithBaseLibrary" Id="{63596d36-50ea-0d38-20b2-c0bbbc0c1f6f}">
+      <Declaration><![CDATA[METHOD CompareTypeClassWithBaseLibrary : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValueToString" Id="{0118dece-8ff0-0cfd-1cc8-f27fa259426e}">
+      <Declaration><![CDATA[METHOD ValueToString : T_MaxString
+VAR_INPUT
+	value		: ANY;	// Value to convert
+	precision	: INT;	// In case of real/lreal precision is required
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
