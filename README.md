@@ -2,7 +2,8 @@ Various libraries for TwinCAT using OOP style. For example on usage see tests in
 There are many project to choose from, but they all, for the most part, reference ```Core``` library - this is a library with core functionalities and interfaces.
 Current libraries include:
 
-![image](https://github.com/user-attachments/assets/bf4680c3-8d59-4b66-9030-134ba29e08c1)
+![image](https://github.com/user-attachments/assets/e8816bec-8ffd-4bbf-b9eb-d14efa07b56b)
+
 
 
 
