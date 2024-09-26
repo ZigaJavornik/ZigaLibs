@@ -10,22 +10,18 @@ VAR
 	_errorSending			: BOOL;
 	_isConnected			: BOOL;
 	_clientServerControl	: Tc2_TcpIp.FB_ClientServerConnection;
+	_socketHandle			: Tc2_TcpIp.T_HSOCKET;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_clientServerControl(nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG);
-_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+      <ST><![CDATA[_clientServerControl(nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG, hSocket => _socketHandle);
 _error := _errorReceiving OR _errorSending OR _clientServerControl.bError;]]></ST>
     </Implementation>
-    <Folder Name="Private" Id="{0447c5d5-af4b-035a-3b06-8b6c9c5bd9eb}">
-      <Folder Name="Methods" Id="{3ee63fed-1822-08bd-3aaf-cc0075fb1c15}" />
-      <Folder Name="Properties" Id="{a71994fa-7e82-06e3-3518-8fe2ee1bf81c}" />
-    </Folder>
-    <Folder Name="Pulic" Id="{fad2bedc-c621-0e7a-10b3-e31e1f06606d}">
+    <Folder Name="Public" Id="{fad2bedc-c621-0e7a-10b3-e31e1f06606d}">
       <Folder Name="Methods" Id="{ca322448-3c94-05d4-3845-31017722f3e8}" />
       <Folder Name="Properties" Id="{22abed52-9456-006d-1b18-e9ce2512ef08}" />
     </Folder>
-    <Method Name="Connect" Id="{dd6866c4-171a-4bfc-95da-36f23ef555cb}" FolderPath="Pulic\Methods\">
+    <Method Name="Connect" Id="{dd6866c4-171a-4bfc-95da-36f23ef555cb}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[METHOD Connect : BOOL
 VAR_INPUT
 	Ipv4Address	: Tc2_System.T_IPv4Addr;
@@ -44,23 +40,29 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Disconnect" Id="{ed43bf91-0d1a-4937-b486-9810fb451075}" FolderPath="Pulic\Methods\">
-      <Declaration><![CDATA[// Disconnects from the server and closes all active socket connections
+    <Method Name="Disconnect" Id="{ed43bf91-0d1a-4937-b486-9810fb451075}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Disconnects from the server and closes all active socket connections. Returns TRUE when done.
 METHOD Disconnect : BOOL]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_clientServerControl.bEnable := FALSE;
-IF _clientServerControl.hSocket.handle <> 0 THEN
-	_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+        <ST><![CDATA[IF _clientServerControl.bEnable THEN
+	_clientServerControl.bEnable := FALSE;
+END_IF
+
+IF NOT _socketCloseAll.bBusy THEN
 	_socketCloseAll(bExecute := TRUE, sSrvNetId := '');
 END_IF
-Disconnect := NOT THIS^.IsConnected;
+_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+_errorSending := FALSE;
+_errorReceiving := FALSE;
+
+Disconnect := NOT _socketCloseAll.bBusy;
 
 
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Error" Id="{5c00ee02-56f4-43bb-9e23-9bd70a569756}" FolderPath="Pulic\Properties\">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+    <Property Name="Error" Id="{5c00ee02-56f4-43bb-9e23-9bd70a569756}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
 PROPERTY Error : BOOL]]></Declaration>
       <Get Name="Get" Id="{6ff5fc3c-9cf5-40c2-8121-3ea148df9e2e}">
         <Declaration><![CDATA[VAR
@@ -71,8 +73,8 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="IsConnected" Id="{5e9ad8a1-6ad5-4c8b-a48a-e8e88fb474a1}" FolderPath="Pulic\Properties\">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+    <Property Name="IsConnected" Id="{5e9ad8a1-6ad5-4c8b-a48a-e8e88fb474a1}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
 PROPERTY PUBLIC IsConnected : BOOL]]></Declaration>
       <Get Name="Get" Id="{d7cb8efd-ba1c-4704-9fa9-84315798b314}">
         <Declaration><![CDATA[VAR
@@ -84,7 +86,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Receive" Id="{7a2e245a-21db-4c97-a338-d1db7e183060}" FolderPath="Pulic\Methods\">
+    <Method Name="Receive" Id="{7a2e245a-21db-4c97-a338-d1db7e183060}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[METHOD Receive : BOOL
 VAR_INPUT
 	refResponse	: REFERENCE TO Tc2_System.T_MaxString;
@@ -106,7 +108,7 @@ END_VAR]]></Declaration>
 				cbLen := SIZEOF(refResponse),
 				pDest := ADR(refResponse),
 				sSrvNetId := '',
-				hSocket := _clientServerControl.hSocket);
+				hSocket := _socketHandle);
 			eSocketReceiveState := E_SocketReceiveState.RECEIVING;
 		END_IF
 	
@@ -130,8 +132,9 @@ END_CASE
 _errorReceiving := bReceiveError;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="ReconnectPeriod" Id="{960f0c0e-a8f0-4b6e-8253-4e69f0060513}" FolderPath="Pulic\Properties\">
-      <Declaration><![CDATA[(* Gets or sets the reconnect period. 
+    <Property Name="ReconnectPeriod" Id="{960f0c0e-a8f0-4b6e-8253-4e69f0060513}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+(* Gets or sets the reconnect period. 
 The value should not be set too low, since timeout periods of > 30 s may occur in the event of a network interruption. 
 If the value is too low, command execution would be interrupted prematurely, and ADS error code 1861 (timeout elapsed) 
 would be returned instead of the Winsocket error WSAETIMEDOUT.*)
@@ -156,7 +159,7 @@ END_IF
         </Implementation>
       </Set>
     </Property>
-    <Method Name="Send" Id="{e24d3e99-79a0-4664-a580-6ca5668718f9}" FolderPath="Pulic\Methods\">
+    <Method Name="Send" Id="{e24d3e99-79a0-4664-a580-6ca5668718f9}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[METHOD Send : BOOL
 VAR_INPUT
 	sCommand	: Tc2_System.T_MaxString;	// Command to be send
@@ -198,7 +201,7 @@ END_VAR]]></Declaration>
 				bExecute := TRUE,
 				cbLen := nSendDataCount,
 				pSrc := ADR(arrSendDataBytes),
-				hSocket := _clientServerControl.hSocket);
+				hSocket := _socketHandle);
 				
 			eSsocketSendState := E_SocketSendState.SENDING;
 		END_IF

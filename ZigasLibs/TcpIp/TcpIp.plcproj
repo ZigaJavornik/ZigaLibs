@@ -200,6 +200,7 @@
         </Parameter>
       </Parameters>
       <Condition>UnitTests</Condition>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
