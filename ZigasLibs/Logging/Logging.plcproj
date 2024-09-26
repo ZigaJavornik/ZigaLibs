@@ -195,6 +195,7 @@
       </Parameters>
       <Condition>UnitTests</Condition>
       <Namespace>TcUnit</Namespace>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigasLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>

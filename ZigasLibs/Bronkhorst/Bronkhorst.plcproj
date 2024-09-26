@@ -184,6 +184,7 @@
         </Parameter>
       </Parameters>
       <Condition>UnitTests</Condition>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigasLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>

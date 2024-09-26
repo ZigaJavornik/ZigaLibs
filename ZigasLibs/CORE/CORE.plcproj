@@ -41,7 +41,8 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>UnitTests</CompilerDefines>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
