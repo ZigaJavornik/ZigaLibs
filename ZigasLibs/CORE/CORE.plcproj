@@ -54,6 +54,9 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_UINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_String30.TcDUT">
       <SubType>Code</SubType>
     </Compile>
