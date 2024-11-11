@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_LoggerTests" Id="{56576e73-0b8d-04b4-2a1d-ddaf5d4df6a5}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LoggerTests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LoggerTests EXTENDS FB_TestSuite
 VAR
 	fbLogger			: FB_Logger;
 	fbFileHandler		: FB_FileHandler;
