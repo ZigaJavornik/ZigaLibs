@@ -16,7 +16,7 @@
     <LibraryReferences>{b4e87170-0c7a-4df3-9dc5-e3afe647b07b}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Logging</Title>
-    <ProjectVersion>0.0.1.2</ProjectVersion>
+    <ProjectVersion>0.0.1.3</ProjectVersion>
     <DefaultNamespace>ZigaLibs_Logging</DefaultNamespace>
     <Placeholder>ZigaLibs_Logging</Placeholder>
     <Author>Žiga Javornik</Author>
