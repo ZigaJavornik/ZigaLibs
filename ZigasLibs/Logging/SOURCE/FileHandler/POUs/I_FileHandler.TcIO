@@ -38,6 +38,12 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="Reset" Id="{8831fa7d-53e9-07aa-3fa5-54b2380ecff6}">
+      <Declaration><![CDATA[METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
     <Method Name="WriteBinary_Append" Id="{b12151c7-19f1-0487-35c3-7d39348a832f}">
       <Declaration><![CDATA[// Writes the content to the end of the file (appends).
 // Returns TRUE when done - method needs to be called until it returns TRUE!

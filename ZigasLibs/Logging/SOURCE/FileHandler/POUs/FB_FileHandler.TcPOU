@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
-    <Declaration><![CDATA[// A function block containing multiple file handling methods.
+    <Declaration><![CDATA[// A function block containing multiple file handling methods. 
+// Note that the body of this FB does NOT need to be called as it holds no logic.
+// All the methods should be called untill they return true, if they provide error information, 
+// it will be trough a reference variable.
+//
 // For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
 FUNCTION_BLOCK FB_FileHandler EXTENDS ZigasLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
 
@@ -41,7 +45,7 @@ END_VAR
 METHOD PRIVATE Close : BOOL
 
 VAR_INST
-	fbFileClose			: Tc2_System.FB_FileClose;
+	fbFileClose		: Tc2_System.FB_FileClose;
 	nCloseFileState		: UINT;
 END_VAR
 
@@ -56,12 +60,14 @@ END_VAR]]></Declaration>
 	RETURN;
 END_IF
 
-_error := _error OR fbFileClose.bError;
-
 CASE nCloseFileState OF
 	FILE_CLOSE_START:
 		fbFileClose(bExecute := FALSE);
-		fbFileClose(bExecute := TRUE, hFile := _fileHandle);
+		fbFileClose(
+			bExecute := TRUE, 
+			hFile := _fileHandle, 
+			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(netId := _amsAddress.netId));
+			
 		nCloseFileState := FILE_CLOSE_WAIT_BUSY;
 		
 	FILE_CLOSE_WAIT_BUSY:
@@ -334,6 +340,7 @@ CASE nReadState OF
 		fbFileRead(bExecute := FALSE);
 		fbFileRead(
 			bExecute := TRUE,
+			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 			hFile := _fileHandle,
 			pReadBuff := buffer.pValue,
 			cbReadLen := DINT_TO_UDINT(buffer.diSize));
@@ -361,6 +368,15 @@ END_CASE
 
 _error := _error OR fbFileRead.bError;
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{8d34ff7b-c2d8-0cbc-39bf-23555306e67a}">
+      <Declaration><![CDATA[// If an error occurrs, Reset is required to be called. 
+// At this point, a new call to methods can be done and error will be reset until a new one occurrs.
+METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_error := FALSE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="WriteBinary" Id="{780c681b-a718-05c7-104f-35fd68ebb2e9}">
@@ -392,6 +408,7 @@ END_VAR
 	WRITE_START:
 		fbFileWrite(bExecute := FALSE);
 		fbFileWrite(
+			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 			bExecute := TRUE,
 			hFile := _fileHandle,
 			pWriteBuff := data.pValue,

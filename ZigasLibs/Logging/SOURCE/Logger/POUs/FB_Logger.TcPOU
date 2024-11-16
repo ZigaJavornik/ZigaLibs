@@ -18,12 +18,12 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_localSystemTime();
-_localSystemTimeString := _localSystemTime.ConvertToString().DateTime(
-	dateSeperator := '.',
-	fillWithZeros := TRUE,
-	IncludeMilliseconds := FALSE,
-	timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
-	timeOfDaySeperator := ':');
+_localSystemTimeString := _localSystemTime.ConvertToString()
+	.DateTime(dateSeperator := '.',
+		fillWithZeros := TRUE,
+		IncludeMilliseconds := FALSE,
+		timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
+		timeOfDaySeperator := ':');
 
 IF _fileHandler.Error THEN
 	_state := E_LoggerState.Error;
@@ -65,10 +65,7 @@ CASE _state OF
 		
 	E_LoggerState.ERROR:
 		IF _oldState <> E_LoggerState.ERROR THEN
-			Tc2_System.ADSLOGSTR(
-				msgCtrlMask := Tc2_System.ADSLOG_MSGTYPE_ERROR,
-				msgFmtStr := 'An error occured while attempting to write to log file! Error code is %s',
-				strArg := DINT_TO_STRING(_fileHandler.ErrorSource.ErrorCode));
+			_fileHandler.Reset();
 		END_IF
 END_CASE
 
