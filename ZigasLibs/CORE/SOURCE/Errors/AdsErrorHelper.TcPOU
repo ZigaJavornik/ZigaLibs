@@ -8,8 +8,277 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="ErrorIdToEnum" Id="{c85cde70-56be-0145-331f-e6ba48ac354d}">
+      <Declaration><![CDATA[// Converts the eroor ID (UDIND), usually provided by Beckhoff FBs, to the E_AdsErrorCode enum.
+METHOD PUBLIC ErrorIdToEnum : E_AdsErrorCode
+VAR_INPUT
+	errorId	: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE errorId OF
+    0:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_NOERROR;
+    1:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INTERNAL;
+    2:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_NORTIME;
+    3:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_ALLOCLOCKEDMEM;
+    4:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INSERTMAILBOX;
+    5:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_WRONGRECEIVEHMSG;
+    6:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_TARGETPORTNOTFOUND;
+    7:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_TARGETMACHINENOTFOUND;
+    8:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_UNKNOWNCMDID;
+    9:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_BADTASKID;
+    10:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_NOIO;
+    11:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_UNKNOWNAMSCMD;
+    12:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_WIN32ERROR;
+    13:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_PORTNOTCONNECTED;
+    14:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INVALIDAMSLENGTH;
+    15:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INVALIDAMSNETID;
+    16:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_LOWINSTLEVEL;
+    17:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_NODEBUGINTAVAILABLE;
+    18:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_PORTDISABLED;
+    19:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_PORTALREADYCONNECTED;
+    20:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_AMSSYNC_W32ERROR;
+    21:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_AMSSYNC_TIMEOUT;
+    22:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_AMSSYNC_AMSERROR;
+    23:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_AMSSYNC_NOINDEXINMAP;
+    24:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INVALIDAMSPORT;
+    25:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_NOMEMORY;
+    26:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_TCPSEND;
+    27:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_HOSTUNREACHABLE;
+    28:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_INVALIDAMSFRAGMENT;
+    29:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_TLSSEND;
+    30:
+        ErrorIdToEnum := E_AdsErrorCode.ERR_ACCESSDENIED;
+    1280:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_NOLOCKEDMEMORY;
+    1281:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_RESIZEMEMORY;
+    1282:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_MAILBOXFULL;
+    1283:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_DEBUGBOXFULL;
+    1284:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_UNKNOWNPORTTYPE;
+    1285:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_NOTINITIALIZED;
+    1286:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_PORTALREADYINUSE;
+    1287:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_NOTREGISTERED;
+    1288:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_NOMOREQUEUES;
+    1289:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_INVALIDPORT;
+    1290:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_NOTACTIVATED;
+    1291:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_FRAGMENTBOXFULL;
+    1292:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_FRAGMENTTIMEOUT;
+    1293:
+        ErrorIdToEnum := E_AdsErrorCode.ROUTERERR_TOBEREMOVED;
+    1792:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_ERROR;
+    1793:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SRVNOTSUPP;
+    1794:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDGRP;
+    1795:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDOFFSET;
+    1796:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDACCESS;
+    1797:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDSIZE;
+    1798:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDDATA;
+    1799:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOTREADY;
+    1800:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_BUSY;
+    1801:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDCONTEXT;
+    1802:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOMEMORY;
+    1803:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDPARM;
+    1804:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOTFOUND;
+    1805:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SYNTAX;
+    1806:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INCOMPATIBLE;
+    1807:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_EXISTS;
+    1808:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SYMBOLNOTFOUND;
+    1809:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SYMBOLVERSIONINVALID;
+    1810:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDSTATE;
+    1811:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_TRANSMODENOTSUPP;
+    1812:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOTIFYHNDINVALID;
+    1813:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_CLIENTUNKNOWN;
+    1814:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOMOREHDLS;
+    1815:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDWATCHSIZE;
+    1816:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOTINIT;
+    1817:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_TIMEOUT;
+    1818:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_NOINTERFACE;
+    1819:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDINTERFACE;
+    1820:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDCLSID;
+    1821:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDOBJID;
+    1822:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_PENDING;
+    1823:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_ABORTED;
+    1824:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_WARNING;
+    1825:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDARRAYIDX;
+    1826:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SYMBOLNOTACTIVE;
+    1827:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_ACCESSDENIED;
+    1828:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSENOTFOUND;
+    1829:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEEXPIRED;
+    1830:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEEXCEEDED;
+    1831:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEINVALID;
+    1832:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSESYSTEMID;
+    1833:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSENOTIMELIMIT;
+    1834:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEFUTUREISSUE;
+    1835:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSETIMETOLONG;
+    1836:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_EXCEPTION;
+    1837:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEDUPLICATED;
+    1838:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_SIGNATUREINVALID;
+    1839:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_CERTIFICATEINVALID;
+    1840:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEOEMNOTFOUND;
+    1841:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSERESTRICTED;
+    1842:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEDEMODENIED;
+    1843:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDFNCID;
+    1844:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_OUTOFRANGE;
+    1845:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_INVALIDALIGNMENT;
+    1846:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_LICENSEPLATFORM;
+    1847:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_FORWARD_PL;
+    1848:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_FORWARD_DL;
+    1849:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_DEVICE_FORWARD_RT;
+    1856:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_ERROR;
+    1857:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_INVALIDPARM;
+    1858:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_LISTEMPTY;
+    1859:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_VARUSED;
+    1860:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_DUPLINVOKEID;
+    1861:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_SYNCTIMEOUT;
+    1862:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_W32ERROR;
+    1863:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_TIMEOUTINVALID;
+    1864:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_PORTNOTOPEN;
+    1865:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_NOAMSADDR;
+    1872:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_SYNCINTERNAL;
+    1873:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_ADDHASH;
+    1874:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_REMOVEHASH;
+    1875:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_NOMORESYM;
+    1876:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_SYNCRESINVALID;
+    1877:
+        ErrorIdToEnum := E_AdsErrorCode.ADSERR_CLIENT_SYNCPORTLOCKED;
+    4096:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_INTERNAL;
+    4097:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_BADTIMERPERIODS;
+    4098:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_INVALIDTASKPTR;
+    4099:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_INVALIDSTACKPTR;
+    4100:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_PRIOEXISTS;
+    4101:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_NOMORETCB;
+    4102:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_NOMORESEMAS;
+    4103:
+        ErrorIdToEnum := E_AdsErrorCode.RTERR_NOMOREQUEUES;
+ELSE
+    ErrorIdToEnum := E_AdsErrorCode.ERR_UNKNOWN;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetErrorInfo" Id="{63ea9734-0b30-06de-0cb3-57be080c4531}">
-      <Declaration><![CDATA[METHOD PUBLIC GetErrorInfo : Tc2_System.T_MaxString
+      <Declaration><![CDATA[// Gets the error information for the given E_AdsErrorCode.
+METHOD PUBLIC GetErrorInfo : Tc2_System.T_MaxString
 VAR_INPUT
 	eAdsErrorCode	: E_AdsErrorCode;
 END_VAR

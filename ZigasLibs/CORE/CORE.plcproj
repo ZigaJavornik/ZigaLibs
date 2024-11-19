@@ -185,6 +185,9 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_AdsErrorHelper_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_AdsHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
