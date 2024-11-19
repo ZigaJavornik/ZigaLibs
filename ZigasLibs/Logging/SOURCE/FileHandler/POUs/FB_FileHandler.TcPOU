@@ -84,7 +84,7 @@ END_CASE
 
 _error := _error OR fbFileClose.bError;
 IF fbFileClose.bError THEN
-	_errorSource.ErrorCode := fbFileClose.nErrId;
+	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileClose.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -228,7 +228,7 @@ END_VAR]]></Declaration>
 		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
 		
 	FILE_EXIST_STATE_ERROR:
-		_errorSource.ErrorCode := fbFileExists.nErrID;
+		_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileExists.nErrID);
 		nCheckFileExistState := FILE_EXIST_STATE_DONE;
 		refFileExists := FALSE;
 END_CASE
@@ -297,7 +297,7 @@ fbFileOpen(
 	
 _error := _error OR fbFileOpen.bError;	
 IF fbFileOpen.bError THEN
-	_errorSource.ErrorCode := fbFileOpen.nErrId;
+	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileOpen.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -363,7 +363,7 @@ CASE nReadState OF
 		
 	READ_STATE_ERROR:
 		nReadState := READ_STATE_DONE;
-		_errorSource.ErrorCode := fbFileRead.nErrId;
+		_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileRead.nErrId);
 END_CASE
 
 _error := _error OR fbFileRead.bError;
@@ -430,7 +430,7 @@ END_CASE
 
 _error := _error OR fbFileWrite.bError;
 IF fbFileWrite.bError THEN
-	_errorSource.ErrorCode := fbFileWrite.nErrId;
+	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileWrite.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -517,7 +517,7 @@ END_CASE
 
 _error := _error OR fbFilePuts.bError;
 IF fbFilePuts.bError THEN
-	_errorSource.ErrorCode := fbFilePuts.nErrId;
+	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFilePuts.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
