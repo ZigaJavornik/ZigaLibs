@@ -97,6 +97,9 @@ VAR_INPUT
 	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 	startIndex	: T_ArrayIndexer;
 END_VAR
+VAR
+	arrTest	: ARRAY[0..10] OF BOOL;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN

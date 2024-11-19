@@ -5,8 +5,7 @@
 TYPE ST_ErrorSource :
 STRUCT
 	InstanceName	: Tc2_System.T_MaxString;
-	ErrorCode		: UDINT;
-	Description		: Tc2_System.T_MaxString;
+	ErrorInfo		: ST_AdsError;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

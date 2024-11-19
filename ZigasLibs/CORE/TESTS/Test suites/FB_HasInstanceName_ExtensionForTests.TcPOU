@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasInstanceName_ExtensionForTests" Id="{1f529c36-7d92-0d2d-3534-c61eede3bd33}" SpecialFunc="None">
+    <Declaration><![CDATA[// Since FB_HasInstanceName is an ABSTRACT class, the functionality needs to be implemented by extending the base class
+FUNCTION_BLOCK INTERNAL FB_HasInstanceName_ExtensionForTests EXTENDS FB_HasInstanceName
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

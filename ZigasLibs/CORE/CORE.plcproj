@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Core</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <ProjectVersion>0.0.0.2</ProjectVersion>
     <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
     <Placeholder>ZigaLibs_Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -90,6 +90,12 @@
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Errors\DUTs\E_AdsErrorCode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\DUTs\ST_AdsError.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Errors\DUTs\ST_ErrorSource.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -109,6 +115,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\I_RequiresAmsAddress.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\AdsErrorHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
@@ -161,6 +170,12 @@
       <SubType>Code</SubType>
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
+    <Compile Include="SOURCE\Time\FluentConverter\FB_TimeStructExtension.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Time\FluentConverter\I_TimeStructFluentResult.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Time\I_DateTimeToStringConverter.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -180,10 +195,16 @@
       <SubType>Code</SubType>
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_HasInstanceNameImpl.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_ErrorSource_ExtensionForTests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_HasInstanceNameTests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_ErrorSource_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_HasInstanceName_ExtensionForTests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_HasInstanceName_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
@@ -210,6 +231,7 @@
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />
+    <Folder Include="SOURCE\Time\FluentConverter" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>

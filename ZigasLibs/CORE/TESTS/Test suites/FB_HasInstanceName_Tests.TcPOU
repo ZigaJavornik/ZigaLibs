@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_HasInstanceNameTests" Id="{fc7f1c45-4e05-0854-19c6-d70a4b102dae}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_HasInstanceNameTests EXTENDS FB_TestSuite
+  <POU Name="FB_HasInstanceName_Tests" Id="{fc7f1c45-4e05-0854-19c6-d70a4b102dae}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_HasInstanceName_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	fbHasInstanceName	:  FB_HasInstanceNameImpl;
+	fbHasInstanceName	:  FB_HasInstanceName_ExtensionForTests;
 END_VAR
 ]]></Declaration>
     <Implementation>

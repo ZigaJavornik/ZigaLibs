@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_ErrorSource" Id="{39c13ed9-6860-004f-28d1-bfe8a964ba5b}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
 VAR
 	_errorSource	: ST_ErrorSource := (InstanceName := GetInstanceName());
 END_VAR]]></Declaration>
@@ -16,7 +16,10 @@ END_VAR]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ErrorSource := _errorSource;]]></ST>
+          <ST><![CDATA[_errorSource.ErrorInfo.Message := AdsErrorHelper
+	.GetErrorInfo(_errorSource.ErrorInfo.Code);
+_errorSource.InstanceName := THIS^.InstanceName;
+ErrorSource REF= _errorSource;]]></ST>
         </Implementation>
       </Get>
     </Property>

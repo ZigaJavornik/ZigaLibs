@@ -7,7 +7,6 @@ VAR
 	{attribute 'instance-path'} 
     {attribute 'noinit'} 
 	_instancePath	: Tc2_System.T_MaxString;
-	
 	_instanceName	: Tc2_System.T_MaxString;
 END_VAR
 

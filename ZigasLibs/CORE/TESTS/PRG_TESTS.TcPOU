@@ -9,7 +9,8 @@ VAR
 	AmsHelperTests					: FB_AdsHelper_Tests;
 	ArrayHelperTests				: FB_ArrayHelper_Tests;
 	DateTimeToStringConverterTest	: FB_DateTimeToStringConverter_Tests;
-	HasInstanceNameTests			: FB_HasInstanceNameTests;
+	ErrorSourceTests				: FB_ErrorSource_Tests;
+	HasInstanceNameTests			: FB_HasInstanceName_Tests;
 	StringBuilderBaseTest			: FB_StringBuilder_Tests;
 END_VAR
 ]]></Declaration>

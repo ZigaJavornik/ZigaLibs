@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_ErrorSource_Tests" Id="{6855d925-cd35-00c6-3a17-d11f72133451}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ErrorSource_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_errorSourceSut	: FB_ErrorSource_ExtensionForTests;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_InstanceName();
+Test02_ErrorCode();
+Test03_ErrorMessage();]]></ST>
+    </Implementation>
+    <Method Name="Test01_InstanceName" Id="{7a683e36-47cb-089d-0cc5-34e90bb9dc70}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_InstanceName
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_InstanceName');
+
+AssertEquals_STRING(
+	Actual := _errorSourceSut.ErrorSource.InstanceName,
+	Expected := '_errorSourceSut',
+	Message := 'Error source instance name is incorrect!'
+);
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_ErrorCode" Id="{4d3b42d5-8f2e-0d26-30ee-9fed7ff2bfd9}">
+      <Declaration><![CDATA[METHOD Test02_ErrorCode
+VAR
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_ErrorCode');
+
+_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_CLIENT_ERROR;
+_errorSourceSut();
+
+AssertEquals_UDINT(
+	Actual := _errorSourceSut.ErrorSource.ErrorInfo.Code,
+	Expected := E_AdsErrorCode.ADSERR_CLIENT_ERROR,
+	Message := 'The error code provided in the ErrorInfo.Code property is incorrect!'
+);
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_ErrorMessage" Id="{fdbc30ba-557c-09af-2f86-c775709cb0e6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test03_ErrorMessage
+VAR_INPUT
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_ErrorMessage');
+
+_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_DEVICE_ABORTED;
+_errorSourceSut();
+
+AssertEquals_STRING(
+	Actual := _errorSourceSut.ErrorSource.ErrorInfo.Message,
+	Expected := 'Request is aborted.',
+	Message := 'The error information was incorrect!');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
