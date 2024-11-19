@@ -17,9 +17,7 @@ END_VAR]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_errorSource.ErrorInfo.Message := AdsErrorHelper
-	.GetErrorInfo(_errorSource.ErrorInfo.Code);
-_errorSource.InstanceName := THIS^.InstanceName;
+          <ST><![CDATA[_errorSource.ErrorInfo.Message := AdsErrorHelper.GetErrorInfo(_errorSource.ErrorInfo.Code);
 ErrorSource REF= _errorSource;]]></ST>
         </Implementation>
       </Get>
