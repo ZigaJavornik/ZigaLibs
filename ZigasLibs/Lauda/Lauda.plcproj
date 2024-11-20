@@ -55,6 +55,8 @@
     <Author>Žiga Javornik</Author>
     <Placeholder>ZigaLibs_Lauda</Placeholder>
     <Description>Various Lauda device implementations.</Description>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Lauda Pro P20\DUTs\Commands\Read\Command groups\ST_LaudaReadCommands_ActuatingSignal.TcDUT">

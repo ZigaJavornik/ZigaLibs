@@ -64,49 +64,45 @@ IF bFirstExecution THEN
 	END_IF
 END_IF
 
-IF _writeModeRequired THEN
-	IF _coeReadWrite.WriteAny(
+IF _writeModeRequired AND_THEN _coeReadWrite.WriteAny(
 		CoeEntry := ADR(_CoeList.ControlMode),
 		Value := _mode,
 		SlaveAddr := Inputs.AmsAddr)
-	THEN
-		IF _writeLogs THEN
-			_logger.LogInfo(message := _stringBuilder.Reset()
-				.AddString(str := _logPrefix)
-				.AddString(str := 'Finished writing control mode for EtherCAT device ')
-				.AddWithDblQuotationMarks(str := _ethercatBoxName)
-				.AddString(str := '.')
-				.Create());
-			END_IF
-		_validateModeWrite := TRUE;
-		_writeModeRequired := FALSE;
+THEN
+	IF _writeLogs THEN
+		_logger.LogInfo(message := _stringBuilder.Reset()
+			.AddString(str := _logPrefix)
+			.AddString(str := 'Finished writing control mode for EtherCAT device ')
+			.AddWithDblQuotationMarks(str := _ethercatBoxName)
+			.AddString(str := '.')
+			.Create());
 	END_IF
+	_validateModeWrite := TRUE;
+	_writeModeRequired := FALSE;
 END_IF
 
-IF _validateModeWrite THEN
-	IF _coeReadWrite.ReadAny(
+IF _validateModeWrite AND_THEN _coeReadWrite.ReadAny(
 		CoeEntry := ADR(_CoeList.ControlMode),
 		Value := _CoeList.ControlMode.Value,
 		SlaveAddr := Inputs.AmsAddr)
-	THEN
-		_validateModeWrite := FALSE;
-		IF _writeLogs THEN
-			IF _CoeList.ControlMode.Value <> _mode THEN
-				// This allows for using TO_STRING on the enum value for better logging experience.
-				_controlModeTmp := _CoeList.ControlMode.Value;
-				_logger.LogError(message := _stringBuilder.Reset()
-					.AddString(str := _logPRefix)
-					.AddString('Control mode validation failed! Actual mode read is ')
-					.AddWithDblQuotationMarks(str := TO_STRING(_controlModeTmp))
-					.AddString(' required mode is ')
-					.AddWithDblQuotationMarks(str := TO_STRING(_mode))
-					.Create());
-			ELSE
-				_logger.LogInfo(message := _stringBuilder.Reset()
-					.AddString(str := _logPrefix)
-					.AddString('Control mode setting validation successful.')
-					.Create());
-			END_IF
+THEN
+	_validateModeWrite := FALSE;
+	IF _writeLogs THEN
+		IF _CoeList.ControlMode.Value <> _mode THEN
+			// This allows for using TO_STRING on the enum value for better logging experience.
+			_controlModeTmp := _CoeList.ControlMode.Value;
+			_logger.LogError(message := _stringBuilder.Reset()
+				.AddString(str := _logPRefix)
+				.AddString('Control mode validation failed! Actual mode read is ')
+				.AddWithDblQuotationMarks(str := TO_STRING(_controlModeTmp))
+				.AddString(' required mode is ')
+				.AddWithDblQuotationMarks(str := TO_STRING(_mode))
+				.Create());
+		ELSE
+			_logger.LogInfo(message := _stringBuilder.Reset()
+				.AddString(str := _logPrefix)
+				.AddString('Control mode setting validation successful.')
+				.Create());
 		END_IF
 	END_IF
 END_IF

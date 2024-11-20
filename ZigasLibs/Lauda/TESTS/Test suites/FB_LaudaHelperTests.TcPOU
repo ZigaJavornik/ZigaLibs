@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_LaudaHelperTests" Id="{5faf94d7-691e-03a1-0f67-bb8801813ad7}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaHelperTests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LaudaHelperTests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -21,18 +21,6 @@ Test04_ValidateSendCommandResponse();
 Test05_ParseFault();
 Test06_ParseResponseError();]]></ST>
     </Implementation>
-    <Method Name="test" Id="{617f9ff0-20ef-0663-1b45-95b96fe85d3a}">
-      <Declaration><![CDATA[METHOD test
-VAR_INPUT
-	tmp	: REFERENCE TO enum;
-END_VAR
-VAR
-	sTest	: STRING;	
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[sTest := TO_STRING(tmp);]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="Test01_AddSuffix" Id="{57e38a39-631d-0734-2ce9-7cbe16cf498c}">
       <Declaration><![CDATA[METHOD Test01_AddSuffix
 VAR_INPUT
