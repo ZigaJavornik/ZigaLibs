@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_AlarmManager" Id="{3eb86085-e2c4-0140-28bd-03ee6f0441da}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
+
+VAR_INPUT
+	iLogger	: REFERENCE TO I_LoggerEx;	// If provided, logging will be used.
+END_VAR
+
+
+VAR
+	_loggerIsValid				: BOOL;
+	_enable						: BOOL;
+	_alarmArrayProperties		: ST_ArrayProperties;
+	_stringBuilder				: FB_StringBuilderBase;
+	_dateTime					: FB_LocalSystemTimeProvider;
+	_initialized				: BOOL := FALSE;
+	
+	_activeAlarmCount			: UINT;
+	_unacknowledgedAlarmCount	: UINT;
+END_VAR
+
+VAR_IN_OUT
+	// Array of alarms which the alarm manager will manage.
+	refAlarms : ARRAY[*] OF ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_loggerIsValid := __ISVALIDREF(iLogger);
+
+IF NOT _initialized THEN
+	_alarmArrayProperties.Count := ArrayHelper.GetElementCount(
+		arr := refAlarms, 
+		dataType := refAlarms[0]);
+		
+	_alarmArrayProperties.StartIndex := LOWER_BOUND(refAlarms, 1);
+	_alarmArrayProperties.EndIndex := UPPER_BOUND(refAlarms, 1);
+	_initialized := TRUE;
+END_IF
+
+_dateTime();]]></ST>
+    </Implementation>
+    <Method Name="AcknowledgeAlarmById" Id="{34c24d4e-37de-0156-0871-b99f78e3aabb}">
+      <Declaration><![CDATA[(* Acknowledges the alarm with the provided id*)
+METHOD AcknowledgeAlarmById
+VAR_INPUT
+	nId	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nId < _alarmArrayProperties.StartIndex OR nId > _alarmArrayProperties.EndIndex THEN
+	RETURN;
+END_IF
+
+IF refAlarms[nId].IsAcknowledged OR refAlarms[nId].Name = '' THEN
+	RETURN;
+END_IF
+
+_unacknowledgedAlarmCount := _unacknowledgedAlarmCount - 1;
+refAlarms[nId].IsAcknowledged := TRUE;
+refAlarms[nId].TimeInfos.Acknowledged := _dateTime.CurrentTime.Value;
+
+IF _loggerIsValid THEN
+	iLogger.LogWarning(message := _stringBuilder.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := refAlarms[nId].Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(nId))
+		.AddString(' acknowledged.')
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeAlarmByName" Id="{751f3002-08c9-0085-00f5-b3e7c8810a6a}">
+      <Declaration><![CDATA[(* Acknowledges the alarm with the provided name.*)
+METHOD AcknowledgeAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+	IF refAlarms[alarmIndex].Name = sName THEN
+		AcknowledgeAlarmById(alarmIndex);
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeAllAlarms" Id="{e599013d-0a20-0df0-2810-b0c409996be7}">
+      <Declaration><![CDATA[(* Acknowledges all uacknowledged alarms.*)
+METHOD AcknowledgeAllAlarms
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+	AcknowledgeAlarmById(alarmIndex);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ActivateAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}">
+      <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
+METHOD ActivateAlarmById
+VAR_INPUT
+	(* Alarm id to be activated*)
+	nId	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nId < _alarmArrayProperties.StartIndex OR nId > _alarmArrayProperties.EndIndex OR NOT _enable THEN
+	RETURN;
+END_IF
+
+IF refAlarms[nId].IsActive OR refAlarms[nId].Name = '' THEN
+	RETURN;
+END_IF
+
+_activeAlarmCount := _activeAlarmCount + 1;
+_unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
+refAlarms[nId].IsActive := TRUE;
+refAlarms[nId].IsAcknowledged := FALSE;
+refAlarms[nId].TimeInfos.Activated := _dateTime.CurrentTime.Value;
+
+
+IF _loggerIsValid THEN
+	iLogger.LogInfo(message := _stringBuilder.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := refAlarms[nId].Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(nId))
+		.AddString(' actived!')
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ActivateAlarmByName" Id="{76cff595-4977-08b0-0a84-f685462f81f8}">
+      <Declaration><![CDATA[(* Activates the alarm with the provided name*)
+METHOD ActivateAlarmByName
+VAR_INPUT
+	(* Alarm name to be actived*)
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+	IF refAlarms[alarmIndex].Name = sName THEN
+		ActivateAlarmById(nId := alarmIndex);
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ActiveAlarmsCount" Id="{bd8c5464-d35d-0844-3d69-36b4a7b6ae4e}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the total count of currently active alarms*)
+PROPERTY ActiveAlarmsCount : UINT
+]]></Declaration>
+      <Get Name="Get" Id="{faed4c10-5858-09e1-1763-b08d524c00d3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActiveAlarmsCount := _activeAlarmCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="DeactivateAlarmById" Id="{2088bf2f-f639-0d02-1c36-0ee719acfe55}">
+      <Declaration><![CDATA[(* Deactivates the alarm with the provided Id (if it exists).*)
+METHOD DeactivateAlarmById
+VAR_INPUT
+	(* Alarm id to be deactivated.*)
+	nId	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nId < _alarmArrayProperties.StartIndex OR nId > _alarmArrayProperties.EndIndex THEN
+	RETURN;
+END_IF
+
+IF NOT refAlarms[nId].IsActive OR refAlarms[nId].Name = '' THEN
+	RETURN;
+END_IF
+_activeAlarmCount := _activeAlarmCount - 1;
+
+refAlarms[nId].IsActive := FALSE;
+refAlarms[nId].TimeInfos.Deactivated := _dateTime.CurrentTime.Value;
+
+IF _loggerIsValid THEN
+	iLogger.LogInfo(message := _stringBuilder.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := refAlarms[nId].Name)
+		.AddString('with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(nId))
+		.AddString(' deactivated.')
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeactivateAlarmByName" Id="{32977847-3bd9-0cb0-0693-f817b8be7827}">
+      <Declaration><![CDATA[(* Deactivates the alarm with the provided name (if it exists)*)
+METHOD DeactivateAlarmByName
+VAR_INPUT
+	(* Alarm name to be deactivated.*)
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+	IF refAlarms[alarmIndex].Name = sName THEN
+		DeactivateAlarmById(alarmIndex);
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeactivateAllAlarms" Id="{233d8589-8a0f-0d42-2e91-9fb45312807e}">
+      <Declaration><![CDATA[METHOD PRIVATE DeactivateAllAlarms
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+	IF refAlarms[alarmIndex].IsActive THEN
+		DeactivateAlarmById(alarmIndex);
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Enable" Id="{b311bbfa-d1b2-0227-1ecb-415a320bec44}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!*)
+PROPERTY Enable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{6f12b4f4-5648-09c2-1f52-47666d289721}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{02dd0713-db4d-0de9-240f-084fdd3763cf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF NOT Enable AND _enable THEN 
+	IF _loggerIsValid THEN
+		iLogger.LogInfo('Alarms are now disabled.');
+	END_IF
+	DeactivateAllAlarms();
+	AcknowledgeAllAlarms();
+ELSIF Enable AND NOT _enable THEN
+	IF _loggerIsValid THEN
+		iLogger.LogInfo('Alarms are now enabled.');
+	END_IF
+END_IF
+
+_enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{cd4effa7-afd5-0849-1418-4fe8c107dbfc}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	bEnable	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_enable := bEnable;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="UnacknowledgedAlarmsCount" Id="{8aca023b-5c4e-05de-0cc7-ab0f46075216}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the current count of alarms that have not yet been acknowledged*)
+PROPERTY UnacknowledgedAlarmsCount : UINT
+]]></Declaration>
+      <Get Name="Get" Id="{0630d84b-323a-0c5c-15e4-0fc38e219d3f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[UnacknowledgedAlarmsCount := _unacknowledgedAlarmCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

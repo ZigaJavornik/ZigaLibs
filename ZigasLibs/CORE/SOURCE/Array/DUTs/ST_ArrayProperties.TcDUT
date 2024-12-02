@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_ArrayProperties" Id="{02b249c7-c9e9-011f-0bda-6af185fc35b9}">
+    <Declaration><![CDATA[TYPE ST_ArrayProperties :
+STRUCT
+	Count		: DINT;
+	StartIndex	: T_ArrayIndexer;
+	EndIndex	: T_ArrayIndexer;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

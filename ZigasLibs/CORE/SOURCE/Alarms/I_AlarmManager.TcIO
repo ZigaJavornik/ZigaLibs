@@ -3,6 +3,14 @@
   <Itf Name="I_AlarmManager" Id="{80fc3c01-0244-0acf-26f2-8a5d34f3b451}">
     <Declaration><![CDATA[INTERFACE I_AlarmManager
 ]]></Declaration>
+    <Method Name="AcknowledgeAlarmById" Id="{8e487c47-c899-05e6-0b85-466276a78474}">
+      <Declaration><![CDATA[// Acknowledges the alarm with the provided id
+METHOD AcknowledgeAlarmById
+VAR_INPUT
+	nId	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+    </Method>
     <Method Name="AcknowledgeAlarmByName" Id="{2fb6b87d-1b01-09ce-1ec7-e5ffae8243ef}">
       <Declaration><![CDATA[// Acknowledges the alarm with the provided name.
 METHOD AcknowledgeAlarmByName
@@ -19,7 +27,7 @@ METHOD AcknowledgeAllAlarms]]></Declaration>
       <Declaration><![CDATA[// Activates the alarm with the provided Id (if it exists)
 METHOD ActivateAlarmById
 VAR_INPUT
-	nId	: UINT;	// Alarm id to be activated
+	nId	: T_ArrayIndexer;	// Alarm id to be activated
 END_VAR
 ]]></Declaration>
     </Method>
@@ -42,7 +50,7 @@ PROPERTY ActiveAlarmsCount : UINT]]></Declaration>
       <Declaration><![CDATA[// Deactivates the alarm with the provided Id (if it exists).
 METHOD DeactivateAlarmById
 VAR_INPUT
-	nId	: UINT; // Alarm id to be deactivated.
+	nId	: T_ArrayIndexer; // Alarm id to be deactivated.
 END_VAR
 ]]></Declaration>
     </Method>
@@ -64,9 +72,9 @@ PROPERTY Enable : BOOL]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Set>
     </Property>
-    <Property Name="UnackonwledgedAlarmsCount" Id="{68dc24d9-65f8-0e4c-0f5e-c9c2c664368e}">
+    <Property Name="UnacknowledgedAlarmsCount" Id="{68dc24d9-65f8-0e4c-0f5e-c9c2c664368e}">
       <Declaration><![CDATA[// Gets the current count of alarms that have not yet been acknowledged
-PROPERTY UnackonwledgedAlarmsCount : UINT]]></Declaration>
+PROPERTY UnacknowledgedAlarmsCount : UINT]]></Declaration>
       <Get Name="Get" Id="{dc98d8be-b33f-0a86-3465-5c68b2b0af18}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>

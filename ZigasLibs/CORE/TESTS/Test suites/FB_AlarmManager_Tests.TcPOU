@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_AlarmManager_Tests" Id="{b130fb6f-8b4f-0495-3730-ec04c33d7bdb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_AlarmManager_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_alarmManager	: FB_AlarmManager(TRUE);
+	_alarmsArray	: ARRAY[0..100] OF ST_AlarmInfo;
+	n	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF _alarmsArray[30].Name = '' THEN
+	FOR n := 0 TO 100 BY 1 DO
+		_alarmsArray[n].Name := TO_STRING(n);
+		_alarmsArray[n].Message := Tc2_Standard.CONCAT(
+			STR1 := _alarmsArray[n].Name,
+			STR2 := 'th alarm message.');
+	END_FOR
+END_IF
+
+_alarmManager(refAlarms := _alarmsArray);
+
+
+Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm();
+Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged();
+Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount();
+Test04_DeactivateAlarm_ExpectNotActiveAcknowledged();
+Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive();
+Test06_DisableManager_ExpectNoActiveAlarms();
+Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged();
+Test08_ActivateByName();
+Test09_DeactivateByName();
+Test10_AcknowledgeByName();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm" Id="{9b1c592e-cc76-0bee-3ad8-28e7cb6b4bd3}">
+      <Declaration><![CDATA[METHOD Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm');
+
+_alarmManager.ActivateAlarmById(10);
+_alarmManager();
+
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsActive,
+	Expected := TRUE,
+	Message := 'Alarm activation failed.');
+	
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsAcknowledged,
+	Expected := FALSE,
+	Message := 'Newly activated alarm should not be acknowledged.');	
+
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := 1,
+	Message := 'Active alarm count is incorrect.');
+
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := 1,
+	Message := 'Unacknowledged alarm count is incorrect.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged" Id="{7c9f10b9-d1cd-0984-3f11-39a43f41ca58}">
+      <Declaration><![CDATA[METHOD Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged');
+
+_alarmManager.AcknowledgeAlarmById(10);
+_alarmManager();
+
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsActive,
+	Expected := TRUE,
+	Message := 'Alarm activation failed.');
+	
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsAcknowledged,
+	Expected := TRUE,
+	Message := 'Acknowlidging active alarm failed.');	
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount" Id="{10dfea8f-c6e2-0ed8-005c-f001e2b54921}">
+      <Declaration><![CDATA[METHOD Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount');
+
+_alarmManager.ActivateAlarmById(10);
+_alarmManager();
+
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsActive,
+	Expected := TRUE,
+	Message := 'Alarm activation failed.');
+	
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsAcknowledged,
+	Expected := TRUE,
+	Message := 'Already acknowledged alarm should not be acknowledged when activating the alarm while it is already active.');	
+
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := 1,
+	Message := 'Active alarm count is incorrect.');
+
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := 0,
+	Message := 'Activating acknowledged and already active alarm should not cause the alarm to be unacknowledged..');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_DeactivateAlarm_ExpectNotActiveAcknowledged" Id="{c90f406f-b4aa-00e6-3b58-9e9dd380a015}">
+      <Declaration><![CDATA[METHOD Test04_DeactivateAlarm_ExpectNotActiveAcknowledged
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_DeactivateAlarm_ExpectNotActiveAcknowledged');
+
+_alarmManager.DeactivateAlarmById(10);
+_alarmManager();
+
+AssertFalse(
+	Condition := _alarmsArray[10].IsActive,
+	Message := 'Alarm deactivation failed.');
+	
+AssertTrue(
+	Condition := _alarmsArray[10].IsAcknowledged,
+	Message := 'Alarm deactivation should not acknowledge the alarm.');	
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := 0,
+	Message := 'Active alarm count is incorrect.');
+
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := 0,
+	Message := 'Unacknowledged alarm count is incorrect.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive" Id="{57171f97-e6ab-0277-376d-9e325dc8b13e}">
+      <Declaration><![CDATA[METHOD Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive');
+
+_alarmManager.AcknowledgeAlarmById(10);
+_alarmManager();
+
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsActive,
+	Expected := FALSE,
+	Message := 'Alarm deactivation failed.');
+	
+AssertEquals_BOOL(
+	Actual := _alarmsArray[10].IsAcknowledged,
+	Expected := TRUE,
+	Message := 'Acknowlidging alarm failed.');	
+
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := 0,
+	Message := 'Active alarm count is incorrect.');
+
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := 0,
+	Message := 'Unacknowledged alarm count is incorrect.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_DisableManager_ExpectNoActiveAlarms" Id="{61d52f1e-6c75-0a56-0857-ae9b851fb091}">
+      <Declaration><![CDATA[METHOD Test06_DisableManager_ExpectNoActiveAlarms
+VAR_INPUT
+END_VAR
+VAR
+	n	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_DisableManager_ExpectNoActiveAlarms');
+
+FOR n := 1 TO 40 BY 1 DO
+	_alarmManager.ActivateAlarmById(n);
+END_FOR
+
+AssertEquals_UINT(
+	Expected := 40,
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Message := 'There should only be 40 active alarms at this point.');
+		
+_alarmManager.Enable := FALSE;
+
+AssertEquals_UINT(
+	Expected := 0,
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Message := 'Disabling the manager should result in all of the alarms being inactive.');
+
+_alarmManager.Enable := TRUE;
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged" Id="{b9eaba69-2f6e-05d7-364f-00d6655aa101}">
+      <Declaration><![CDATA[METHOD Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged
+VAR_INPUT
+END_VAR
+
+VAR
+	n	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged');
+
+FOR n := 1 TO 40 BY 1 DO
+	_alarmManager.ActivateAlarmById(n);
+END_FOR
+
+AssertEquals_UINT(
+	Expected := 40,
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Message := 'There should only be 40 active alarms at this point.');
+		
+_alarmManager.AcknowledgeAllAlarms();
+
+AssertEquals_UINT(
+	Expected := 0,
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Message := 'Acknowlidging all alarms should result in no unacknowledged alarms.');
+
+AssertEquals_UINT(
+	Expected := 40,
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Message := 'There should still be 40 active alarms, acknowlidning alarms should not affect alarm state.');
+
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_ActivateByName" Id="{6570a093-9568-07a3-22a8-55d06cc88f21}">
+      <Declaration><![CDATA[METHOD Test08_ActivateByName
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test08_ActivateByName');
+
+// Reset all alarms this way
+_alarmManager.Enable := FALSE;
+_alarmManager.Enable := TRUE;
+
+_alarmManager.ActivateAlarmByName('10');
+
+AssertTrue(
+	Condition := _alarmsArray[10].IsActive,
+	Message := 'Activating alarm by name failed.');
+
+AssertFalse(
+	Condition := _alarmsArray[10].IsAcknowledged,
+	Message := 'Alarm shold be unacknowledged.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test09_DeactivateByName" Id="{2a91d4bb-980f-0ce8-3024-53eef98592a9}">
+      <Declaration><![CDATA[METHOD Test09_DeactivateByName
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test09_DeactivateByName');
+
+_alarmManager.DeactivateAlarmByName('10');
+
+AssertFalse(
+	Condition := _alarmsArray[10].IsActive,
+	Message := 'Deactivate alarm by name failed.');
+
+AssertFalse(
+	Condition := _alarmsArray[10].IsAcknowledged,
+	Message := 'Alarm shold be unacknowledged.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test10_AcknowledgeByName" Id="{458fbcda-a528-09fc-3681-887d5d5998c3}">
+      <Declaration><![CDATA[METHOD Test10_AcknowledgeByName
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test10_AcknowledgeByName');
+
+_alarmManager.AcknowledgeAlarmByName('10');
+
+AssertFalse(
+	Condition := _alarmsArray[10].IsActive,
+	Message := 'Deactivate alarm by name failed.');
+
+AssertTrue(
+	Condition := _alarmsArray[10].IsAcknowledged,
+	Message := 'Alarm shold be acknowledged.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -51,6 +51,9 @@
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -58,6 +61,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Array\DUTs\ST_ArrayProperties.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
@@ -198,6 +204,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_AdsHelper_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_AlarmManager_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
