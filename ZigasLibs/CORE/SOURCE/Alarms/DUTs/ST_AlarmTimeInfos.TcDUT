@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_AlarmTimeInfos" Id="{a8ce03ed-d712-0b3c-2bc7-eec6fd6858f3}">
+    <Declaration><![CDATA[TYPE ST_AlarmTimeInfos :
+STRUCT
+	Activated		: TIME;
+	Deactivated		: TIME;
+	Acknowledged	: TIME;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

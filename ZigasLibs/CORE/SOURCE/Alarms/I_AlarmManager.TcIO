@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_AlarmManager" Id="{80fc3c01-0244-0acf-26f2-8a5d34f3b451}">
+    <Declaration><![CDATA[INTERFACE I_AlarmManager
+]]></Declaration>
+    <Method Name="AcknowledgeAlarmByName" Id="{2fb6b87d-1b01-09ce-1ec7-e5ffae8243ef}">
+      <Declaration><![CDATA[// Acknowledges the alarm with the provided name.
+METHOD AcknowledgeAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="AcknowledgeAllAlarms" Id="{6968a65b-99cb-085d-3376-79d96b6fac81}">
+      <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
+METHOD AcknowledgeAllAlarms]]></Declaration>
+    </Method>
+    <Method Name="ActivateAlarmById" Id="{510b7d39-d75d-0905-19d0-3b4edc0e3882}">
+      <Declaration><![CDATA[// Activates the alarm with the provided Id (if it exists)
+METHOD ActivateAlarmById
+VAR_INPUT
+	nId	: UINT;	// Alarm id to be activated
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ActivateAlarmByName" Id="{93b395a5-e014-0822-2a5b-a4763267118a}">
+      <Declaration><![CDATA[// Activates the alarm with the provided name
+METHOD ActivateAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;	// Alarm name to be actived
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="ActiveAlarmsCount" Id="{27f4b7b5-af68-0d3e-1cce-7963362b2b26}">
+      <Declaration><![CDATA[// Gets the total count of currently active alarms
+PROPERTY ActiveAlarmsCount : UINT]]></Declaration>
+      <Get Name="Get" Id="{1fda9237-4c6d-0222-24e1-b76eeb1af5cb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="DeactivateAlarmById" Id="{908ea30b-f1cc-0729-0398-9bb8540d0004}">
+      <Declaration><![CDATA[// Deactivates the alarm with the provided Id (if it exists).
+METHOD DeactivateAlarmById
+VAR_INPUT
+	nId	: UINT; // Alarm id to be deactivated.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="DeactivateAlarmByName" Id="{27724c6f-86b2-0264-144e-27ec1473aaea}">
+      <Declaration><![CDATA[// Deactivates the alarm with the provided name (if it exists)
+METHOD DeactivateAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;	// Alarm name to be deactivated.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Enable" Id="{73c55ca7-5827-0ef8-1de2-5ad82a920d0a}">
+      <Declaration><![CDATA[// Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{7ba49de5-22de-0fac-05db-c13bfa0a9921}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{b3e7d1d4-a521-0703-26f7-79ed7a0c708a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="UnackonwledgedAlarmsCount" Id="{68dc24d9-65f8-0e4c-0f5e-c9c2c664368e}">
+      <Declaration><![CDATA[// Gets the current count of alarms that have not yet been acknowledged
+PROPERTY UnackonwledgedAlarmsCount : UINT]]></Declaration>
+      <Get Name="Get" Id="{dc98d8be-b33f-0a86-3465-5c68b2b0af18}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Core</Title>
-    <ProjectVersion>0.0.0.2</ProjectVersion>
+    <ProjectVersion>0.0.0.3</ProjectVersion>
     <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
     <Placeholder>ZigaLibs_Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -45,6 +45,15 @@
     </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -217,6 +226,7 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
+    <Folder Include="SOURCE\Alarms\DUTs" />
     <Folder Include="SOURCE\Array\DUTs" />
     <Folder Include="SOURCE\Beckhoff\CoE" />
     <Folder Include="SOURCE\Beckhoff\CoE\DUTs" />
@@ -231,6 +241,7 @@
     <Folder Include="SOURCE\Beckhoff" />
     <Folder Include="SOURCE\DataType" />
     <Folder Include="SOURCE\Memory" />
+    <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />
