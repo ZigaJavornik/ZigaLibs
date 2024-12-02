@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.60">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.62" TcVersionFixed="true">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{18071995-0000-0000-0000-000000000041}" TcBaseType="true" HideSubItems="true" CName="AmsNetId">AMSNETID</Name>
@@ -115,7 +115,7 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project Disabled="true" GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{D9A573ED-FFBF-AD9F-3EC0-CF5344418EF9}">
 					<Name>Logging Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -135,7 +135,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project Disabled="true" GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{7C5141D7-F366-098F-026B-C7556ED01CC0}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -155,7 +155,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project Disabled="true" GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{BEFC216D-7256-8D0B-38DC-C7CC298D4223}">
 					<Name>Bronkhorst Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -189,7 +189,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project Disabled="true" GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{413DEC7B-C0FC-924D-C0E1-E59EDC1420AF}">
 					<Name>Lauda Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -209,7 +209,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project Disabled="true" GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502100" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcpIp\TcpIp.tmc" TmcHash="{734BE36A-AD98-CA95-1616-C9F481B84195}">
 					<Name>TcpIp Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>

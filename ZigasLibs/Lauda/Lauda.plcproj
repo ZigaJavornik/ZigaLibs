@@ -260,7 +260,6 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
-      <Namespace>TcUnit</Namespace>
       <Parameters>
         <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
           <Key>MAXNUMBEROFTESTSUITES</Key>
@@ -299,8 +298,6 @@
           <Value>TIME#0ms</Value>
         </Parameter>
       </Parameters>
-      <Condition>UnitTests</Condition>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_FlowController_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+  <POU Name="FB_FlowController_Tests" Id="{e70ec58a-3ae3-443c-a831-ea583923c705}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_FlowController_Tests EXTENDS TcUnit.FB_TestSuite
 
@@ -28,7 +28,7 @@ Test08_SetpointValueConversion_decimalDigits0();
 Test09_EnablePreventsOutoutFlowAndSetsControlByteToZero();
 Test10_ControllerStatusConversion();]]></ST>
     </Implementation>
-    <Method Name="Test01_MeasuredValueConversion_1000" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+    <Method Name="Test01_MeasuredValueConversion_1000" Id="{c38e7a06-4c30-4a26-88f5-124369711870}">
       <Declaration><![CDATA[METHOD PRIVATE Test01_MeasuredValueConversion_1000
 
 (* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).

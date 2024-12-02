@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_SUT_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+  <POU Name="FB_SUT_Tests" Id="{ef158edd-0b71-4c2b-ba0c-90e4d3e3af98}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_SUT_Tests EXTENDS FB_TestSuite
 
@@ -13,7 +13,7 @@ END_VAR
       <ST><![CDATA[// Call your test methods here
 THIS^.TestCase1_Test();]]></ST>
     </Implementation>
-    <Method Name="TestCase1_Test" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+    <Method Name="TestCase1_Test" Id="{73f655e5-b999-49e6-95f7-1ed302b4d6e5}">
       <Declaration><![CDATA[METHOD PRIVATE TestCase1_Test
 
 (* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).

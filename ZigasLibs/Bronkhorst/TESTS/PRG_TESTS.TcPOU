@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="PRG_TESTS" Id="{6e34c45a-3ca6-4d60-98ec-a84888e107c1}" SpecialFunc="None">
+  <POU Name="PRG_TESTS" Id="{8a697354-56fc-44b0-afc4-e6c08f5bd900}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
