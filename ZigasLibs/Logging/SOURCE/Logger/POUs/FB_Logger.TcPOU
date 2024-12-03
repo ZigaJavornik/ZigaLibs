@@ -58,7 +58,9 @@ CASE _state OF
 			.AddString(str := '.txt')
 			.Create();
 		
-		IF NOT _fileHandler.Error AND_THEN _fileHandler.WriteLine_Append(sContent := _logEntries[0]) THEN
+		IF NOT _fileHandler.Error AND_THEN 
+			_fileHandler.WriteLine_Append(sContent := _logEntries[0]) 
+		THEN
 			RemoveLogEntry();
 			_state := E_LoggerState.IDLE;
 		END_IF
@@ -95,7 +97,7 @@ ZigasLibs_Core.ArrayHelper.SetAtFirstEmptySlot(
     <Property Name="AmsAddress" Id="{2ff23ff9-8aca-06ba-18c7-b3a879ccb01f}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets or sets the Ams address structure*)
-PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
+PROPERTY AmsAddress : REFERENCE TO ST_AmsAddr
 ]]></Declaration>
       <Get Name="Get" Id="{87378494-b48f-041e-0273-a8548009f45b}">
         <Declaration><![CDATA[VAR

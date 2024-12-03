@@ -6,15 +6,19 @@
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
+	{IF defined(UnitTests)}
 	LaudaHelperTest	: FB_LaudaHelperTests;
+	{END_IF}
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Run tests in paralel
+      <ST><![CDATA[{IF defined(UnitTests)}
+// Run tests in paralel
 TcUnit.RUN();
 
 // Run tests in sequence, one after the other. Uncomment if required.
-// TcUnit.RUN_IN_SEQUENCE();]]></ST>
+// TcUnit.RUN_IN_SEQUENCE();
+{END_IF}]]></ST>
     </Implementation>
     <ObjectProperties>
       <XmlArchive>

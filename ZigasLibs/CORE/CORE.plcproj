@@ -41,8 +41,7 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>
-    </CompilerDefines>
+    <CompilerDefines>UnitTests</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
@@ -51,7 +50,16 @@
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Alarms\FB_AlarmAction.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\I_AlarmAction.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\I_AlarmActionOptions.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
@@ -256,7 +264,9 @@
     <Folder Include="SOURCE\Time\DUTs" />
     <Folder Include="SOURCE\Time\FluentConverter" />
     <Folder Include="TESTS\Test suites" />
-    <Folder Include="TESTS" />
+    <Folder Include="TESTS">
+      <ExcludeFromBuild>false</ExcludeFromBuild>
+    </Folder>
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="Tc2_EtherCAT">
@@ -375,6 +385,8 @@
           <Value>TIME#0ms</Value>
         </Parameter>
       </Parameters>
+      <Condition>UnitTests</Condition>
+      <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

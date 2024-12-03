@@ -97,9 +97,6 @@ VAR_INPUT
 	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 	startIndex	: T_ArrayIndexer;
 END_VAR
-VAR
-	arrTest	: ARRAY[0..10] OF BOOL;
-END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
@@ -167,7 +164,7 @@ FOR i := 0 TO maxIndex BY 1 DO
 			pBuf1 := ptrAllocatedBytes,
 			pBuf2 := ptrByte);
 			
-	IF cmpResult = 0 THEN
+	IF cmpResult = E_MemCmpResults.IDENTICAL THEN
 		Tc2_System.MEMCPY(
 			destAddr := ptrByte,
 			n := DINT_TO_UDINT(item.diSize),
