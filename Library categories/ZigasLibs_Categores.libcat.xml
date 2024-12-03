@@ -3,7 +3,7 @@
     <LibraryCategory>
         <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
         <Version>1.0.0.0</Version>
-        <DefaultName>ZigasLibs</DefaultName>
+        <DefaultName>ZigaLibs</DefaultName>
     </LibraryCategory>
     
     <!-- ZigasLibs.Core -->
