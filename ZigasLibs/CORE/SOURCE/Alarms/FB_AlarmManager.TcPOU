@@ -28,8 +28,14 @@ _alarmArrayProperties.StartIndex := LOWER_BOUND(refAlarms, 1);
 _alarmArrayProperties.EndIndex := UPPER_BOUND(refAlarms, 1);
 _alarmArrayProperties.Count := (_alarmArrayProperties.EndIndex - _alarmArrayProperties.StartIndex) + 1;]]></ST>
     </Implementation>
-    <Folder Name="Private" Id="{0f021448-6076-0b9d-33ed-27037f4d7f26}" />
-    <Method Name="AcknowledgeAlarm" Id="{6d3c930a-f5e5-0d9e-02bd-a5b7038def9e}" FolderPath="Private\">
+    <Folder Name="Constructor" Id="{7b7d77f1-78e6-0d1a-03de-9ddcd9f7f204}" />
+    <Folder Name="Methods - Private" Id="{0f021448-6076-0b9d-33ed-27037f4d7f26}" />
+    <Folder Name="Methods - public" Id="{24288524-c072-076b-27be-112f43c39c40}">
+      <Folder Name="Actions - ById" Id="{9562479f-6e10-0710-1c5b-0ecf089027c4}" />
+      <Folder Name="Actions - ByName" Id="{f7c526fa-d186-0248-1e10-580b12f41ad1}" />
+    </Folder>
+    <Folder Name="Properties - public" Id="{8b06842f-475b-07cf-0bd3-846b427acb17}" />
+    <Method Name="AcknowledgeAlarm" Id="{6d3c930a-f5e5-0d9e-02bd-a5b7038def9e}" FolderPath="Methods - Private\">
       <Declaration><![CDATA[METHOD PRIVATE AcknowledgeAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
@@ -55,7 +61,7 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AcknowledgeAlarmById" Id="{34c24d4e-37de-0156-0871-b99f78e3aabb}">
+    <Method Name="AcknowledgeAlarmById" Id="{34c24d4e-37de-0156-0871-b99f78e3aabb}" FolderPath="Methods - public\Actions - ById\">
       <Declaration><![CDATA[(* Acknowledges the alarm with the provided id*)
 METHOD AcknowledgeAlarmById
 VAR_INPUT
@@ -80,7 +86,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AcknowledgeAlarmByName" Id="{751f3002-08c9-0085-00f5-b3e7c8810a6a}">
+    <Method Name="AcknowledgeAlarmByName" Id="{751f3002-08c9-0085-00f5-b3e7c8810a6a}" FolderPath="Methods - public\Actions - ByName\">
       <Declaration><![CDATA[(* Acknowledges the alarm with the provided name.*)
 METHOD AcknowledgeAlarmByName
 VAR_INPUT
@@ -102,7 +108,7 @@ IF foundAlarm.Name = sName THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AcknowledgeAllAlarms" Id="{e599013d-0a20-0df0-2810-b0c409996be7}">
+    <Method Name="AcknowledgeAllAlarms" Id="{e599013d-0a20-0df0-2810-b0c409996be7}" FolderPath="Methods - public\">
       <Declaration><![CDATA[(* Acknowledges all uacknowledged alarms.*)
 METHOD AcknowledgeAllAlarms
 VAR
@@ -114,7 +120,7 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ActivateAlarm" Id="{fad3b3f8-3c33-0a4e-1db1-bc5e6dfd58ea}" FolderPath="Private\">
+    <Method Name="ActivateAlarm" Id="{fad3b3f8-3c33-0a4e-1db1-bc5e6dfd58ea}" FolderPath="Methods - Private\">
       <Declaration><![CDATA[METHOD PRIVATE ActivateAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
@@ -142,7 +148,7 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ActivateAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}">
+    <Method Name="ActivateAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}" FolderPath="Methods - public\Actions - ById\">
       <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
 METHOD ActivateAlarmById
 VAR_INPUT
@@ -168,7 +174,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ActivateAlarmByName" Id="{76cff595-4977-08b0-0a84-f685462f81f8}">
+    <Method Name="ActivateAlarmByName" Id="{76cff595-4977-08b0-0a84-f685462f81f8}" FolderPath="Methods - public\Actions - ByName\">
       <Declaration><![CDATA[(* Activates the alarm with the provided name*)
 METHOD ActivateAlarmByName
 VAR_INPUT
@@ -194,7 +200,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="ActiveAlarmsCount" Id="{bd8c5464-d35d-0844-3d69-36b4a7b6ae4e}">
+    <Property Name="ActiveAlarmsCount" Id="{bd8c5464-d35d-0844-3d69-36b4a7b6ae4e}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 (* Gets the total count of currently active alarms*)
 PROPERTY ActiveAlarmsCount : UINT
@@ -208,7 +214,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="DeactivateAlarm" Id="{9de6b43f-5e23-0c41-2e43-fc878c004836}" FolderPath="Private\">
+    <Method Name="DeactivateAlarm" Id="{9de6b43f-5e23-0c41-2e43-fc878c004836}" FolderPath="Methods - Private\">
       <Declaration><![CDATA[METHOD PRIVATE DeactivateAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
@@ -234,7 +240,7 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeactivateAlarmById" Id="{2088bf2f-f639-0d02-1c36-0ee719acfe55}">
+    <Method Name="DeactivateAlarmById" Id="{2088bf2f-f639-0d02-1c36-0ee719acfe55}" FolderPath="Methods - public\Actions - ById\">
       <Declaration><![CDATA[(* Deactivates the alarm with the provided Id (if it exists).*)
 METHOD DeactivateAlarmById
 VAR_INPUT
@@ -261,7 +267,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeactivateAlarmByName" Id="{32977847-3bd9-0cb0-0693-f817b8be7827}">
+    <Method Name="DeactivateAlarmByName" Id="{32977847-3bd9-0cb0-0693-f817b8be7827}" FolderPath="Methods - public\Actions - ByName\">
       <Declaration><![CDATA[(* Deactivates the alarm with the provided name (if it exists)*)
 METHOD DeactivateAlarmByName
 VAR_INPUT
@@ -287,7 +293,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeactivateAllAlarms" Id="{233d8589-8a0f-0d42-2e91-9fb45312807e}" FolderPath="Private\">
+    <Method Name="DeactivateAllAlarms" Id="{233d8589-8a0f-0d42-2e91-9fb45312807e}" FolderPath="Methods - Private\">
       <Declaration><![CDATA[METHOD PRIVATE DeactivateAllAlarms
 
 VAR
@@ -301,7 +307,7 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Enable" Id="{b311bbfa-d1b2-0227-1ecb-415a320bec44}">
+    <Property Name="Enable" Id="{b311bbfa-d1b2-0227-1ecb-415a320bec44}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 (* Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!*)
 PROPERTY Enable : BOOL
@@ -335,13 +341,13 @@ _enable := Enable;]]></ST>
         </Implementation>
       </Set>
     </Property>
-    <Method Name="FB_init" Id="{cd4effa7-afd5-0849-1418-4fe8c107dbfc}">
+    <Method Name="FB_init" Id="{cd4effa7-afd5-0849-1418-4fe8c107dbfc}" FolderPath="Constructor\">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
 	bEnable	: BOOL;
-	iLogger	: REFERENCE TO I_LoggerEx;
+	iLogger	: REFERENCE TO I_LoggerEx;	// If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -350,7 +356,7 @@ _logger REF= iLogger;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetAlarmById" Id="{403c4fb5-f026-053f-234a-bb9a4f8849b9}">
+    <Method Name="GetAlarmById" Id="{403c4fb5-f026-053f-234a-bb9a4f8849b9}" FolderPath="Methods - public\Actions - ById\">
       <Declaration><![CDATA[(* Gets the alarm with the provided id. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmById : REFERENCE TO ST_AlarmInfo
@@ -374,7 +380,7 @@ GetAlarmById REF= _emptyAlarm;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetAlarmByName" Id="{620bcf69-9c03-072e-14a0-c6da4c5cda69}">
+    <Method Name="GetAlarmByName" Id="{620bcf69-9c03-072e-14a0-c6da4c5cda69}" FolderPath="Methods - public\Actions - ByName\">
       <Declaration><![CDATA[(* Gets the alarm with the provided name. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmByName : REFERENCE TO ST_AlarmInfo
@@ -399,7 +405,7 @@ END_FOR
 GetAlarmByName REF= _emptyAlarm;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="MaximumAlarmsCount" Id="{4db2b792-75be-0f9f-3003-b41ea7626cae}">
+    <Property Name="MaximumAlarmsCount" Id="{4db2b792-75be-0f9f-3003-b41ea7626cae}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 (* Gets the maximum ammount of alarms that can be registered by the alarm manager (depends on provided buffer size)*)
 PROPERTY MaximumAlarmsCount : UDINT
@@ -413,7 +419,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="RegisterAlarm" Id="{cdcb8690-279d-00fd-371a-d270fd615fd4}">
+    <Method Name="RegisterAlarm" Id="{cdcb8690-279d-00fd-371a-d270fd615fd4}" FolderPath="Methods - public\">
       <Declaration><![CDATA[(* Registers a new alarm with the provided information. 
  Returns TRUE if new alarm was registered or false if not (alarm buffer is full or the id already exists)*)
 METHOD RegisterAlarm : BOOL
@@ -450,7 +456,7 @@ RegisterAlarm := TRUE;
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="RegisteredAlarmsCount" Id="{db450a50-100a-0f9f-0185-863d444ab242}">
+    <Property Name="RegisteredAlarmsCount" Id="{db450a50-100a-0f9f-0185-863d444ab242}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 (* Gets the total number of alarms registered*)
 PROPERTY RegisteredAlarmsCount : UDINT
@@ -464,7 +470,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="UnacknowledgedAlarmsCount" Id="{8aca023b-5c4e-05de-0cc7-ab0f46075216}">
+    <Property Name="UnacknowledgedAlarmsCount" Id="{8aca023b-5c4e-05de-0cc7-ab0f46075216}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 (* Gets the current count of alarms that have not yet been acknowledged*)
 PROPERTY UnacknowledgedAlarmsCount : UINT
