@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="F_CompareTypeClassWithBaseLib" Id="{85486a24-417f-00fc-34a1-95679daea182}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_CompareTypeClassWithBaseLib : BOOL
+    <Declaration><![CDATA[// Compares typeClass against baseLibrary class and returns TRUE if they are equal.
+FUNCTION F_CompareTypeClassWithBaseLib : BOOL
 VAR_INPUT
 	typeClass			: __SYSTEM.TYPE_CLASS;
 	baseLibraryClass	: INT;

@@ -4,9 +4,10 @@
     <Declaration><![CDATA[TYPE ST_AlarmInfo :
 STRUCT
 	Name			: Tc2_System.T_MaxString;
+	Id				: T_ArrayIndexer;
 	Message			: Tc2_System.T_MaxString;
 	IsActive		: BOOL;
-	IsAcknowledged	: BOOL := TRUE;
+	IsAcknowledged	: BOOL;
 	TimeInfos		: ST_AlarmTimeInfos;
 END_STRUCT
 END_TYPE

@@ -6,26 +6,16 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 END_VAR
-VAR
-	_alarmManager	: FB_AlarmManager(TRUE);
+VAR;
+	_alarmManager	: FB_AlarmManager(TRUE, 0);
 	_alarmsArray	: ARRAY[0..100] OF ST_AlarmInfo;
-	n	: T_ArrayIndexer;
+	n				: T_ArrayIndexer;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
-IF _alarmsArray[30].Name = '' THEN
-	FOR n := 0 TO 100 BY 1 DO
-		_alarmsArray[n].Name := TO_STRING(n);
-		_alarmsArray[n].Message := Tc2_Standard.CONCAT(
-			STR1 := _alarmsArray[n].Name,
-			STR2 := 'th alarm message.');
-	END_FOR
-END_IF
+      <ST><![CDATA[_alarmManager(refAlarms := _alarmsArray);
 
-_alarmManager(refAlarms := _alarmsArray);
-
-
+Test00_RegisterAlarms();
 Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm();
 Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged();
 Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount();
@@ -35,26 +25,93 @@ Test06_DisableManager_ExpectNoActiveAlarms();
 Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged();
 Test08_ActivateByName();
 Test09_DeactivateByName();
-Test10_AcknowledgeByName();]]></ST>
+Test10_AcknowledgeByName();
+Test11_GetAlarmByName();]]></ST>
     </Implementation>
+    <Method Name="Test00_RegisterAlarms" Id="{e3481e3b-1449-0574-29d8-60404d623878}">
+      <Declaration><![CDATA[METHOD Test00_RegisterAlarms
+VAR_INPUT
+END_VAR
+
+VAR
+	addAlarmIndex	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test00_RegisterAlarms');
+
+AssertEquals_UDINT(
+	Actual := _alarmManager.MaximumAlarmsCount,
+	Expected := 101,
+	Message := 'Total number of allowed alarms to be registered is incorrect.');
+
+FOR addAlarmIndex := 1 TO 100 BY 1 DO
+	AssertTrue(
+		Condition := _alarmManager.RegisterAlarm(
+			Id := addAlarmIndex,
+			Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
+			Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+		Message := 'Registering alarm failed.');
+	AssertEquals_UDINT(
+		Actual := _alarmManager.RegisteredAlarmsCount,
+		Expected := DINT_TO_UDINT(addAlarmIndex),
+		Message := 'Registered alarm count is incorrect.');
+		
+	AssertTrue(
+		Condition := _alarmManager.GetAlarmById(nID := addAlarmIndex).IsAcknowledged,
+		Message := 'Newly registered alarm should be acknowledged by default, when created.');
+END_FOR
+
+
+AssertFalse(
+	Condition := _alarmManager.RegisterAlarm(
+		Id := 22,
+		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex - 1)),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex - 1))),
+	Message := 'Registering an alarm with an existing id should not be possible.');
+
+AssertTrue(
+	Condition := _alarmManager.RegisterAlarm(
+		Id := addAlarmIndex + 1,
+		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+	Message := 'Registering alarm failed.');
+AssertEquals_UDINT(
+	Actual := _alarmManager.RegisteredAlarmsCount,
+	Expected := DINT_TO_UDINT(addAlarmIndex),
+	Message := 'Registered alarm count is incorrect.');
+
+AssertFalse(
+	Condition := _alarmManager.RegisterAlarm(
+		Id := 333,
+		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+	Message := 'Registering an alarm when the entire buffer has been filled should not be possible.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm" Id="{9b1c592e-cc76-0bee-3ad8-28e7cb6b4bd3}">
       <Declaration><![CDATA[METHOD Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	currentAlarm	: ST_AlarmInfo;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm');
 
 _alarmManager.ActivateAlarmById(10);
-_alarmManager();
+currentAlarm := _alarmManager.GetAlarmById(10);
 
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsActive,
+	Actual := currentAlarm.IsActive,
 	Expected := TRUE,
 	Message := 'Alarm activation failed.');
 	
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsAcknowledged,
+	Actual := currentAlarm.IsAcknowledged,
 	Expected := FALSE,
 	Message := 'Newly activated alarm should not be acknowledged.');	
 
@@ -81,15 +138,14 @@ END_VAR
         <ST><![CDATA[TcUnit.TEST('Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged');
 
 _alarmManager.AcknowledgeAlarmById(10);
-_alarmManager();
 
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsActive,
+	Actual := _alarmManager.GetAlarmById(10).IsActive,
 	Expected := TRUE,
 	Message := 'Alarm activation failed.');
 	
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsAcknowledged,
+	Actual := _alarmManager.GetAlarmById(10).IsAcknowledged,
 	Expected := TRUE,
 	Message := 'Acknowlidging active alarm failed.');	
 
@@ -108,12 +164,12 @@ _alarmManager.ActivateAlarmById(10);
 _alarmManager();
 
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsActive,
+	Actual := _alarmManager.GetAlarmById(10).IsActive,
 	Expected := TRUE,
 	Message := 'Alarm activation failed.');
 	
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsAcknowledged,
+	Actual := _alarmManager.GetAlarmById(10).IsAcknowledged,
 	Expected := TRUE,
 	Message := 'Already acknowledged alarm should not be acknowledged when activating the alarm while it is already active.');	
 
@@ -143,11 +199,11 @@ _alarmManager.DeactivateAlarmById(10);
 _alarmManager();
 
 AssertFalse(
-	Condition := _alarmsArray[10].IsActive,
+	Condition := _alarmManager.GetAlarmById(10).IsActive,
 	Message := 'Alarm deactivation failed.');
 	
 AssertTrue(
-	Condition := _alarmsArray[10].IsAcknowledged,
+	Condition := _alarmManager.GetAlarmById(10).IsAcknowledged,
 	Message := 'Alarm deactivation should not acknowledge the alarm.');	
 	
 AssertEquals_UINT(
@@ -175,12 +231,12 @@ _alarmManager.AcknowledgeAlarmById(10);
 _alarmManager();
 
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsActive,
+	Actual := _alarmManager.GetAlarmById(10).IsActive,
 	Expected := FALSE,
 	Message := 'Alarm deactivation failed.');
 	
 AssertEquals_BOOL(
-	Actual := _alarmsArray[10].IsAcknowledged,
+	Actual := _alarmManager.GetAlarmById(10).IsAcknowledged,
 	Expected := TRUE,
 	Message := 'Acknowlidging alarm failed.');	
 
@@ -278,14 +334,14 @@ END_VAR
 _alarmManager.Enable := FALSE;
 _alarmManager.Enable := TRUE;
 
-_alarmManager.ActivateAlarmByName('10');
+_alarmManager.ActivateAlarmByName('Alarm name10');
 
 AssertTrue(
-	Condition := _alarmsArray[10].IsActive,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsActive,
 	Message := 'Activating alarm by name failed.');
 
 AssertFalse(
-	Condition := _alarmsArray[10].IsAcknowledged,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsAcknowledged,
 	Message := 'Alarm shold be unacknowledged.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
@@ -299,14 +355,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test09_DeactivateByName');
 
-_alarmManager.DeactivateAlarmByName('10');
-
+_alarmManager.DeactivateAlarmByName('Alarm name10');
 AssertFalse(
-	Condition := _alarmsArray[10].IsActive,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsActive,
 	Message := 'Deactivate alarm by name failed.');
 
 AssertFalse(
-	Condition := _alarmsArray[10].IsAcknowledged,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsAcknowledged,
 	Message := 'Alarm shold be unacknowledged.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
@@ -320,17 +375,34 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test10_AcknowledgeByName');
 
-_alarmManager.AcknowledgeAlarmByName('10');
+_alarmManager.AcknowledgeAlarmByName('Alarm name10');
 
 AssertFalse(
-	Condition := _alarmsArray[10].IsActive,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsActive,
 	Message := 'Deactivate alarm by name failed.');
 
 AssertTrue(
-	Condition := _alarmsArray[10].IsAcknowledged,
+	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsAcknowledged,
 	Message := 'Alarm shold be acknowledged.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test11_GetAlarmByName" Id="{96f09601-4dae-0dc0-2b2f-a3cb43f168d9}">
+      <Declaration><![CDATA[METHOD Test11_GetAlarmByName
+VAR_INPUT
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_GetAlarmById" Id="{cb3671fe-21bd-0cef-2a9f-51bdf7ac7e68}">
+      <Declaration><![CDATA[METHOD Test12_GetAlarmById
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
   </POU>

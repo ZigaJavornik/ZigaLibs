@@ -6,26 +6,23 @@
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
-	{IF defined(UnitTests)}
-	AdsErrorHelperTests				: FB_AdsErrorHelper_Tests;
+	(*AdsErrorHelperTests				: FB_AdsErrorHelper_Tests;
 	AdsHelperTests					: FB_AdsHelper_Tests;
 	ArrayHelperTests				: FB_ArrayHelper_Tests;
 	DateTimeToStringConverterTest	: FB_DateTimeToStringConverter_Tests;
 	ErrorSourceTests				: FB_ErrorSource_Tests;
 	HasInstanceNameTests			: FB_HasInstanceName_Tests;
 	StringBuilderBaseTest			: FB_StringBuilder_Tests;
-	AlarmManagerTests				: FB_AlarmManager_Tests;
-	{END_IF}
+	*)AlarmManagerTests				: FB_AlarmManager_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[{IF defined(UnitTests)}
-// Run tests in paralel
+      <ST><![CDATA[// Run tests in paralel
 //TcUnit.RUN();
 
 // Run tests in sequence, one after the other. Uncomment if required.
 TcUnit.RUN_IN_SEQUENCE();
-{END_IF}]]></ST>
+]]></ST>
     </Implementation>
     <ObjectProperties>
       <XmlArchive>

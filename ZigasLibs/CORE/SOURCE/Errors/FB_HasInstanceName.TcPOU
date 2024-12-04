@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_HasInstanceName" Id="{87d42491-7a36-0b06-1027-fbe6e5b19dcf}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'reflection'}
+    <Declaration><![CDATA[// When inherited, the child function block will gain two properties:
+// InstanceName - ONLY the name of the instantiated function block
+// InstancePath - the FULL instance path
+
+{attribute 'reflection'}
 FUNCTION_BLOCK ABSTRACT FB_HasInstanceName
 VAR
 	{attribute 'instance-path'} 

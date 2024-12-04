@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Core</Title>
-    <ProjectVersion>0.0.0.3</ProjectVersion>
+    <ProjectVersion>0.0.0.4</ProjectVersion>
     <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
     <Placeholder>ZigaLibs_Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -25,7 +25,7 @@
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         <Version>1.0.0.0</Version>
-        <DefaultName>ZigasLibs</DefaultName>
+        <DefaultName>ZigaLibs</DefaultName>
       </LibraryCategory>
       <LibraryCategory>
         <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
@@ -35,13 +35,29 @@
         </ParentCategory>
         <DefaultName>Core</DefaultName>
       </LibraryCategory>
+      <LibraryCategory>
+        <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Comm</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Vendors</DefaultName>
+      </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+      <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>UnitTests</CompilerDefines>
+    <CompilerDefines>test</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
@@ -50,16 +66,7 @@
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Alarms\FB_AlarmAction.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\I_AlarmAction.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\I_AlarmActionOptions.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
@@ -107,9 +114,6 @@
     <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DataType\DataTypeHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -153,6 +157,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\I_FileProperties.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\File\ST_FileExtensions.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
@@ -385,7 +392,8 @@
           <Value>TIME#0ms</Value>
         </Parameter>
       </Parameters>
-      <Condition>UnitTests</Condition>
+      <Condition>
+      </Condition>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
   </ItemGroup>
