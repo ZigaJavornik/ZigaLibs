@@ -31,9 +31,17 @@ IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
 ```
 
 
-With every release, the ```TcUnit``` is excluded via the```Compiler defines``` due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148). Entering ```UnitTests``` to the ```compiler defines``` field will enable the ```TcUnit``` library, which is required for compilation and test running, but not for execution of any library files.
+~~With every release, the ```TcUnit``` is excluded via the```Compiler defines``` due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148). Entering ```UnitTests``` to the ```compiler defines``` field will enable the ```TcUnit``` library, which is required for compilation and test running, but not for execution of any library files.~~
 
-![image](https://github.com/user-attachments/assets/96ea302a-bb07-4d89-8e01-e3667cdce538)
+
+As it turns out, the upper solutio still does not solve the issue, as by default parameters are set to maximum and you can't exclude TcUnit. What is the best solution is, TcUnit is NOT excluded from build. Instead, the project that uses these libraries should have TcUnit as well, and then set these parameters to the highlighted values, this way you override the parameters from within the library, effectively setting the unit test count to 1:
+
+![image](https://github.com/user-attachments/assets/31997d48-711f-4992-bb0f-0d20825c394e)
+
+
+This results in next to no memory usage by TcUnit in your project while having TcUnit enabled and working properly for library development:
+![image](https://github.com/user-attachments/assets/9e823942-b539-4dea-912b-58a2a228e053)
+
 
 
 
