@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_ValueDeviation" Id="{6463dd3b-c143-04a9-046e-1f54f26dd07e}">
+    <Declaration><![CDATA[INTERFACE I_ValueDeviation
+]]></Declaration>
+    <Property Name="ActivationDelay" Id="{d7b8afe2-79da-0db0-2547-fe148212b733}">
+      <Declaration><![CDATA[// Gets or sets the activation delay, before the deviation error is activated
+PROPERTY ActivationDelay : TIME]]></Declaration>
+      <Get Name="Get" Id="{4bd4909b-74da-0fc9-07c1-421fcf563df9}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{12d29bb2-fa0b-0b6c-0492-b1a210860132}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Enable" Id="{83252782-045e-0998-14c2-90c15608096c}">
+      <Declaration><![CDATA[PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{dc2e45d2-94a1-034e-03ae-523883297a23}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{4711b673-5cf4-0c5e-1734-1dbc1399a762}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MaxDeviation" Id="{63135562-8145-0fb1-1b56-169d6afbfc32}">
+      <Declaration><![CDATA[PROPERTY MaxDeviation : REAL]]></Declaration>
+      <Get Name="Get" Id="{92f3e69b-4296-091d-2944-efc94d8060a0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{5855c4f4-48da-070c-1d8e-e0bb01c50e4b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Status" Id="{a35f0f41-18e5-059d-06d8-1387bbebeda2}">
+      <Declaration><![CDATA[PROPERTY Status : E_ValueDeviationStatus]]></Declaration>
+      <Get Name="Get" Id="{6918312a-ea4d-02bc-0604-db1166820882}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Value" Id="{2f10f158-c2f0-0478-00dc-74bb903b919b}">
+      <Declaration><![CDATA[PROPERTY Value : REFERENCE TO ST_Value]]></Declaration>
+      <Get Name="Get" Id="{142535be-b5ee-0119-2897-e80c20c729c4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

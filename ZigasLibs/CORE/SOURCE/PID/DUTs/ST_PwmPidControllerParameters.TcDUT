@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_PwmPidControllerParameters" Id="{b4eb9800-92d4-042a-0295-a8aec567c080}">
+    <Declaration><![CDATA[TYPE ST_PwmPidControllerParameters : 
+STRUCT
+		Period		: DINT;	// PWM period
+		Direction	: E_PwmControlDirection := E_PwmControlDirection.POSITIVE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

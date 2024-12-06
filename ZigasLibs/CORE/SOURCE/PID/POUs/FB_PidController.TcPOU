@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_PidController" Id="{fdd260aa-6f1d-028d-2e0f-eab35e46ecd1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PidController IMPLEMENTS I_PidController
+VAR
+	_enable					: BOOL;
+	_deviation				: BOOL;
+	_error					: BOOL;
+	_processValue			: LREAL;
+	
+	stPidExtParameters		: Tc2_ControllerToolbox.ST_CTRL_PID_EXT_PARAMS;	
+	TonDelayErrorReset		: Tc2_Standard.TON := (PT := T#500MS);
+	
+	eControllerState		: E_ControllerState;
+	fbPid					: Tc2_ControllerToolbox.FB_CTRL_PID_EXT;
+	
+	fbValueDeviation		: FB_ValueDeviation;
+	stPidParameters			: ST_PidControllerParameters;
+END_VAR
+
+VAR_OUTPUT
+	fOutput					: LREAL;	// Output, analog regulated value
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ ]]></ST>
+    </Implementation>
+    <Folder Name="Methods - public" Id="{ae3ad016-ec81-0b32-1cc8-2cd47ca277d6}" />
+    <Folder Name="Properties" Id="{a27e02f0-db00-027a-2afe-16ed95257bed}" />
+    <Property Name="Deviation" Id="{8f69eee7-a202-0ec2-3512-d5befdb66f79}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Deviation : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{74838681-3ebe-0714-3135-d536588962c5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Deviation := _deviation;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Enable" Id="{71068063-4a03-0a18-3304-5c2ae2d9cf1e}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Enable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{7f2fe003-c553-0589-2c1d-db42bc85e947}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{cf5b38c1-c404-0487-07da-69c901009d7b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Error" Id="{d9fd6c20-790b-0a17-29db-1db162a33467}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{9e7c8f55-6f98-08ae-3c06-9fe80b1e92b0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Exectute" Id="{15f2c03e-02fa-0778-23e2-f25bc8e3b45b}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Executes PID and returns the regulated value
+METHOD Exectute
+VAR_INPUT
+	fSetpointValue	: LREAL;
+	fProcessValue	: LREAL;
+END_VAR
+
+VAR
+	fControllerOutput	: LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._processValue := fProcessValue;
+
+// Set the PId's struct
+THIS^.stPidExtParameters.fKp := THIS^.stPidParameters.Kp_Gain;
+THIS^.stPidExtParameters.tTd := DINT_TO_TIME(THIS^.stPidParameters.Td_DampingTime);
+THIS^.stPidExtParameters.tTv := DINT_TO_TIME(THIS^.stPidParameters.Tv_DerivateiveTime);
+THIS^.stPidExtParameters.tTn := DINT_TO_TIME(THIS^.stPidParameters.Tn_IntegrationTime);
+THIS^.stPidExtParameters.fDeadBandInput := THIS^.stPidParameters.DeadbandInput;
+
+// 5% deviation over 30 seconds triggers deviation alarm
+fbValueDeviation(bEnable := THIS^.eControllerState = E_ControllerState.STATE_ACTIVE AND _enable,
+				 tActivationDelay 	:= T#30S,
+				 fActualValue 		:= LREAL_TO_REAL(fProcessValue),
+				 fSetpoint 			:= LREAL_TO_REAL(fSetpointValue),
+				 fMaxDeviation		:= 32767*0.05,
+			 	 bStatus 			=> THIS^._deviation);
+	
+CASE THIS^.eControllerState OF
+	// Idle state, no regulation
+	E_ControllerState.STATE_IDLE:
+	
+		IF THIS^._enable = FALSE THEN
+			fbPid(
+				eMode := eCTRL_MODE_PASSIVE,
+				stParams := THIS^.stPidExtParameters);
+				fControllerOutput := 0;
+		ELSE
+			THIS^.eControllerState := E_ControllerState.STATE_ACTIVE;
+		END_IF
+			
+		
+	// Active state, process regulated by PID
+	E_ControllerState.STATE_ACTIVE:
+	
+		IF NOT _enable THEN
+			eControllerState := E_ControllerState.STATE_IDLE;
+		END_IF
+		
+		IF THIS^.fbPid.bError THEN
+			eControllerState := E_ControllerState.STATE_ERROR;
+		END_IF
+		
+		THIS^.fbPid(
+			eMode 			:= eCTRL_MODE_ACTIVE,
+			fSetpointValue	:= fSetpointValue,
+			fActualValue	:= fProcessValue,
+			stParams		:= THIS^.stPidExtParameters,
+			fOut 			=> fControllerOutput);
+	
+	// Error state, error in PID controller detected		
+	E_ControllerState.STATE_ERROR:
+		THIS^._error := TRUE;
+		THIS^.fbPid(
+			eMode := eCTRL_MODE_PASSIVE,
+			stParams := THIS^.stPidExtParameters);
+			fControllerOutput := 0;
+	
+	// Reset state, attempt to reset the error	
+	E_ControllerState.STATE_RESET:
+		THIS^.fbPid(
+				eMode		:= eCTRL_MODE_RESET,
+				stParams 	:= THIS^.stPidExtParameters);
+		fControllerOutput := 0;
+		
+		THIS^.TonDelayErrorReset(IN := TRUE);
+		IF THIS^.TonDelayErrorReset.Q AND THIS^._error THEN
+			// Error persists even after a delay
+			THIS^.TonDelayErrorReset(IN := FALSE);
+			THIS^.eControllerState := E_ControllerState.STATE_ERROR;
+		ELSIF fbPid.bError = FALSE THEN
+			// Error no longer active, go back to idle
+			THIS^._error := FALSE;
+			THIS^.eControllerState := E_ControllerState.STATE_IDLE;
+		END_IF
+		
+END_CASE
+
+THIS^.fOutput := fControllerOutput;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{cb4287bd-b2b3-01a9-2915-18273a66cc52}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stPidExtParameters.tTaskCycleTime := T#10MS;
+stPidExtParameters.tCtrlCycleTime := T#50MS;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Overrange" Id="{0267f4cd-2be8-0ac4-1d12-4ad46e70cea6}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Overrange : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{cee87f12-b955-0e94-2c3b-b390a8a2bb1b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Overrange := _processValue > THIS^.stPidParameters.MaximumValue;
+
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="PidParameters" Id="{fe98bc34-4674-013d-3e09-266d834ff52f}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY PidParameters : REFERENCE TO ST_PidControllerParameters
+]]></Declaration>
+      <Get Name="Get" Id="{9ed91f97-7959-0bdf-2c0e-4296427307c7}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[PidParameters REF= THIS^.stPidParameters;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{20f997e9-f007-0aaa-2074-272f1e623dda}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[stPidParameters := PidParameters;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Reset" Id="{0bbc822b-65f2-0952-120a-8963c271367f}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.eControllerState := E_ControllerState.STATE_RESET;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Underrange" Id="{a72235cb-d9d5-0040-1940-50acd3f41d07}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Underrange : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{0d3e4a03-25db-0c7e-3c2c-05bd2a624337}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Underrange := _processValue < stPidParameters.MinimumValue;
+
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

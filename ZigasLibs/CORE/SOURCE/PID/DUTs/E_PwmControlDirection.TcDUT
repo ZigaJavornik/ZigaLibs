@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_PwmControlDirection" Id="{508b5bc8-2254-0ee1-30ca-1a1500eb2828}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_PwmControlDirection :
+(
+	POSITIVE	:= 0,	// PWM pulse expects to raise the process value
+	NEGATIVE	:= 1	// PWM pulse expects to lower the process value
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_ControllerState" Id="{79c4e209-da1f-0ccb-10bf-21e13f112322}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ControllerState :
+(
+	STATE_IDLE, 
+	STATE_ACTIVE, 
+	STATE_ERROR, 
+	STATE_RESET
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
