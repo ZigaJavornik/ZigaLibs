@@ -40,7 +40,8 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="ActiveAlarmsCount" Id="{27f4b7b5-af68-0d3e-1cce-7963362b2b26}">
-      <Declaration><![CDATA[// Gets the total count of currently active alarms
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the total count of currently active alarms
 PROPERTY ActiveAlarmsCount : UINT]]></Declaration>
       <Get Name="Get" Id="{1fda9237-4c6d-0222-24e1-b76eeb1af5cb}">
         <Declaration><![CDATA[]]></Declaration>
@@ -63,7 +64,8 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="Enable" Id="{73c55ca7-5827-0ef8-1de2-5ad82a920d0a}">
-      <Declaration><![CDATA[// Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!
 PROPERTY Enable : BOOL]]></Declaration>
       <Get Name="Get" Id="{7ba49de5-22de-0fac-05db-c13bfa0a9921}">
         <Declaration><![CDATA[]]></Declaration>
@@ -91,7 +93,8 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="MaximumAlarmsCount" Id="{9fdda351-8ca9-0422-318f-a9f72a705875}">
-      <Declaration><![CDATA[// Gets the maximum ammount of alarms that can be registered by the alarm manager (depends on provided buffer size)
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the maximum ammount of alarms that can be registered by the alarm manager (depends on provided buffer size)
 PROPERTY MaximumAlarmsCount : UDINT]]></Declaration>
       <Get Name="Get" Id="{5fd9533a-8c36-010c-14e4-32854e678aed}">
         <Declaration><![CDATA[]]></Declaration>
@@ -112,14 +115,16 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="RegisteredAlarmsCount" Id="{2f03c2aa-92a9-0f28-1da7-c0b12ade9192}">
-      <Declaration><![CDATA[// Gets the total number of alarms registered
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the total number of alarms registered
 PROPERTY RegisteredAlarmsCount : UDINT]]></Declaration>
       <Get Name="Get" Id="{8bcb71fc-c232-0403-2feb-f7102d6cc8c9}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
     <Property Name="UnacknowledgedAlarmsCount" Id="{68dc24d9-65f8-0e4c-0f5e-c9c2c664368e}">
-      <Declaration><![CDATA[// Gets the current count of alarms that have not yet been acknowledged
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the current count of alarms that have not yet been acknowledged
 PROPERTY UnacknowledgedAlarmsCount : UINT]]></Declaration>
       <Get Name="Get" Id="{dc98d8be-b33f-0a86-3465-5c68b2b0af18}">
         <Declaration><![CDATA[]]></Declaration>
