@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_PressureControlledDevice" Id="{ae5a14ce-0f4e-0500-2050-f80cd660eebb}">
+    <Declaration><![CDATA[INTERFACE I_PressureControlledDevice
+]]></Declaration>
+    <Property Name="Enable" Id="{3f980bdc-37ac-0e04-1249-1f179e7428c2}">
+      <Declaration><![CDATA[PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{bc79135c-8507-0960-330c-0ac8612dfd5e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{23f33951-cb2b-0fea-0bf6-d1ffd818b536}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Mode" Id="{58ea3ef5-5c22-0f33-0bfa-6338554f7acf}">
+      <Declaration><![CDATA[PROPERTY Mode : E_ControlMode]]></Declaration>
+      <Get Name="Get" Id="{73f7f1d1-f4b6-0551-1bdb-5b55b55aa78d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{20e3fb43-7698-08af-3d95-af2aa35828ba}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="Reset" Id="{b34450da-afd7-02b9-2bc5-3a7f2e8a1da8}">
+      <Declaration><![CDATA[METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ToggleOutput" Id="{a38e29cd-3db9-0a05-288c-91000c6728dd}">
+      <Declaration><![CDATA[// Toggle the output when called. 
+// To trigger the toggeling again at least 1 PLC cycle without method calling has to elapse - this is to prevent cyclic toggeling of the output.
+METHOD ToggleOutput
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

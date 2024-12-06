@@ -174,6 +174,33 @@
     <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\PID\DUTs\E_ControllerState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\E_ControlMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\E_PwmControlDirection.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\ST_PidControllerParameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\ST_PwmPidControllerParameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\POUs\FB_PidController.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\POUs\FB_PwmPidController.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\POUs\I_PidController.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\POUs\I_PressureControlledDevice.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\String\FB_StringBuilderBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -207,6 +234,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Time\I_DateTimeToStringConverter.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Value deviation\FB_ValueDeviation.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Value deviation\I_ValueDeviation.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Value deviation\ST_Value.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Value deviation\E_ValueDeviationStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -246,6 +285,9 @@
     <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_ValueDeviation_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
@@ -266,6 +308,10 @@
     <Folder Include="SOURCE\DataType" />
     <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Alarms" />
+    <Folder Include="SOURCE\Value deviation" />
+    <Folder Include="SOURCE\PID" />
+    <Folder Include="SOURCE\PID\DUTs" />
+    <Folder Include="SOURCE\PID\POUs" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />
@@ -276,6 +322,9 @@
     </Folder>
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="Tc2_ControllerToolbox">
+      <DefaultResolution>Tc2_ControllerToolbox, * (Beckhoff Automation GmbH)</DefaultResolution>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_EtherCAT">
       <DefaultResolution>Tc2_EtherCAT, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_EtherCAT</Namespace>

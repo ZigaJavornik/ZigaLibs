@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_PidController" Id="{0e4ab069-6ce9-0f17-3ba3-5874e6414979}">
+    <Declaration><![CDATA[INTERFACE I_PidController
+]]></Declaration>
+    <Property Name="Deviation" Id="{9b2d2a3b-0831-0d6c-3032-73a0b71521f4}">
+      <Declaration><![CDATA[PROPERTY Deviation : BOOL]]></Declaration>
+      <Get Name="Get" Id="{426db43d-8009-0eb8-2146-a2894a1e101d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Enable" Id="{fe824e5a-5005-02cb-0e17-3a605287a4b0}">
+      <Declaration><![CDATA[PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{4df5c014-b80c-05c8-1bb0-5bf1462e0b4f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{23ecba45-bed6-03ac-1902-7ba3f7e2879d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Error" Id="{da7ddbe6-439b-09c9-1d82-08d70eecfbb1}">
+      <Declaration><![CDATA[PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{8f64b220-9568-0330-27fd-8aaa8c19024e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Exectute" Id="{58665bec-c176-06d3-1b12-64b4a4edbd1d}">
+      <Declaration><![CDATA[METHOD Exectute
+VAR_INPUT
+	fSetpointValue	: LREAL;
+	fProcessValue	: LREAL;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Overrange" Id="{5f75845e-edf4-018d-2422-2b44b0981b8c}">
+      <Declaration><![CDATA[PROPERTY Overrange : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1fe85ad3-cd28-0dd8-1e8d-2115720204cb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="PidParameters" Id="{91359069-543e-027d-3ede-547fa4f2b782}">
+      <Declaration><![CDATA[PROPERTY PidParameters : REFERENCE TO ST_PidControllerParameters]]></Declaration>
+      <Get Name="Get" Id="{fcc49ca6-246b-0a03-1291-ad3dbee5fb0e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{c3364861-a884-0071-31da-ee3db34c7e80}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="Reset" Id="{fa0bc785-fa5f-0968-1cc4-eaa081f5553f}">
+      <Declaration><![CDATA[METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Underrange" Id="{43231de5-311d-0ec8-0e82-31565b597b95}">
+      <Declaration><![CDATA[PROPERTY Underrange : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9d993d70-9824-0a11-2ed7-18e5b0eac37b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

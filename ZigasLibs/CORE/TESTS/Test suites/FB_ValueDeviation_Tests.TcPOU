@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_ValueDeviation_Tests" Id="{f81ba94a-21b4-0d54-16cd-c843cf3ffef4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ValueDeviation_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_valueDeviation	: FB_ValueDeviation;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_WhenDisabledStatusIsOk();
+Test02_EnableWithNoDelay_ExpecteInstantError();
+Test03_EnableWithDelay_ExpectErrorAfterDelayElapsed();
+Test04_NoDelay_ChangeMaxDeviation_ExpectStatusAccordingToMaxValue();
+Test05_StatusNOK_DisableAndExpectStatusOK();
+Test06_NegativeMaxValue_ExpectTheDeviationAsAbsoluteValue();
+Test07_NegativeValue();]]></ST>
+    </Implementation>
+    <Method Name="Test01_WhenDisabledStatusIsOk" Id="{baf29948-0c76-0593-2d4b-75a0d26c876d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_WhenDisabledStatusIsOk
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_WhenDisabledStatusIsOk');
+
+_valueDeviation.Enable := FALSE;
+_valueDeviation.MaxDeviation := 0;
+_valueDeviation.Value.Setpoint := 100.0;
+_valueDeviation.ActivationDelay := T#0S;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := 'When disabled status should always be OK.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_EnableWithNoDelay_ExpecteInstantError" Id="{c6e724f6-7201-03bf-3170-45ff0084a888}">
+      <Declaration><![CDATA[METHOD Test02_EnableWithNoDelay_ExpecteInstantError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_EnableWithNoDelay_ExpecteInstantError');
+
+_valueDeviation.Enable := TRUE;
+_valueDeviation.MaxDeviation := 5;
+_valueDeviation.ActivationDelay := T#0S;
+
+_valueDeviation.Value.Setpoint := 10;
+_valueDeviation.Value.Actual := 0;
+
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'When enabled and no delay, status should be NOK when deviating over the threshold.');
+
+_valueDeviation.Value.Setpoint := 10;
+_valueDeviation.Value.Actual := 10;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := 'When enabled and no delay, status should be OK when deviating under the threshold.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_EnableWithDelay_ExpectErrorAfterDelayElapsed" Id="{ec2cc542-20ce-062c-1824-b89b147fab3e}">
+      <Declaration><![CDATA[METHOD Test03_EnableWithDelay_ExpectErrorAfterDelayElapsed : REFERENCE TO FB_Test
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	TonDelayDeviation	: TON := (PT := T#1200MS);
+	fbValueDeviation	: FB_ValueDeviation;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_EnableWithDelay_ExpectErrorAfterDelayElapsed');
+
+fbValueDeviation.Enable := TRUE;
+fbValueDeviation.MaxDeviation := 0;
+fbValueDeviation.Value.Setpoint := 100.0;
+fbValueDeviation.Value.Actual := 50;
+fbValueDeviation.ActivationDelay := T#1100MS;
+fbValueDeviation();
+TonDelayDeviation(IN := TRUE);
+
+IF TonDelayDeviation.Q THEN
+	AssertTrue(
+	Condition := fbValueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'Deviation with delay after 1 second failed');
+
+	TcUnit.TEST_FINISHED();
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_NoDelay_ChangeMaxDeviation_ExpectStatusAccordingToMaxValue" Id="{596c6672-e1b7-09f7-3b77-326a8cbc054d}">
+      <Declaration><![CDATA[METHOD Test04_NoDelay_ChangeMaxDeviation_ExpectStatusAccordingToMaxValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_NoDelay_ChangeMaxDeviation_ExpectStatusAccordingToMaxValue');
+
+_valueDeviation.Enable := TRUE;
+_valueDeviation.MaxDeviation := 100;
+_valueDeviation.Value.Setpoint := 10;
+_valueDeviation.Value.Actual := 2;
+_valueDeviation.ActivationDelay := T#0S;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := 'Changing threshold with no delay should instantly change status to OK when under max deviation.'
+);
+
+_valueDeviation.MaxDeviation := 5;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'Changing threshold with no delay should instantly change status to NOK when over max deviation.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_StatusNOK_DisableAndExpectStatusOK" Id="{4efc013a-d0c7-086f-138d-8501d29f570e}">
+      <Declaration><![CDATA[METHOD Test05_StatusNOK_DisableAndExpectStatusOK
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_StatusNOK_DisableAndExpectStatusOK');
+
+_valueDeviation.Enable := TRUE;
+_valueDeviation.MaxDeviation := 0;
+_valueDeviation.Value.Setpoint := 100.0;
+_valueDeviation.Value.Actual := 500.0;
+_valueDeviation.ActivationDelay := T#0S;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'Status should be NOK.'
+);
+
+_valueDeviation.Enable := FALSE;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := 'When disabled status should always be OK.'
+);
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_NegativeMaxValue_ExpectTheDeviationAsAbsoluteValue" Id="{ff41c7ce-ea12-0e02-17cc-306022fb6280}">
+      <Declaration><![CDATA[METHOD Test06_NegativeMaxValue_ExpectTheDeviationAsAbsoluteValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_NegativeMaxValue_ExpectTheDeviationAsAbsoluteValue');
+
+_valueDeviation.Enable := TRUE;
+_valueDeviation.MaxDeviation := -10;
+_valueDeviation.Value.Setpoint := 5;
+_valueDeviation.Value.Actual := 8;
+_valueDeviation.ActivationDelay := T#0S;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := 'Expected status with set 5, act 8 and max deviation -10 is OK.');
+
+_valueDeviation.MaxDeviation := -1;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'Expected status with set 5, act 8 and max deviation -1 is NOK.');
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_NegativeValue" Id="{7f109596-9400-0b02-267f-6dcb044a20ce}">
+      <Declaration><![CDATA[METHOD Test07_NegativeValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_NegativeValue');
+
+_valueDeviation.Enable := TRUE;
+_valueDeviation.MaxDeviation := 10;
+_valueDeviation.Value.Setpoint := -5;
+_valueDeviation.Value.Actual := 0;
+_valueDeviation.ActivationDelay := T#0S;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.OK,
+	Message := ' Expected status with set value -5, actual 0 and max deviation 10 is OK.');
+
+_valueDeviation.Value.Setpoint := -15;
+_valueDeviation();
+
+AssertTrue(
+	Condition := _valueDeviation.Status = E_ValueDeviationStatus.NOK,
+	Message := 'Expected status with set value -15, actual 0 and max deviation 10 is NOK.');
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
