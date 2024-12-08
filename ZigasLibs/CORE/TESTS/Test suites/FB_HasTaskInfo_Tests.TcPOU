@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasTaskInfo_Tests" Id="{aa6dd85a-0488-09a3-0f0b-577b2983b8b5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_HasTaskInfo_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_TaskInfoPropertyValidity();]]></ST>
+    </Implementation>
+    <Method Name="Test01_TaskInfoPropertyValidity" Id="{ef44c591-9845-0f92-0856-b2d6a5473758}">
+      <Declaration><![CDATA[METHOD Test01_TaskInfoPropertyValidity
+VAR_INPUT
+END_VAR
+VAR_INST
+	fbTaskInfo	: FB_HasTaskInfo_ExtensionsForTests;
+	cycles	: UINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_TaskInfoPropertyValidity');
+
+AssertTrue(
+	Condition := __ISVALIDREF(fbTaskInfo.TaskInfo),
+	Message := 'Invalid reference for Taskinfo property. PLC crash will occur if called!');
+	
+AssertTrue(
+	Condition := fbTaskInfo.TaskInfo.AdsPort <> 0,
+	Message := 'TaskInfo property is empty.');
+
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

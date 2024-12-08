@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasTaskInfo" Id="{90620e8f-2928-015b-1ab1-9c3efa46279c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasTaskInfo
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	{attribute 'hide'}
+	_PlcTaskInfo	: PlcTaskSystemInfo;
+	_attempts	: UINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="TaskInfo" Id="{bf63dea1-0cf1-00ee-1958-66e2577ef95f}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY TaskInfo : REFERENCE TO PlcTaskSystemInfo]]></Declaration>
+      <Get Name="Get" Id="{fc727187-ae1f-07d1-141e-4eab00933cc9}">
+        <Declaration><![CDATA[VAR
+	taskIndex	: DINT;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF _plcTaskInfo.CycleTime = 0 THEN
+	taskIndex := Tc2_System.GETCURTASKINDEXEX();
+	IF taskIndex <> 0 THEN
+		_PlcTaskInfo := _taskinfo[taskindex];
+	END_IF
+END_IF
+
+TaskInfo REF= _plcTaskInfo;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
