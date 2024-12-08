@@ -18,13 +18,10 @@ Test_MasterAddress();]]></ST>
 
 VAR_INST
 	masterNetId	: Tc2_System.T_AmsNetID := '0.0.0.0.0.5';
-	test	: DINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test_MasterAddress');
-
-test := AdsHelper.GetEthercatMasterIdFromNetIdString(netId := '');
 
 AssertEquals_DINT(
 	Expected := 24,

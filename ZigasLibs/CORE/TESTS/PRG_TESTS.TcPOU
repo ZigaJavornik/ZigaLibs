@@ -14,7 +14,9 @@ VAR
 	HasInstanceNameTests			: FB_HasInstanceName_Tests;
 	StringBuilderBaseTest			: FB_StringBuilder_Tests;
 	AlarmManagerTests				: FB_AlarmManager_Tests;
-	ValueDeviationTests				: FB_ValueDeviation_Tests;
+	
+	HasTaskInfoTests				: FB_HasTaskInfo_Tests;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>

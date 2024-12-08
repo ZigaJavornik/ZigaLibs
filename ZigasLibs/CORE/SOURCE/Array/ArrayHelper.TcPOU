@@ -8,6 +8,24 @@ PROGRAM ArrayHelper
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="Clear" Id="{be15889c-c0e1-09a6-20bb-cafe31f0b982}">
+      <Declaration><![CDATA[// Clears the entire array
+METHOD PUBLIC Clear
+VAR_INPUT
+	arr			: ANY;	// Array to be cleared
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateArrayVar(arr) THEN
+	RETURN;
+END_IF
+
+MEMSET(
+	destAddr := arr.pValue,
+	fillByte := 0,
+	n := DINT_TO_UDINT(arr.diSize));]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="FindLastOccupiedItem" Id="{e804b769-2043-0cee-39f9-86bb16a4f8d7}">
       <Declaration><![CDATA[// Looks trough the array and return the last non-zero element to the result variable.
 // Returns TRUE if an element was found and FALSE if no empty elements are found.
