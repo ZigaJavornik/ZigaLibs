@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_XV03ValveSystem" Id="{91226653-6c8c-0a95-3c70-9c02864fb572}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_XV03ValveSystem
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	Coils	AT %Q*	: ST_ValveCoils;
+	_valves			: ST_IndividualValves;
+	_enable			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT _enable THEN
+	Coils.Coils_01_To_08 := 0;
+	Coils.Coils_09_To_16 := 0;
+	Coils.Coils_17_To_24 := 0;
+	Coils.Coils_25_To_32 := 0;
+	Coils.Coils_41_To_48 := 0;
+ELSE
+	Coils.Coils_01_To_08.0 := _valves.Valve_01;
+	Coils.Coils_01_To_08.1 := _valves.Valve_02;
+	Coils.Coils_01_To_08.2 := _valves.Valve_03;
+	Coils.Coils_01_To_08.3 := _valves.Valve_04;
+	Coils.Coils_01_To_08.4 := _valves.Valve_05;
+	Coils.Coils_01_To_08.5 := _valves.Valve_06;
+	Coils.Coils_01_To_08.6 := _valves.Valve_07;
+	Coils.Coils_01_To_08.7 := _valves.Valve_08;
+	
+	Coils.Coils_09_To_16.0 := _valves.Valve_09;
+	Coils.Coils_09_To_16.1 := _valves.Valve_10;
+	Coils.Coils_09_To_16.2 := _valves.Valve_11;
+	Coils.Coils_09_To_16.3 := _valves.Valve_12;
+	Coils.Coils_09_To_16.4 := _valves.Valve_13;
+	Coils.Coils_09_To_16.5 := _valves.Valve_14;
+	Coils.Coils_09_To_16.6 := _valves.Valve_15;
+	Coils.Coils_09_To_16.7 := _valves.Valve_16;
+	
+	Coils.Coils_17_To_24.0 := _valves.Valve_17;
+	Coils.Coils_17_To_24.1 := _valves.Valve_18;
+	Coils.Coils_17_To_24.2 := _valves.Valve_19;
+	Coils.Coils_17_To_24.3 := _valves.Valve_20;
+	Coils.Coils_17_To_24.4 := _valves.Valve_21;
+	Coils.Coils_17_To_24.5 := _valves.Valve_22;
+	Coils.Coils_17_To_24.6 := _valves.Valve_23;
+	Coils.Coils_17_To_24.7 := _valves.Valve_24;
+	
+	Coils.Coils_25_To_32.0 := _valves.Valve_25;
+	Coils.Coils_25_To_32.1 := _valves.Valve_26;
+	Coils.Coils_25_To_32.2 := _valves.Valve_27;
+	Coils.Coils_25_To_32.3 := _valves.Valve_28;
+	Coils.Coils_25_To_32.4 := _valves.Valve_29;
+	Coils.Coils_25_To_32.5 := _valves.Valve_30;
+	Coils.Coils_25_To_32.6 := _valves.Valve_31;
+	Coils.Coils_25_To_32.7 := _valves.Valve_32;
+	
+	Coils.Coils_33_To_40.0 := _valves.Valve_33;
+	Coils.Coils_33_To_40.1 := _valves.Valve_34;
+	Coils.Coils_33_To_40.2 := _valves.Valve_35;
+	Coils.Coils_33_To_40.3 := _valves.Valve_36;
+	Coils.Coils_33_To_40.4 := _valves.Valve_37;
+	Coils.Coils_33_To_40.5 := _valves.Valve_38;
+	Coils.Coils_33_To_40.6 := _valves.Valve_39;
+	Coils.Coils_33_To_40.7 := _valves.Valve_40;
+	
+	Coils.Coils_41_To_48.0 := _valves.Valve_41;
+	Coils.Coils_41_To_48.1 := _valves.Valve_42;
+	Coils.Coils_41_To_48.2 := _valves.Valve_43;
+	Coils.Coils_41_To_48.3 := _valves.Valve_44;
+	Coils.Coils_41_To_48.4 := _valves.Valve_45;
+	Coils.Coils_41_To_48.5 := _valves.Valve_46;
+	Coils.Coils_41_To_48.6 := _valves.Valve_47;
+	Coils.Coils_41_To_48.7 := _valves.Valve_48;
+END_IF]]></ST>
+    </Implementation>
+    <Property Name="Enable" Id="{c512ef4d-d80f-0e46-07ce-0a1aa9652c8a}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{3cafa4b4-2386-0668-2aae-534403fb9031}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{52d2b470-ab81-0a5f-0b39-86de425faea3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Valves" Id="{f4dc996d-d5f6-0d6e-0fad-1e0a414a6188}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Valves : REFERENCE TO ST_IndividualValves]]></Declaration>
+      <Get Name="Get" Id="{fd2caa83-0f88-01d3-349d-2878bf8d5503}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Valves REF= _valves;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
