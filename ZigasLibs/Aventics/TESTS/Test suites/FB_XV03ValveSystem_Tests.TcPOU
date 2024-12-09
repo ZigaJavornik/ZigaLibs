@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_XV03ValveSystem_Tests" Id="{6e93b8ca-791a-0f0b-085c-81624b4b6d87}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK INTERNAL FB_XV03ValveSystem_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+Test01_Disabled_AllOutputsAreAlwaysFalse();
+Test02_Enabled_ExpectCorrectByteBitsSetToTrue();]]></ST>
+    </Implementation>
+    <Method Name="Test01_Disabled_AllOutputsAreAlwaysFalse" Id="{0eca35e2-db47-055a-20be-974be9dcb115}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_Disabled_AllOutputsAreAlwaysFalse
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	emptyArray	: ARRAY[0..SIZEOF(ST_ValveCoils)] OF BYTE;
+	fbValves	: FB_XV03ValveSystem;
+END_VAR
+
+VAR_INST
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test01_Disabled_AllOutputsAreAlwaysFalse');
+fbValves.Enable := FALSE;
+
+// Do your assertions here...
+AssertTrue(
+	Condition := Tc2_System.MEMCMP(pBuf1 := ADR(emptyArray), pBuf2 := ADR(fbValves.Coils), n := SIZEOF(ST_ValveCoils))  = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
+	Message := 'When disabled, output coils should all be set to 0.');
+	
+fbValves.Valves.Valve_01 := TRUE;
+fbValves.Valves.Valve_05 := TRUE;
+fbValves.Valves.Valve_01 := TRUE;
+fbValves.Valves.Valve_23 := TRUE;
+
+AssertTrue(
+	Condition := Tc2_System.MEMCMP(pBuf1 := ADR(emptyArray), pBuf2 := ADR(fbValves.Coils), n := SIZEOF(ST_ValveCoils))  = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
+	Message := 'When disabled, output coils should all be set to 0.');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Enabled_ExpectCorrectByteBitsSetToTrue" Id="{69a0d643-44bb-0985-2513-ae9bafacd361}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_Enabled_ExpectCorrectByteBitsSetToTrue
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+		fbValves	: FB_XV03ValveSystem;
+END_VAR
+
+VAR
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+TcUnit.TEST('Test02_Enabled_ExpectCorrectByteBitsSetToTrue');
+fbValves.Enable := TRUE;
+
+fbValves.Valves.Valve_01 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := TO_BOOL(fbValves.Coils.Coils_01_To_08.0),
+	Message := 'Valve 1 was not opened.');
+fbValves.Valves.Valve_01 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.0,
+	Message := 'Valve 1 was not closed.');
+
+fbValves.Valves.Valve_02 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.1,
+	Message := 'Valve 2 was not opened.');
+fbValves.Valves.Valve_02 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.1,
+	Message := 'Valve 2 was not closed.');
+
+fbValves.Valves.Valve_03 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.2,
+	Message := 'Valve 3 was not opened.');
+fbValves.Valves.Valve_03 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.2,
+	Message := 'Valve 3 was not closed.');
+
+fbValves.Valves.Valve_04 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.3,
+	Message := 'Valve 4 was not opened.');
+fbValves.Valves.Valve_04 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.3,
+	Message := 'Valve 4 was not closed.');
+
+fbValves.Valves.Valve_05 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.4,
+	Message := 'Valve 5 was not opened.');
+fbValves.Valves.Valve_05 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.4,
+	Message := 'Valve 5 was not closed.');
+
+fbValves.Valves.Valve_06 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.5,
+	Message := 'Valve 6 was not opened.');
+fbValves.Valves.Valve_06 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.5,
+	Message := 'Valve 6 was not closed.');
+
+fbValves.Valves.Valve_07 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.6,
+	Message := 'Valve 7 was not opened.');
+fbValves.Valves.Valve_07 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.6,
+	Message := 'Valve 7 was not closed.');
+
+fbValves.Valves.Valve_08 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_01_To_08.7,
+	Message := 'Valve 8 was not opened.');
+fbValves.Valves.Valve_08 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_01_To_08.7,
+	Message := 'Valve 8 was not closed.');
+
+fbValves.Valves.Valve_09 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.0,
+	Message := 'Valve 9 was not opened.');
+fbValves.Valves.Valve_09 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.0,
+	Message := 'Valve 9 was not closed.');
+
+fbValves.Valves.Valve_10 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.1,
+	Message := 'Valve 10 was not opened.');
+fbValves.Valves.Valve_10 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.1,
+	Message := 'Valve 10 was not closed.');
+
+fbValves.Valves.Valve_11 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.2,
+	Message := 'Valve 11 was not opened.');
+fbValves.Valves.Valve_11 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.2,
+	Message := 'Valve 11 was not closed.');
+
+fbValves.Valves.Valve_12 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.3,
+	Message := 'Valve 12 was not opened.');
+fbValves.Valves.Valve_12 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.3,
+	Message := 'Valve 12 was not closed.');
+
+fbValves.Valves.Valve_13 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.4,
+	Message := 'Valve 13 was not opened.');
+fbValves.Valves.Valve_13 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.4,
+	Message := 'Valve 13 was not closed.');
+
+fbValves.Valves.Valve_14 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.5,
+	Message := 'Valve 14 was not opened.');
+fbValves.Valves.Valve_14 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.5,
+	Message := 'Valve 14 was not closed.');
+
+fbValves.Valves.Valve_15 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.6,
+	Message := 'Valve 15 was not opened.');
+fbValves.Valves.Valve_15 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.6,
+	Message := 'Valve 15 was not closed.');
+
+fbValves.Valves.Valve_16 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_09_To_16.7,
+	Message := 'Valve 16 was not opened.');
+fbValves.Valves.Valve_16 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_09_To_16.7,
+	Message := 'Valve 16 was not closed.');
+
+fbValves.Valves.Valve_17 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.0,
+	Message := 'Valve 17 was not opened.');
+fbValves.Valves.Valve_17 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.0,
+	Message := 'Valve 17 was not closed.');
+
+fbValves.Valves.Valve_18 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.1,
+	Message := 'Valve 18 was not opened.');
+fbValves.Valves.Valve_18 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.1,
+	Message := 'Valve 18 was not closed.');
+
+fbValves.Valves.Valve_19 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.2,
+	Message := 'Valve 19 was not opened.');
+fbValves.Valves.Valve_19 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.2,
+	Message := 'Valve 19 was not closed.');
+
+fbValves.Valves.Valve_20 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.3,
+	Message := 'Valve 20 was not opened.');
+fbValves.Valves.Valve_20 := FALSE;
+fbValves();
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.3,
+	Message := 'Valve 20 was not closed.');
+
+fbValves.Valves.Valve_21 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.4,
+	Message := 'Valve 21 was not opened.');
+fbValves.Valves.Valve_21 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.4,
+	Message := 'Valve 21 was not closed.');
+
+fbValves.Valves.Valve_22 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.5,
+	Message := 'Valve 22 was not opened.');
+fbValves.Valves.Valve_22 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.5,
+	Message := 'Valve 22 was not closed.');
+
+fbValves.Valves.Valve_23 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.6,
+	Message := 'Valve 23 was not opened.');
+fbValves.Valves.Valve_23 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.6,
+	Message := 'Valve 23 was not closed.');
+
+fbValves.Valves.Valve_24 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_17_To_24.7,
+	Message := 'Valve 24 was not opened.');
+fbValves.Valves.Valve_24 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_17_To_24.7,
+	Message := 'Valve 24 was not closed.');
+
+fbValves.Valves.Valve_25 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.0,
+	Message := 'Valve 25 was not opened.');
+fbValves.Valves.Valve_25 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.0,
+	Message := 'Valve 25 was not closed.');
+
+fbValves.Valves.Valve_26 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.1,
+	Message := 'Valve 26 was not opened.');
+fbValves.Valves.Valve_26 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.1,
+	Message := 'Valve 26 was not closed.');
+
+fbValves.Valves.Valve_27 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.2,
+	Message := 'Valve 27 was not opened.');
+fbValves.Valves.Valve_27 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.2,
+	Message := 'Valve 27 was not closed.');
+
+fbValves.Valves.Valve_28 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.3,
+	Message := 'Valve 28 was not opened.');
+fbValves.Valves.Valve_28 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.3,
+	Message := 'Valve 28 was not closed.');
+
+fbValves.Valves.Valve_29 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.4,
+	Message := 'Valve 29 was not opened.');
+fbValves.Valves.Valve_29 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.4,
+	Message := 'Valve 29 was not closed.');
+
+fbValves.Valves.Valve_30 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.5,
+	Message := 'Valve 30 was not opened.');
+fbValves.Valves.Valve_30 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.5,
+	Message := 'Valve 30 was not closed.');
+
+fbValves.Valves.Valve_31 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.6,
+	Message := 'Valve 31 was not opened.');
+fbValves.Valves.Valve_31 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.6,
+	Message := 'Valve 31 was not closed.');
+
+fbValves.Valves.Valve_32 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_25_To_32.7,
+	Message := 'Valve 32 was not opened.');
+fbValves.Valves.Valve_32 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_25_To_32.7,
+	Message := 'Valve 32 was not closed.');
+
+fbValves.Valves.Valve_33 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.0,
+	Message := 'Valve 33 was not opened.');
+fbValves.Valves.Valve_33 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.0,
+	Message := 'Valve 33 was not closed.');
+
+fbValves.Valves.Valve_34 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.1,
+	Message := 'Valve 34 was not opened.');
+fbValves.Valves.Valve_34 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.1,
+	Message := 'Valve 34 was not closed.');
+
+fbValves.Valves.Valve_35 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.2,
+	Message := 'Valve 35 was not opened.');
+fbValves.Valves.Valve_35 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.2,
+	Message := 'Valve 35 was not closed.');
+
+fbValves.Valves.Valve_36 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.3,
+	Message := 'Valve 36 was not opened.');
+fbValves.Valves.Valve_36 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.3,
+	Message := 'Valve 36 was not closed.');
+
+fbValves.Valves.Valve_37 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.4,
+	Message := 'Valve 37 was not opened.');
+fbValves.Valves.Valve_37 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.4,
+	Message := 'Valve 37 was not closed.');
+
+fbValves.Valves.Valve_38 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.5,
+	Message := 'Valve 38 was not opened.');
+fbValves.Valves.Valve_38 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.5,
+	Message := 'Valve 38 was not closed.');
+
+fbValves.Valves.Valve_39 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.6,
+	Message := 'Valve 39 was not opened.');
+fbValves.Valves.Valve_39 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.6,
+	Message := 'Valve 39 was not closed.');
+
+fbValves.Valves.Valve_40 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_33_To_40.7,
+	Message := 'Valve 40 was not opened.');
+fbValves.Valves.Valve_40 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_33_To_40.7,
+	Message := 'Valve 40 was not closed.');
+
+fbValves.Valves.Valve_41 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.0,
+	Message := 'Valve 41 was not opened.');
+fbValves.Valves.Valve_41 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.0,
+	Message := 'Valve 41 was not closed.');
+
+fbValves.Valves.Valve_42 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.1,
+	Message := 'Valve 42 was not opened.');
+fbValves.Valves.Valve_42 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.1,
+	Message := 'Valve 42 was not closed.');
+
+fbValves.Valves.Valve_43 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.2,
+	Message := 'Valve 43 was not opened.');
+fbValves.Valves.Valve_43 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.2,
+	Message := 'Valve 43 was not closed.');
+
+fbValves.Valves.Valve_44 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.3,
+	Message := 'Valve 44 was not opened.');
+fbValves.Valves.Valve_44 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.3,
+	Message := 'Valve 44 was not closed.');
+
+fbValves.Valves.Valve_45 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.4,
+	Message := 'Valve 45 was not opened.');
+fbValves.Valves.Valve_45 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.4,
+	Message := 'Valve 45 was not closed.');
+
+fbValves.Valves.Valve_46 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.5,
+	Message := 'Valve 46 was not opened.');
+fbValves.Valves.Valve_46 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.5,
+	Message := 'Valve 46 was not closed.');
+
+fbValves.Valves.Valve_47 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.6,
+	Message := 'Valve 47 was not opened.');
+fbValves.Valves.Valve_47 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.6,
+	Message := 'Valve 47 was not closed.');
+
+fbValves.Valves.Valve_48 := TRUE;
+fbValves();
+AssertTrue(
+	Condition := fbValves.Coils.Coils_41_To_48.7,
+	Message := 'Valve 48 was not opened.');
+fbValves.Valves.Valve_48 := FALSE;
+fbValves();
+AssertFalse(
+	Condition := fbValves.Coils.Coils_41_To_48.7,
+	Message := 'Valve 48 was not closed.');
+
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

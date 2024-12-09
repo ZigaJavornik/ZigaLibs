@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="XV03_DiagnosticsHelper" Id="{118e4d92-a0c8-0e86-12ea-136dc8c90737}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM XV03_DiagnosticsHelper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Parse" Id="{7ebb7a8b-688e-05ee-3fdb-a499c0352b0f}">
+      <Declaration><![CDATA[METHOD Parse : REFERENCE TO FB_XV03_DiagnosisParser
+
+VAR_INST
+	fbXV03DiagnosisOptions	: FB_XV03_DiagnosisParser;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Parse REF= fbXV03DiagnosisOptions;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_IndividualValves" Id="{b59c6029-1a9a-01ce-1683-0e09dfdf4b06}">
+    <Declaration><![CDATA[TYPE ST_IndividualValves :
+STRUCT
+	Valve_01 : BOOL;
+	Valve_02 : BOOL;
+	Valve_03 : BOOL;
+	Valve_04 : BOOL;
+	Valve_05 : BOOL;
+	Valve_06 : BOOL;
+	Valve_07 : BOOL;
+	Valve_08 : BOOL;
+	Valve_09 : BOOL;
+	Valve_10 : BOOL;
+	Valve_11 : BOOL;
+	Valve_12 : BOOL;
+	Valve_13 : BOOL;
+	Valve_14 : BOOL;
+	Valve_15 : BOOL;
+	Valve_16 : BOOL;
+	Valve_17 : BOOL;
+	Valve_18 : BOOL;
+	Valve_19 : BOOL;
+	Valve_20 : BOOL;
+	Valve_21 : BOOL;
+	Valve_22 : BOOL;
+	Valve_23 : BOOL;
+	Valve_24 : BOOL;
+	Valve_25 : BOOL;
+	Valve_26 : BOOL;
+	Valve_27 : BOOL;
+	Valve_28 : BOOL;
+	Valve_29 : BOOL;
+	Valve_30 : BOOL;
+	Valve_31 : BOOL;
+	Valve_32 : BOOL;
+	Valve_33 : BOOL;
+	Valve_34 : BOOL;
+	Valve_35 : BOOL;
+	Valve_36 : BOOL;
+	Valve_37 : BOOL;
+	Valve_38 : BOOL;
+	Valve_39 : BOOL;
+	Valve_40 : BOOL;
+	Valve_41 : BOOL;
+	Valve_42 : BOOL;
+	Valve_43 : BOOL;
+	Valve_44 : BOOL;
+	Valve_45 : BOOL;
+	Valve_46 : BOOL;
+	Valve_47 : BOOL;
+	Valve_48 : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
