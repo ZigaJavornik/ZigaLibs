@@ -63,6 +63,15 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\FB_XV03_DiagnosisParser.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\ST_XV03_PerformanceDiagnosis.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\XV03_DiagnosticsHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\ValveSystem\FB_XV03ValveSystem.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -72,10 +81,16 @@
     <Compile Include="SOURCE\ValveSystem\ST_IndividualValves.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\ValveSystem\ST_XV03_CoeList.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_XV03ValveSystem_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_XV03_DiagnosisParser_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -83,6 +98,7 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="SOURCE\ValveSystem" />
+    <Folder Include="SOURCE\ValveSystem\Diagnostics" />
     <Folder Include="TESTS" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="VISUs" />

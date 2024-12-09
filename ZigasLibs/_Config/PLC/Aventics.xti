@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.62" ClassName="CNestedPlcProjDef">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}" AutoDeleteType="true">ST_ValveCoils</Name>
+			<BitSize>48</BitSize>
+			<SubItem>
+				<Name>Coils_01_To_08</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_09_To_16</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>8</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_17_To_24</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_25_To_32</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>24</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_33_To_40</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_41_To_48</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
+		</DataType>
+	</DataTypes>
+	<Project GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="..\..\Aventics\Aventics.plcproj" TmcFilePath="..\..\Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
+		<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{7FC3DA3E-9B2F-57FF-6EB1-5454B5996D1C}">
+			<Name>Aventics Instance</Name>
+			<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+			<Vars VarGrpType="2" AreaNo="1">
+				<Name>PlcTask Outputs</Name>
+				<Var>
+					<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST01_DISABLED_ALLOUTPUTSAREALWAYSFALSE__FBVALVES.Coils</Name>
+					<Type GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}">ST_ValveCoils</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST02_ENABLED_EXPECTCORRECTBYTEBITSSETTOTRUE__FBVALVES.Coils</Name>
+					<Type GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}">ST_ValveCoils</Type>
+				</Var>
+			</Vars>
+			<Contexts>
+				<Context>
+					<Id>0</Id>
+					<Name>PlcTask</Name>
+					<ManualConfig>
+						<OTCID>#x02010040</OTCID>
+					</ManualConfig>
+					<Priority>21</Priority>
+					<CycleTime>10000000</CycleTime>
+				</Context>
+			</Contexts>
+			<TaskPouOids>
+				<TaskPouOid Prio="21" OTCID="#x08502141"/>
+			</TaskPouOids>
+		</Instance>
+	</Project>
+</TcSmItem>

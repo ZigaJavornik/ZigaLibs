@@ -7,9 +7,10 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	Coils	AT %Q*	: ST_ValveCoils;
-	_valves			: ST_IndividualValves;
-	_enable			: BOOL;
+	Coils	AT %Q*		: ST_ValveCoils;
+	_valves				: ST_IndividualValves;
+	_enable				: BOOL;
+	_diagnosticsEnabled	: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -75,6 +76,26 @@ ELSE
 	Coils.Coils_41_To_48.7 := _valves.Valve_48;
 END_IF]]></ST>
     </Implementation>
+    <Property Name="DiagnosticsEnabled" Id="{db51de8b-ec1e-0acc-2403-44818dab9abf}">
+      <Declaration><![CDATA[// Gets or sets if diagnostics are enabled (CoE monitoring)
+PROPERTY DiagnosticsEnabled : BOOL]]></Declaration>
+      <Get Name="Get" Id="{0768f6a3-2af0-06c2-2321-511aff344b8f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DiagnosticsEnabled := _diagnosticsEnabled;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{84f385d3-ddcc-05e8-0060-5f394bb85152}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_diagnosticsEnabled := DiagnosticsEnabled;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Property Name="Enable" Id="{c512ef4d-d80f-0e46-07ce-0a1aa9652c8a}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 PROPERTY Enable : BOOL]]></Declaration>

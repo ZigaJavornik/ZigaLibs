@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_XV03_DiagnosisParser_Tests" Id="{484a256a-2e71-01b4-00e0-7b3512b39520}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_XV03_DiagnosisParser_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_parser	: FB_XV03_DiagnosisParser;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

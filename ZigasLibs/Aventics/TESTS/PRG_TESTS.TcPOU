@@ -7,8 +7,8 @@
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
 
-	XV03ValveSystem_Tests	: FB_XV03ValveSystem_Tests;
-
+	XV03ValveSystem_Tests		: FB_XV03ValveSystem_Tests;
+	XV03DiagnosisParser_Tests	: FB_XV03_DiagnosisParser;
 END_VAR
 ]]></Declaration>
     <Implementation>
