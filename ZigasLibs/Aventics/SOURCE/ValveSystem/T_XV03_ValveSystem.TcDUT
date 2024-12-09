@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="T_XV03_ValveSystem" Id="{d28346da-3143-07dd-212e-868793821984}">
+    <Declaration><![CDATA[TYPE T_XV03_ValveSystem : 
+	ARRAY[1..24] OF ST_XV03_ValveInfoData; 
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

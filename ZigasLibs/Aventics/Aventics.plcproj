@@ -63,25 +63,31 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\ValveSystem\Diagnostics\FB_XV03_DiagnosisParser.TcPOU">
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\FB_XV03_DiagnosticsParser.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\ValveSystem\Diagnostics\ST_XV03_PerformanceDiagnosis.TcDUT">
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\ST_DiagnosticsOptions.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\ValveSystem\Diagnostics\ST_XV03_PerformanceDiagnostics.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\ValveSystem\Diagnostics\XV03_DiagnosticsHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\ValveSystem\FB_XV03ValveSystem.TcPOU">
+    <Compile Include="SOURCE\ValveSystem\FB_XV03_ValveSystem.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\ValveSystem\ST_ValveCoils.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\ValveSystem\ST_IndividualValves.TcDUT">
+    <Compile Include="SOURCE\ValveSystem\T_XV03_ValveSystem.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\ValveSystem\ST_XV03_CoeList.TcDUT">
+    <Compile Include="SOURCE\ValveSystem\Valve\ST_XV03_CoilInfoData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\ValveSystem\Valve\ST_XV03_ValveInfoData.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
@@ -99,12 +105,16 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE\ValveSystem" />
     <Folder Include="SOURCE\ValveSystem\Diagnostics" />
+    <Folder Include="SOURCE\ValveSystem\Valve" />
     <Folder Include="TESTS" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="VISUs" />
     <Folder Include="SOURCE" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="Tc2_Math">
+      <DefaultResolution>Tc2_Math, * (Beckhoff Automation GmbH)</DefaultResolution>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Standard</Namespace>
@@ -187,6 +197,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

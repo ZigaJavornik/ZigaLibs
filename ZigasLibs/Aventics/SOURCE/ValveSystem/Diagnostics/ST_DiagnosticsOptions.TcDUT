@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <DUT Name="ST_XV03_CoeList" Id="{f03682d4-52b1-05ef-127b-a4906cb737f5}">
-    <Declaration><![CDATA[TYPE ST_XV03_CoeList :
+  <DUT Name="ST_DiagnosticsOptions" Id="{ab43494c-f6dc-02c0-1c85-434d18b585bd}">
+    <Declaration><![CDATA[TYPE ST_DiagnosticsOptions :
 STRUCT
-	Diagnostics	: ST_Coe
+	Enable	: BOOL;
+	Period	: TIME;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

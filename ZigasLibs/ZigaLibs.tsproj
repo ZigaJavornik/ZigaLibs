@@ -1,5 +1,107 @@
 <?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.60" TcVersionFixed="true">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-000000000041}" TcBaseType="true" HideSubItems="true" CName="AmsNetId">AMSNETID</Name>
+			<BitSize>48</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>6</Elements>
+			</ArrayInfo>
+			<Format>
+				<Printf>%d.%d.%d.%d.%d.%d</Printf>
+				<Parameter>[0]</Parameter>
+				<Parameter>[1]</Parameter>
+				<Parameter>[2]</Parameter>
+				<Parameter>[3]</Parameter>
+				<Parameter>[4]</Parameter>
+				<Parameter>[5]</Parameter>
+			</Format>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-000000000042}" TcBaseType="true" CName="AmsAddr">AMSADDR</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>netId</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</Type>
+				<BitSize>48</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>port</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<Format>
+				<Printf>%d.%d.%d.%d.%d.%d:%d</Printf>
+				<Parameter>.netId[0]</Parameter>
+				<Parameter>.netId[1]</Parameter>
+				<Parameter>.netId[2]</Parameter>
+				<Parameter>.netId[3]</Parameter>
+				<Parameter>.netId[4]</Parameter>
+				<Parameter>.netId[5]</Parameter>
+				<Parameter>.port</Parameter>
+			</Format>
+			<Format Name="Iec">
+				<Printf>(netId:=[%d.%d.%d.%d.%d.%d], port :=%d)</Printf>
+				<Parameter>.netId[0]</Parameter>
+				<Parameter>.netId[1]</Parameter>
+				<Parameter>.netId[2]</Parameter>
+				<Parameter>.netId[3]</Parameter>
+				<Parameter>.netId[4]</Parameter>
+				<Parameter>.netId[5]</Parameter>
+				<Parameter>.port</Parameter>
+			</Format>
+		</DataType>
+		<DataType>
+			<Name GUID="{C92AF341-7BD6-622A-489B-93F78F170DEA}" Namespace="Tc2_System" AutoDeleteType="true">ST_AmsAddr</Name>
+			<Comment><![CDATA[ TwinCAT AMS network address. ]]></Comment>
+			<BitSize>64</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000042}">AMSADDR</BaseType>
+		</DataType>
+		<DataType>
+			<Name GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}" AutoDeleteType="true">ST_ValveCoils</Name>
+			<BitSize>48</BitSize>
+			<SubItem>
+				<Name>Coils_01_To_08</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_09_To_16</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>8</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_17_To_24</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_25_To_32</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>24</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_33_To_40</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Coils_41_To_48</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
+		</DataType>
+	</DataTypes>
 	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" ShowHideConfigurations="#x3c7">
 		<System>
 			<Tasks>
@@ -12,7 +114,7 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{B13F5BAE-B17B-3B0B-F957-C92A2B31D34D}">
 					<Name>Logging Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -32,7 +134,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{5A974339-1A0F-68B9-0110-13A126F60364}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -52,7 +154,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{DB3A5683-A0D7-EC4B-2237-F28EE1E13925}">
 					<Name>Bronkhorst Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -72,8 +174,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{32DFDC33-F9DF-E138-2DD7-F0AB7E21E32C}">
+			<Project Disabled="true" GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{1A05B787-A031-514D-1CAD-ECE4AF030075}">
 					<Name>Lauda Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -92,7 +194,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502100" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcpIp\TcpIp.tmc" TmcHash="{E22862A8-1CCC-06C1-9FFF-7405E1E4F155}">
 					<Name>TcpIp Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -112,7 +214,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{A2BFEAD8-FA6A-AB94-B400-ADB736745F88}">
 					<Name>ProcessControl Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -125,15 +227,45 @@
 				</Instance>
 			</Project>
 			<Project GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{A76E2137-03CF-08EC-4EBE-1EEF34AF9B1A}">
 					<Name>Aventics Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST01_DISABLED_ALLOUTPUTSAREALWAYSFALSE__FBVALVES.Ams</Name>
+							<Type GUID="{C92AF341-7BD6-622A-489B-93F78F170DEA}" Namespace="Tc2_System">ST_AmsAddr</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST02_ENABLED_EXPECTCORRECTBYTEBITSSETTOTRUE__FBVALVESYSTEM_XV03.Ams</Name>
+							<Type GUID="{C92AF341-7BD6-622A-489B-93F78F170DEA}" Namespace="Tc2_System">ST_AmsAddr</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST01_DISABLED_ALLOUTPUTSAREALWAYSFALSE__FBVALVES.Coils</Name>
+							<Type GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}">ST_ValveCoils</Type>
+						</Var>
+						<Var>
+							<Name>PRG_TESTS.XV03ValveSystem_Tests.__FB_XV03VALVESYSTEM_TESTS__TEST02_ENABLED_EXPECTCORRECTBYTEBITSSETTOTRUE__FBVALVESYSTEM_XV03.Coils</Name>
+							<Type GUID="{E6696A3A-04EC-BE64-B447-FB4812BF8146}">ST_ValveCoils</Type>
+						</Var>
+					</Vars>
 					<Contexts>
 						<Context>
-							<Id>1</Id>
-							<Name>Default</Name>
+							<Id>0</Id>
+							<Name>PlcTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010040</OTCID>
+							</ManualConfig>
+							<Priority>21</Priority>
+							<CycleTime>10000000</CycleTime>
 						</Context>
 					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="21" OTCID="#x08502181"/>
+					</TaskPouOids>
 				</Instance>
 			</Project>
 		</Plc>

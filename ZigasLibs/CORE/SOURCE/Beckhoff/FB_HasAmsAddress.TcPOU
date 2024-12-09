@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_HasAmsAddress" Id="{24569db7-6441-041f-19dc-eb8a43d6dd89}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasAmsAddress
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	Ams AT%I* 	: Tc2_System.ST_AmsAddr;
+	_ams 		: Tc2_System.ST_AmsAddr;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="AmsAddress" Id="{87db1621-978a-01be-36e4-0f46484bdbe2}">
+      <Declaration><![CDATA[(* Gets or sets the Ams address structure*)
+PROPERTY AmsAddress : REFERENCE TO Tc2_System.ST_AmsAddr
+]]></Declaration>
+      <Get Name="Get" Id="{639bd165-9b0f-03a4-27a2-92e46b7d7dbb}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_ams := Ams;
+AmsAddress REF= _ams;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

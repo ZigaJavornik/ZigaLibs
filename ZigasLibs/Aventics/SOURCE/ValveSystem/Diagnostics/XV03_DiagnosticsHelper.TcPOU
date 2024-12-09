@@ -9,10 +9,10 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="Parse" Id="{7ebb7a8b-688e-05ee-3fdb-a499c0352b0f}">
-      <Declaration><![CDATA[METHOD Parse : REFERENCE TO FB_XV03_DiagnosisParser
+      <Declaration><![CDATA[METHOD Parse : REFERENCE TO FB_XV03_DiagnosticsParser
 
 VAR_INST
-	fbXV03DiagnosisOptions	: FB_XV03_DiagnosisParser;
+	fbXV03DiagnosisOptions	: FB_XV03_DiagnosticsParser;
 END_VAR
 ]]></Declaration>
       <Implementation>

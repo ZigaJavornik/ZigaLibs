@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_XV03_ValveInfoData" Id="{10185611-6cea-004b-074d-057aa46bd6b6}">
+    <Declaration><![CDATA[TYPE ST_XV03_ValveInfoData :
+STRUCT
+	Coil_14	: ST_XV03_CoilInfoData;
+	Coil_12	: ST_XV03_CoilInfoData;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

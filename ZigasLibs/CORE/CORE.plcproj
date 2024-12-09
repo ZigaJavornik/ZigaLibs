@@ -114,6 +114,9 @@
     <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\FB_HasAmsAddress.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Beckhoff\FB_HasTaskInfo.TcPOU">
       <SubType>Code</SubType>
     </Compile>

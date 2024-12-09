@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_XV03_CoilInfoData" Id="{fa1138a7-9c9d-0064-209b-d1d7eb7bc640}">
+    <Declaration><![CDATA[TYPE ST_XV03_CoilInfoData :
+STRUCT
+	OpenLoad		: BOOL;
+	ShortCircuit	: BOOL;
+	Active			: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

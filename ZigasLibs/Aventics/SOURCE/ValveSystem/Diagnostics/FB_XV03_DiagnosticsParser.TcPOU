@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_XV03_DiagnosticsParser" Id="{f4426962-01dd-05e0-16bd-b53d50f53602}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_XV03_DiagnosticsParser
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="OpenLoadCoils" Id="{6aa9d4b9-a3d6-0026-2c8f-87ba07b8fff8}">
+      <Declaration><![CDATA[METHOD OpenLoadCoils : ARRAY[1..8] OF BOOL
+VAR_INPUT
+	coils	: USINT;
+END_VAR
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[OpenLoadCoils[1] := coils.0;
+OpenLoadCoils[2] := coils.1;
+OpenLoadCoils[3] := coils.2;
+OpenLoadCoils[4] := coils.3;
+OpenLoadCoils[5] := coils.4;
+OpenLoadCoils[6] := coils.5;
+OpenLoadCoils[7] := coils.6;
+OpenLoadCoils[8] := coils.7;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="PerformanceDiagnosis" Id="{1244ce72-5353-051d-0405-ed01eb7352a3}">
+      <Declaration><![CDATA[METHOD PerformanceDiagnosis : REFERENCE TO ST_XV03_PerformanceDiagnostics;
+VAR_INPUT
+	Value	: USINT;
+END_VAR
+VAR_INST
+	stPerformanceDiagnosis	: ST_XV03_PerformanceDiagnostics;
+END_VAR
+VAR
+	ptr2ndByte	: POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// 2nd byte is performance diagnosis.
+ptr2ndByte := ADR(Value) + SIZEOF(BYTE);
+stPerformanceDiagnosis.LOGIC_VOLTAGE_INCORRECT := ptr2ndByte^.0;
+stPerformanceDiagnosis.ACTUATOR_VOLTAGE_OVERRANGE := ptr2ndByte^.1;
+stPerformanceDiagnosis.OPEN_LOAD_AT_VALVE_COIL := ptr2ndByte^.2;
+stPerformanceDiagnosis.SHORT_CIRCUIT_AT_VALVE_COIL := ptr2ndByte^.3;
+stPerformanceDiagnosis.HARDWARE_ERROR := ptr2ndByte^.4;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

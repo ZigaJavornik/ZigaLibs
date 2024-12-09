@@ -7,7 +7,7 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	_parser	: FB_XV03_DiagnosisParser;
+	_parser	: FB_XV03_DiagnosticsParser;
 END_VAR
 ]]></Declaration>
     <Implementation>
