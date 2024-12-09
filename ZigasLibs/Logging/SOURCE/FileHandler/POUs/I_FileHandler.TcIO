@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <Itf Name="I_FileHandler" Id="{4b78af44-5cd0-09b9-35c8-80b3588f1952}">
-    <Declaration><![CDATA[INTERFACE I_FileHandler EXTENDS ZigasLibs_Core.I_FileProperties, ZigasLibs_Core.I_RequiresAmsAddress]]></Declaration>
+    <Declaration><![CDATA[INTERFACE I_FileHandler EXTENDS ZigaLibs_Core.I_FileProperties, ZigaLibs_Core.I_RequiresAmsAddress]]></Declaration>
     <Method Name="Create" Id="{17e79720-8695-0d8d-1a43-b288c2f2e7b5}">
       <Declaration><![CDATA[// Creates the file. Returns TRUE when done - method needs to be called until it returns TRUE!
 METHOD Create : BOOL

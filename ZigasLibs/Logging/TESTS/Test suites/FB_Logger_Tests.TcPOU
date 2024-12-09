@@ -5,7 +5,7 @@
 VAR
 	fbLogger			: FB_Logger;
 	fbFileHandler		: FB_FileHandler;
-	fbLocalSystemTime	: ZigasLibs_Core.FB_LocalSystemTimeProvider;
+	fbLocalSystemTime	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
 END_VAR
 
 VAR CONSTANT
@@ -32,7 +32,7 @@ END_VAR
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigasLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
 	sDateForLogName 			: Tc2_System.T_MaxString;
 	sReadContent				: Tc2_System.T_MaxString;
 	nLogErrorTestState			: UINT := 0;
@@ -47,7 +47,7 @@ CASE nLogErrorTestState OF
 			fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
 				
 			sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-				timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD,
+				timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
 				timeOfDaySeperator := '',
 				dateSeperator := '',
 				fillWithZeros := TRUE,
@@ -120,7 +120,7 @@ END_VAR
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigasLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
 	sDateForLogName 			: Tc2_System.T_MaxString;
 	sReadContent				: Tc2_System.T_MaxString;
 	nLogWarningTestState			: UINT := 0;
@@ -136,7 +136,7 @@ IF TcUnit.IS_TEST_FINISHED('Test01_LogError') THEN
 				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
 					
 				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD,
+					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
 					timeOfDaySeperator := '',
 					dateSeperator := '',
 					fillWithZeros := TRUE,
@@ -209,7 +209,7 @@ END_VAR
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigasLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
 	sDateForLogName 			: Tc2_System.T_MaxString;
 	sReadContent				: Tc2_System.T_MaxString;
 	nLogInfoTestState			: UINT := 0;
@@ -226,7 +226,7 @@ IF TcUnit.IS_TEST_FINISHED('Test02_LogWarning') THEN
 				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
 					
 				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD,
+					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
 					timeOfDaySeperator := '',
 					dateSeperator := '',
 					fillWithZeros := TRUE,
@@ -297,7 +297,7 @@ END_IF]]></ST>
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigasLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
 	sDateForLogName 			: Tc2_System.T_MaxString;
 	sReadContent				: Tc2_System.T_MaxString;
 	nGenericTestState			: UINT := 0;
@@ -314,7 +314,7 @@ IF TcUnit.IS_TEST_FINISHED('Test03_LogInfo') THEN
 				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
 					
 				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigasLibs_Core.E_TimeFormat.YYMMDD,
+					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
 					timeOfDaySeperator := '',
 					dateSeperator := '',
 					fillWithZeros := TRUE,

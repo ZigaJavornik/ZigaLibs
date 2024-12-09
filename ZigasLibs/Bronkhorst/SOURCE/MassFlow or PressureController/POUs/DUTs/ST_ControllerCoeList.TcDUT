@@ -4,11 +4,11 @@
     <Declaration><![CDATA[// Contains CoE indexes and sub indexes for Bronkhorst EtherCAT mass flow controller
 TYPE ST_ControllerCoeList :
 STRUCT
-	FluidName		: ZigasLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#12);
-	Capacity 		: ZigasLibs_Core.ST_CoeEntry_REAL 		:= (Index := 16#2001, SubIndex := 16#0E);
-	CapacityUnit 	: ZigasLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#20);
-	DecimalDigits 	: ZigasLibs_Core.ST_CoeEntry_INT 		:= (Index := 16#6407, SubIndex := 16#01);
-	ControlMode 	: ZigasLibs_Core.ST_CoeEntry_USINT 		:= (Index := 16#6423, SubIndex := 16#01);
+	FluidName		: ZigaLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#12);
+	Capacity 		: ZigaLibs_Core.ST_CoeEntry_REAL 		:= (Index := 16#2001, SubIndex := 16#0E);
+	CapacityUnit 	: ZigaLibs_Core.ST_CoeEntry_String30 	:= (Index := 16#2001, SubIndex := 16#20);
+	DecimalDigits 	: ZigaLibs_Core.ST_CoeEntry_INT 		:= (Index := 16#6407, SubIndex := 16#01);
+	ControlMode 	: ZigaLibs_Core.ST_CoeEntry_USINT 		:= (Index := 16#6423, SubIndex := 16#01);
 END_STRUCT
 END_TYPE
 ]]></Declaration>

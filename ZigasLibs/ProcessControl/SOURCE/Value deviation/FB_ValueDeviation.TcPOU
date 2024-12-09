@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_ValueDeviation" Id="{c5ff19cb-11c2-0f72-212a-d933426c76a3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ValueDeviation IMPLEMENTS I_ValueDeviation
+
+VAR
+	_delayDeviation		: Tc2_Standard.TON;
+	_value				: ST_Value;
+	_status				: E_ValueDeviationStatus;
+	_maxDeviation		: REAL;
+	_enable				: BOOL;
+	_activationDelay	: TIME;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _enable THEN
+	_delayDeviation(
+	IN := ABS(_value.Setpoint - _value.Actual) > ABS(_maxDeviation), 
+	PT := _activationDelay);
+ELSE
+	_delayDeviation(IN := FALSE);
+END_IF
+
+IF _delayDeviation.Q THEN
+	_status := E_ValueDeviationStatus.NOK;
+ELSE
+	_status := E_ValueDeviationStatus.OK;
+END_IF]]></ST>
+    </Implementation>
+    <Property Name="ActivationDelay" Id="{f6da7b17-0167-0ecf-0d12-e0217755d6d2}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets or sets the activation delay, before the deviation error is activated*)
+PROPERTY ActivationDelay : TIME
+]]></Declaration>
+      <Get Name="Get" Id="{e55c933f-15e8-0e15-15ab-9ff66dd74ba8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActivationDelay := _activationDelay;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f7695020-3f03-0a2b-3624-34c9d0689f53}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_activationDelay := ActivationDelay;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Enable" Id="{c18448c6-0347-06e4-2819-263c70e9f861}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Enable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{cfd4c918-6d3c-0522-1331-fce8faf72d4d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8e0a88df-9fd2-018c-339c-bcd28bd8736e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="MaxDeviation" Id="{d1002e23-4697-0a96-0366-6fecf8049e2c}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY MaxDeviation : REAL
+]]></Declaration>
+      <Get Name="Get" Id="{9c431166-f7de-07f8-1d09-3b35f84faaf4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MaxDeviation := _maxDeviation;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{bbe83b6a-05c5-0c9b-2a14-95fe7c29f4ff}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_maxDeviation := MaxDeviation;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Status" Id="{1bc020c4-ab28-03f6-22c6-5e31f8c03b04}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Status : E_ValueDeviationStatus
+]]></Declaration>
+      <Get Name="Get" Id="{c0e28e53-20fd-0bb9-0c93-60722768b814}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Status := _status;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Value" Id="{d7c3bcec-ec7e-089a-26c7-6a9b1f2a8aad}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Value : REFERENCE TO ST_Value
+]]></Declaration>
+      <Get Name="Get" Id="{75356649-6e51-0d93-0d31-54fba61d16b6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value REF= _value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

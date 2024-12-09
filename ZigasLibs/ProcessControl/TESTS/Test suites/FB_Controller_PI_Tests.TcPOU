@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Controller_PI_Tests" Id="{f77be68e-9062-040c-365b-ec0fbd98b3bb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_PI_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_SetTnToZero_WhenDisabledExecuteAlwaysReturnsZero();
+Test02_SetTnToZero_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed();
+Test03_SetTnToZero_ControllerOutputChangesWithEveryCycleTimeElapsed();
+Test04_SetTnToZero_StepResponse_ChangeKp_ExpectDifferentResults();]]></ST>
+    </Implementation>
+    <Method Name="Test01_SetTnToZero_WhenDisabledExecuteAlwaysReturnsZero" Id="{24ad6475-0ef6-05b2-398d-72a5cd40e48a}">
+      <Declaration><![CDATA[METHOD Test01_SetTnToZero_WhenDisabledExecuteAlwaysReturnsZero
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	fbController : FB_Controller_PI;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_SetTnToZero_WhenDisabledExecuteAlwaysReturnsZero'); 
+
+fbController.CycleTime := T#0S;
+fbController.Enable := FALSE;
+fbController.Kp := 100;
+fbController.Value.Setpoint := 100;
+fbController.Tn := T#0S;
+
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'When controller is disabled, returned value should always be 0.');
+
+fbController.Value.Setpoint := 500;
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'When controller is disabled, returned value should always be 0.');
+
+fbController.Enable := TRUE;
+fbController.Execute();
+fbController.Enable := FALSE;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'Disabling controller after being enabled should return 0, instantly.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_SetTnToZero_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed" Id="{21fdf9b3-f705-0d80-30f9-5b25218ccc52}">
+      <Declaration><![CDATA[METHOD Test02_SetTnToZero_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed
+VAR_INPUT
+END_VAR
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_SetTnToZero_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed');
+
+fbController.CycleTime := T#100MS;
+fbController.Tn := T#0S;
+fbController.Enable := TRUE;
+fbController.Kp := 100;
+fbController.Value.Setpoint := 100;
+TonOutputDelay(IN := TRUE);
+
+
+IF TonOutputDelay.Q THEN
+	AssertEquals_REAL(
+		Actual := fbController.Execute(),
+		Expected := fbController.Kp * (fbController.Value.Setpoint - fbController.Value.Actual),
+		Delta := 0.001,
+		Message := 'Incorrect output after elapsed time'
+);
+	TcUnit.TEST_FINISHED();
+	RETURN;
+END_IF
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'Before cycle time elapses, output should not change.'
+);
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_SetTnToZero_ControllerOutputChangesWithEveryCycleTimeElapsed" Id="{983fe817-f3df-00ce-32e1-6ac36fba28d9}">
+      <Declaration><![CDATA[METHOD Test03_SetTnToZero_ControllerOutputChangesWithEveryCycleTimeElapsed
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+	nIteration		: UINT;
+	fResult			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_SetTnToZero_ControllerOutputChangesWithEveryCycleTimeElapsed');
+
+fbController.CycleTime := T#100MS;
+fbController.Enable := TRUE;
+fbController.Kp := 100;
+fbController.Tn := T#0S;
+fbController.Value.Setpoint := 100;
+TonOutputDelay(IN := TRUE);
+
+
+IF TonOutputDelay.Q THEN
+	TonOutputDelay(IN := FALSE);
+	TonOutputDelay(IN := TRUE);
+	nIteration := nIteration + 1;
+	fbController.Value.Actual := nIteration * 100;
+	fResult := fbController.Execute();
+	
+	AssertEquals_REAL(
+		Actual := fbController.Execute(),
+		Expected := fbController.Kp * (fbController.Value.Setpoint - fbController.Value.Actual),
+		Delta := 0.001,
+		Message := CONCAT('Incorrect output after elapsed time. Current iteration is ', TO_STRING(nIteration)));
+		
+	IF nIteration = 4 THEN
+		TcUnit.TEST_FINISHED();
+		RETURN;
+	END_IF
+END_IF
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := fResult,
+	Delta := 0.001,
+	Message := CONCAT('Before cycle time elapses, output should not change. Curernt iteration is', TO_STRING(nIteration)));
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_SetTnToZero_StepResponse_ChangeKp_ExpectDifferentResults" Id="{8bbc1b1e-bc3f-0a39-1d23-02309a803457}">
+      <Declaration><![CDATA[METHOD Test04_SetTnToZero_StepResponse_ChangeKp_ExpectDifferentResults
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+	nIteration		: UINT;
+	fResult			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_SetTnToZero_StepResponse_ChangeKp_ExpectDifferentResults');
+
+fbController.CycleTime := T#0S;
+fbController.Enable := TRUE;
+
+fbController.Kp := 0;
+fbController.Tn := T#0S;
+fbController.Value.Setpoint := 100.0;
+fbController.Value.Actual := 0;
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0.0,
+	Message := 'When gain is set to 0, output should be 0 after elapsed cycle time.');
+
+fbController.Kp := 10;
+fbController.Value.Setpoint := 100.0;
+fbController.Value.Actual := 0;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 100.0 * 10,
+	Delta := 0.0,
+	Message := 'Incorrect result when gain set to 10 and value difference is 100.');
+	
+fbController.Kp := 20;
+fbController.Value.Setpoint := 200.0;
+fbController.Value.Actual := 0;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 200.0 * 20,
+	Delta := 0.0,
+	Message := 'Incorrect result when gain set to 10 and value difference is 200.');	
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_WhenDisabledExecuteAlwaysReturnsZero" Id="{a81dac2f-2362-0177-33ac-f5fd964df1e9}">
+      <Declaration><![CDATA[METHOD Test05_WhenDisabledExecuteAlwaysReturnsZero
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	fbController : FB_Controller_PI;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_WhenDisabledExecuteAlwaysReturnsZero'); 
+
+fbController.CycleTime := T#0S;
+fbController.Enable := FALSE;
+fbController.Kp := 100;
+fbController.Value.Setpoint := 100;
+fbController.Tn := T#1S;
+
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'When controller is disabled, returned value should always be 0.');
+
+fbController.Value.Setpoint := 500;
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'When controller is disabled, returned value should always be 0.');
+
+fbController.Enable := TRUE;
+fbController.Execute();
+fbController.Enable := FALSE;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'Disabling controller after being enabled should return 0, instantly.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed" Id="{3f973af9-b2d7-08fa-06f6-4a7d43759ddc}">
+      <Declaration><![CDATA[METHOD Test06_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed
+VAR_INPUT
+END_VAR
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_CycleTime100ms_ExpectNoOutputChangeUntilTimeElapsed');
+
+fbController.CycleTime := T#100MS;
+fbController.Tn := T#0S;
+fbController.Enable := TRUE;
+fbController.Kp := 100;
+fbController.Tn := T#100MS;
+fbController.Value.Setpoint := 100;
+TonOutputDelay(IN := TRUE);
+
+
+IF TonOutputDelay.Q THEN
+	AssertEquals_REAL(
+		Actual := fbController.Execute(),
+		Expected := fbController.Kp * 2*(fbController.Value.Setpoint - fbController.Value.Actual),
+		Delta := 0.001,
+		Message := 'Incorrect output after elapsed time');
+	TcUnit.TEST_FINISHED();
+	RETURN;
+END_IF
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0,
+	Message := 'Before cycle time elapses, output should not change.');
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_ControllerOutputChangesWithEveryCycleTimeElapsed" Id="{d2166930-3da3-0797-31ce-a2112bae0ed0}">
+      <Declaration><![CDATA[METHOD Test07_ControllerOutputChangesWithEveryCycleTimeElapsed
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+	nIteration		: UINT;
+	fResult			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_ControllerOutputChangesWithEveryCycleTimeElapsed');
+
+fbController.CycleTime := T#100MS;
+fbController.Enable := TRUE;
+fbController.Kp := 100;
+fbController.Tn := T#0S;
+fbController.Value.Setpoint := 100;
+TonOutputDelay(IN := TRUE);
+
+
+IF TonOutputDelay.Q THEN
+	TonOutputDelay(IN := FALSE);
+	TonOutputDelay(IN := TRUE);
+	nIteration := nIteration + 1;
+	fbController.Value.Actual := nIteration * 100;
+	fResult := fbController.Execute();
+	
+	AssertEquals_REAL(
+		Actual := fbController.Execute(),
+		Expected := fbController.Kp * (fbController.Value.Setpoint - fbController.Value.Actual),
+		Delta := 0.001,
+		Message := CONCAT('Incorrect output after elapsed time. Current iteration is ', TO_STRING(nIteration)));
+		
+	IF nIteration = 4 THEN
+		TcUnit.TEST_FINISHED();
+		RETURN;
+	END_IF
+END_IF
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := fResult,
+	Delta := 0.001,
+	Message := CONCAT('Before cycle time elapses, output should not change. Curernt iteration is', TO_STRING(nIteration)));
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_StepResponse_ChangeTp_ExpectDifferentResults" Id="{273e65ba-f061-0d1b-0e8e-f0a1b211b359}">
+      <Declaration><![CDATA[METHOD Test08_StepResponse_ChangeTp_ExpectDifferentResults
+VAR_INST
+	fbController	: FB_Controller_PI;
+	TonOutputDelay	: Tc2_Standard.TON := ( PT := T#100MS);
+	nIteration		: UINT;
+	fResult			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_SetTnToZero_StepResponse_ChangeKp_ExpectDifferentResults');
+
+fbController.CycleTime := T#0S;
+fbController.Enable := TRUE;
+
+fbController.Kp := 0;
+fbController.Tn := T#0S;
+fbController.Value.Setpoint := 100.0;
+fbController.Value.Actual := 0;
+
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 0,
+	Delta := 0.0,
+	Message := 'When gain is set to 0, output should be 0 after elapsed cycle time.');
+
+fbController.Kp := 10;
+fbController.Value.Setpoint := 100.0;
+fbController.Value.Actual := 0;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 100.0 * 10,
+	Delta := 0.0,
+	Message := 'Incorrect result when gain set to 10 and value difference is 100.');
+	
+fbController.Kp := 20;
+fbController.Value.Setpoint := 200.0;
+fbController.Value.Actual := 0;
+AssertEquals_REAL(
+	Actual := fbController.Execute(),
+	Expected := 200.0 * 20,
+	Delta := 0.0,
+	Message := 'Incorrect result when gain set to 10 and value difference is 200.');	
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

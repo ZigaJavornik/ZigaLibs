@@ -7,10 +7,10 @@ bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error wi
 fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
 sPredictedGasType		: STRING;// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
 sPredictedFlowUnit		: STRING; // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-iLogger					: ZigasLibs_Core.I_LoggerEx;	// Logger implementation provided
+iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided
 mode					: E_ControllerMode;	// Controller initial mode *)
 
-FUNCTION_BLOCK FB_FlowController EXTENDS ZigasLibs_Core.FB_HasInstanceName IMPLEMENTS ZigasLibs_Core.I_ReadsCoE
+FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceName IMPLEMENTS ZigaLibs_Core.I_ReadsCoE
 VAR_INPUT
 	bEnable			: BOOL;	// Enables controller
 	fSetpoint		: REAL;	// Setpoint to the controller
@@ -29,10 +29,10 @@ END_VAR
 
 VAR
 	bFirstExecution			: BOOL := TRUE;
-	_stringBuilder			: ZigasLibs_Core.FB_StringBuilderBase;
+	_stringBuilder			: ZigaLibs_Core.FB_StringBuilderBase;
 	_CoeList				: ST_ControllerCoeList;
 	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ' :');
-	_logger					: ZigasLibs_Core.I_LoggerEx;
+	_logger					: ZigaLibs_Core.I_LoggerEx;
 	_writeLogs				: BOOL;
 	_ethercatBoxName		: Tc2_System.T_MaxString;
 	{attribute 'hide'} 
@@ -44,7 +44,7 @@ VAR
 	_writeModeRequired		: BOOL;
 	_validateModeWrite		: BOOL;
 	_controlModeTmp			: E_ControllerMode;
-	_coeReadWrite			: ZigasLibs_Core.FB_CoeReadWrite;
+	_coeReadWrite			: ZigaLibs_Core.FB_CoeReadWrite;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -146,7 +146,7 @@ VAR_INPUT
 	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bWriteLogs is set to TRUE and the read capacity differs, the error will be reported by the logger.
 	sPredictedGasType		: STRING;// Predicted gas type. If bWriteLogs is set to TRUE and the read gas type differs, the error will be reported by the logger.
 	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bWriteLogs is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-	iLogger					: ZigasLibs_Core.I_LoggerEx;	// Logger implementation provided
+	iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided
 	mode					: E_ControllerMode;	// Controller initial mode
 END_VAR
 ]]></Declaration>
@@ -198,13 +198,13 @@ VAR_INST
 	eReadCoeStep	: E_ParameterReadingStep;
 	bCoeReadError	: BOOL;
 	bError			: BOOL;
-	fbCoeReadWrite	: ZigasLibs_Core.FB_CoeReadWrite;
+	fbCoeReadWrite	: ZigaLibs_Core.FB_CoeReadWrite;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReadCoeStep OF
 	E_ParameterReadingStep.IDLE:
 		IF _ethercatBoxName = '' THEN
-			_ethercatBoxName := ZigasLibs_Core.EthercatHelper.GetBoxNameByAddress(
+			_ethercatBoxName := ZigaLibs_Core.EthercatHelper.GetBoxNameByAddress(
 				outError := bError,
 				PlcRuntimeNetId := '',
 				AmsNetId := Inputs.AmsAddr);
@@ -237,7 +237,7 @@ END_VAR]]></Declaration>
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
 			IF _writeLogs THEN
-				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.FluidName.Value) <> _predictedGasType THEN
+				IF ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.FluidName.Value) <> _predictedGasType THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid gas type found! Predicted gas type is ')
@@ -257,7 +257,7 @@ END_VAR]]></Declaration>
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
 			IF _writeLogs THEN
-				IF ZigasLibs_Core.StringHelper.TrimRightSide(_CoeList.CapacityUnit.Value) <> _predictedFlowUnit THEN
+				IF ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.CapacityUnit.Value) <> _predictedFlowUnit THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow unit found! Predicted unit is ')

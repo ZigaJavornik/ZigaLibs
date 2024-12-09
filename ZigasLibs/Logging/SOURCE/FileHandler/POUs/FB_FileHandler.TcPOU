@@ -7,11 +7,11 @@
 // it will be trough a reference variable.
 //
 // For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
-FUNCTION_BLOCK FB_FileHandler EXTENDS ZigasLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
+FUNCTION_BLOCK FB_FileHandler EXTENDS ZigaLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
 
 VAR
 	_fileHandle		: UINT;
-	_fileProperties	: ZigasLibs_Core.ST_FileProperties;
+	_fileProperties	: ZigaLibs_Core.ST_FileProperties;
 	_error			: BOOL;
 	_amsAddress		: Tc2_System.ST_AmsAddr;
 END_VAR]]></Declaration>
@@ -21,7 +21,7 @@ END_VAR]]></Declaration>
     <Property Name="AmsAddress" Id="{aa2c0e77-cb1f-05b3-0b95-3148b235b704}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets or sets the Ams address structure*)
-PROPERTY AmsAddress : REFERENCE TO ZigasLibs_Core.Tc2_System.ST_AmsAddr
+PROPERTY AmsAddress : REFERENCE TO ZigaLibs_Core.Tc2_System.ST_AmsAddr
 ]]></Declaration>
       <Get Name="Get" Id="{de2f0481-ed4f-097b-2c1d-b66092ab0976}">
         <Declaration><![CDATA[VAR
@@ -66,7 +66,7 @@ CASE nCloseFileState OF
 		fbFileClose(
 			bExecute := TRUE, 
 			hFile := _fileHandle, 
-			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(netId := _amsAddress.netId));
+			sNetId := ZigaLibs_Core.AdsHelper.NetIdToString(netId := _amsAddress.netId));
 			
 		nCloseFileState := FILE_CLOSE_WAIT_BUSY;
 		
@@ -84,7 +84,7 @@ END_CASE
 
 _error := _error OR fbFileClose.bError;
 IF fbFileClose.bError THEN
-	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileClose.nErrId);
+	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileClose.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -113,11 +113,11 @@ END_VAR]]></Declaration>
 		
 	FILE_CREATE_STATE_OVERWRITE_OR_CREATE:
 		IF bOverwrite THEN
-			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
+			IF THIS^.Open(mode := ZigaLibs_Core.E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING) THEN
 				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
 			END_IF
 		ELSE
-			IF THIS^.Open(mode := ZigasLibs_Core.E_FileOpenMode.BINARY_APPEND) THEN
+			IF THIS^.Open(mode := ZigaLibs_Core.E_FileOpenMode.BINARY_APPEND) THEN
 				nFileCreateState := FILE_CREATE_STATE_WAIT_DONE;
 			END_IF
 		END_IF
@@ -146,7 +146,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbFileDelete(
 	bExecute := NOT fbFileDelete.bBusy,
-	sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''));
+	sPathName := ZigaLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''));
 	
 FtrigDeleteFinished(CLK := fbFileDelete.bBusy);
 IF FtrigDeleteFinished.Q THEN
@@ -200,8 +200,8 @@ END_VAR]]></Declaration>
 
 	FILE_EXIST_STATE_START:
 		fbFileExists(bExecute := TRUE,
-			sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
-			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId));
+			sPathName := ZigaLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
+			sNetId := ZigaLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId));
 		nCheckFileExistState := FILE_EXIST_STATE_CHECK;
 	
 	FILE_EXIST_STATE_CHECK:
@@ -228,7 +228,7 @@ END_VAR]]></Declaration>
 		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
 		
 	FILE_EXIST_STATE_ERROR:
-		_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileExists.nErrID);
+		_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileExists.nErrID);
 		nCheckFileExistState := FILE_EXIST_STATE_DONE;
 		refFileExists := FALSE;
 END_CASE
@@ -239,7 +239,7 @@ _error := _error OR fbFileExists.bError;]]></ST>
     <Property Name="FileProperties" Id="{535cf070-cda3-0510-157b-82f3842f95cd}">
       <Declaration><![CDATA[{attribute 'monitoring':='variable'}
 (* Gets or sets various file properties*)
-PROPERTY FileProperties : REFERENCE TO ZigasLibs_Core.ST_FileProperties
+PROPERTY FileProperties : REFERENCE TO ZigaLibs_Core.ST_FileProperties
 ]]></Declaration>
       <Get Name="Get" Id="{ac218c70-be3b-08df-3b3c-bd233df4aa85}">
         <Declaration><![CDATA[VAR
@@ -275,7 +275,7 @@ END_VAR
       <Declaration><![CDATA[(* Opens the file. Returns TRUE when done - method needs to be called until it returns TRUE!*)
 METHOD PRIVATE Open : BOOL
 VAR_INPUT
-	mode	: ZigasLibs_Core.E_FileOpenMode;	// Mode in which the file is opened
+	mode	: ZigaLibs_Core.E_FileOpenMode;	// Mode in which the file is opened
 END_VAR
 
 VAR_INST
@@ -290,14 +290,14 @@ END_IF
 
 fbFileOpen(
 	bExecute := NOT fbFileOpen.bBusy,
-	sPathName := ZigasLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
-	sNetId :=  ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+	sPathName := ZigaLibs_Core.FileHelper.CreateFilePath(_fileProperties.FileLocation, _fileProperties.FileName, ''),
+	sNetId :=  ZigaLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 	nMode := mode,
 	hFile => _fileHandle);
 	
 _error := _error OR fbFileOpen.bError;	
 IF fbFileOpen.bError THEN
-	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileOpen.nErrId);
+	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileOpen.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -340,7 +340,7 @@ CASE nReadState OF
 		fbFileRead(bExecute := FALSE);
 		fbFileRead(
 			bExecute := TRUE,
-			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+			sNetId := ZigaLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 			hFile := _fileHandle,
 			pReadBuff := buffer.pValue,
 			cbReadLen := DINT_TO_UDINT(buffer.diSize));
@@ -363,7 +363,7 @@ CASE nReadState OF
 		
 	READ_STATE_ERROR:
 		nReadState := READ_STATE_DONE;
-		_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileRead.nErrId);
+		_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileRead.nErrId);
 END_CASE
 
 _error := _error OR fbFileRead.bError;
@@ -408,11 +408,11 @@ END_VAR
 	WRITE_START:
 		fbFileWrite(bExecute := FALSE);
 		fbFileWrite(
-			sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+			sNetId := ZigaLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 			bExecute := TRUE,
 			hFile := _fileHandle,
 			pWriteBuff := data.pValue,
-			cbWriteLen := data.diSize);
+			cbWriteLen := DINT_TO_UDINT(data.diSize));
 			
 		nWriteState := WRITE_WAIT_DONE;
 	
@@ -430,7 +430,7 @@ END_CASE
 
 _error := _error OR fbFileWrite.bError;
 IF fbFileWrite.bError THEN
-	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileWrite.nErrId);
+	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileWrite.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -495,7 +495,7 @@ END_VAR]]></Declaration>
 				bExecute := TRUE,
 				hFile := _fileHandle,
 				sLine := sContent,
-				sNetId := ZigasLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
+				sNetId := ZigaLibs_Core.AdsHelper.NetIdToString(_amsAddress.netId),
 				tTimeout := T#2S);
 		END_IF
 	
@@ -517,7 +517,7 @@ END_CASE
 
 _error := _error OR fbFilePuts.bError;
 IF fbFilePuts.bError THEN
-	_errorSource.ErrorInfo.Code := ZigasLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFilePuts.nErrId);
+	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFilePuts.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>

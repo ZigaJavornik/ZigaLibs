@@ -211,20 +211,14 @@
         </Parameter>
       </Parameters>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigasLibs_Core">
+    <PlaceholderReference Include="ZigaLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>
-      <Namespace>ZigasLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Logging.tmc">
       <SubType>Content</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PlaceholderResolution Include="ZigasLibs_Core">
-      <Resolution>Core, 0.0.0.2 (Ziga)</Resolution>
-    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

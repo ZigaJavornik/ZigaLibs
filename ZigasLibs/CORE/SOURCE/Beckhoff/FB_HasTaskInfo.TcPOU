@@ -2,12 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_HasTaskInfo" Id="{90620e8f-2928-015b-1ab1-9c3efa46279c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasTaskInfo
-VAR_INPUT
-END_VAR
-VAR_OUTPUT
-END_VAR
 VAR
-	{attribute 'hide'}
 	_PlcTaskInfo	: PlcTaskSystemInfo;
 	_attempts	: UINT;
 END_VAR
@@ -27,11 +22,11 @@ END_VAR
           <ST><![CDATA[IF _plcTaskInfo.CycleTime = 0 THEN
 	taskIndex := Tc2_System.GETCURTASKINDEXEX();
 	IF taskIndex <> 0 THEN
-		_PlcTaskInfo := _taskinfo[taskindex];
+		_PlcTaskInfo := _TaskInfo[taskindex];
 	END_IF
 END_IF
 
-TaskInfo REF= _plcTaskInfo;]]></ST>
+TaskInfo REF= _PlcTaskInfo;]]></ST>
         </Implementation>
       </Get>
     </Property>

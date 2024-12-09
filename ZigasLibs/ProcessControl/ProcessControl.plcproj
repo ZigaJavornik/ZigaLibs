@@ -2,28 +2,26 @@
   <PropertyGroup>
     <FileVersion>1.0.0.0</FileVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{24cea432-aec0-4fcf-851e-a986e97dc45f}</ProjectGuid>
+    <ProjectGuid>{20439fef-4bfc-45c9-9578-971683f69814}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <Released>false</Released>
     <CombineIds>true</CombineIds>
-    <Name>Bronkhorst</Name>
+    <Name>ProcessControl</Name>
     <ProgramVersion>3.1.4024.0</ProgramVersion>
-    <Application>{95b1a917-e8f6-4e07-a080-1871ddb4f5e6}</Application>
-    <TypeSystem>{97c7f6bb-4ea1-4b9e-aaa6-562de3c05045}</TypeSystem>
-    <Implicit_Task_Info>{b9861140-e5a0-4813-b817-012212b94785}</Implicit_Task_Info>
-    <Implicit_KindOfTask>{268242b0-5e2b-4dee-9232-d9e6ae2dded0}</Implicit_KindOfTask>
-    <Implicit_Jitter_Distribution>{008f79df-4c57-46a9-8ead-6dc085c42926}</Implicit_Jitter_Distribution>
-    <LibraryReferences>{a1bc4204-6e2f-49f0-947e-3075d4bfd72a}</LibraryReferences>
-    <CompilerDefines>
-    </CompilerDefines>
+    <Application>{4d39c799-e7b0-4d46-b06d-b336d0daaf8f}</Application>
+    <TypeSystem>{996572f5-77c3-4ded-8621-6f1e33582085}</TypeSystem>
+    <Implicit_Task_Info>{5c8a29e8-ff95-4006-b6b3-e3127ef922d8}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{3c665f21-fc11-446e-afe1-344c7a86d411}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{b2f8b50b-cdeb-489c-a59a-6072e6812446}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>Bronkhorst</Title>
+    <Title>ProcessControler</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         <Version>1.0.0.0</Version>
-        <DefaultName>ZigasLibs</DefaultName>
+        <DefaultName>ZigaLibs</DefaultName>
       </LibraryCategory>
       <LibraryCategory xmlns="">
         <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
@@ -49,39 +47,43 @@
         </ParentCategory>
         <DefaultName>Vendors</DefaultName>
       </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>ProcessControl</DefaultName>
+      </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id xmlns="">{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+      <Id xmlns="">{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_Bronkhorst</DefaultNamespace>
-    <Placeholder>ZigaLibs_Bronkhorst</Placeholder>
-    <Author>Žiga Javornik</Author>
-    <Description>Various bronkhorst device impleentations.</Description>
+    <DefaultNamespace>ZigaLibs_ProcessControl</DefaultNamespace>
+    <Placeholder>ZigaLibs_ProcessControl</Placeholder>
+    <Author>Ziga Javornik</Author>
+    <Description>A library containing objects for process control.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GVLs\GVL_Bronkhorst.TcGVL">
-      <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
-    </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ControllerMode.TcDUT">
+    <Compile Include="SOURCE\PID\POUs\FB_Controller_P.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ParameterReadingStep.TcDUT">
+    <Compile Include="SOURCE\PID\POUs\FB_Controller_PI.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerCoeList.TcDUT">
+    <Compile Include="SOURCE\PID\POUs\FB_Controller_PID.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerInputs.TcDUT">
+    <Compile Include="SOURCE\Value deviation\E_ValueDeviationStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerOutputs.TcDUT">
+    <Compile Include="SOURCE\Value deviation\FB_ValueDeviation.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerStatus.TcDUT">
+    <Compile Include="SOURCE\Value deviation\I_ValueDeviation.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\FB_FlowController.TcPOU">
+    <Compile Include="SOURCE\Value deviation\ST_Value.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -90,16 +92,22 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_FlowController_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_Controller_PI_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_Controller_P_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_ValueDeviation_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\MassFlow or PressureController" />
-    <Folder Include="SOURCE\MassFlow or PressureController\POUs" />
-    <Folder Include="SOURCE\MassFlow or PressureController\POUs\DUTs" />
+    <Folder Include="SOURCE\PID" />
+    <Folder Include="SOURCE\PID\POUs" />
+    <Folder Include="SOURCE\Value deviation" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
@@ -138,12 +146,42 @@
         </Parameter>
       </Parameters>
     </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Parameters>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSES</Key>
+          <Value>50</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSEDEVICES</Key>
+          <Value>16</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXCPUCOUNT</Key>
+          <Value>64</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCHARACTERS</Key>
+          <Value>16#FFFFFFF0</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXFILESONDONGLE</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCSVFIELDVALUESIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+      </Parameters>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
       <Parameters>
         <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
           <Key>MAXNUMBEROFTESTSUITES</Key>
@@ -182,21 +220,16 @@
           <Value>TIME#0ms</Value>
         </Parameter>
       </Parameters>
-      <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bronkhorst.tmc">
+    <None Include="ProcessControl.tmc">
       <SubType>Content</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <LibraryReference Include="Logging,newest,Ziga">
-      <Namespace>ZigaLibs_Logging</Namespace>
-    </LibraryReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
@@ -205,6 +238,25 @@
           <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+        <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
+        <o>
+          <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
+        <o>
+          <v n="Name">"{29BD8D0C-3586-4548-BB48-497B9A01693F}"</v>
+          <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+            <v>Rules</v>
+            <o>
+              <v n="Name">"Rules"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+          </d>
+          <d n="Values" t="Hashtable" />
+        </o>
         <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
         <o>
           <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
@@ -213,12 +265,6 @@
             <v>ActiveVisuProfile</v>
             <v>IR0whWr8bwfwBwAAiD2qpQAAAABVAgAA37x72QAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDBUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgA0AC4ANwAFFlAAcgBvAGYAaQBsAGUARABhAHQAYQAGTHsAMQA2AGUANQA1AGIANgAwAC0ANwAwADQAMwAtADQAYQA2ADMALQBiADYANQBiAC0ANgAxADQANwAxADMAOAA3ADgAZAA0ADIAfQAHEkwAaQBiAHIAYQByAGkAZQBzAAhMewAzAGIAZgBkADUANAA1ADkALQBiADAANwBmAC0ANABkADYAZQAtAGEAZQAxAGEALQBhADgAMwAzADUANgBhADUANQAxADQAMgB9AAlMewA5AGMAOQA1ADgAOQA2ADgALQAyAGMAOAA1AC0ANAAxAGIAYgAtADgAOAA3ADEALQA4ADkANQBmAGYAMQBmAGUAZABlADEAYQB9AAoOVgBlAHIAcwBpAG8AbgALBmkAbgB0AAwKVQBzAGEAZwBlAA0KVABpAHQAbABlAA4aVgBpAHMAdQBFAGwAZQBtAE0AZQB0AGUAcgAPDkMAbwBtAHAAYQBuAHkAEAxTAHkAcwB0AGUAbQARElYAaQBzAHUARQBsAGUAbQBzABIwVgBpAHMAdQBFAGwAZQBtAHMAUwBwAGUAYwBpAGEAbABDAG8AbgB0AHIAbwBsAHMAEyhWAGkAcwB1AEUAbABlAG0AcwBXAGkAbgBDAG8AbgB0AHIAbwBsAHMAFCRWAGkAcwB1AEUAbABlAG0AVABlAHgAdABFAGQAaQB0AG8AcgAVIlYAaQBzAHUATgBhAHQAaQB2AGUAQwBvAG4AdAByAG8AbAAWFHYAaQBzAHUAaQBuAHAAdQB0AHMAFwxzAHkAcwB0AGUAbQAYGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABkmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAaCGIAbwBvAGwAGyJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAHEx7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHRxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHhRQAGwAdQBnAGkAbgBHAHUAaQBkAB8WUwB5AHMAdABlAG0ALgBHAHUAaQBkACBIYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIRRVAHAAZABhAHQAZQBJAG4AZgBvACJMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACMOVQBwAGQAYQB0AGUAcwAkTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAlTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAmFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAnVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACgQTABpAGIAVABpAHQAbABlACkUTABpAGIAQwBvAG0AcABhAG4AeQAqHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACs4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQAsEnYAaQBzAHUAZQBsAGUAbQBzAC1INgBjAGIAMQBjAGQAZQAxAC0AZAA1AGQAYwAtADQAYQAzAGIALQA5ADAANQA0AC0AMgAxAGYAYQA3ADUANgBhADMAZgBhADQALihJAG4AdABlAHIAZgBhAGMAZQBWAGUAcgBzAGkAbwBuAEkAbgBmAG8AL0x7AGMANgAxADEAZQA0ADAAMAAtADcAZgBiADkALQA0AGMAMwA1AC0AYgA5AGEAYwAtADQAZQAzADEANABiADUAOQA5ADYANAAzAH0AMBhNAGEAagBvAHIAVgBlAHIAcwBpAG8AbgAxGE0AaQBuAG8AcgBWAGUAcgBzAGkAbwBuADIMTABlAGcAYQBjAHkAMzBMAGEAbgBnAHUAYQBnAGUATQBvAGQAZQBsAFYAZQByAHMAaQBvAG4ASQBuAGYAbwA0MEwAbwBhAGQATABpAGIAcgBhAHIAaQBlAHMASQBuAHQAbwBQAHIAbwBqAGUAYwB0ADUaQwBvAG0AcABhAHQAaQBiAGkAbABpAHQAeQDQAAIaA9ADAS0E0AUGGgfQBwgaAUUHCQjQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtDtAPAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60BAAAA0A0BLRHQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0S0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAUAAAA0AwLrQIAAADQDQEtE9APAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAAAAAANAMC60CAAAA0A0BLRTQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0V0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtFtAPAS0X0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60EAAAA0A0BLRjQDwEtENAZGq0BRRscAdAAHBoCRR0LBAMAAAAFAAAADQAAAAAAAADQHh8tINAhIhoCRSMkAtAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAAAAANADAS0n0CgBLRHQKQEtENAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAQAAANADAS0n0CgBLRHQKQEtEJoqKwFFAAEC0AABLSzQAAEtF9AAHy0t0C4vGgPQMAutAQAAANAxC60XAAAA0DIarQDQMy8aA9AwC60CAAAA0DELrQMAAADQMhqtANA0Gq0A0DUarQA=</v>
           </d>
-        </o>
-        <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
-        <o>
-          <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
-          <d n="SubKeys" t="Hashtable" />
-          <d n="Values" t="Hashtable" />
         </o>
       </d>
       <d n="Values" t="Hashtable" />

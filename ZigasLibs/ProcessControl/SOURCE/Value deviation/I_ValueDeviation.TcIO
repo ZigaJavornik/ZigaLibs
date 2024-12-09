@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_ValueDeviation" Id="{b4df7329-02cd-0b69-19ad-e71089d2fcde}">
+    <Declaration><![CDATA[INTERFACE I_ValueDeviation
+]]></Declaration>
+    <Property Name="ActivationDelay" Id="{e71bafe4-b2bb-0fdb-1f4c-ccbbf73e36d7}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the activation delay, before the deviation error is activated
+PROPERTY ActivationDelay : TIME]]></Declaration>
+      <Get Name="Get" Id="{bbdec3fd-feec-0839-12a1-204a46f5f3dc}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{e8b926bf-5bdc-0ff7-30aa-653081f59844}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Enable" Id="{0ff5b5b7-af1e-0ef1-02eb-c900e75349b0}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1abd9bbc-867c-02c9-0278-61ed0a0e3430}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{45805c25-9fac-0363-217f-aaa45c5eaa1a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MaxDeviation" Id="{4e6219e7-67be-024a-065d-b8b690572dd1}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY MaxDeviation : REAL]]></Declaration>
+      <Get Name="Get" Id="{a4cfda26-8bb6-0ec8-0e56-738b03eae52a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{2d4dd00b-3afa-0528-016b-cd48a97e0aae}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Status" Id="{673ad957-e312-00fa-0ddb-2dc18a33dd84}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Status : E_ValueDeviationStatus]]></Declaration>
+      <Get Name="Get" Id="{cefd6db0-4ad0-036d-2d13-8f548f292d41}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Value" Id="{66676141-57f5-089d-1821-ec6401e3a131}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Value : REFERENCE TO ST_Value]]></Declaration>
+      <Get Name="Get" Id="{fa37b29e-f51d-04be-0f7e-941f3a52976a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

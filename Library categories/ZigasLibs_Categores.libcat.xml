@@ -36,4 +36,14 @@
         <DefaultName>Vendors</DefaultName>
     </LibraryCategory>
 
+<!-- ZigasLibs.ProcessControl -->
+    <LibraryCategory>
+        <Id>f5684ae4-96d7-4e8a-b902-f1a8abbb21da</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+            <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
+        </ParentCategory>
+        <DefaultName>ProcessControl</DefaultName>
+    </LibraryCategory>
+
 </LibraryCategories>

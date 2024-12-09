@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Controller_PI" Id="{cebf8388-c6b7-0e55-16da-d4e5b20ae531}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_PI EXTENDS FB_Controller_P
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_Tn	: TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{27e74276-09b5-04b2-31da-a99e5e710905}">
+      <Declaration><![CDATA[{attribute'monitoring':='call'}
+// Executes the controller and returns the control output.
+METHOD Execute  : REAL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[PID.fTn := SUPER^.TimeToSeconds(_Tn);
+Execute := SUPER^.Execute();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Tn" Id="{42266395-9c97-0108-2576-85c5a3ee3fe3}">
+      <Declaration><![CDATA[// Gets or sets the integration action time.
+PROPERTY Tn : TIME]]></Declaration>
+      <Get Name="Get" Id="{795daa74-731f-07c9-2bfd-ce189beb5f0c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Tn := _Tn;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{ff590ad5-0d15-02ce-146d-3154f4d8b6d1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Tn := Tn;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

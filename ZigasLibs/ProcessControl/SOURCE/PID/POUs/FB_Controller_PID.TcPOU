@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Controller_PID" Id="{ddcebbcd-d47c-0f0e-0c61-24b7ea616d14}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_PID EXTENDS FB_Controller_PI
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_Tv	: TIME;
+	_Td	: TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{5755f55c-df20-0ac1-0586-238435c7f8b3}">
+      <Declaration><![CDATA[{attribute'monitoring':='call'}
+// Executes the controller and returns the control output.
+METHOD Execute  : REAL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[PID.fTd := THIS^.TimeToSeconds(_Td);
+PID.fTv := THIS^.TimeToSeconds(_Tv);
+Execute := SUPER^.Execute();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Td" Id="{4d538e31-f527-07e9-3126-88c859123ebf}">
+      <Declaration><![CDATA[// Gets or sets the damping time
+PROPERTY Td : TIME]]></Declaration>
+      <Get Name="Get" Id="{60a48e5d-e736-0e9d-01d3-715ee8923fc9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Td := _Td;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{b9687066-0c3e-0a78-24d7-c07166245b02}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Td := Td;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Tv" Id="{665a33c5-c470-0c36-1d85-15b8e645be29}">
+      <Declaration><![CDATA[// Gets or sets the derivative action time.
+PROPERTY Tv : TIME]]></Declaration>
+      <Get Name="Get" Id="{26a93eef-aee0-0ea6-369c-1b191f252200}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Tv := _Tv;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{3b64c8ed-0cb3-0451-0953-02a3242224ad}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Tv := Tv;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

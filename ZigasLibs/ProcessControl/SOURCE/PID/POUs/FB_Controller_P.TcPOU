@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Controller_P" Id="{c6c15539-81c8-08db-25d4-c0803794dae6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_P EXTENDS ZigaLibs_Core.FB_HasTaskInfo
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_value				: ST_Value;
+	_cycleTime			: TIME := T#10MS;
+	_Kp					: REAL;
+	_enabled			: BOOL;
+	_basicPid			: Tc2_Utilities.FB_BasicPID;
+	_controllerOutput	: REAL;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ControllerOutput" Id="{b5ef98bb-b0a9-0f85-157c-fc83e276e986}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the controller output value
+PROPERTY ControllerOutput : REAL]]></Declaration>
+      <Get Name="Get" Id="{23f0cc99-f171-0f4b-14a2-f895b361dfc0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ControllerOutput := _controllerOutput;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CycleTime" Id="{0503f177-a0cc-02eb-0246-61e1ea448e84}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the cycle time with which the controller is executed. If set to 0, the controller will be executed every cycle.
+PROPERTY CycleTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{b5b2c8dc-6f15-01fe-2f6e-5c1e010ee0a4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CycleTime := _cycleTime;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{db57f5e3-ea19-076a-1382-92eea7bdc7ef}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_cycleTime := CycleTime;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Enable" Id="{3fafad47-217b-0bfc-3348-dac6bdc313c4}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the controller enable state.
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{178419ce-ce89-0904-352f-fedd7748ce7d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enabled;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{7b88d552-f702-0d19-3508-3f1c1a75b670}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_enabled := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Execute" Id="{1fabdbeb-f214-0265-2f81-01dbf973bc47}">
+      <Declaration><![CDATA[// Executes the controller and returns the control output.
+METHOD Execute  : REAL
+VAR_INST
+	cycleTimeCounter	: UINT;
+	delayPidExecution	: TON;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_basicPid.fKp := _kp;
+_basicPid.fActualValue := _value.Actual;
+_basicPid.fSetpointValue := _value.Setpoint;
+
+// Check validity of cycle time, make sure it is equal to or larger than task cycle time.
+IF _cycleTime = T#0MS OR 
+   _basicPid.fCtrlCycleTime = 0 OR 
+   _basicPid.fCtrlCycleTime < THIS^.TaskCycleTimeToSeconds()
+THEN
+	_basicPid.fCtrlCycleTime := THIS^.TaskCycleTimeToSeconds();
+ELSE
+	_basicPid.fCtrlCycleTime := THIS^.TimeToSeconds(_cycleTime);
+END_IF
+
+IF NOT _enabled THEN
+	delayPidExecution(IN := FALSE);
+	_basicPid.bReset := TRUE;
+ELSE
+	_basicPid.bReset := FALSE;
+END_IF
+
+IF THIS^.TimeToSeconds(_cycleTime) > THIS^.TaskCycleTimeToSeconds() THEN
+	delayPidExecution(IN := NOT delayPidExecution.Q, PT := _cycleTime);
+	IF delayPidExecution.Q THEN
+		_basicPid();
+		cycleTimeCounter := 0;
+	END_IF
+ELSE
+	delayPidExecution(IN := FALSE);
+	_basicPid();
+END_IF
+
+
+_controllerOutput := _basicPid.fCtrlOutput;
+execute := _basicPid.fCtrlOutput;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Kp" Id="{b291140d-e0a4-0b42-07ec-7a550b97d3c0}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the gain of the controller.
+PROPERTY Kp : REAL]]></Declaration>
+      <Get Name="Get" Id="{d43a3ee3-1247-0f9f-2d82-7e85768f7642}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Kp := _Kp;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1876d878-768a-0546-2e97-2854a3d58149}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Kp := Kp;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="PID" Id="{5e807967-754a-0971-0118-8bfad58ad6c4}">
+      <Declaration><![CDATA[PROPERTY PROTECTED PID : REFERENCE TO Tc2_Utilities.FB_BasicPID]]></Declaration>
+      <Get Name="Get" Id="{e95c00a2-4d9e-02c7-29aa-3bbb17c80f93}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[PID REF= _basicPid;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="TaskCycleTimeToSeconds" Id="{14192215-f8af-0180-2d4b-767736421da3}">
+      <Declaration><![CDATA[METHOD PROTECTED TaskCycleTimeToSeconds : REAL
+VAR_INPUT
+END_VAR
+VAR CONSTANT
+	MICROSECONDS_IN_MILLISECOND 		: REAL := 1000.0;
+	MILLISECONDS_IN_SECOND				: REAL := 1000.0;
+	HUNDREED_NANOSECONDS_IN_MICROSECOND	: REAL := 10.0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TaskCycleTimeToSeconds := 
+	(UDINT_TO_REAL(TaskInfo.CycleTime) / 
+	HUNDREED_NANOSECONDS_IN_MICROSECOND / 
+	MICROSECONDS_IN_MILLISECOND /
+	MILLISECONDS_IN_SECOND);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimeToSeconds" Id="{de511d66-326c-08f1-2d4e-4138c4db1b49}">
+      <Declaration><![CDATA[METHOD PROTECTED TimeToSeconds : REAL
+VAR_INPUT
+	tTime	: TIME;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF tTime = T#0S THEN
+	TimeToSeconds := 0;
+	RETURN;
+END_IF
+
+TimeToSeconds := DWORD_TO_REAL(TIME_TO_DWORD(tTime)) / 1000.0;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Value" Id="{9fce8642-358c-0e0e-3f3d-00af787f85e8}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the value struct (setpoint/actual)
+PROPERTY Value : REFERENCE TO ST_Value]]></Declaration>
+      <Get Name="Get" Id="{3c683078-2f44-0d02-31d6-ec9d2f3d3019}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value ref=_value;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{37334ec2-84ad-0e0f-162e-e11263f38015}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_value := Value; ]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>
