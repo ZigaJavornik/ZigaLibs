@@ -26,7 +26,8 @@ Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged();
 Test08_ActivateByName();
 Test09_DeactivateByName();
 Test10_AcknowledgeByName();
-Test11_GetAlarmByName();]]></ST>
+Test11_GetAlarmByName();
+Test12_GetAlarmById();]]></ST>
     </Implementation>
     <Method Name="Test00_RegisterAlarms" Id="{e3481e3b-1449-0574-29d8-60404d623878}">
       <Declaration><![CDATA[METHOD Test00_RegisterAlarms
@@ -292,30 +293,34 @@ VAR_INPUT
 END_VAR
 
 VAR
-	n	: T_ArrayIndexer;
+	n				: T_ArrayIndexer;
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	arrAlarms		: ARRAY[0..60] OF ST_AlarmInfo;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged');
 
+fbAlarmManager(refAlarms := arrAlarms);
 FOR n := 1 TO 40 BY 1 DO
-	_alarmManager.ActivateAlarmById(n);
+	fbAlarmManager.RegisterAlarm(n, TO_STRING(n), '');
+	fbAlarmManager.ActivateAlarmById(n);
 END_FOR
 
 AssertEquals_UINT(
 	Expected := 40,
-	Actual := _alarmManager.ActiveAlarmsCount,
+	Actual := fbAlarmManager.ActiveAlarmsCount,
 	Message := 'There should only be 40 active alarms at this point.');
 		
-_alarmManager.AcknowledgeAllAlarms();
+fbAlarmManager.AcknowledgeAllAlarms();
 
 AssertEquals_UINT(
 	Expected := 0,
-	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Actual := fbAlarmManager.UnacknowledgedAlarmsCount,
 	Message := 'Acknowlidging all alarms should result in no unacknowledged alarms.');
 
 AssertEquals_UINT(
 	Expected := 40,
-	Actual := _alarmManager.ActiveAlarmsCount,
+	Actual := fbAlarmManager.ActiveAlarmsCount,
 	Message := 'There should still be 40 active alarms, acknowlidning alarms should not affect alarm state.');
 
 
@@ -391,18 +396,52 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="Test11_GetAlarmByName" Id="{96f09601-4dae-0dc0-2b2f-a3cb43f168d9}">
       <Declaration><![CDATA[METHOD Test11_GetAlarmByName
 VAR_INPUT
+END_VAR
+
+VAR_INST
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
+	i				: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[TcUnit.TEST('Test11_GetAlarmByName');
+fbAlarmManager(refAlarms := alarms);
+
+FOR i := 1 TO 11 BY 1 DO
+	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '');
+	AssertEquals_STRING(
+		Actual := fbAlarmManager.GetAlarmByName(sName := TO_STRING(i)).Name,
+		Expected := TO_STRING(i),
+		Message := CONCAT('Getting alarm by name failed for alarm', TO_STRING(i)));	
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test12_GetAlarmById" Id="{cb3671fe-21bd-0cef-2a9f-51bdf7ac7e68}">
       <Declaration><![CDATA[METHOD Test12_GetAlarmById
 VAR_INPUT
 END_VAR
-]]></Declaration>
+VAR_INST
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
+	i				: T_ArrayIndexer;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[TcUnit.TEST('Test12_GetAlarmById');
+fbAlarmManager(refAlarms := alarms);
+
+FOR i := 1 TO 11 BY 1 DO
+	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '');
+	AssertEquals_DINT(
+		Actual := fbAlarmManager.GetAlarmById(i).Id,
+		Expected := i,
+		Message := CONCAT('Getting alarm by id failed for alarm', TO_STRING(i)));	
+END_FOR
+
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
   </POU>
