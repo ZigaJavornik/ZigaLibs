@@ -343,6 +343,16 @@ FOR i := 1 TO 20 BY 1 DO
 		Message := Tc2_Standard.CONCAT(STR1 := 'InsertAtStart should have left other elements unchanged! Changed element at index ', STR2 := TO_STRING(i) ));
 END_FOR
 
+ArrayHelper.InsertAtStart(arr := arr, item := item);
+AssertEquals(
+	Actual := arr[0], 
+	Expected := item, 
+	Message := 'Inserting at start for the second time - 1st item is incorrect!');
+AssertEquals(
+	Actual := arr[1], 
+	Expected := item, 
+	Message := 'Inserting at start for the second time - 2nd item is incorrect!');	
+
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
