@@ -388,9 +388,12 @@ _activeAlarmCount := _activeAlarmCount + 1;
 _unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
 alarm.IsActive := TRUE;
 alarm.IsAcknowledged := FALSE;
+MEMSET(
+	destAddr := ADR(alarm.TimeInfos),
+	fillByte := 0,
+	n := SIZEOF(alarm.TimeInfos));
+	
 alarm.TimeInfos.Activated := _dateTime.CurrentTime.Value;
-alarm.TimeInfos.Deactivated := TO_TIME(0);
-alarm.TimeInfos.Acknowledged := TO_TIME(0);
 
 IF __ISVALIDREF(_logger) THEN
 	_logger.LogWarning(_stringBuilder

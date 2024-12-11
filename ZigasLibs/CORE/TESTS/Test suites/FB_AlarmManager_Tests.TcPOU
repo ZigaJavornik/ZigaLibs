@@ -580,5 +580,30 @@ AssertTrue(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Test16_TimeInfos" Id="{7119724e-946e-01a5-10d2-4f0eba1adb0b}">
+      <Declaration><![CDATA[METHOD Test16_TimeInfos
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	fbAlarmManager	: FB_AlarmManager;
+	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
+	i	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test16_TimeInfos');
+fbAlarmManager(refAlarms := alarms);
+FOR i := 0 TO 10 BY 1 DO
+	fbAlarmManager.RegisterAlarm(i+1,'','');
+END_FOR
+
+AssertEquals(
+
+);
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
