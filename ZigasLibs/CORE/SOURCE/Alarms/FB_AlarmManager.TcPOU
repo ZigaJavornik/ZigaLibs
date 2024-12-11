@@ -122,7 +122,7 @@ END_VAR]]></Declaration>
 	RETURN;
 END_IF
 
-FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+FOR alarmIndex := _alarmArrayProperties.StartIndex TO (_alarmArrayProperties.StartIndex + UDINT_TO_DINT(RegisteredAlarmsCount)) - 1 BY 1 DO
 	AcknowledgeAlarm(alarm := refAlarms[alarmIndex]);
 END_FOR]]></ST>
       </Implementation>
