@@ -424,10 +424,10 @@ END_VAR
  Returns TRUE if new alarm was registered or false if not (alarm buffer is full or the id already exists)*)
 METHOD RegisterAlarm : BOOL
 VAR_INPUT
-	(* Alarm name*)
-	Name	: Tc2_System.T_MaxString;
 	(* Alarm ID*)
 	Id	: T_ArrayIndexer;
+	(* Alarm name*)
+	Name	: Tc2_System.T_MaxString;
 	(* Message when the alarm occurrs*)
 	Message	: Tc2_System.T_MaxString;
 END_VAR
