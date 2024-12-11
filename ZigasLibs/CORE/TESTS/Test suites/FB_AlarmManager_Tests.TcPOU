@@ -56,6 +56,7 @@ FOR addAlarmIndex := 1 TO 100 BY 1 DO
 			Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
 			Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
 		Message := 'Registering alarm failed.');
+		
 	AssertEquals_UDINT(
 		Actual := _alarmManager.RegisteredAlarmsCount,
 		Expected := DINT_TO_UDINT(addAlarmIndex),
