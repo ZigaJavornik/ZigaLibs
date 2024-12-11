@@ -18,6 +18,7 @@ VAR
 	_logger						: REFERENCE TO I_LoggerEx;	// If provided, logging will be used.
 	_emptyAlarm					: ST_AlarmInfo;
 	_registeredAlarmsCount		: UDINT;
+	_alarmActionBuilder			: FB_AlarmActionBuilder(THIS^);
 END_VAR
 
 VAR_IN_OUT
@@ -39,7 +40,7 @@ _alarmArrayProperties.Count := (_alarmArrayProperties.EndIndex - _alarmArrayProp
     </Folder>
     <Folder Name="Properties - public" Id="{8b06842f-475b-07cf-0bd3-846b427acb17}" />
     <Method Name="AcknowledgeAlarm" Id="{6d3c930a-f5e5-0d9e-02bd-a5b7038def9e}" FolderPath="Methods - Private\">
-      <Declaration><![CDATA[METHOD PRIVATE AcknowledgeAlarm
+      <Declaration><![CDATA[METHOD INTERNAL AcknowledgeAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
 END_VAR
@@ -127,33 +128,14 @@ FOR alarmIndex := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ActivateAlarm" Id="{fad3b3f8-3c33-0a4e-1db1-bc5e6dfd58ea}" FolderPath="Methods - Private\">
-      <Declaration><![CDATA[METHOD PRIVATE ActivateAlarm
+    <Method Name="Actions" Id="{e2526889-ea63-0c5d-381c-a7f3918d7ca6}">
+      <Declaration><![CDATA[// Provides access to action builder with fluent approach.
+METHOD PUBLIC Actions : I_AlarmActions
 VAR_INPUT
-	alarm : REFERENCE TO ST_AlarmInfo;
-END_VAR]]></Declaration>
+END_VAR
+]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF alarm.IsActive OR NOT _enable THEN
-	RETURN;
-END_IF
-
-_activeAlarmCount := _activeAlarmCount + 1;
-_unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
-alarm.IsActive := TRUE;
-alarm.IsAcknowledged := FALSE;
-alarm.TimeInfos.Activated := _dateTime.CurrentTime.Value;
-
-IF __ISVALIDREF(_logger) THEN
-	_logger.LogWarning(_stringBuilder
-		.Reset()
-		.AddString('Alarm ')
-		.AddWithDblQuotationMarks(str := alarm.Name)
-		.AddString(' with Id ')
-		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
-		.AddString(' actived! ')
-		.AddString(alarm.Message)
-		.Create());
-END_IF]]></ST>
+        <ST><![CDATA[Actions := _alarmActionBuilder;]]></ST>
       </Implementation>
     </Method>
     <Property Name="ActiveAlarmsCount" Id="{bd8c5464-d35d-0844-3d69-36b4a7b6ae4e}" FolderPath="Properties - public\">
@@ -171,7 +153,7 @@ END_VAR
       </Get>
     </Property>
     <Method Name="DeactivateAlarm" Id="{9de6b43f-5e23-0c41-2e43-fc878c004836}" FolderPath="Methods - Private\">
-      <Declaration><![CDATA[METHOD PRIVATE DeactivateAlarm
+      <Declaration><![CDATA[METHOD INTERNAL DeactivateAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
 END_VAR]]></Declaration>
@@ -392,6 +374,35 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="RaiseAlarm" Id="{fad3b3f8-3c33-0a4e-1db1-bc5e6dfd58ea}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD INTERNAL RaiseAlarm
+VAR_INPUT
+	alarm : REFERENCE TO ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF alarm.IsActive OR NOT _enable THEN
+	RETURN;
+END_IF
+
+_activeAlarmCount := _activeAlarmCount + 1;
+_unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
+alarm.IsActive := TRUE;
+alarm.IsAcknowledged := FALSE;
+alarm.TimeInfos.Activated := _dateTime.CurrentTime.Value;
+
+IF __ISVALIDREF(_logger) THEN
+	_logger.LogWarning(_stringBuilder
+		.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := alarm.Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
+		.AddString(' actived! ')
+		.AddString(alarm.Message)
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="RaiseAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}" FolderPath="Methods - public\Actions - ById\">
       <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
 METHOD RaiseAlarmById
@@ -410,7 +421,7 @@ END_IF
 
 foundAlarm := GetAlarmById(nID := nId);
 IF foundAlarm.Id = nId THEN
-	ActivateAlarm(alarm := GetAlarmById(nID := nId));
+	RaiseAlarm(alarm := GetAlarmById(nID := nId));
 	RETURN;
 END_IF
 
@@ -436,7 +447,7 @@ END_IF
 
 foundAlarm := GetAlarmByName(sName := sName);
 IF foundAlarm.Name = sName THEN
-	ActivateAlarm(alarm := GetAlarmByName(sName := sName));
+	RaiseAlarm(alarm := GetAlarmByName(sName := sName));
 	RETURN;
 END_IF
 

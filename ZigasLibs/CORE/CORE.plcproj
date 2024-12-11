@@ -60,6 +60,15 @@
     <CompilerDefines>test</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\Alarms\Actions - fluent\FB_AlarmActionBuilder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActionBy.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActions.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -257,6 +266,7 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\Alarms\DUTs" />
+    <Folder Include="SOURCE\Alarms\Actions - fluent" />
     <Folder Include="SOURCE\Array\DUTs" />
     <Folder Include="SOURCE\Beckhoff\CoE" />
     <Folder Include="SOURCE\Beckhoff\CoE\DUTs" />

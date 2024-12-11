@@ -23,6 +23,13 @@ END_VAR
       <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
 METHOD AcknowledgeAllAlarms]]></Declaration>
     </Method>
+    <Method Name="Actions" Id="{5de4b03a-1b2e-062c-292e-bde51d41fa98}">
+      <Declaration><![CDATA[// Provides access to action builder with fluent approach.
+METHOD PUBLIC Actions : I_AlarmActions
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
     <Property Name="ActiveAlarmsCount" Id="{27f4b7b5-af68-0d3e-1cce-7963362b2b26}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets the total count of currently active alarms
