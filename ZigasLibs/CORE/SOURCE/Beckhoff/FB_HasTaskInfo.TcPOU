@@ -4,7 +4,6 @@
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasTaskInfo
 VAR
 	_PlcTaskInfo	: PlcTaskSystemInfo;
-	_attempts	: UINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -22,7 +21,7 @@ END_VAR
           <ST><![CDATA[IF _plcTaskInfo.CycleTime = 0 THEN
 	taskIndex := Tc2_System.GETCURTASKINDEXEX();
 	IF taskIndex <> 0 THEN
-		_PlcTaskInfo := _TaskInfo[taskindex];
+		_PlcTaskInfo := TwinCAT_SystemInfoVarList._TaskInfo[taskIndex];
 	END_IF
 END_IF
 
