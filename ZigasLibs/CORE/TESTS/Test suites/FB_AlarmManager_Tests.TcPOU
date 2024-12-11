@@ -103,7 +103,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm');
 
-_alarmManager.ActivateAlarmById(10);
+_alarmManager.RaiseAlarmById(10);
 currentAlarm := _alarmManager.GetAlarmById(10);
 
 AssertEquals_BOOL(
@@ -161,7 +161,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount');
 
-_alarmManager.ActivateAlarmById(10);
+_alarmManager.RaiseAlarmById(10);
 _alarmManager();
 
 AssertEquals_BOOL(
@@ -267,7 +267,7 @@ END_VAR
         <ST><![CDATA[TcUnit.TEST('Test06_DisableManager_ExpectNoActiveAlarms');
 
 FOR n := 1 TO 40 BY 1 DO
-	_alarmManager.ActivateAlarmById(n);
+	_alarmManager.RaiseAlarmById(n);
 END_FOR
 
 AssertEquals_UINT(
@@ -303,7 +303,7 @@ END_VAR]]></Declaration>
 fbAlarmManager(refAlarms := arrAlarms);
 FOR n := 1 TO 40 BY 1 DO
 	fbAlarmManager.RegisterAlarm(n, TO_STRING(n), '');
-	fbAlarmManager.ActivateAlarmById(n);
+	fbAlarmManager.RaiseAlarmById(n);
 END_FOR
 
 AssertEquals_UINT(
@@ -339,7 +339,7 @@ END_VAR
 _alarmManager.Enable := FALSE;
 _alarmManager.Enable := TRUE;
 
-_alarmManager.ActivateAlarmByName('Alarm name10');
+_alarmManager.ActivateRaiseAlarmByName('Alarm name10');
 
 AssertTrue(
 	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsActive,

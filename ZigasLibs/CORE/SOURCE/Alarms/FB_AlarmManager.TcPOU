@@ -156,35 +156,9 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ActivateAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}" FolderPath="Methods - public\Actions - ById\">
-      <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
-METHOD ActivateAlarmById
-VAR_INPUT
-	(* Alarm id to be activated*)
-	nId	: T_ArrayIndexer;
-END_VAR
-
-VAR
-	foundAlarm	 : ST_AlarmInfo;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmById(nID := nId)) THEN
-	RETURN;
-END_IF
-
-foundAlarm := GetAlarmById(nID := nId);
-IF foundAlarm.Id = nId THEN
-	ActivateAlarm(alarm := GetAlarmById(nID := nId));
-	RETURN;
-END_IF
-
-
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ActivateAlarmByName" Id="{76cff595-4977-08b0-0a84-f685462f81f8}" FolderPath="Methods - public\Actions - ByName\">
+    <Method Name="ActivateRaiseAlarmByName" Id="{76cff595-4977-08b0-0a84-f685462f81f8}" FolderPath="Methods - public\Actions - ByName\">
       <Declaration><![CDATA[(* Activates the alarm with the provided name*)
-METHOD ActivateAlarmByName
+METHOD ActivateRaiseAlarmByName
 VAR_INPUT
 	(* Alarm name to be actived*)
 	sName	: Tc2_System.T_MaxString;
@@ -444,6 +418,32 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="RaiseAlarmById" Id="{f3279710-5767-0c00-1946-1d7103d1e628}" FolderPath="Methods - public\Actions - ById\">
+      <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
+METHOD RaiseAlarmById
+VAR_INPUT
+	(* Alarm id to be activated*)
+	nId	: T_ArrayIndexer;
+END_VAR
+
+VAR
+	foundAlarm	 : ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmById(nID := nId)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmById(nID := nId);
+IF foundAlarm.Id = nId THEN
+	ActivateAlarm(alarm := GetAlarmById(nID := nId));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="RegisterAlarm" Id="{cdcb8690-279d-00fd-371a-d270fd615fd4}" FolderPath="Methods - public\">
       <Declaration><![CDATA[(* Registers a new alarm with the provided information. 
  Returns TRUE if new alarm was registered or false if not (alarm buffer is full or the id already exists)*)

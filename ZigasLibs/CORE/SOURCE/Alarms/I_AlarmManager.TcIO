@@ -23,17 +23,9 @@ END_VAR
       <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
 METHOD AcknowledgeAllAlarms]]></Declaration>
     </Method>
-    <Method Name="ActivateAlarmById" Id="{510b7d39-d75d-0905-19d0-3b4edc0e3882}">
-      <Declaration><![CDATA[// Activates the alarm with the provided Id (if it exists)
-METHOD ActivateAlarmById
-VAR_INPUT
-	nId	: T_ArrayIndexer;	// Alarm id to be activated
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="ActivateAlarmByName" Id="{93b395a5-e014-0822-2a5b-a4763267118a}">
+    <Method Name="ActivateRaiseAlarmByName" Id="{93b395a5-e014-0822-2a5b-a4763267118a}">
       <Declaration><![CDATA[// Activates the alarm with the provided name
-METHOD ActivateAlarmByName
+METHOD ActivateRaiseAlarmByName
 VAR_INPUT
 	sName	: Tc2_System.T_MaxString;	// Alarm name to be actived
 END_VAR
@@ -100,6 +92,14 @@ PROPERTY MaximumAlarmsCount : UDINT]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Method Name="RaiseAlarmById" Id="{510b7d39-d75d-0905-19d0-3b4edc0e3882}">
+      <Declaration><![CDATA[// Activates the alarm with the provided Id (if it exists)
+METHOD RaiseAlarmById
+VAR_INPUT
+	nId	: T_ArrayIndexer;	// Alarm id to be activated
+END_VAR
+]]></Declaration>
+    </Method>
     <Method Name="RegisterAlarm" Id="{3ed5a009-2f27-002b-2f84-e4f6cb7b446b}">
       <Declaration><![CDATA[// Registers a new alarm with the provided information. 
 // Returns TRUE if new alarm was registered or false if not
