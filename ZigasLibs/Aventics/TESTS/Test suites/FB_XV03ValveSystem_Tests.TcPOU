@@ -71,6 +71,10 @@ VAR
 	expectedValue					: USINT;
 	strinbBuilder					: ZigaLibs_Core.FB_StringBuilderBase;
 	addressToAdd					: DWORD;
+END_VAR
+
+VAR CONSTANT
+	VALVES_PER_BYTE	: REAL := 4.0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// The name of the test, is the same as method name!
@@ -82,7 +86,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
 	fbValveSystem_XV03();
 	// add + 1 address when next byte should be looked at (4 valves with 2 coils per byte, 8 bits)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/4.0)));
+	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
 	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
 	expectedValue := LREAL_TO_USINT(EXPT(2, iteration - 1 + indexValueToAdd - indexValueToSubstract));
 	AssertTrue(
@@ -90,7 +94,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 		Message := strinbBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(' coil 12 was not opened.')
+			.AddString(', coil 12 was not opened.')
 			.Create());
 	
 	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
@@ -100,14 +104,14 @@ FOR iteration := 1 TO 24 BY 1 DO
 		Message := strinbBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(' coil 12 was not closed.')
+			.AddString(', coil 12 was not closed.')
 			.Create());
 	
 	// Coil 2 of valve	
 	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
 	fbValveSystem_XV03();
 	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/4.0)));
+	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
 	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
 	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
 	AssertTrue(
@@ -115,7 +119,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 		Message := strinbBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(' coil 14 was not opened.')
+			.AddString(', coil 14 was not opened.')
 			.Create());
 			
 	indexValueToAdd := indexValueToAdd + 1;
@@ -127,16 +131,16 @@ FOR iteration := 1 TO 24 BY 1 DO
 		Message := strinbBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(' coil 14 was not closed.')
+			.AddString(', coil 14 was not closed.')
 			.Create());
 			
 	// In order to have 1 single loop, every loop iteration we need to add 1 value, to increase the 2^n+1 result.
 	// When the byte is finished, next iteration would start at 2^n, for example 2^5. But we need to reset back at 1st position.
 	// For that reson the substract index will be taken into account in the power calculation and every 4th iteration, 
 	// aka 1 byte, the power will be: 2^(iteration - 4*(byte number 0...3) + current coil index (0..1))		
-	IF indexValueToAdd = 4 THEN
+	IF indexValueToAdd = TO_UINT(VALVES_PER_BYTE) THEN
 		indexValueToAdd := 0;
-		indexValueToSubstract := indexValueToSubstract + 4;
+		indexValueToSubstract := indexValueToSubstract + TO_UINT(VALVES_PER_BYTE);
 	END_IF
 END_FOR
 
