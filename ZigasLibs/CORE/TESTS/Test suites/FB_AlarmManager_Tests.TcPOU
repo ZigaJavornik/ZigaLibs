@@ -30,7 +30,8 @@ Test11_GetAlarmByName();
 Test12_GetAlarmById();
 Test13_ActivateById();
 Test14_DeactivateById();
-Test15_AcknowledgeById();]]></ST>
+Test15_AcknowledgeById();
+Test16_TimeInfos();]]></ST>
     </Implementation>
     <Method Name="Test00_RegisterAlarms" Id="{e3481e3b-1449-0574-29d8-60404d623878}">
       <Declaration><![CDATA[METHOD Test00_RegisterAlarms
@@ -586,23 +587,196 @@ VAR_INPUT
 END_VAR
 
 VAR_INST
-	fbAlarmManager	: FB_AlarmManager;
-	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
-	i	: T_ArrayIndexer;
+	fbAlarmManager			: FB_AlarmManager(TRUE, 0);
+	alarms					: ARRAY[0..10] OF ST_AlarmInfo;
+	i						: T_ArrayIndexer;
+	stTimeStruct			: Tc2_Utilities.TIMESTRUCT;
+	stTimeStructActivation	: Tc2_Utilities.TIMESTRUCT;	
+	stTimeStructAcnowledge	: Tc2_Utilities.TIMESTRUCT;
+	alarm			: ST_AlarmInfo;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test16_TimeInfos');
 fbAlarmManager(refAlarms := alarms);
-FOR i := 0 TO 10 BY 1 DO
-	fbAlarmManager.RegisterAlarm(i+1,'','');
-END_FOR
-
-AssertEquals(
-
-);
-
-TcUnit.TEST_FINISHED();]]></ST>
+IF fbAlarmManager._dateTime.CurrentTime.IsValid THEN
+	FOR i := 0 TO 10 BY 1 DO
+		fbAlarmManager.RegisterAlarm(i+1,'','');
+		AssertEquals(
+			Expected := stTimeStruct,
+			Actual := fbAlarmManager.GetAlarmById(i).TimeInfos.Acknowledged,
+			Message := 'Newly registered alarm should have empty time informations!');
+		AssertEquals(
+			Expected := stTimeStruct,
+			Actual := fbAlarmManager.GetAlarmById(i).TimeInfos.Activated,
+			Message := 'Newly registered alarm should have empty time informations!');
+		AssertEquals(
+			Expected := stTimeStruct,
+			Actual := fbAlarmManager.GetAlarmById(i).TimeInfos.Deactivated,
+			Message := 'Newly registered alarm should have empty time informations!');
+	END_FOR
+	
+	// Raise alarm
+	fbAlarmManager.Actions().Raise().ById(2);
+	stTimeStruct := fbAlarmManager._dateTime.CurrentTime.Value;
+	stTimeStructActivation := stTimeStruct;
+	alarm := fbAlarmManager.GetAlarmById(2);
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMilliseconds,
+		Actual := alarm.TimeInfos.Activated.wMilliseconds,
+		Message := 'Activation time info after raising alarm (millisecond) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wSecond,
+		Actual := alarm.TimeInfos.Activated.wSecond,
+		Message := 'Activation time info after raising alarm (second) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMinute,
+		Actual := alarm.TimeInfos.Activated.wMinute,
+		Message := 'Activation time info after raising alarm (minute) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wHour,
+		Actual := alarm.TimeInfos.Activated.wHour,
+		Message := 'Activation time info after raising alarm (hour) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDay,
+		Actual := alarm.TimeInfos.Activated.wDay,
+		Message := 'Activation time info after raising alarm (day) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMonth,
+		Actual := alarm.TimeInfos.Activated.wMonth,
+		Message := 'Activation time info after raising alarm (month) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wYear,
+		Actual := alarm.TimeInfos.Activated.wYear,
+		Message := 'Activation time info after raising alarm (year) is incorrect.');	
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDayOfWeek,
+		Actual := alarm.TimeInfos.Activated.wDayOfWeek,
+		Message := 'Activation time info after raising alarm (day of week) is incorrect.');
+		
+	MEMSET(ADR(stTimeStruct),0,SIZEOF(Tc2_Utilities.TIMESTRUCT));	
+	AssertEquals(
+		Expected := stTimeStruct,
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Acknowledged,
+		Message := 'When alarm is raised, the acknowledged time information should be empty.');
+	AssertEquals(
+		Expected := stTimeStruct,
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Deactivated,
+		Message := 'When alarm is raised, the deactivation time information should be empty.');
+	
+	// Acknowledge alarm
+	fbAlarmManager.Actions().Acknowledge().ById(2);
+	stTimeStruct := fbAlarmManager._dateTime.CurrentTime.Value;
+	stTimeStructAcnowledge := stTimeStruct;
+	alarm := fbAlarmManager.GetAlarmById(2);
+	
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMilliseconds,
+		Actual := alarm.TimeInfos.Acknowledged.wMilliseconds,
+		Message := 'Acknowledged time info after acknowlidging alarm (millisecond) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wSecond,
+		Actual := alarm.TimeInfos.Acknowledged.wSecond,
+		Message := 'Acknowledged time info after acknowlidging alarm (second) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMinute,
+		Actual := alarm.TimeInfos.Acknowledged.wMinute,
+		Message := 'Acknowledged time info after acknowlidging alarm (minute) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wHour,
+		Actual := alarm.TimeInfos.Acknowledged.wHour,
+		Message := 'Acknowledged time info after acknowlidging alarm (hour) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDay,
+		Actual := alarm.TimeInfos.Acknowledged.wDay,
+		Message := 'Acknowledged time info after acknowlidging alarm (day) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMonth,
+		Actual := alarm.TimeInfos.Acknowledged.wMonth,
+		Message := 'Acknowledged time info after acknowlidging alarm (month) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wYear,
+		Actual := alarm.TimeInfos.Acknowledged.wYear,
+		Message := 'Acknowledged time info after acknowlidging alarm (year) is incorrect.');	
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDayOfWeek,
+		Actual := alarm.TimeInfos.Acknowledged.wDayOfWeek,
+		Message := 'Acknowledged time info after acknowlidging alarm (day of week) is incorrect.');
+	
+	MEMSET(ADR(stTimeStruct),0,SIZEOF(Tc2_Utilities.TIMESTRUCT));	
+	AssertEquals(
+		Expected := stTimeStruct,
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Deactivated,
+		Message := 'When alarm is acknowledged, the deactivation time information should not change.');
+	AssertEquals(
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Activated,
+		Expected := stTimeStructActivation,
+		Message := 'If alarm is acknowledged, the acivation time info should not change.');
+		
+	// Deactivate alarm
+	fbAlarmManager.Actions().Deactivate().ById(2);
+	stTimeStruct := fbAlarmManager._dateTime.CurrentTime.Value;
+	alarm := fbAlarmManager.GetAlarmById(2);
+	
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMilliseconds,
+		Actual := alarm.TimeInfos.Deactivated.wMilliseconds,
+		Message := 'Deactivation time info after deactivating alarm (millisecond) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wSecond,
+		Actual := alarm.TimeInfos.Deactivated.wSecond,
+		Message := 'Deactivation time info after deactivating alarm (second) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMinute,
+		Actual := alarm.TimeInfos.Deactivated.wMinute,
+		Message := 'Deactivation time info after deactivating alarm (minute) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wHour,
+		Actual := alarm.TimeInfos.Deactivated.wHour,
+		Message := 'Deactivation time info after deactivating alarm (hour) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDay,
+		Actual := alarm.TimeInfos.Deactivated.wDay,
+		Message := 'Deactivation time info after deactivating alarm (day) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wMonth,
+		Actual := alarm.TimeInfos.Deactivated.wMonth,
+		Message := 'Deactivation time info after deactivating alarm (month) is incorrect.');
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wYear,
+		Actual := alarm.TimeInfos.Deactivated.wYear,
+		Message := 'Deactivation time info after deactivating alarm (year) is incorrect.');	
+	AssertEquals_WORD(
+		Expected := stTimeStruct.wDayOfWeek,
+		Actual := alarm.TimeInfos.Deactivated.wDayOfWeek,
+		Message := 'Deactivation time info after deactivating alarm (day of week) is incorrect.');
+	
+	// Check that previous entries did not change	
+	AssertEquals(
+		Expected := stTimeStructAcnowledge,
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Acknowledged,
+		Message := 'When alarm is acknowledged, the deactivation time information should not change.');
+	AssertEquals(
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Activated,
+		Expected := stTimeStructActivation,
+		Message := 'If alarm is acknowledged, the acivation time info should not change.');
+	
+		
+	// Activate again and confirm that acknowledge and deactivation are reset
+	// Raise alarm
+	fbAlarmManager.Actions().Raise().ById(2);
+	MEMSET(ADR(stTimeStruct),0,SIZEOF(Tc2_Utilities.TIMESTRUCT));
+	AssertEquals(
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Deactivated,
+		Expected := stTimeStruct,
+		Message := 'When alarm is re-activated, previous time information for "deactivated" should be cleared.');
+	AssertEquals(
+		Actual := fbAlarmManager.GetAlarmById(2).TimeInfos.Acknowledged,
+		Expected := stTimeStruct,
+		Message := 'When alarm is re-activated, previous time information for "acknowledged" should be cleared.');
+TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
       </Implementation>
     </Method>
   </POU>
