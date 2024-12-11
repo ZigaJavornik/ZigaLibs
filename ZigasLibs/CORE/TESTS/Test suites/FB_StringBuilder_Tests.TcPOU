@@ -70,7 +70,7 @@ AssertEquals_STRING(
 		.AddWithDblQuotationMarks('test')
 		.AddWithDblQuotationMarks('test2')
 		.Create(),
-	Expected := '$'$'test$'$'$'$'test2$'$'',
+	Expected := '"test""test2"',
 	Message := 'AddString of two strings failed!');
 	
 TcUnit.TEST_FINISHED();
