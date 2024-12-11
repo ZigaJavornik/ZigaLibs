@@ -23,14 +23,6 @@ END_VAR
       <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
 METHOD AcknowledgeAllAlarms]]></Declaration>
     </Method>
-    <Method Name="ActivateRaiseAlarmByName" Id="{93b395a5-e014-0822-2a5b-a4763267118a}">
-      <Declaration><![CDATA[// Activates the alarm with the provided name
-METHOD ActivateRaiseAlarmByName
-VAR_INPUT
-	sName	: Tc2_System.T_MaxString;	// Alarm name to be actived
-END_VAR
-]]></Declaration>
-    </Method>
     <Property Name="ActiveAlarmsCount" Id="{27f4b7b5-af68-0d3e-1cce-7963362b2b26}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets the total count of currently active alarms
@@ -97,6 +89,14 @@ PROPERTY MaximumAlarmsCount : UDINT]]></Declaration>
 METHOD RaiseAlarmById
 VAR_INPUT
 	nId	: T_ArrayIndexer;	// Alarm id to be activated
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="RaiseAlarmByName" Id="{93b395a5-e014-0822-2a5b-a4763267118a}">
+      <Declaration><![CDATA[// Activates the alarm with the provided name
+METHOD RaiseAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;	// Alarm name to be actived
 END_VAR
 ]]></Declaration>
     </Method>

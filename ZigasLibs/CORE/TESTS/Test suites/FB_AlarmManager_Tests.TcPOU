@@ -339,7 +339,7 @@ END_VAR
 _alarmManager.Enable := FALSE;
 _alarmManager.Enable := TRUE;
 
-_alarmManager.ActivateRaiseAlarmByName('Alarm name10');
+_alarmManager.RaiseAlarmByName('Alarm name10');
 
 AssertTrue(
 	Condition := _alarmManager.GetAlarmByName('Alarm name10').IsActive,
