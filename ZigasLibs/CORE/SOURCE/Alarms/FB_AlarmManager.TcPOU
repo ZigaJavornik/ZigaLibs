@@ -122,7 +122,7 @@ END_VAR]]></Declaration>
 	RETURN;
 END_IF
 
-FOR alarmIndex := _alarmArrayProperties.StartIndex TO (_alarmArrayProperties.StartIndex + UDINT_TO_DINT(RegisteredAlarmsCount)) - 1 BY 1 DO
+FOR alarmIndex := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
 	AcknowledgeAlarm(alarm := refAlarms[alarmIndex]);
 END_FOR]]></ST>
       </Implementation>
@@ -307,7 +307,7 @@ VAR
 	alarmIndex	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
 	IF refAlarms[alarmIndex].IsActive THEN
 		DeactivateAlarm(refAlarms[alarmIndex]);
 	END_IF
@@ -380,7 +380,7 @@ END_VAR]]></Declaration>
 	GetAlarmById REF= _emptyAlarm;
 END_IF
 
-FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+FOR index := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
 	IF refAlarms[index].Id = nId THEN
 		GetAlarmById REF= refAlarms[index];
 		RETURN;
@@ -410,7 +410,7 @@ END_VAR
 	GetAlarmByName REF= _emptyAlarm;
 END_IF
 
-FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+FOR index := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
 	IF refAlarms[index].Name = sName THEN
 		GetAlarmByName REF= refAlarms[index];
 		RETURN;
@@ -418,6 +418,15 @@ FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex 
 END_FOR
 
 GetAlarmByName REF= _emptyAlarm;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetMaxAlarmArrayIndex" Id="{914c7a8c-1f41-0372-139e-b6d103ec20aa}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD PRIVATE GetMaxAlarmArrayIndex : T_ArrayIndexer
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetMaxAlarmArrayIndex := (_alarmArrayProperties.StartIndex + UDINT_TO_DINT(RegisteredAlarmsCount)) - 1;]]></ST>
       </Implementation>
     </Method>
     <Property Name="MaximumAlarmsCount" Id="{4db2b792-75be-0f9f-3003-b41ea7626cae}" FolderPath="Properties - public\">

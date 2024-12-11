@@ -15,7 +15,6 @@ VAR
 	StringBuilderBaseTest			: FB_StringBuilder_Tests;
 	HasTaskInfoTests				: FB_HasTaskInfo_Tests;
 	AlarmManagerTests				: FB_AlarmManager_Tests;
-
 END_VAR
 ]]></Declaration>
     <Implementation>
