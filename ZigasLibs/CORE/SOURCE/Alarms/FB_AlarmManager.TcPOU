@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_AlarmManager" Id="{3eb86085-e2c4-0140-28bd-03ee6f0441da}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
+    <Declaration><![CDATA[// Alarm manager function block. 
+// Make sure to call the body of this block before doing any method calls so that the array to be managed is assigned via the var_in_out.
+// If you, for example, register an alarm before assigning the array, the alarm will not be registered due to invalid reference of the array.
+FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
 
 VAR
 	_enable						: BOOL;
@@ -115,7 +118,11 @@ VAR
 	alarmIndex	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
+	RETURN;
+END_IF
+
+FOR alarmIndex := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
 	AcknowledgeAlarm(alarm := refAlarms[alarmIndex]);
 END_FOR]]></ST>
       </Implementation>
@@ -348,8 +355,7 @@ VAR_INPUT
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
 	bEnable	: BOOL;
 	iLogger	: REFERENCE TO I_LoggerEx;	// If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[_enable := bEnable;
 _logger REF= iLogger;
@@ -357,7 +363,8 @@ _logger REF= iLogger;
       </Implementation>
     </Method>
     <Method Name="GetAlarmById" Id="{403c4fb5-f026-053f-234a-bb9a4f8849b9}" FolderPath="Methods - public\Actions - ById\">
-      <Declaration><![CDATA[(* Gets the alarm with the provided id. 
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+(* Gets the alarm with the provided id. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmById : REFERENCE TO ST_AlarmInfo
 VAR_INPUT
@@ -369,7 +376,11 @@ VAR
 	index	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
+	GetAlarmById REF= _emptyAlarm;
+END_IF
+
+FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
 	IF refAlarms[index].Id = nId THEN
 		GetAlarmById REF= refAlarms[index];
 		RETURN;
@@ -381,7 +392,8 @@ GetAlarmById REF= _emptyAlarm;
       </Implementation>
     </Method>
     <Method Name="GetAlarmByName" Id="{620bcf69-9c03-072e-14a0-c6da4c5cda69}" FolderPath="Methods - public\Actions - ByName\">
-      <Declaration><![CDATA[(* Gets the alarm with the provided name. 
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+(* Gets the alarm with the provided name. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmByName : REFERENCE TO ST_AlarmInfo
 VAR_INPUT
@@ -394,13 +406,16 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
+        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
+	GetAlarmByName REF= _emptyAlarm;
+END_IF
+
+FOR index := _alarmArrayProperties.StartIndex TO _alarmArrayProperties.EndIndex BY 1 DO
 	IF refAlarms[index].Name = sName THEN
 		GetAlarmByName REF= refAlarms[index];
 		RETURN;
 	END_IF
 END_FOR
-
 
 GetAlarmByName REF= _emptyAlarm;]]></ST>
       </Implementation>
@@ -484,5 +499,14 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="ValidateArrayRef" Id="{49b29f31-9740-00e4-2733-b13f91fa202b}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateArrayRef : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateArrayRef := refAlarms <> 0;]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
