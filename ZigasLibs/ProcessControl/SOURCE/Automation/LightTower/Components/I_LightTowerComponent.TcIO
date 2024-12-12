@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_LightTowerComponent" Id="{565a0719-8fd5-0e5c-38ed-27694fe06560}">
+    <Declaration><![CDATA[INTERFACE I_LightTowerComponent
+]]></Declaration>
+    <Method Name="Activate" Id="{cc40e103-f929-0ec3-22f2-2ec071d80a27}">
+      <Declaration><![CDATA[// Sets the component state to TRUE.
+METHOD Activate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Deactivate" Id="{6d59e4ed-68f8-0d8c-3c59-3ae523d53295}">
+      <Declaration><![CDATA[// Sets the component state to FALSE.
+METHOD Deactivate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="State" Id="{aadc2ef6-2d88-0fa8-39fc-e5110e96b1b5}">
+      <Declaration><![CDATA[// Gets state of the component. TRUE if active, else FALSE.
+PROPERTY State : BOOL]]></Declaration>
+      <Get Name="Get" Id="{5b9d3ee7-29b9-06e9-2145-2fbc8558ba2b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

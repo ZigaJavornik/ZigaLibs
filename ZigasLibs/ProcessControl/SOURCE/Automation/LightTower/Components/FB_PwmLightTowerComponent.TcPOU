@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_PwmLightTowerComponent" Id="{5c19a601-f767-0344-0722-2f67269d801d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_PwmLightTowerComponent IMPLEMENTS I_PwmLightTowerComponent, I_LightTowerComponent
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_active		: BOOL;
+	_interval	: TIME;
+	_state		: BOOL;
+	fbPulseGenerator	: ZigaLibs_Core.FB_PulseGenerator( tPeriod := _interval, fDutyCycle := 50);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbPulseGenerator.Enable := TRUE;
+_state := NOT fbPulseGenerator.Execute() AND _active;]]></ST>
+    </Implementation>
+    <Method Name="Activate" Id="{e3b6b1e8-08ce-0fda-3e26-386c2ccd280f}">
+      <Declaration><![CDATA[METHOD Activate
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_active := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Deactivate" Id="{021e6582-c51a-0979-24d7-fe7c84929d70}">
+      <Declaration><![CDATA[METHOD Deactivate]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_active := FALSE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetInterval" Id="{49bc24d2-ba9f-0516-1ca8-4c245f14c997}">
+      <Declaration><![CDATA[METHOD SetInterval : I_LightTowerComponent
+VAR_INPUT
+	tInterval : TIME;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_interval := tInterval;
+SetInterval := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="State" Id="{1e26d076-f5b2-03ad-1322-885e2d036ceb}">
+      <Declaration><![CDATA[PROPERTY State : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{fef036ac-abc9-08cc-30e8-2c08089e919d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := _state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

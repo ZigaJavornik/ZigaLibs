@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_LightTower" Id="{fc793eea-f426-0d8b-312b-328114c2bcfb}">
+    <Declaration><![CDATA[INTERFACE I_LightTower
+]]></Declaration>
+  </Itf>
+</TcPlcObject>

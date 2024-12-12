@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <Itf Name="I_PwmLightTowerComponent" Id="{9513e11e-a9b1-07cf-382b-49c95a4f2b7b}">
+    <Declaration><![CDATA[INTERFACE I_PwmLightTowerComponent EXTENDS I_LightTowerComponent
+]]></Declaration>
+    <Method Name="Activate" Id="{a04d9040-272a-0b91-10e6-a5bdf954aff7}">
+      <Declaration><![CDATA[// Starts the pulse width modulation of the component.
+METHOD Activate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Deactivate" Id="{0da7f011-c57a-0fca-1b8d-23f37beb95e2}">
+      <Declaration><![CDATA[// Stop the pulse width modulation of the component.
+METHOD Deactivate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetInterval" Id="{1eb69c19-1edc-0a86-02be-65d866bd735d}">
+      <Declaration><![CDATA[// Sets the interval of the PWM to desired value tInterval.
+METHOD SetInterval : I_LightTowerComponent
+VAR_INPUT
+	tInterval	: TIME;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
