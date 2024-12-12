@@ -177,6 +177,9 @@
     <Compile Include="SOURCE\File\ST_FileExtensions.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -282,6 +285,7 @@
     <Folder Include="SOURCE\DataType" />
     <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Alarms" />
+    <Folder Include="SOURCE\General" />
     <Folder Include="SOURCE\PID" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
