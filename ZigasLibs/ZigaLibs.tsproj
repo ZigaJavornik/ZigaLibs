@@ -135,7 +135,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{23978D49-811C-2DCB-8223-47D59AB0346E}">
+				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{63E46DCA-432E-2DD2-B5E5-C446D1CB27AC}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -215,7 +215,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{15164A85-E1C2-DB1B-2710-A5349062337B}">
+				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{4927EDAF-8EC8-00C5-E010-7FC6FC374A0E}">
 					<Name>ProcessControl Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -235,7 +235,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{5B452B1E-0C6A-77A4-381C-6DB9EC36C7D1}">
+				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{5838C952-CE95-F52C-BA50-CA7399E036ED}">
 					<Name>Aventics Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

@@ -9,9 +9,14 @@ END_VAR
 VAR
 	_alarmAction 	: (ACTION_ACKNOWLEDGE, ACTTION_RAISE, ACTION_DEACTIVATE);
 	_selectedAlarm	: REFERENCE TO ST_AlarmInfo;
-	_emptyAlarm		: ST_AlarmInfo;
+
 	_alarmManager	: REFERENCE TO FB_AlarmManager;
 END_VAR
+
+VAR CONSTANT
+	_emptyAlarm		: ST_AlarmInfo;	
+END_VAR
+
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -70,7 +75,15 @@ Deactivate := THIS^;]]></ST>
 
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _alarmAction OF
+        <ST><![CDATA[IF Tc2_System.MEMCMP(
+	n := SIZEOF(ST_alarmInfo), 
+	pBuf1 := ADR(_emptyAlarm), 
+	pBuf2 := ADR(_selectedAlarm)) = E_MemCmpResults.IDENTICAL 
+THEN
+	RETURN;
+END_IF
+
+CASE _alarmAction OF
 	ACTION_ACKNOWLEDGE:
 		_alarmManager.AcknowledgeAlarm(_selectedAlarm);
 	ACTTION_RAISE:

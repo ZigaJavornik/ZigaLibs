@@ -31,7 +31,8 @@ Test12_GetAlarmById();
 Test13_ActivateById();
 Test14_DeactivateById();
 Test15_AcknowledgeById();
-Test16_TimeInfos();]]></ST>
+Test16_TimeInfos();
+Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive();]]></ST>
     </Implementation>
     <Method Name="Test00_RegisterAlarms" Id="{e3481e3b-1449-0574-29d8-60404d623878}">
       <Declaration><![CDATA[METHOD Test00_RegisterAlarms
@@ -777,6 +778,46 @@ IF fbAlarmManager._dateTime.CurrentTime.IsValid THEN
 TcUnit.TEST_FINISHED();
 END_IF
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive" Id="{8edfb727-a222-0420-3004-14ba50e928a2}">
+      <Declaration><![CDATA[METHOD Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	prevAlarmActiveCount	: UINT;
+	prevUnackAlarmCount		: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive');
+prevAlarmActiveCount := _alarmManager.ActiveAlarmsCount;
+prevUnackAlarmCount := _alarmManager.UnacknowledgedAlarmsCount;
+
+_alarmManager.RaiseAlarmById(24523452);
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := prevAlarmActiveCount,
+	Message := 'If an alarm that does not exist is raised, active alarms count should not change.');
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := prevUnackAlarmCount,
+	Message := 'If an alarm that does not exist is raised, active alarms count should not change.');
+	
+_alarmManager.Actions().Raise().ById(24523452);
+AssertEquals_UINT(
+	Actual := _alarmManager.ActiveAlarmsCount,
+	Expected := prevAlarmActiveCount,
+	Message := 'Fluent - If an alarm that does not exist is raised, active alarms count should not change.');
+	
+AssertEquals_UINT(
+	Actual := _alarmManager.UnacknowledgedAlarmsCount,
+	Expected := prevUnackAlarmCount,
+	Message := 'Fluent - If an alarm that does not exist is raised, active alarms count should not change.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
   </POU>
