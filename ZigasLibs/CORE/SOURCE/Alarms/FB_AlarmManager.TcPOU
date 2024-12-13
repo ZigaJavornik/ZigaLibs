@@ -518,10 +518,22 @@ PROPERTY UnacknowledgedAlarmsCount : UINT
 ]]></Declaration>
       <Get Name="Get" Id="{0630d84b-323a-0c5c-15e4-0fc38e219d3f}">
         <Declaration><![CDATA[VAR
+	alarmIndex		: T_ArrayIndexer;
+	maxAlarmIndex	: T_ArrayIndexer;
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[UnacknowledgedAlarmsCount := _unacknowledgedAlarmCount;]]></ST>
+          <ST><![CDATA[maxAlarmIndex :=  GetMaxAlarmArrayIndex();
+_unacknowledgedAlarmCount := 0;
+
+FOR alarmIndex := _alarmArrayProperties.StartIndex TO maxAlarmIndex BY 1 DO
+	IF NOT refAlarms[alarmIndex].IsAcknowledged THEN
+		_unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
+	END_IF
+	
+END_FOR
+
+UnacknowledgedAlarmsCount := _unacknowledgedAlarmCount;]]></ST>
         </Implementation>
       </Get>
     </Property>
