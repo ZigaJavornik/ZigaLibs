@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="BoolEx" Id="{e16f035f-de4a-05ce-3edf-c1aea1b027f7}" SpecialFunc="None">
+    <Declaration><![CDATA[// An extension to boolean variable
+FUNCTION_BLOCK BoolEx
+VAR_INPUT
+	variable			: REFERENCE TO BOOL;
+END_VAR
+
+VAR
+	
+	_risingEdge			: Tc2_Standard.R_TRIG;
+	_fallingEdge		: Tc2_Standard.F_TRIG;
+	afterinitvarinfo 	: ST_VarInfo;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="HasBeenFalseForAtLeast" Id="{145c3c81-a952-0b88-327a-1d6c12fd39f5}">
+      <Declaration><![CDATA[// Returns TRUE if monitored value has been FALSE for at lease for the provided "duration"
+METHOD HasBeenFalseForAtLeast : BOOL
+VAR_INPUT
+	duration	: TIME;
+END_VAR
+
+VAR_INST
+	timer	: Tc2_Standard.TON;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[timer(IN := NOT variable, PT := duration);
+HasBeenFalseForAtLeast := timer.Q;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="HasBeenTrueForAtLeast" Id="{ff736e12-ed3f-0037-310a-c5470bad5fee}">
+      <Declaration><![CDATA[// Returns TRUE if monitored value has been TRUE for at lease for the provided "duration"
+METHOD HasBeenTrueForAtLeast : BOOL
+VAR_INPUT
+	duration	: TIME;
+END_VAR
+
+VAR_INST
+	timer	: Tc2_Standard.TON;
+	ptrBool	: POINTER TO BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[timer(IN := variable, PT := duration);
+HasBeenTrueForAtLeast := timer.Q;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="HasFallingEdge" Id="{8bc02d18-d2d5-0873-2ddf-093eb7f18cc1}">
+      <Declaration><![CDATA[// Returns TRUE if oberved variable change from TRUE to FALSE from the last call.
+PROPERTY HasFallingEdge : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1e62258e-318f-0368-3af8-e9916b984ade}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fallingEdge(CLK := variable);
+HasFallingEdge := _fallingEdge.Q;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="HasRisingEdge" Id="{62818f5e-bb01-04b6-296c-5b8c176c97dc}">
+      <Declaration><![CDATA[// Returns TRUE if oberved variable change from FALSE to TRUE from the last call.
+PROPERTY HasRisingEdge : BOOL]]></Declaration>
+      <Get Name="Get" Id="{2d1d7b33-be68-0822-2910-53380b9390d5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_risingEdge(CLK := variable);
+HasRisingEdge := _risingEdge.Q;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="PulseWithInterval" Id="{16a3e5a8-7a82-0130-31b7-e9815c485869}">
+      <Declaration><![CDATA[// Pulses the virabile (TRUE/FALSE) with the provided on and off duration
+METHOD PulseWithInterval
+VAR_INPUT
+	durationOn	: TIME;
+	durationOff	: TIME;
+END_VAR
+VAR_INST
+	timerOn		: Tc2_Standard.TON;
+	timerOff	: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[timerOn(IN := NOT timerOff.Q, PT := durationOn);
+timerOff(IN := timerOn.Q, PT := durationOff);
+variable := NOT timerOn.Q;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{fec82205-15a8-0880-3568-069993922eb8}">
+      <Declaration><![CDATA[// Sets the value to FALSE
+METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[variable := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{5da580fe-66db-042d-38d2-af36d54fe097}">
+      <Declaration><![CDATA[// Sets the value to TRUE
+METHOD Set
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[variable := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Toggle" Id="{fc834b26-c74d-0276-1ba4-60a1811f6b0f}">
+      <Declaration><![CDATA[METHOD Toggle
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[variable := NOT variable;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Value" Id="{e8534c06-1c85-0aa5-2589-ee1686ad4122}">
+      <Declaration><![CDATA[PROPERTY Value : BOOL]]></Declaration>
+      <Get Name="Get" Id="{8fa9feda-7c32-0b3f-01f1-7aa040514182}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value := variable;
+
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{b201ddc8-99fc-0264-1660-1f4352f30b8e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[variable := Value;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

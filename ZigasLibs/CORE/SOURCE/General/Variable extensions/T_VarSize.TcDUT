@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <DUT Name="T_VarSize" Id="{71a8fec2-3ace-0082-22e2-8683a9275726}">
     <Declaration><![CDATA[// Variable size alias type. To be used when working with SIZEOF operator.
 TYPE T_VarSize : DINT; END_TYPE

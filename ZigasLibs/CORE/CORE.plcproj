@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Core</Title>
-    <ProjectVersion>0.0.0.4</ProjectVersion>
+    <ProjectVersion>0.0.0.5</ProjectVersion>
     <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
     <Placeholder>ZigaLibs_Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -79,9 +79,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Aliases\T_VarSize.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
@@ -180,6 +177,18 @@
     <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\General\Variable extensions\BoolEx.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable extensions\ST_Value.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable extensions\ST_VarInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable extensions\T_VarSize.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -264,6 +273,9 @@
     <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_BoolEx_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
@@ -276,17 +288,16 @@
     <Folder Include="SOURCE\Errors\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />
+    <Folder Include="SOURCE\General\Variable extensions" />
     <Folder Include="SOURCE\Logger" />
     <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
-    <Folder Include="SOURCE\Aliases" />
     <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\Beckhoff" />
     <Folder Include="SOURCE\DataType" />
     <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
-    <Folder Include="SOURCE\PID" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />
@@ -315,61 +326,9 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_UPPER_BOUND</Key>
-          <Value>15</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_EXP</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_ADDRESS</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_COMMENT</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_OUTSTRING</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_SHOW_VALID_ITEMS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Parameters>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSES</Key>
-          <Value>50</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSEDEVICES</Key>
-          <Value>16</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXCPUCOUNT</Key>
-          <Value>64</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCHARACTERS</Key>
-          <Value>16#FFFFFFF0</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXFILESONDONGLE</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCSVFIELDVALUESIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-      </Parameters>
       <Namespace>Tc2_Utilities</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
@@ -378,44 +337,6 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>100</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITBUFFERSIZE</Key>
-          <Value>65535</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>2000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
-          <Value>TIME#0ms</Value>
-        </Parameter>
-      </Parameters>
       <Condition>
       </Condition>
       <Namespace>TcUnit</Namespace>

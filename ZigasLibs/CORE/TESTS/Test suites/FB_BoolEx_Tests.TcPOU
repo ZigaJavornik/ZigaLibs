@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_BoolEx_Tests" Id="{09485ab3-4b93-07ad-1012-1a667ed13167}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_BoolEx_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_boolVariable	: BOOL;
+	_intVariable	: INT;
+	_boolEx			: BoolEx := (variable := _boolVariable);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_BooleanTrue_ExpectTrueAfterElapsedTime();
+Test02_BooleanFalse_ExpectTrueAfterElapsedTime();
+Test03_RisingAndFallingEdge_ExpectPulses();
+Test04_GetAndSetValue();
+Test05_Toggle_ExpectValueInverts();
+Test06_PulseWithInterval_100ms_ExpectValueChangeEvery100ms();
+Test07_Set_ExpectTrue();
+Test08_Reset_ExpectFalse();]]></ST>
+    </Implementation>
+    <Method Name="Test01_BooleanTrue_ExpectTrueAfterElapsedTime" Id="{a000213c-a6ab-09eb-0229-a2cee99e18ab}">
+      <Declaration><![CDATA[METHOD Test01_BooleanTrue_ExpectTrueAfterElapsedTime
+VAR_INPUT
+		
+END_VAR
+VAR_INST
+	boolEx				: BoolEx := (variable := _boolVariable);
+	conditionTrueTimer	: Tc2_Standard.TON;
+END_VAR
+
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_BooleanTrue_ExpectTrueAfterElapsedTime');
+
+conditionTrueTimer();
+IF NOT conditionTrueTimer.Q THEN
+	_boolVariable := TRUE;
+	conditionTrueTimer(IN := TRUE, PT := T#20MS);
+	AssertFalse(
+		Condition := boolEx.HasBeenTrueForAtLeast(T#20MS),
+		Message := 'HasBeenTrueForAtLeast returned TRUE before elapsed time.');
+ELSE
+	AssertTrue(
+		Condition := boolEx.HasBeenTrueForAtLeast(T#20MS),
+		Message := 'HasBeenTrueForAtLeast returned FALSE after elapsed time.');
+		TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_BooleanFalse_ExpectTrueAfterElapsedTime" Id="{e50d1abb-40ac-02cf-2ce1-2a9eb5585f4d}">
+      <Declaration><![CDATA[METHOD Test02_BooleanFalse_ExpectTrueAfterElapsedTime : BOOL
+VAR_INST
+	boolEx			: BoolEx := (variable := _boolVariable);
+	conditionTimer	: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_BooleanFalse_ExpectTrueAfterElapsedTime');
+IF TcUnit.IS_TEST_FINISHED('Test01_BooleanTrue_ExpectTrueAfterElapsedTime') THEN
+	_boolVariable := FALSE;
+	conditionTimer();
+	IF NOT conditionTimer.Q THEN
+		conditionTimer(IN := TRUE, PT := T#20MS);
+		AssertFalse(
+			Condition := boolEx.HasBeenFalseForAtLeast(T#20MS),
+			Message := 'HasBeenFalseForAtLeast returned TRUE before elapsed time.');
+	ELSE
+		AssertTrue(
+			Condition := boolEx.HasBeenFalseForAtLeast(T#20MS),
+			Message := 'HasBeenFalseForAtLeast returned FALSE after elapsed time.');
+			TcUnit.TEST_FINISHED();
+	END_IF
+END_IF 
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_RisingAndFallingEdge_ExpectPulses" Id="{7a9ddb0b-ecba-0a5a-1541-2d3d83b81244}">
+      <Declaration><![CDATA[METHOD Test03_RisingAndFallingEdge_ExpectPulses
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	boolEx : BoolEx := (variable := _boolVariable);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_RisingAndFallingEdge_ExpectPulses');
+
+
+IF TcUnit.IS_TEST_FINISHED('Test02_BooleanFalse_ExpectTrueAfterElapsedTime') THEN
+	_boolVariable := FALSE;
+	AssertFalse(
+		Condition := boolEx.HasRisingEdge,
+		Message := 'When value has not changed, the HasRisingEdge should be false');
+	AssertFalse(
+		Condition := boolEx.HasFallingEdge,
+		Message := 'When value has not changed, the HasFallingEdge should be false');
+	_boolVariable := TRUE;	
+	AssertTrue(
+		Condition := boolEx.HasRisingEdge,
+		Message := 'When value has changed from FALSE to TRUE, the HasRisingEdge should be TRUE');
+	AssertFalse(
+		Condition := boolEx.HasFallingEdge,
+		Message := 'When value has changed to TRUE, the HasFallingEdge should be false');
+	_boolVariable := FALSE;
+	AssertTrue(
+		Condition := boolEx.HasFallingEdge,
+		Message := 'When value has changed from TRUE to FALSE, the HasFallingEdge should be TRUE');
+	AssertFalse(
+		Condition := boolEx.HasRisingEdge,
+		Message := 'When value has not changed, the HasRisingEdge should be false');
+	AssertFalse(
+		Condition := boolEx.HasFallingEdge,
+		Message := 'When value has not changed, the HasRisingEdge should be false');	
+	TcUnit.TEST_FINISHED();
+	
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_GetAndSetValue" Id="{ba7554f2-8a4d-0536-086d-e6b7718d408e}">
+      <Declaration><![CDATA[METHOD Test04_GetAndSetValue
+VAR_INPUT
+END_VAR
+VAR_INST
+	boolEx	: BoolEx := (variable := _boolVariable);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_GetAndSetValue');
+IF TcUnit.IS_TEST_FINISHED('Test03_RisingAndFallingEdge_ExpectPulses') THEN
+	_boolVariable := FALSE;
+	boolEx.Value := TRUE;	
+	AssertTrue(
+		Condition := _boolVariable,
+		Message := 'Setting value to TRUE failed');
+		
+	boolEx.Value := FALSE;
+	AssertFalse(
+		Condition := _boolVariable,
+		Message := 'Setting value to FALSE failed');
+		
+	AssertEquals_BOOL(
+		Actual := boolEx.Value,
+		Expected := _boolVariable,
+		Message := 'Value returned incorrect result.');
+		
+	_boolVariable := TRUE;
+	AssertEquals_BOOL(
+		Actual := boolEx.Value,
+		Expected := _boolVariable,
+		Message := 'Value returned incorrect result.');
+	
+	TcUnit.TEST_FINISHED();
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_Toggle_ExpectValueInverts" Id="{d2de0225-6199-0a95-06b0-d46e3b43bc47}">
+      <Declaration><![CDATA[METHOD Test05_Toggle_ExpectValueInverts
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_Toggle_ExpectValueInverts');
+IF TcUnit.IS_TEST_FINISHED('Test04_GetAndSetValue') THEN
+	_boolEx.Value := FALSE;
+	AssertFalse(
+		Condition := _boolEx.Value,
+		Message := 'Expected value to be false.');
+		
+	_boolEx.Toggle();
+	AssertTrue(
+		Condition := _boolEx.Value,
+		Message := 'Toggle to TRUE failed');
+		
+	_boolEx.Toggle();
+	AssertFalse(
+		Condition := _boolEx.Value,
+		Message := 'Toggle to FALSE failed');	
+	TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_PulseWithInterval_100ms_ExpectValueChangeEvery100ms" Id="{c454bcc9-0a3a-02dc-3ad1-28f80ce9a432}">
+      <Declaration><![CDATA[METHOD Test06_PulseWithInterval_100ms_ExpectValueChangeEvery100ms
+VAR_INPUT
+END_VAR
+VAR_INST
+	timerOn		: Tc2_Standard.TON;
+	timerOff	: Tc2_Standard.TON;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_PulseWithInterval_100ms_ExpectValueChangeEvery100ms');
+IF TcUnit.IS_TEST_FINISHED('Test05_Toggle_ExpectValueInverts') THEN
+	_boolEx.Value := FALSE;
+	_boolEx.PulseWithInterval(durationOn := T#100MS, durationOff := T#50MS);
+	timerOn(IN := TRUE, PT := T#100MS);
+	IF NOT timerOn.Q THEN
+		AssertTrue(
+			Condition := _boolEx.Value,
+			Message := 'Value should be TRUE until the durationOn expires.');
+	ELSE
+		timerOff(IN := TRUE, PT := T#50MS);
+		IF timeroff.Q THEN
+			AssertTrue(
+				Condition := _boolEx.Value,
+				Message := 'Value should be TRUE after the durationOff expires.');
+			TcUnit.TEST_FINISHED();
+			RETURN;
+		END_IF
+		AssertFalse(
+			Condition := _boolEx.Value,
+			Message := 'Value should be FALSE after durationOn expires.');
+
+	END_IF
+	TcUnit.TEST_FINISHED();
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_Set_ExpectTrue" Id="{d386b2a1-5cda-0d73-1fed-c6297e5eb7e0}">
+      <Declaration><![CDATA[METHOD Test07_Set_ExpectTrue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_Set_ExpectTrue');
+
+IF TcUnit.IS_TEST_FINISHED('Test06_PulseWithInterval_100ms_ExpectValueChangeEvery100ms') THEN 
+	_boolEx.Value := FALSE;
+	_boolEx.Set();
+	AssertTrue(
+		Condition := _boolEx.Value,
+		Message := 'Set() did not set the value to TRUE.');
+	TcUnit.TEST_FINISHED();
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_Reset_ExpectFalse" Id="{12da338a-7fd1-0641-20dc-7ddcd7371164}">
+      <Declaration><![CDATA[METHOD Test08_Reset_ExpectFalse
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test08_Reset_ExpectFalse');
+
+IF TcUnit.IS_TEST_FINISHED('Test07_Set_ExpectTrue') THEN 
+	_boolEx.Value := TRUE;
+	_boolEx.Reset();
+	AssertFalse(
+		Condition := _boolEx.Value,
+		Message := 'Reset() did not set the value to FALSE.');
+	TcUnit.TEST_FINISHED();
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

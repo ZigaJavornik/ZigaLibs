@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="PRG_TESTS" Id="{dcd11036-52e9-4f92-9371-f8c187305968}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
@@ -15,6 +15,7 @@ VAR
 	StringBuilderBaseTest			: FB_StringBuilder_Tests;
 	HasTaskInfoTests				: FB_HasTaskInfo_Tests;
 	AlarmManagerTests				: FB_AlarmManager_Tests;
+	BoolExTests						: FB_BoolEx_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>
