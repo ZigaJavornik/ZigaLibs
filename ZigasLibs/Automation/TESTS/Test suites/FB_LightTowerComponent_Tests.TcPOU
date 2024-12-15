@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_LightTowerComponent_Tests" Id="{d730fdac-a82d-014c-34ad-463aa6395209}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LightTowerComponent_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	componentItem	: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_AllFunctionalityTests();]]></ST>
+    </Implementation>
+    <Method Name="Test01_AllFunctionalityTests" Id="{a0beeec2-3445-0515-3ad9-48d21260790b}">
+      <Declaration><![CDATA[METHOD Test01_AllFunctionalityTests 
+VAR_INST
+	timer	 		: Tc2_Standard.TON;
+	timerOff		: Tc2_Standard.TON;
+	component		: FB_LightTowerComponent := (component := componentItem);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_AllFunctionalityTests');
+component();
+component.Activate();
+AssertTrue(Condition := componentItem, Message := 'component activation failed.');
+component.Deactivate();
+component.PulseWithInterval(DurationOn := T#100MS, DurationOff := T#100MS);
+IF timer.ET = T#0S AND timerOff.ET = T#0S THEN
+	AssertTrue(Condition := componentItem, Message := 'Component should immediately activate after setting pulse interval.');
+END_IF
+
+timer(IN := TRUE, PT := T#100MS);
+IF timer.Q THEN
+	timerOff(In := TRUE);
+	AssertFalse(Condition := componentItem, Message := 'Component should be deactivated when duration on is elapsed.');
+
+END_IF
+
+timerOff();
+IF timerOff.Q THEN
+	AssertTrue(Condition := componentItem, Message := 'Component should be activated when duration off is elapsed.');
+	TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

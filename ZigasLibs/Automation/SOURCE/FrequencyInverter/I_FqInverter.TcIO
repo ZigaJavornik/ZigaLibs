@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_FqInverter" Id="{b1c4f6f6-8e2b-0921-3261-b57a89fe3d27}">
+    <Declaration><![CDATA[INTERFACE I_FqInverter
+]]></Declaration>
+    <Property Name="Enabled" Id="{d7728750-c2da-0213-3925-f14b14a5a487}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets whether or not the unit is enabled.
+PROPERTY Enabled : BOOL]]></Declaration>
+      <Get Name="Get" Id="{7cdb49a0-e4fa-0cc3-1b74-9efb0001c835}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{4beb76bc-7bdc-0137-176d-7cd9dea9df4b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Error" Id="{e6b505a7-bf69-0ad2-25c9-2ad6a227f214}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Returns TRUE if an error is active
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{42d33958-a5f3-02eb-08c4-b46a5f6baa74}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Frequency" Id="{043edf5b-0497-0e31-1764-701c7ee7e6cc}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Provides access to frequncy setpoint and actual value
+PROPERTY Frequency : REFERENCE TO ZigaLibs_Core.ST_Value]]></Declaration>
+      <Get Name="Get" Id="{e6b13c1a-b2b9-000e-14fd-1ed95e8bcfda}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{4b55e9b3-9fd7-0733-3121-76a82aad9f31}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MaxFrequency" Id="{283db6f3-7fe0-06f3-3983-a789dff20282}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the maximum frequency.
+PROPERTY MaxFrequency : REAL]]></Declaration>
+      <Get Name="Get" Id="{af3c8603-dbed-022f-34b6-300fb0ce5eb7}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{28c2ab9e-844f-0c80-027d-56dd0f190a5d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="Reset" Id="{2fa4d692-78c4-0948-16b2-dca5c7a51a5c}">
+      <Declaration><![CDATA[// If an error is active, it will be reset.
+METHOD Reset
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

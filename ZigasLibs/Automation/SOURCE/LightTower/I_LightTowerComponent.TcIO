@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_LightTowerComponent" Id="{bc41dd1f-d349-051a-1eec-8006b1e366d0}">
+    <Declaration><![CDATA[INTERFACE I_LightTowerComponent
+]]></Declaration>
+    <Method Name="Activate" Id="{1ad27726-45d6-07ee-2f42-79a634ec1abf}">
+      <Declaration><![CDATA[// Sets the component state to TRUE.
+METHOD Activate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Deactivate" Id="{8a75ec4a-781b-011a-0a50-d3a598bef27a}">
+      <Declaration><![CDATA[// Sets the component state to FALSE.
+METHOD Deactivate
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="PulseWithInterval" Id="{4e473a09-f3d1-049e-0a52-d0f47ca47dd1}">
+      <Declaration><![CDATA[METHOD PulseWithInterval
+VAR_INPUT
+	DurationOn	: TIME;
+	DurationOff	: TIME;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

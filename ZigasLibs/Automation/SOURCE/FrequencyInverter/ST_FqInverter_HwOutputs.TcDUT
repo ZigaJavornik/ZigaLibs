@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_FqInverter_HwOutputs" Id="{b3c8e085-012f-0264-341d-200472ebc9be}">
+    <Declaration><![CDATA[TYPE ST_FqInverter_HwOutputs :
+STRUCT
+	Setpoint	: INT;	// Setpoint value
+	Enable		: BOOL;	// Enable operation
+	Reset		: BOOL;	// Reset error
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_LightTower" Id="{d87fa2f2-d844-0bb2-2300-f6f03f34bfc0}">
+    <Declaration><![CDATA[INTERFACE I_LightTower
+]]></Declaration>
+    <Property Name="Buzzer" Id="{772d8f2c-e516-05be-3194-96f6b72a7410}">
+      <Declaration><![CDATA[// Provides access to buzzer control
+PROPERTY Buzzer : I_LightTowerComponent]]></Declaration>
+      <Get Name="Get" Id="{68936fea-43c9-024f-0f21-30e47ad6f507}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="GreenLight" Id="{73752581-7c45-0126-38c6-c3c8f5bcdd08}">
+      <Declaration><![CDATA[// Provides access to green light control
+PROPERTY GreenLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{1e68cb49-791e-0f38-2aa7-0f4b99164dfa}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="OrangeLight" Id="{fb0decf6-5d47-05d9-199f-fb2daa1a6f2b}">
+      <Declaration><![CDATA[// Provides access to orange light control
+PROPERTY OrangeLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{51c5362f-5f4b-0131-0536-04c9c1c2d11f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="RedLight" Id="{39555fe8-b5f7-0a54-00b0-d0aa8d72a53a}">
+      <Declaration><![CDATA[// Provides access to red light control
+PROPERTY RedLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{fe772568-97e8-06f1-0425-ec3df04f54c2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

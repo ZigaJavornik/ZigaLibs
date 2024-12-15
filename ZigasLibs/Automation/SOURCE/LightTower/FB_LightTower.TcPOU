@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_LightTower" Id="{2aa5c0fe-288c-021a-344a-5de69043f865}" SpecialFunc="None">
+    <Declaration><![CDATA[// Provides acces to control the light tower components.
+FUNCTION_BLOCK FB_LightTower IMPLEMENTS I_LightTower
+VAR	
+	_redLightControl	: FB_LightTowerComponent;
+	_orangeLightControl	: FB_LightTowerComponent;
+	_greenLightControl	: FB_LightTowerComponent;
+	_buzzerControl		: FB_LightTowerComponent;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Buzzer" Id="{e33b7cba-2bc8-0643-1307-5a8e790efeb7}">
+      <Declaration><![CDATA[// Provides access to buzzer control
+PROPERTY Buzzer : I_LightTowerComponent]]></Declaration>
+      <Get Name="Get" Id="{edd7e434-922b-0df7-39cf-b632861ed427}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Buzzer := _buzzerControl;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{c858ca70-8eb9-05d6-173f-4f292f018c10}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	greenLight		: REFERENCE TO BOOL;
+	orangeLight		: REFERENCE TO BOOL;
+	redLight		: REFERENCE TO BOOL;
+	buzzer			: REFERENCE TO BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_greenLightControl.component REF= greenLight;
+_orangeLightControl.component REF= orangeLight;
+_redLightControl.component REF= redLight;
+_buzzerControl.component REF= buzzer;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="GreenLight" Id="{b161a0d5-bd03-048e-065b-667b4d9b4d62}">
+      <Declaration><![CDATA[// Provides access to green light control
+PROPERTY GreenLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{c4ab8bb9-d90e-0b24-0ae2-e6069310aea1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[GreenLight := _greenLightControl;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="OrangeLight" Id="{cd4856d1-6573-03a9-3545-bf7e18ec6b50}">
+      <Declaration><![CDATA[// Provides access to orange light control
+PROPERTY OrangeLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{865508a8-68cf-0f4f-37ff-53b5491578fa}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[OrangeLight := _orangeLightControl;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="RedLight" Id="{6e098946-9465-0e06-1c58-4ad20da546be}">
+      <Declaration><![CDATA[// Provides access to red light control
+PROPERTY RedLight : I_LightTowerComponent
+]]></Declaration>
+      <Get Name="Get" Id="{bbd7d391-ef85-0fa2-273d-a83b936b6c8d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RedLight := _redLightControl;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FqInverter_IO_Tests" Id="{403a309e-d4ea-0caf-277c-66a8cfa1247c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FqInverter_IO_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_fqInvert : FB_FqInverter_IO(
+		setpointMaximumValue	:= 32767,	//INT; Maximum setpoint value, ging to terminal   
+		feedbackMaximumValue	:= 32767,	//INT; Maximum feedback value coming from terminal
+		maximumFrequency		:= 50.0);	//REAL; Maximum frequency     
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_WhenDisabledOutputIsAlwaysFalse();
+Test02_Enable_ExpectOutputAccordingToMaxFrequencySetting();
+Test03_SetNegativeMaximumFrequency_ExpectOutputAlways0();
+Test04_SetNegativeSetpoint_ExpectOutputAlways0();
+Test05_DeviationIsOnlyActiveWhenEnabled();
+Test06_InverterErrorActive_ExpectOutputAlways0();
+Test07_Reset_ExpectPulseOnOutput_WhenNoErrorExpectNothing();]]></ST>
+    </Implementation>
+    <Method Name="Test01_WhenDisabledOutputIsAlwaysFalse" Id="{2fc8ffd4-6a71-0718-34f6-7d11337ef1d9}">
+      <Declaration><![CDATA[METHOD Test01_WhenDisabledOutputIsAlwaysFalse
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_WhenDisabledOutputIsAlwaysFalse') THEN
+	_fqInvert.Enabled := FALSE;
+	_fqInvert.Frequency.Setpoint := 0;
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'When disabled and setpoint is 0, expected output is also 0.');
+		
+	_fqInvert.Frequency.Setpoint := 100;
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'When disabled and setpoint is 50, expected output is also 0.');
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Enable_ExpectOutputAccordingToMaxFrequencySetting" Id="{03dab71c-955f-0658-149b-2d7a15ce19d6}">
+      <Declaration><![CDATA[METHOD Test02_Enable_ExpectOutputAccordingToMaxFrequencySetting
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_Enable_ExpectOutputAccordingToMaxFrequencySetting') THEN
+	_fqInvert.Enabled := TRUE;
+	_fqInvert.Frequency.Setpoint := 0;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'When enabled and setpoint is 0, expected output is also 0.');
+
+	
+	_fqInvert.Frequency.Setpoint := 10;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 6553,
+		Message := 'When enabled, max fq 50 and setpoint is 10, expected output is also 20% of 32767.');
+		
+	TcUnit.WRITE_PROTECTED_INT(
+		Ptr := ADR(_fqInvert.Inputs.Feedback),
+	 	Value := _fqInvert.Outputs.Setpoint);
+	_fqInvert();
+	AssertEquals_REAL(
+		Actual := _fqInvert.Frequency.Actual,
+		Expected := _fqInvert.Frequency.Setpoint,
+		Delta := 0.001,
+		Message := 'Setpoint and feedback should be the same (test sets input value to same as output) - scaling incorrect');
+		
+	_fqInvert.Frequency.Setpoint := 50;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 32767,
+		Message := 'When enabled, max fq 50 and setpoint is 50, expected output is 32767.');
+		
+	_fqInvert.Frequency.Setpoint := 100;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 32767,
+		Message := 'When enabled, max fq 50 and setpoint is 100, expected output is 32767.');
+		
+	TcUnit.WRITE_PROTECTED_INT(
+		Ptr := ADR(_fqInvert.Inputs.Feedback),
+	 	Value := _fqInvert.Outputs.Setpoint);	
+	_fqInvert();
+	AssertEquals_REAL(
+		Actual := _fqInvert.Frequency.Actual,
+		Expected := 50.0,
+		Delta := 0.001,
+		Message := 'When setting frequency to 100 and max is 50, expected actual frequency is 50 (test sets input)');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_SetNegativeMaximumFrequency_ExpectOutputAlways0" Id="{019a97aa-3b6e-0002-3032-4a8fc38b8ecf}">
+      <Declaration><![CDATA[METHOD Test03_SetNegativeMaximumFrequency_ExpectOutputAlways0
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_SetNegativeMaximumFrequency_ExpectOutputAlways0') THEN
+	_fqInvert.MaxFrequency := -50;
+	_fqInvert.Frequency.Setpoint := 50;
+	_fqInvert.Enabled := TRUE;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'Negative maximum frequency should be treated as an error, no output should be generated.');
+	
+	_fqInvert.Enabled := FALSE;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'Negative maximum frequency while disabled should be treated as an error, no output should be generated.');
+		
+	_fqInvert.Enabled := TRUE;	
+	_fqInvert.MaxFrequency := -300;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'Negative maximum frequency should be treated as an error, no output should be generated.');
+	TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_SetNegativeSetpoint_ExpectOutputAlways0" Id="{8669f199-e1a0-0423-203c-8715cae510d4}">
+      <Declaration><![CDATA[METHOD Test04_SetNegativeSetpoint_ExpectOutputAlways0
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_SetNegativeSetpoint_ExpectOutputAlways0') THEN
+	_fqInvert.MaxFrequency := 100;
+	_fqInvert.Frequency.Setpoint := -100;
+	_fqInvert.Enabled := TRUE;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'Negative setpoint should be treated as an error, no output should be generated.');
+	TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_DeviationIsOnlyActiveWhenEnabled" Id="{e0a008b0-c712-0172-1657-2b6c4788784f}">
+      <Declaration><![CDATA[METHOD Test05_DeviationIsOnlyActiveWhenEnabled
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_DeviationIsOnlyActiveWhenEnabled') THEN
+	TcUnit.WRITE_PROTECTED_INT(Ptr := ADR(_fqInvert.Inputs.Feedback), 0);
+	_fqInvert.Enabled := FALSE;
+	_fqInvert.SetpointDeviation.ActivationDelay := T#0S;
+	_fqInvert.SetpointDeviation.MaxDeviation := 0;
+	_fqInvert.Frequency.Setpoint := 50;
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.SetpointDeviation.Status = ZigaLibs_ProcessControl.E_ValueDeviationStatus.OK,
+		Message := 'When inverter is disabled, setpoint deviation should be inactive and should report OK.');
+		
+	_fqInvert.Enabled := TRUE;
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.SetpointDeviation.Status = ZigaLibs_ProcessControl.E_ValueDeviationStatus.NOK,
+		Message := 'When inverter is enabled, setpoint deviation should be active and should report NOK if deviation is active.');
+	
+	_fqInvert.Frequency.Setpoint := 0;	
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.SetpointDeviation.Status = ZigaLibs_ProcessControl.E_ValueDeviationStatus.OK,
+		Message := 'When inverter is enabled, if there is no deviation, status should be OK.');
+	
+	_fqInvert.SetpointDeviation.MaxDeviation := 0.01; 
+	_fqInvert.Frequency.Setpoint := 0.02;	
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.SetpointDeviation.Status = ZigaLibs_ProcessControl.E_ValueDeviationStatus.NOK,
+		Message := 'When inverter is enabled, if there is deviation, status should be NOK.');
+		
+	_fqInvert.Enabled := FALSE;
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.SetpointDeviation.Status = ZigaLibs_ProcessControl.E_ValueDeviationStatus.OK,
+		Message := 'When inverter is disabled, if there was deviation, it should be cleared since inverter is disabled.');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_InverterErrorActive_ExpectOutputAlways0" Id="{953f8a05-b31d-0ca8-0ff3-b70c4757bc2c}">
+      <Declaration><![CDATA[METHOD Test06_InverterErrorActive_ExpectOutputAlways0
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test06_InverterErrorActive_ExpectOutputAlways0') THEN
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr := ADR(_fqInvert.Inputs.Error), TRUE);
+	_fqInvert.Frequency.Setpoint := 50;
+	_fqInvert.Enabled := FALSE;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'If an error is active and disabled, output should always be 0.');
+		
+	_fqInvert.Enabled := TRUE;
+	_fqInvert();
+	AssertEquals_INT(
+		Actual := _fqInvert.Outputs.Setpoint,
+		Expected := 0,
+		Message := 'If an error is active and enabled, output should always be 0.');
+		
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr := ADR(_fqInvert.Inputs.Error), FALSE);	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_Reset_ExpectPulseOnOutput_WhenNoErrorExpectNothing" Id="{28aa4869-d4d4-0175-1745-35c67357c1d7}">
+      <Declaration><![CDATA[METHOD Test07_Reset_ExpectPulseOnOutput_WhenNoErrorExpectNothing
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test07_Reset_ExpectPulseOnOutput_WhenNoErrorExpectNothing') THEN
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr := ADR(_fqInvert.Inputs.Error), Value := TRUE);
+	_fqInvert.Reset();
+	_fqInvert();
+	AssertTrue(
+		Condition := _fqInvert.Outputs.Reset,
+		Message := 'If an error is active, calling .Reset() should generate a pulse');		
+	
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr := ADR(_fqInvert.Inputs.Error), Value := FALSE);
+	_fqInvert.Reset();
+	_fqInvert();
+	AssertFalse(
+		Condition := _fqInvert.Outputs.Reset,
+		Message := 'If an error is not active, calling .Reset() should not generate a pulse');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestXX_Template" Id="{ff93b2b9-cda6-014c-0556-4083ec71622b}">
+      <Declaration><![CDATA[METHOD TestXX_Template
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('TestXX_Template') THEN
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

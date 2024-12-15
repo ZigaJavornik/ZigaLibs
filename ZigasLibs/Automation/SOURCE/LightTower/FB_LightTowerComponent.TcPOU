@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_LightTowerComponent" Id="{7b461e9f-dfac-0508-356d-25a618b18337}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LightTowerComponent IMPLEMENTS I_LightTowerComponent
+VAR_INPUT
+	component : REFERENCE TO BOOL;
+END_VAR
+VAR
+	_component	: ZigaLibs_Core.BoolEx := (variable := component);
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_component(variable := component);]]></ST>
+    </Implementation>
+    <Method Name="Activate" Id="{5642512f-163a-04c4-3e94-b83af68483c6}">
+      <Declaration><![CDATA[METHOD Activate
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(component) THEN
+	RETURN;
+END_IF
+_component.Set();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Deactivate" Id="{c1bb4cd8-3ce5-01d0-1d8f-99f05e888c8c}">
+      <Declaration><![CDATA[METHOD Deactivate
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(component) THEN
+	RETURN;
+END_IF
+_component.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{5d69ceb3-5a24-071f-2087-acc3b0b0fc39}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="PulseWithInterval" Id="{f2a2e1f2-763f-0c67-28c6-1c86551f52f9}">
+      <Declaration><![CDATA[METHOD PulseWithInterval
+VAR_INPUT
+	DurationOn	: TIME;
+	DurationOff	: TIME;
+END_VAR
+VAR_INST
+	timerOn		: Tc2_Standard.TON;
+	timerOff	: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(component) THEN
+	RETURN;
+END_IF
+_component.PulseWithInterval(DurationOn,DurationOff);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

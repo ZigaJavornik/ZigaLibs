@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_FqInverterState" Id="{f05ed465-757d-070d-1b89-908f7a1a7525}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_FqInverterState :
+(
+	DISABLED,
+	ENABLED,
+	RUNNING,
+	ERROR,
+	RESET
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
