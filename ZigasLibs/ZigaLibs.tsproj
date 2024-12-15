@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.62" TcVersionFixed="true">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.64" TcVersionFixed="true">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{18071995-0000-0000-0000-000000000041}" TcBaseType="true" HideSubItems="true" CName="AmsNetId">AMSNETID</Name>
@@ -101,6 +101,56 @@
 				<BitOffs>40</BitOffs>
 			</SubItem>
 		</DataType>
+		<DataType>
+			<Name GUID="{345E10D4-3A81-41E4-FE0E-953F41585CB1}" AutoDeleteType="true">ST_FqInverter_HwInputs</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>Feedback</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<Comment><![CDATA[ Actual feedback value]]></Comment>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Error</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Error indication]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Ready</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Ready indication]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>24</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{9BBEE701-B568-CD68-9E5B-4D59AB5A29A1}" AutoDeleteType="true">ST_FqInverter_HwOutputs</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>Setpoint</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<Comment><![CDATA[ Setpoint value]]></Comment>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Enable</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Enable operation]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Reset</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Reset error]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>24</BitOffs>
+			</SubItem>
+		</DataType>
 	</DataTypes>
 	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" ShowHideConfigurations="#x3c7">
 		<System>
@@ -135,7 +185,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{A0E54A75-E232-AF84-93DD-46B6788602B5}">
+				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{E7BF9E15-F296-71A4-6EB5-0A0E003412E0}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -215,7 +265,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{4927EDAF-8EC8-00C5-E010-7FC6FC374A0E}">
+				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{8E7C0AA4-BE90-7CBE-3D47-2537CB13BC16}">
 					<Name>ProcessControl Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -234,7 +284,7 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{5838C952-CE95-F52C-BA50-CA7399E036ED}">
 					<Name>Aventics Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
@@ -273,6 +323,40 @@
 					</Contexts>
 					<TaskPouOids>
 						<TaskPouOid Prio="21" OTCID="#x08502181"/>
+					</TaskPouOids>
+				</Instance>
+			</Project>
+			<Project GUID="{AC9B46A7-3A36-406C-BD71-1933E401CC75}" Name="Automation" PrjFilePath="Automation\Automation.plcproj" TmcFilePath="Automation\Automation.tmc" ReloadTmc="true" AmsPort="858" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x085021c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Automation\Automation.tmc" TmcHash="{4539C776-BE96-3A85-E45D-D85A370BE07C}">
+					<Name>Automation Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>TestsTask Inputs</Name>
+						<Var>
+							<Name>PRG_TESTS.FqInverter_IOTests._fqInvert.Inputs</Name>
+							<Type GUID="{345E10D4-3A81-41E4-FE0E-953F41585CB1}">ST_FqInverter_HwInputs</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>TestsTask Outputs</Name>
+						<Var>
+							<Name>PRG_TESTS.FqInverter_IOTests._fqInvert.Outputs</Name>
+							<Type GUID="{9BBEE701-B568-CD68-9E5B-4D59AB5A29A1}">ST_FqInverter_HwOutputs</Type>
+						</Var>
+					</Vars>
+					<Contexts>
+						<Context>
+							<Id>0</Id>
+							<Name>TestsTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010030</OTCID>
+							</ManualConfig>
+							<Priority>20</Priority>
+							<CycleTime>10000000</CycleTime>
+						</Context>
+					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="20" OTCID="#x085021c1"/>
 					</TaskPouOids>
 				</Instance>
 			</Project>

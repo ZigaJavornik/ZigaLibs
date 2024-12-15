@@ -65,24 +65,6 @@
     <Description>A library containing objects for process control.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\Automation\LightTower\Components\FB_LightTowerComponent.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Automation\LightTower\Components\FB_PwmLightTowerComponent.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Automation\LightTower\Components\I_LightTowerComponent.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Automation\LightTower\Components\I_PwmLightTowerComponent.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Automation\LightTower\FB_LightTower.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Automation\LightTower\I_LightTower.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\PID\POUs\FB_Controller_P.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -99,6 +81,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Value deviation\I_ValueDeviation.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Value deviation\I_ValueDeviationLimited.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Value deviation\ST_Value.TcDUT">
@@ -123,9 +108,6 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\Automation" />
-    <Folder Include="SOURCE\Automation\LightTower" />
-    <Folder Include="SOURCE\Automation\LightTower\Components" />
     <Folder Include="SOURCE\PID" />
     <Folder Include="SOURCE\PID\POUs" />
     <Folder Include="SOURCE\Value deviation" />
@@ -140,61 +122,9 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_UPPER_BOUND</Key>
-          <Value>15</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_EXP</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_ADDRESS</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_COMMENT</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_OUTSTRING</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_SHOW_VALID_ITEMS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Parameters>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSES</Key>
-          <Value>50</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSEDEVICES</Key>
-          <Value>16</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXCPUCOUNT</Key>
-          <Value>64</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCHARACTERS</Key>
-          <Value>16#FFFFFFF0</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXFILESONDONGLE</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCSVFIELDVALUESIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-      </Parameters>
       <Namespace>Tc2_Utilities</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
@@ -204,44 +134,6 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>100</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITBUFFERSIZE</Key>
-          <Value>65535</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>2000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
-          <Value>TIME#0ms</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs_Core">
       <DefaultResolution>Core, * (Ziga)</DefaultResolution>

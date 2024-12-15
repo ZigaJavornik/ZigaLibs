@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_ValueDeviationLimited" Id="{74d874eb-3985-0701-0aaa-9006c1ea4e23}">
+    <Declaration><![CDATA[INTERFACE I_ValueDeviationLimited
+]]></Declaration>
+    <Property Name="ActivationDelay" Id="{6cde609b-6483-0f7e-2418-a4e8988346c8}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the activation delay, before the deviation error is activated
+PROPERTY ActivationDelay : TIME]]></Declaration>
+      <Get Name="Get" Id="{7b69c608-af78-0596-0ff3-b209aabc7e89}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{a9db1e01-6b0b-09ab-2dd9-c0d126ebcb9c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Enable" Id="{cdd81f2e-f02d-0a1c-3a63-3d0f08203bf8}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{66d95846-6f4a-0ead-15f4-36825208aaf6}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{73a868f9-3377-0778-117c-1a15590ce107}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MaxDeviation" Id="{9fac01cf-ce34-0ab8-26d7-8ef175f4b975}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY MaxDeviation : REAL]]></Declaration>
+      <Get Name="Get" Id="{2c56080e-1ecf-0f1a-14f2-ecd7cdc6128f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{6bfcd3c6-8de1-03a4-0fd5-82145a7e0f77}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Status" Id="{60eb8bdb-398e-0a99-1c9b-5fa267ac1dfa}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY Status : E_ValueDeviationStatus]]></Declaration>
+      <Get Name="Get" Id="{02ae5f25-93a9-0f78-3241-0b335bcf0312}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>
