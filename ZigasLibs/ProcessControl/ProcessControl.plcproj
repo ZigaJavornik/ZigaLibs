@@ -18,12 +18,12 @@
     <Title>ProcessControler</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
     <LibraryCategories>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         <Version>1.0.0.0</Version>
         <DefaultName>ZigaLibs</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -31,7 +31,7 @@
         </ParentCategory>
         <DefaultName>Core</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -39,25 +39,33 @@
         </ParentCategory>
         <DefaultName>Comm</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
-        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+      <LibraryCategory>
+        <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
           <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         </ParentCategory>
-        <DefaultName>Vendors</DefaultName>
+        <DefaultName>Automation</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
-          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
         </ParentCategory>
         <DefaultName>ProcessControl</DefaultName>
       </LibraryCategory>
+      <LibraryCategory>
+        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
+        </ParentCategory>
+        <DefaultName>Vendors</DefaultName>
+      </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id xmlns="">{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
+      <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
     </SelectedLibraryCategories>
     <DefaultNamespace>ZigaLibs_ProcessControl</DefaultNamespace>
     <Placeholder>ZigaLibs_ProcessControl</Placeholder>

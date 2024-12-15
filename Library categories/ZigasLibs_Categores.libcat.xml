@@ -25,28 +25,8 @@
         </ParentCategory>
         <DefaultName>Comm</DefaultName>
     </LibraryCategory>
-
-<!-- ZigaLibs_Vendors -->
-    <LibraryCategory>
-        <Id>1a128fe5-11ee-46c6-b73b-9a7a3430ed3e</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-            <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
-        </ParentCategory>
-        <DefaultName>Vendors</DefaultName>
-    </LibraryCategory>
-
-<!-- ZigaLibs_ProcessControl -->
-    <LibraryCategory>
-        <Id>f5684ae4-96d7-4e8a-b902-f1a8abbb21da</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-            <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
-        </ParentCategory>
-        <DefaultName>ProcessControl</DefaultName>
-    </LibraryCategory>
-
-<!-- ZigaLibs_Automation -->
+    
+    <!-- ZigaLibs_Automation -->
     <LibraryCategory>
         <Id>705dce42-c122-4e5b-bb05-3765cab42425</Id>
         <Version>1.0.0.0</Version>
@@ -55,4 +35,23 @@
         </ParentCategory>
         <DefaultName>Automation</DefaultName>
     </LibraryCategory>
+        <!-- ZigaLibs_ProcessControl -->
+        <LibraryCategory>
+            <Id>f5684ae4-96d7-4e8a-b902-f1a8abbb21da</Id>
+            <Version>1.0.0.0</Version>
+            <ParentCategory>
+                <Id>705dce42-c122-4e5b-bb05-3765cab42425</Id>
+            </ParentCategory>
+            <DefaultName>ProcessControl</DefaultName>
+        </LibraryCategory>
+            <!-- ZigaLibs_Vendors -->
+            <LibraryCategory>
+                <Id>1a128fe5-11ee-46c6-b73b-9a7a3430ed3e</Id>
+                <Version>1.0.0.0</Version>
+                <ParentCategory>
+                    <Id>705dce42-c122-4e5b-bb05-3765cab42425</Id>
+                </ParentCategory>
+                <DefaultName>Vendors</DefaultName>
+        </LibraryCategory>
+
 </LibraryCategories>
