@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_FqInverter" Id="{8ac5ae1f-a7c6-0657-11d5-92ba898f9fcc}" SpecialFunc="None">
+    <Declaration><![CDATA[// A simple frequency invert trough IO signals function block. 
+// The difference to FB_FqInverter_IO is that this block uses reference assignment instead of having IO signals generated trough process image
+// Constructor parameters:
+(*
+	(setpointMaximumValue	:= 32767,	//INT; Maximum setpoint value, ging to terminal   
+	feedbackMaximumValue	:= 32767,	//INT; Maximum feedback value coming from terminal
+	maximumFrequency		:= 50.0,	//REAL; Maximum frequency
+	// Output signals, going to inverter
+	enableSignal	:= , // REFERENCE TO BOOL;
+	resetSignal		:= , // REFERENCE TO BOOL;
+	setpointSignal	:= , // REFERENCE TO INT;
+	// Input signals, coming from inverter
+	errorSignal		:= , // REFERENCE TO BOOL;
+	feedbackSignal	:= ); // REFERENCE TO INT;
+*)
+FUNCTION_BLOCK FB_FqInverter IMPLEMENTS I_FqInverter
+VAR
+	_enabled				: BOOL;
+	_error					: BOOL;
+	_frequency				: ZigaLibs_Core.ST_Value;
+	_maxFrequency			: REAL;
+	_state					: E_FqInverterState;
+	_setpointMaximumValue	: INT;
+	_feedbackMaximumValue	: INT;
+	_setpointDeviation			: ZigaLibs_ProcessControl.FB_ValueDeviation;
+	
+	// Output signals, going to inverter
+	_enableSignal	: REFERENCE TO BOOL;
+	_resetSignal	: REFERENCE TO BOOL;
+	_setpointSignal	: REFERENCE TO INT;
+	// Input signals, coming from inverter
+	_errorSignal	: REFERENCE TO BOOL;
+	_feedbackSignal	: REFERENCE TO INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_frequency.Actual := CalculateFeedback();
+
+IF _errorSignal AND _state <> E_FqInverterState.RESET THEN
+	_State := E_FqInverterState.ERROR;
+END_IF
+
+
+CASE _state OF
+	E_FqInverterState.DISABLED:
+		_enableSignal := FALSE;
+		_setpointSignal := 0;
+		IF _enabled THEN
+			_state := E_FqInverterState.ENABLED;
+		END_IF
+		
+	E_FqInverterState.ENABLED:
+		IF NOT _enabled THEN
+			_state := E_FqInverterState.DISABLED;
+		ELSE
+			_enableSignal := TRUE;
+			_setpointSignal := CalculateSetpoint();
+		END_IF
+		
+	E_FqInverterState.ERROR:
+		_error := TRUE;
+		_enableSignal := FALSE;
+		_setpointSignal := 0;
+		
+	E_FqInverterState.RESET:
+		_error := FALSE;
+		_enableSignal := FALSE;
+		_setpointSignal := 0;
+		_resetSignal := FALSE;
+		IF NOT _errorSignal THEN
+			_state := E_FqInverterState.DISABLED;
+		END_IF
+END_CASE
+
+_setpointDeviation.Enable := _state = E_FqInverterState.ENABLED;
+_setpointDeviation.Value.Actual := _frequency.Actual;
+_setpointDeviation.Value.Setpoint := _frequency.Setpoint;
+_setpointDeviation();]]></ST>
+    </Implementation>
+    <Method Name="CalculateFeedback" Id="{a3c8b622-2fcc-097e-2b5b-26c6b169f925}">
+      <Declaration><![CDATA[METHOD PRIVATE CalculateFeedback : REAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Invalid parameter setting.
+IF _feedbackMaximumValue <= 0 OR _maxFrequency < 0 THEN
+	CalculateFeedback := 0;
+ELSE
+	CalculateFeedback := _maxFrequency * (INT_TO_REAL(_feedbackSignal) / INT_TO_REAL(_feedbackMaximumValue));
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CalculateSetpoint" Id="{a6394449-c29f-0db4-1100-b66a5d73e7e1}">
+      <Declaration><![CDATA[METHOD PRIVATE CalculateSetpoint : INT
+VAR_INPUT
+END_VAR
+VAR
+	validatedFrequencySetpoint	: REAL;
+	frequencySetpointFraction	: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Limit setpoint between 0 and max
+validatedFrequencySetpoint := MAX(0, MIN(_maxFrequency, _frequency.Setpoint));
+
+// If max frequency is 0, invalid setting
+IF _maxFrequency <= 0 THEN
+	frequencySetpointFraction := 0;
+ELSE
+	frequencySetpointFraction := validatedFrequencySetpoint / _maxFrequency;
+END_IF
+
+CalculateSetpoint := REAL_TO_INT(frequencySetpointFraction * _setpointMaximumValue);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Enabled" Id="{ae7f0c48-29bf-0708-2149-918dad8c45e2}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets or sets whether or not the unit is enabled.*)
+PROPERTY Enabled : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{b3eefac0-58be-04e1-0fb8-615b4ae961e6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enabled := _enabled;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{6389c6a4-33f2-0168-0e61-3f7855671c64}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_enabled := Enabled;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Error" Id="{f9b839ec-a2ce-034f-05ea-0add66a6b78a}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Returns TRUE if an error is active*)
+PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{c0a42248-7b98-012f-021f-416c485807bd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{72f7d5fa-d81b-04ee-3d21-d926d1b9f92e}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	setpointMaximumValue	: INT;	// Maximum setpoint value, ging to terminal
+	feedbackMaximumValue	: INT;	// Maximum feedback value coming from terminal
+	maximumFrequency		: REAL;	// Maximum frequency
+	// Output signals, going to inverter
+	enableSignal	: REFERENCE TO BOOL;
+	resetSignal		: REFERENCE TO BOOL;
+	setpointSignal	: REFERENCE TO INT;
+	// Input signals, coming from inverter
+	errorSignal		: REFERENCE TO BOOL;
+	feedbackSignal	: REFERENCE TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_setpointMaximumValue := setpointMaximumValue;
+_feedbackMaximumValue := feedbackMaximumValue;
+_maxFrequency := maximumFrequency;
+_enableSignal REF= enableSignal;
+_resetSignal REF= resetSignal;
+_setpointSignal REF= setpointSignal;
+_errorSignal REF= errorSignal;
+_feedbackSignal REF= feedbackSignal;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Frequency" Id="{95cd1b83-c98f-005b-2144-fbeaf895a8f6}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Provides access to frequncy setpoint and actual value*)
+PROPERTY Frequency : REFERENCE TO ZigaLibs_Core.ST_Value
+]]></Declaration>
+      <Get Name="Get" Id="{3350c8f6-2864-024c-1555-3ac369e2b92d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Frequency REF= _frequency;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{cc569f31-212e-0945-346c-dafcb0b6f06a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_frequency := Frequency;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="MaxFrequency" Id="{a40c2992-6a35-0530-22b5-91364780788f}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets or sets the maximum frequency.*)
+PROPERTY MaxFrequency : REAL
+]]></Declaration>
+      <Get Name="Get" Id="{4a8f2982-81f4-0965-1930-1e9f5b8e2fe6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MaxFrequency := _maxFrequency;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{e0708e5c-95c8-0c7b-254b-2c38652a275b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_maxFrequency := MaxFrequency;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Reset" Id="{ec24239f-dee6-0517-3225-b1ddaf830be7}">
+      <Declaration><![CDATA[(* If an error is active, it will be reset.*)
+METHOD Reset
+VAR_INST
+	resetTimer	: Tc2_Standard.TON := (PT := T#200MS);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _errorSignal THEN
+	resetTimer(IN := NOT resetTimer.Q, PT := T#100MS);
+	_resetSignal := NOT resetTimer.Q;
+ELSE
+	resetTimer(IN := FALSE);
+	_resetSignal := FALSE;
+	_state := E_FqInverterState.RESET;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="SetpointDeviation" Id="{6de9d19b-5699-075e-1716-167a69242060}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY SetpointDeviation : ZigaLibs_ProcessControl.I_ValueDeviationLimited]]></Declaration>
+      <Get Name="Get" Id="{9802f9e7-a6b0-0ff4-26c3-27f670c99f1d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SetpointDeviation := _setpointDeviation;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
