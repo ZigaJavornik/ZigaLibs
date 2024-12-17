@@ -118,6 +118,7 @@ VAR_INPUT
 	Id		: T_ArrayIndexer;			// Alarm ID
 	Name	: Tc2_System.T_MaxString;	// Alarm name
 	Message	: Tc2_System.T_MaxString;	// Message when the alarm occurrs
+	Level	: E_AlarmLevel;				// Alarm level
 END_VAR
 ]]></Declaration>
     </Method>

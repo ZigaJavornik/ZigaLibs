@@ -75,6 +75,9 @@
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Alarms\E_AlarmLevel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
       <SubType>Code</SubType>
     </Compile>
