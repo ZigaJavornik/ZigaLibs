@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="BoolEx" Id="{e16f035f-de4a-05ce-3edf-c1aea1b027f7}" SpecialFunc="None">
     <Declaration><![CDATA[// An extension to boolean variable
 FUNCTION_BLOCK BoolEx
@@ -30,7 +30,11 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[timer(IN := NOT variable, PT := duration);
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+timer(IN := NOT variable, PT := duration);
 HasBeenFalseForAtLeast := timer.Q;]]></ST>
       </Implementation>
     </Method>
@@ -47,7 +51,11 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[timer(IN := variable, PT := duration);
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+timer(IN := variable, PT := duration);
 HasBeenTrueForAtLeast := timer.Q;]]></ST>
       </Implementation>
     </Method>
@@ -77,6 +85,12 @@ HasRisingEdge := _risingEdge.Q;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="IsVarValid" Id="{b5d743c1-4a3f-082c-1ad1-8a88fdeb83ec}">
+      <Declaration><![CDATA[METHOD PROTECTED IsVarValid : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsVarValid := __ISVALIDREF(variable);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="PulseWithInterval" Id="{16a3e5a8-7a82-0130-31b7-e9815c485869}">
       <Declaration><![CDATA[// Pulses the virabile (TRUE/FALSE) with the provided on and off duration
 METHOD PulseWithInterval
@@ -90,7 +104,11 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[timerOn(IN := NOT timerOff.Q, PT := durationOn);
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+timerOn(IN := NOT timerOff.Q, PT := durationOn);
 timerOff(IN := timerOn.Q, PT := durationOff);
 variable := NOT timerOn.Q;]]></ST>
       </Implementation>
@@ -102,7 +120,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[variable := FALSE;]]></ST>
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+variable := FALSE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="Set" Id="{5da580fe-66db-042d-38d2-af36d54fe097}">
@@ -112,14 +134,22 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[variable := TRUE;]]></ST>
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+variable := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="Toggle" Id="{fc834b26-c74d-0276-1ba4-60a1811f6b0f}">
       <Declaration><![CDATA[METHOD Toggle
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[variable := NOT variable;]]></ST>
+        <ST><![CDATA[IF NOT IsVarValid() THEN
+	RETURN;
+END_IF
+
+variable := NOT variable;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Value" Id="{e8534c06-1c85-0aa5-2589-ee1686ad4122}">
