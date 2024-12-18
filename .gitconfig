@@ -1,0 +1,24 @@
+#TCMODIFIED
+[diff]
+	tool = TcProjectCompare
+[difftool "TcProjectCompare"]
+  path = C:/TwinCAT/3.1/Components/TcProjectCompare/TcProjectCompare.exe
+	cmd = \"C:/TwinCAT/3.1/Components/TcProjectCompare/TcProjectCompare.exe\" //filel \"$LOCAL\" //filer \"$REMOTE\" //dl  \"$LOCAL\" //dr \"$REMOTE\"  //sc
+	keepbackup = false
+	trustExitCode = true
+[merge]
+	tool = TcProjectCompare
+[mergetool "TcProjectCompare"]
+  path = C:/TwinCAT/3.1/Components/TcProjectCompare/TcProjectCompare.exe
+	cmd = \"C:/TwinCAT/3.1/Components/TcProjectCompare/TcProjectCompare.exe\" //filel \"$LOCAL\" //filer \"$REMOTE\" //filem \"$MERGED\" //dl  \\\"Head: \"$LOCAL\"\\\" //dm  \\\"Result: \"$MERGED\"\\\" //dr \"$REMOTE\" //sc
+	keepbackup = false
+	trustExitCode = true
+#TCMODIFIED
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = ZigaJavornik
+	email = zigajav@gmail.com

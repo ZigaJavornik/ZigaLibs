@@ -12,7 +12,8 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="ConvertBeckhoffEcStateToCustomStruct" Id="{902d4751-1f99-088d-257f-ddcd12172007}">
-      <Declaration><![CDATA[METHOD ConvertBeckhoffEcStateToCustomStruct : ST_EcSlaveState
+      <Declaration><![CDATA[// Converts Tc2_EtherCAT.ST_EcSlaveState to ZigaLibs_Core.ST_EcSlaveState and returns the converted structure.
+METHOD ConvertBeckhoffEcStateToCustomStruct : ST_EcSlaveState
 VAR_INPUT
 	ecSlaveState	: Tc2_EtherCAT.ST_EcSlaveState;
 END_VAR
