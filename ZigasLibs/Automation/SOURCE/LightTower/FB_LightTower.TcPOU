@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_LightTower" Id="{2aa5c0fe-288c-021a-344a-5de69043f865}" SpecialFunc="None">
-    <Declaration><![CDATA[// Provides acces to control the light tower components.
+    <Declaration><![CDATA[(* Provides acces to control the light tower components.
+Constructor template as follows:
+	(greenLight		:= ,// REFERENCE TO BOOL;
+	orangeLight		:= ,// REFERENCE TO BOOL;
+	redLight		:= ,// REFERENCE TO BOOL;
+	buzzer			:= );// REFERENCE TO BOOL;
+*)
+
 FUNCTION_BLOCK FB_LightTower IMPLEMENTS I_LightTower
 VAR	
 	_redLightControl	: FB_LightTowerComponent;
@@ -11,7 +18,10 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[_redLightControl();
+_orangeLightControl();
+_greenLightControl();
+_buzzerControl();]]></ST>
     </Implementation>
     <Property Name="Buzzer" Id="{e33b7cba-2bc8-0643-1307-5a8e790efeb7}">
       <Declaration><![CDATA[// Provides access to buzzer control
