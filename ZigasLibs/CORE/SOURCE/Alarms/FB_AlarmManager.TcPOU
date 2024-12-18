@@ -378,6 +378,9 @@ END_VAR
       <Declaration><![CDATA[METHOD INTERNAL RaiseAlarm
 VAR_INPUT
 	alarm : REFERENCE TO ST_AlarmInfo;
+END_VAR
+VAR
+	message	: Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF alarm.IsActive OR NOT _enable THEN
@@ -396,15 +399,21 @@ MEMSET(
 alarm.TimeInfos.Activated := _dateTime.CurrentTime.Value;
 
 IF __ISVALIDREF(_logger) THEN
-	_logger.LogWarning(_stringBuilder
-		.Reset()
+	message := _stringBuilder.Reset()
 		.AddString('Alarm ')
 		.AddWithDblQuotationMarks(str := alarm.Name)
 		.AddString(' with Id ')
 		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
 		.AddString(' actived! ')
 		.AddString(alarm.Message)
-		.Create());
+		.Create();
+		
+	CASE alarm.Level OF 
+		E_AlarmLevel.NONE: _logger.LogDefault(message := message);
+		E_AlarmLevel.INFO: _logger.LogInfo(message := message);
+		E_AlarmLevel.WARNING: _logger.LogWarning(message := message);
+		E_AlarmLevel.ERROR: _logger.LogError(message := message);
+	END_CASE
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -471,6 +480,8 @@ VAR_INPUT
 	Name	: Tc2_System.T_MaxString;
 	(* Message when the alarm occurrs*)
 	Message	: Tc2_System.T_MaxString;
+	(* Alarm level *)
+	Level	: E_AlarmLevel;				
 END_VAR
 
 VAR
@@ -491,6 +502,7 @@ refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCoun
 refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Name := Name;
 refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Message := Message;
 refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].IsAcknowledged := TRUE;
+refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Level := Level;
 _registeredAlarmsCount := _registeredAlarmsCount + 1;
 RegisterAlarm := TRUE;
 

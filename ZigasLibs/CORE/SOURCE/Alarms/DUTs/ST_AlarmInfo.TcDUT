@@ -8,6 +8,7 @@ STRUCT
 	Message			: Tc2_System.T_MaxString;
 	IsActive		: BOOL;
 	IsAcknowledged	: BOOL;
+	Level			: E_AlarmLevel;
 	TimeInfos		: ST_AlarmTimeInfos;
 END_STRUCT
 END_TYPE

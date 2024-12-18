@@ -56,7 +56,8 @@ FOR addAlarmIndex := 1 TO 100 BY 1 DO
 		Condition := _alarmManager.RegisterAlarm(
 			Id := addAlarmIndex,
 			Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
-			Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+			Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex)),
+			Level := E_AlarmLevel.INFO),
 		Message := 'Registering alarm failed.');
 		
 	AssertEquals_UDINT(
@@ -74,14 +75,16 @@ AssertFalse(
 	Condition := _alarmManager.RegisterAlarm(
 		Id := 22,
 		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex - 1)),
-		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex - 1))),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex - 1)),
+		Level := E_AlarmLevel.INFO),
 	Message := 'Registering an alarm with an existing id should not be possible.');
 
 AssertTrue(
 	Condition := _alarmManager.RegisterAlarm(
 		Id := addAlarmIndex + 1,
 		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
-		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex)),
+		Level := E_AlarmLevel.INFO),
 	Message := 'Registering alarm failed.');
 AssertEquals_UDINT(
 	Actual := _alarmManager.RegisteredAlarmsCount,
@@ -92,7 +95,8 @@ AssertFalse(
 	Condition := _alarmManager.RegisterAlarm(
 		Id := 333,
 		Message := CONCAT('Alarm message', TO_STRING(addAlarmIndex)),
-		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex))),
+		Name := CONCAT('Alarm name', TO_STRING(addAlarmIndex)),
+		Level := E_AlarmLevel.INFO),
 	Message := 'Registering an alarm when the entire buffer has been filled should not be possible.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
@@ -308,7 +312,7 @@ END_VAR]]></Declaration>
 
 fbAlarmManager(refAlarms := arrAlarms);
 FOR n := 1 TO 40 BY 1 DO
-	fbAlarmManager.RegisterAlarm(n, TO_STRING(n), '');
+	fbAlarmManager.RegisterAlarm(n, TO_STRING(n), '', E_AlarmLevel.INFO);
 	fbAlarmManager.RaiseAlarmById(n);
 END_FOR
 
@@ -447,7 +451,7 @@ END_VAR]]></Declaration>
 fbAlarmManager(refAlarms := alarms);
 
 FOR i := 1 TO 11 BY 1 DO
-	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '');
+	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '',E_AlarmLevel.INFO);
 	AssertEquals_STRING(
 		Actual := fbAlarmManager.GetAlarmByName(sName := TO_STRING(i)).Name,
 		Expected := TO_STRING(i),
@@ -472,7 +476,7 @@ END_VAR]]></Declaration>
 fbAlarmManager(refAlarms := alarms);
 
 FOR i := 1 TO 11 BY 1 DO
-	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '');
+	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '', E_AlarmLevel.INFO);
 	AssertEquals_DINT(
 		Actual := fbAlarmManager.GetAlarmById(i).Id,
 		Expected := i,
@@ -602,7 +606,7 @@ END_VAR
 fbAlarmManager(refAlarms := alarms);
 IF fbAlarmManager._dateTime.CurrentTime.IsValid THEN
 	FOR i := 0 TO 10 BY 1 DO
-		fbAlarmManager.RegisterAlarm(i+1,'','');
+		fbAlarmManager.RegisterAlarm(i+1,'','', E_AlarmLevel.INFO);
 		AssertEquals(
 			Expected := stTimeStruct,
 			Actual := fbAlarmManager.GetAlarmById(i).TimeInfos.Acknowledged,
