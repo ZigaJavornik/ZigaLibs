@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_EthercatSlaveInfo" Id="{1916f9c1-2a0c-08c4-2df0-fd0376aeda09}">
+    <Declaration><![CDATA[TYPE ST_EthercatSlaveInfo :
+STRUCT
+	Name		: Tc2_System.T_MaxString;	// Slave name
+	IsIgnored	: BOOL;	// True if slave is ignored with the scan
+	State		: ST_EcSlaveState;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

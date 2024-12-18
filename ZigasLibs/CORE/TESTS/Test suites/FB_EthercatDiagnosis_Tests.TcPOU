@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_EthercatDiagnosis_Tests" Id="{55c42e5d-7300-0186-1d25-58395b174cad}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EthercatDiagnosis_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_IgnoreSlave_ExpectSlaveInProperty();]]></ST>
+    </Implementation>
+    <Method Name="Test01_IgnoreSlave_ExpectSlaveInProperty" Id="{da54b7c8-4561-073e-3ab0-287330e9e336}">
+      <Declaration><![CDATA[METHOD Test01_IgnoreSlave_ExpectSlaveInProperty
+VAR_INPUT
+END_VAR
+VAR_INST
+	diag			: FB_EthercatDiagnosis;
+	ignoredSlave	: Tc2_System.T_MaxString := 'I feel ignored...';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_IgnoreSlave_ExpectSlaveInProperty');
+
+diag.IgnoreSlave(ignoredSlave);
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(diag.IgnoredSlaves ,ignoredSlave),
+	Message := 'After adding slave to ignore list, it did not appear in the .IgnoredSlaves property.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

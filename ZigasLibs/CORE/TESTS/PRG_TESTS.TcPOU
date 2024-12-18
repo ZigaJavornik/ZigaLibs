@@ -17,6 +17,7 @@ VAR
 	AlarmManagerTests				: FB_AlarmManager_Tests;
 	BoolExTests						: FB_BoolEx_Tests;
 	EthercatHelperTests				: FB_EthercatHelper_Tests;
+	EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

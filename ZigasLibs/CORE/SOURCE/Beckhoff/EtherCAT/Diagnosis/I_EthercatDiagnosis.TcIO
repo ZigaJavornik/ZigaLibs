@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_EthercatDiagnosis" Id="{d480e5e2-796f-08c1-2d19-d9a6c0bc5913}">
+    <Declaration><![CDATA[INTERFACE I_EthercatDiagnosis
+]]></Declaration>
+    <Property Name="Error" Id="{f399f9f6-8a08-073f-31f0-8365faa01d27}">
+      <Declaration><![CDATA[// Returns TRUE if an error occurred while performing the scan
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{a941b2de-91a5-010d-1db1-4ae5fbd09652}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IgnoredSlaves" Id="{582d728a-e4e9-0e33-0a0a-9fcf28b5ab19}">
+      <Declaration><![CDATA[// Gets an array of slaves that have been added to ignore list
+PROPERTY IgnoredSlaves : REFERENCE TO ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{45efd74d-e3fb-019d-01b6-950e28d5a59b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="IgnoreSlave" Id="{c0321ce0-8f3e-07e8-07fb-26820061999e}">
+      <Declaration><![CDATA[// Adds the provided slave to a collection of slaves that will not trigger an error
+// Example is slaves that are used on hot connect groups, and when connected should not cause an error. 
+METHOD IgnoreSlave
+VAR_INPUT
+	Name	: Tc2_System.T_MaxString;	// Slave to be ignored if not found or an error is reported back
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="MissingSlaves" Id="{7e540e48-5049-0c72-3a49-fcb1f0bb50f7}">
+      <Declaration><![CDATA[// Returns an array of misisng slave names
+PROPERTY MissingSlaves : REFERENCE TO ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo]]></Declaration>
+      <Get Name="Get" Id="{4de20bd8-7b08-0c86-2e67-b4b28be93441}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{88f8dd25-48b3-0f1f-2e79-150016b986a8}">
+      <Declaration><![CDATA[// Reset the internal state machine of diagnosis and clearing any errors, if active.
+METHOD Reset
+]]></Declaration>
+    </Method>
+    <Method Name="Scan" Id="{29224ec9-7a49-0d17-189f-59b55a857805}">
+      <Declaration><![CDATA[// Performs a scan on the EtherCAT master, returns TRUE when done.
+METHOD Scan	: BOOL
+]]></Declaration>
+    </Method>
+    <Property Name="Status" Id="{fdb7ce96-3bdc-0157-2dc9-65994c8f356b}">
+      <Declaration><![CDATA[// Gets the status based on last executed scan.
+PROPERTY Status : E_EthercatDiagnosisStatus]]></Declaration>
+      <Get Name="Get" Id="{9c14e4cf-7339-05e1-29be-64502dd2c40a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

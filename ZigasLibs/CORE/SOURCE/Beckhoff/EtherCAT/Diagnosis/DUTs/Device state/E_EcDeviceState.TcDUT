@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_EcDeviceState" Id="{c0dc2972-0a5b-09c0-2220-76cde8a07bdc}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_EcDeviceState :
+(
+	INIT		:= Tc2_EtherCAT.EC_DEVICE_STATE_INIT,
+	PREOP		:= Tc2_EtherCAT.EC_DEVICE_STATE_PREOP,
+	BOOTSTRAP	:= Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP,
+	SAFEOP		:= Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP,
+	OP			:= Tc2_EtherCAT.EC_DEVICE_STATE_OP
+)BYTE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

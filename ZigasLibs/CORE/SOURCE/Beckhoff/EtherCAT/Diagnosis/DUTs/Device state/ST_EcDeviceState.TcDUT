@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_EcDeviceState" Id="{9484c51e-6fa2-04b8-3cbc-7f594b32da04}">
+    <Declaration><![CDATA[TYPE ST_EcDeviceState :
+STRUCT
+	State		: E_EcDeviceState;	// Device state
+	StateExtras	: E_EcDeviceStateExtras;	// Extra information
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

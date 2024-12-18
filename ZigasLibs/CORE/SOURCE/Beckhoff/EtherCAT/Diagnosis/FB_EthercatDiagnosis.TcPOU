@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_EthercatDiagnosis" Id="{d33d9930-1765-079a-0b49-5f9960a4f2c8}" SpecialFunc="None">
+    <Declaration><![CDATA[// Function block for EtherCAT diagnosis, looking at the live slave status and reporting back any missing slaves
+FUNCTION_BLOCK FB_EthercatDiagnosis IMPLEMENTS I_EthercatDiagnosis
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_ignoredSlaves	: ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString;
+	_missingSlaves	: ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo;
+	_status			: E_EthercatDiagnosisStatus;
+	_diagState		: E_EthercatDiagnosisState;
+	_error			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Error" Id="{1a117e49-56cb-0db0-21bf-7dac4cb52b82}">
+      <Declaration><![CDATA[(* Returns TRUE if an error occurred while performing the scan*)
+PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{bf5b31d6-0b1e-07d4-0303-b362fefe22c3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IgnoredSlaves" Id="{7608aaf4-3882-00d8-3f05-e8979b4d9600}">
+      <Declaration><![CDATA[(* Gets an array of slaves that have been added to ignore list*)
+PROPERTY IgnoredSlaves : REFERENCE TO ARRAY [0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString
+]]></Declaration>
+      <Get Name="Get" Id="{d9f798d0-70ea-0ed9-1bdf-e9314e35a335}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IgnoredSlaves REF= _ignoredSlaves;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="IgnoreSlave" Id="{42e52eac-60a4-0644-0bec-21bc97b0aa37}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+(* Adds the provided slave to a collection of slaves that will not trigger an error
+ Example is slaves that are used on hot connect groups, and when connected should not cause an error. *)
+METHOD IgnoreSlave
+VAR_INPUT
+	(* Slave to be ignored if not found or an error is reported back*)
+	name	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF name <> '' THEN
+	ArrayHelper.InsertAtStart(arr := _ignoredSlaves, item := name);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="MissingSlaves" Id="{b9124aca-eb02-0db3-3a56-63cbcceec356}">
+      <Declaration><![CDATA[(* Returns an array of misisng slave names*)
+PROPERTY MissingSlaves : REFERENCE TO ARRAY [0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo
+]]></Declaration>
+      <Get Name="Get" Id="{db0dc646-f425-0868-2335-14eb7fab3a9f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MissingSlaves REF= _missingSlaves;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{e45d3a11-10d1-08d9-0251-149985ae99a8}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+(* Reset the internal state machine of diagnosis and clearing any errors, if active.*)
+METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Scan" Id="{1773b74b-9cad-0138-159e-d607f5ab1800}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+(* Performs a scan on the EtherCAT master, returns TRUE when done.*)
+METHOD Scan : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Status" Id="{9ef092d6-a48c-0b76-06a8-af961e0ab80a}">
+      <Declaration><![CDATA[(* Gets the status based on last executed scan.*)
+PROPERTY Status : E_EthercatDiagnosisStatus
+]]></Declaration>
+      <Get Name="Get" Id="{b87cbbbe-6dbc-0b5d-16fb-f14ec525857d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Status := _status;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

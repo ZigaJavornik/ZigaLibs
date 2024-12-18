@@ -17,8 +17,8 @@ VAR_INPUT
 	ecSlaveState	: Tc2_EtherCAT.ST_EcSlaveState;
 END_VAR
 VAR CONSTANT
-	SLAVE_STATE_MASK 		: BYTE := 16#F0;
-	SLAVE_STATE_EXTRAS_MASK : BYTE := 16#0F;
+	SLAVE_STATE_MASK 		: BYTE := 16#0F;
+	SLAVE_STATE_EXTRAS_MASK : BYTE := 16#F0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[ConvertBeckhoffEcStateToCustomStruct.Device.State := SLAVE_STATE_MASK AND ecSlaveState.deviceState;

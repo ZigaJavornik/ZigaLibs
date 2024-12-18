@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_EthercatHelper_Tests" Id="{f2d9e642-32b0-0d0d-01bc-376608312ce7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EthercatHelper_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_ConvertBeckhoffEcState_ProvideAllOptions_ExpectCorrectResults();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ConvertBeckhoffEcState_ProvideAllOptions_ExpectCorrectResults" Id="{58aa2422-baa4-00e6-3b55-5a635f2b9be0}">
+      <Declaration><![CDATA[METHOD Test01_ConvertBeckhoffEcState_ProvideAllOptions_ExpectCorrectResults
+VAR_INST
+	ecSlaveState		: Tc2_EtherCAT.ST_EcSlaveState;
+	helperEcSlaveState	: ST_EcSlaveState;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_ConvertBeckhoffEcState_ProvideAllOptions_ExpectCorrectResults');
+
+// Init
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_INIT;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_INIT, helperEcSlaveState.Device.State, 'Incorrect state for EC_DEVICE_STATE_INIT.');
+AssertEquals_BYTE(E_EcDeviceStateExtras.NOTHING, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_INIT - Extras NOTHING expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_INIT OR Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_INIT, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_INIT OR EC_DEVICE_STATE_INITCMD_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INIIT_CMD_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_INIT - Extras INIIT_CMD_ERROR expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_INIT OR Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_INIT, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_INIT OR EC_DEVICE_STATE_INVALID_VPRS');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INVALID_VPRS, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_INIT - Extras INVALID_VPRS expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_INIT OR Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_INIT, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_INIT OR EC_DEVICE_STATE_DISABLED');
+AssertEquals_BYTE(E_EcDeviceStateExtras.DISABLED, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_INIT - Extras DISABLED expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_INIT OR Tc2_EtherCAT.EC_DEVICE_STATE_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_INIT, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_INIT OR EC_DEVICE_STATE_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.STATE_MACHINE_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_INIT - Extras STATE_MACHINE_ERROR expected');
+	
+// Pre-op
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_PREOP;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_PREOP, helperEcSlaveState.Device.State, 'Incorrect state for EC_DEVICE_STATE_PREOP.');
+AssertEquals_BYTE(E_EcDeviceStateExtras.NOTHING, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_PREOP - Extras NOTHING expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_PREOP OR Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_PREOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_PREOP OR EC_DEVICE_STATE_INITCMD_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INIIT_CMD_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_PREOP - Extras INIIT_CMD_ERROR expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_PREOP OR Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_PREOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_PREOP OR EC_DEVICE_STATE_INVALID_VPRS');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INVALID_VPRS, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_PREOP - Extras INVALID_VPRS expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_PREOP OR Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_PREOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_PREOP OR EC_DEVICE_STATE_DISABLED');
+AssertEquals_BYTE(E_EcDeviceStateExtras.DISABLED, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_PREOP - Extras DISABLED expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_PREOP OR Tc2_EtherCAT.EC_DEVICE_STATE_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_PREOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_PREOP OR EC_DEVICE_STATE_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.STATE_MACHINE_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_PREOP - Extras STATE_MACHINE_ERROR expected');
+
+// Bootstrap
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP, helperEcSlaveState.Device.State, 'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP.');
+AssertEquals_BYTE(E_EcDeviceStateExtras.NOTHING, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_BOOTSTRAP - Extras NOTHING expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP OR Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP OR EC_DEVICE_STATE_INITCMD_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INIIT_CMD_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_BOOTSTRAP - Extras INIIT_CMD_ERROR expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP OR Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP OR EC_DEVICE_STATE_INVALID_VPRS');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INVALID_VPRS, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_BOOTSTRAP - Extras INVALID_VPRS expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP OR Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP OR EC_DEVICE_STATE_DISABLED');
+AssertEquals_BYTE(E_EcDeviceStateExtras.DISABLED, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_BOOTSTRAP - Extras DISABLED expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP OR Tc2_EtherCAT.EC_DEVICE_STATE_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_BOOTSTRAP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP OR EC_DEVICE_STATE_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.STATE_MACHINE_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_BOOTSTRAP - Extras STATE_MACHINE_ERROR expected');
+
+// Safeop
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP, helperEcSlaveState.Device.State, 'Incorrect state for EC_DEVICE_STATE_SAFEOP.');
+AssertEquals_BYTE(E_EcDeviceStateExtras.NOTHING, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_SAFEOP - Extras NOTHING expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP OR Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_BOOTSTRAP OR EC_DEVICE_STATE_INITCMD_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INIIT_CMD_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_SAFEOP - Extras INIIT_CMD_ERROR expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP OR Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_SAFEOP OR EC_DEVICE_STATE_INVALID_VPRS');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INVALID_VPRS, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_SAFEOP - Extras INVALID_VPRS expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP OR Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_SAFEOP OR EC_DEVICE_STATE_DISABLED');
+AssertEquals_BYTE(E_EcDeviceStateExtras.DISABLED, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_SAFEOP - Extras DISABLED expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP OR Tc2_EtherCAT.EC_DEVICE_STATE_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_SAFEOP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_SAFEOP OR EC_DEVICE_STATE_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.STATE_MACHINE_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_SAFEOP - Extras STATE_MACHINE_ERROR expected');
+
+// OP
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_OP;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_OP, helperEcSlaveState.Device.State, 'Incorrect state for EC_DEVICE_STATE_OP.');
+AssertEquals_BYTE(E_EcDeviceStateExtras.NOTHING, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_OP - Extras NOTHING expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_OP OR Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_OP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_OP OR EC_DEVICE_STATE_INITCMD_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INIIT_CMD_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_OP - Extras INIIT_CMD_ERROR expected');
+	
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_OP OR Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_OP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_OP OR EC_DEVICE_STATE_INVALID_VPRS');
+AssertEquals_BYTE(E_EcDeviceStateExtras.INVALID_VPRS, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_OP - Extras INVALID_VPRS expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_OP OR Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_OP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_OP OR EC_DEVICE_STATE_DISABLED');
+AssertEquals_BYTE(E_EcDeviceStateExtras.DISABLED, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_OP - Extras DISABLED expected');
+
+ecSlaveState.deviceState := Tc2_EtherCAT.EC_DEVICE_STATE_OP OR Tc2_EtherCAT.EC_DEVICE_STATE_ERROR;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_DEVICE_STATE_OP, helperEcSlaveState.Device.State,'Incorrect state for EC_DEVICE_STATE_OP OR EC_DEVICE_STATE_ERROR');
+AssertEquals_BYTE(E_EcDeviceStateExtras.STATE_MACHINE_ERROR, helperEcSlaveState.Device.StateExtras, 'EC_DEVICE_STATE_OP - Extras STATE_MACHINE_ERROR expected');
+
+// Link state
+
+//EC_LINK_STATE_OK
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_OK;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(Tc2_EtherCAT.EC_LINK_STATE_OK, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_OK');
+
+// EC_LINK_STATE_ADDITIONAL_LINK
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_ADDITIONAL_LINK;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.ADDITIONAL_LINK, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_ADDITIONAL_LINK');
+
+// EC_LINK_STATE_LINK_WITHOUT_COMM
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_LINK_WITHOUT_COMM;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.LINK_WITHOUT_COMM, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_LINK_WITHOUT_COMM');
+
+// EC_LINK_STATE_MISSING_LINK
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_MISSING_LINK;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.MISSING_LINK, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_MISSING_LINK');
+
+// EC_LINK_STATE_NOT_PRESENT
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_NOT_PRESENT;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.NOT_PRESENT, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_NOT_PRESENT');
+
+// EC_LINK_STATE_PORT_A
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_PORT_A;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.PORT_A, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_PORT_A');
+
+// EC_LINK_STATE_PORT_B
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_PORT_B;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.PORT_B, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_PORT_B');
+
+// EC_LINK_STATE_PORT_C
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_PORT_C;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.PORT_C, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_PORT_C');
+
+// EC_LINK_STATE_PORT_D
+ecSlaveState.linkState := Tc2_EtherCAT.EC_LINK_STATE_PORT_D;
+helperEcSlaveState := EthercatHelper.ConvertBeckhoffEcStateToCustomStruct(ecSlaveState);
+AssertEquals_BYTE(E_EcLinkState.PORT_D, helperEcSlaveState.Link, 'Invalid link state for EC_LINK_STATE_PORT_D');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -322,7 +322,7 @@ END_VAR
 isReference := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_REFERENCE);
 isPointer := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_POINTER);
 
-ValidateArrayVar := isArray OR isPointer or isReference;
+ValidateArrayVar := isArray OR isPointer OR isReference;
 ]]></ST>
       </Implementation>
     </Method>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_EcDeviceStateExtras" Id="{c4290445-10a7-0ea2-09fe-962fccf38542}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_EcDeviceStateExtras :
+(
+	NOTHING				:= 16#00,
+	STATE_MACHINE_ERROR := Tc2_EtherCAT.EC_DEVICE_STATE_ERROR,
+	INVALID_VPRS		:= Tc2_EtherCAT.EC_DEVICE_STATE_INVALID_VPRS,
+	INIIT_CMD_ERROR		:= Tc2_EtherCAT.EC_DEVICE_STATE_INITCMD_ERROR,
+	DISABLED			:= Tc2_EtherCAT.EC_DEVICE_STATE_DISABLED
+)BYTE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
