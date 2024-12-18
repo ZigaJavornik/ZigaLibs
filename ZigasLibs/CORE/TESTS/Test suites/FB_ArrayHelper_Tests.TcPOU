@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ArrayHelper_Tests" Id="{6e9b477f-91da-07b8-384b-0f33de518108}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ArrayHelper_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -16,7 +16,8 @@ Test05_InsertStruct();
 Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
 Test07_SetAtFirstEmptySlot();
 Test08_AllMethods_provideNonArrayVar_ExpectNothing();
-Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();]]></ST>
+Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();
+Test10_CheckIfArrayContainsItem();]]></ST>
     </Implementation>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
@@ -353,6 +354,54 @@ AssertEquals(
 	Expected := item, 
 	Message := 'Inserting at start for the second time - 2nd item is incorrect!');	
 
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test10_CheckIfArrayContainsItem" Id="{35878296-f39d-0da2-34a7-e3adc7bd6e85}">
+      <Declaration><![CDATA[METHOD Test10_CheckIfArrayContainsItem
+VAR_INST
+	arr		: ARRAY[0..10] OF STRING;
+	item	: STRING := 'mwah';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test10_CheckIfArrayContainsItem');
+
+ArrayHelper.Clear(arr);
+AssertFalse(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does not contain the item, method should return FALSE.');
+
+arr[0] := item;
+
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does contain the item on 0th index, method should return TRUE.');
+	
+arr[0] := '';
+arr[5] := item;
+
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does contain the item on 5th index, method should return TRUE.');
+	
+arr[5] := '';
+arr[10] := item;	
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does contain the item on 10th index, method should return TRUE.');
+
+arr[0] := 'lalala';
+arr[3] := 'aahah';
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does contain the item on 10th index, but also includes non empty elements before, method should return TRUE.');
+
+arr[2] := item;
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
+	Message := 'Array does contain the item on 2nd index, but also includes non empty elements before and after, method should return TRUE.');	
+	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>

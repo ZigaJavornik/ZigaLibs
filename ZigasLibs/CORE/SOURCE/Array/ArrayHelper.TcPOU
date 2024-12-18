@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="ArrayHelper" Id="{1d7a0d08-3c88-00ea-2870-5cdbd9795f9a}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
 // Provides array helper methods for easier work with arrays accross programming.
@@ -24,6 +24,51 @@ MEMSET(
 	destAddr := arr.pValue,
 	fillByte := 0,
 	n := DINT_TO_UDINT(arr.diSize));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DoesArrayContainItem" Id="{4bfa90e6-378d-00b9-19dc-21db7c691e2f}">
+      <Declaration><![CDATA[// Looks trough the array and returns TRUE if any element equals to the one provided.
+METHOD DoesArrayContainItem : BOOL
+VAR_INPUT
+	arr		: ANY;	// Array to be checked
+	item	: ANY;	// Item to be found in the array
+END_VAR
+
+VAR
+	itemCount	: T_ArrayIndexer;
+	currentItem	: T_ArrayIndexer;
+	cmpResult	: E_MemCmpResults;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateArrayVar(arr) THEN
+	RETURN;
+END_IF
+
+IF item.diSize = 0 OR_ELSE	// If item size is 0
+	(arr.diSize MOD item.diSize) <> 0 	// If incorrect item is provided (division will return non 0 remainder)
+THEN
+	RETURN;
+END_IF
+
+itemCount := arr.diSize/item.diSize;
+
+FOR currentItem := 0 TO itemCount - 1 BY 1 DO
+	cmpResult := Tc2_System.MEMCMP(
+		pBuf1 := arr.pValue + DINT_TO_DWORD(currentItem * item.diSize),
+		pBuf2 := item.pValue,
+		n := DINT_TO_UDINT(item.diSize));
+		
+	IF cmpResult = E_MemCmpResults.IDENTICAL THEN
+		DoesArrayContainItem := TRUE;
+		RETURN;
+	END_IF
+END_FOR
+
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="FindLastOccupiedItem" Id="{e804b769-2043-0cee-39f9-86bb16a4f8d7}">
