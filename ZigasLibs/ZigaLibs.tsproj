@@ -164,8 +164,8 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{75897D58-9D36-5C75-919A-AC6AF62FE54D}">
+			<Project Disabled="true" GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{21294C06-C427-03FA-E430-11D2243EDA8D}">
 					<Name>Logging Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -185,7 +185,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{3C94ABF4-A4DD-BBA4-DDA7-771AF3E3D70F}">
+				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{017492B8-99B6-DDDB-2333-8EAB33AC2777}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -204,8 +204,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{D8D56E18-B73C-8CB9-7D69-EFB263B7A6D9}">
+			<Project Disabled="true" GUID="{24CEA432-AEC0-4FCF-851E-A986E97DC45F}" Name="Bronkhorst" PrjFilePath="Bronkhorst\Bronkhorst.plcproj" TmcFilePath="Bronkhorst\Bronkhorst.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Bronkhorst\Bronkhorst.tmc" TmcHash="{C578313E-84FB-488D-B4F6-D3409E5F18D2}">
 					<Name>Bronkhorst Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -224,8 +224,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{750B25F5-4E54-95EA-9AA2-F38A087578D8}">
+			<Project Disabled="true" GUID="{96B22187-F6C8-4E38-AFC1-67F54757D996}" Name="Lauda" PrjFilePath="Lauda\Lauda.plcproj" TmcFilePath="Lauda\Lauda.tmc" ReloadTmc="true" AmsPort="854" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x085020c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Lauda\Lauda.tmc" TmcHash="{4CFC9065-C51C-A7E0-AE08-2EE73E731E5A}">
 					<Name>Lauda Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -244,8 +244,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502100" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcpIp\TcpIp.tmc" TmcHash="{E22862A8-1CCC-06C1-9FFF-7405E1E4F155}">
+			<Project Disabled="true" GUID="{AF58E887-5514-4CDE-89B6-CA58F29477CE}" Name="TcpIp" PrjFilePath="TcpIp\TcpIp.plcproj" TmcFilePath="TcpIp\TcpIp.tmc" ReloadTmc="true" AmsPort="855" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502100" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcpIp\TcpIp.tmc" TmcHash="{40702D88-BF45-BDAF-A3C5-654BCCB3C40E}">
 					<Name>TcpIp Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -264,8 +264,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{E4009F71-C7EC-CFB5-E30B-DFD6D9E1043F}">
+			<Project Disabled="true" GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{03AD81DA-AC24-0240-90F8-9D450618CE44}">
 					<Name>ProcessControl Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -284,8 +284,8 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{91EB65E6-D58A-ADBF-34AF-44AD4CAEC99E}">
+			<Project Disabled="true" GUID="{EA394E0C-4E49-46F1-8594-25AD7A194D07}" Name="Aventics" PrjFilePath="Aventics\Aventics.plcproj" TmcFilePath="Aventics\Aventics.tmc" ReloadTmc="true" AmsPort="857" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502180" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Aventics\Aventics.tmc" TmcHash="{BD323C27-4D2D-DC24-74AF-E418579145FC}">
 					<Name>Aventics Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -327,7 +327,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{AC9B46A7-3A36-406C-BD71-1933E401CC75}" Name="Automation" PrjFilePath="Automation\Automation.plcproj" TmcFilePath="Automation\Automation.tmc" ReloadTmc="true" AmsPort="858" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x085021c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Automation\Automation.tmc" TmcHash="{597E655A-1AC3-E613-45D1-BB3E966510D2}">
+				<Instance Id="#x085021c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Automation\Automation.tmc" TmcHash="{E069B01A-7CC3-B463-3111-4032759C45FC}">
 					<Name>Automation Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <Itf Name="I_RequiresAmsAddress" Id="{15ae4c03-32d8-07b8-0d05-f15d9cda81b9}">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_HasAmsAddress" Id="{15ae4c03-32d8-07b8-0d05-f15d9cda81b9}">
     <Declaration><![CDATA[// Interface to implement when requiring AMS address
-INTERFACE I_RequiresAmsAddress
+INTERFACE I_HasAmsAddress
 ]]></Declaration>
     <Property Name="AmsAddress" Id="{66a0c4a6-c5be-0e29-1c2e-325d469fedba}">
       <Declaration><![CDATA[// Gets or sets the Ams address structure

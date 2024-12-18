@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_HasAmsAddress" Id="{24569db7-6441-041f-19dc-eb8a43d6dd89}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasAmsAddress
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_HasAmsAddressFromProcessImage" Id="{24569db7-6441-041f-19dc-eb8a43d6dd89}" SpecialFunc="None">
+    <Declaration><![CDATA[// Inherit from this FB to get Tc2_System.ST_AmsAddr in the process image (to link to EtherCAT devices etc...)
+FUNCTION_BLOCK ABSTRACT FB_HasAmsAddressFromProcessImage
 VAR_INPUT
 END_VAR
 VAR_OUTPUT

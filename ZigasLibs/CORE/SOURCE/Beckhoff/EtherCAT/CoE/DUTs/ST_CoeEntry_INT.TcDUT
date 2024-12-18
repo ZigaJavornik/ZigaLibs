@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <DUT Name="ST_CoeEntry_INT" Id="{37a1bc2a-8576-0072-1016-aba83f22bfb6}">
     <Declaration><![CDATA[TYPE ST_CoeEntry_INT EXTENDS ST_CoeEntry :
 STRUCT

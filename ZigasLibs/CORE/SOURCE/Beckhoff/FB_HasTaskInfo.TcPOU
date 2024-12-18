@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_HasTaskInfo" Id="{90620e8f-2928-015b-1ab1-9c3efa46279c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_HasTaskInfo
 VAR
-	_PlcTaskInfo	: PlcTaskSystemInfo;
+	_PlcTaskInfo	: REFERENCE TO PlcTaskSystemInfo;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -18,10 +18,10 @@ PROPERTY TaskInfo : REFERENCE TO PlcTaskSystemInfo]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[IF _plcTaskInfo.CycleTime = 0 THEN
+          <ST><![CDATA[IF NOT __ISVALIDREF(_plcTaskInfo) OR_ELSE _plcTaskInfo.CycleTime = 0 THEN
 	taskIndex := Tc2_System.GETCURTASKINDEXEX();
 	IF taskIndex <> 0 THEN
-		_PlcTaskInfo := TwinCAT_SystemInfoVarList._TaskInfo[taskIndex];
+		_PlcTaskInfo REF= TwinCAT_SystemInfoVarList._TaskInfo[taskIndex];
 	END_IF
 END_IF
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <Itf Name="I_Logger" Id="{8d645b62-749c-03d8-0193-52115f211da1}">
-    <Declaration><![CDATA[INTERFACE I_Logger EXTENDS I_FileProperties, I_RequiresAmsAddress
+    <Declaration><![CDATA[INTERFACE I_Logger EXTENDS I_FileProperties, I_HasAmsAddress
 ]]></Declaration>
     <Method Name="LogDefault" Id="{a61e42ea-a189-0fbf-05f7-7abc3f7020f8}">
       <Declaration><![CDATA[// Logs the message without any additions.

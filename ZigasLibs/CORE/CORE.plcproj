@@ -75,6 +75,9 @@
     <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Alarms\E_AlarmLevel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -90,37 +93,76 @@
     <Compile Include="SOURCE\Array\DUTs\T_ArrayIndexer.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_UINT.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\Ads\AdsHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_String30.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\Ads\FB_HasAmsAddressFromProcessImage.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_USINT.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\Ads\I_HasAmsAddress.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\FB_CoeReadWrite.TcPOU">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_DINT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_DINT.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_INT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_INT.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_REAL.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_REAL.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_String255.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\DUTs\ST_CoeEntry_String255.TcDUT">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_String30.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\CoE\I_ReadsCoE.TcIO">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_UINT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\FB_HasAmsAddress.TcPOU">
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_USINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\FB_CoeReadWrite.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\I_ReadsCoE.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state\E_EcDeviceState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state\E_EcDeviceStateExtras.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state\E_EcLinkState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state\ST_EcDeviceState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state\ST_EcSlaveState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\E_EthercatDiagnosisState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\E_EthercatDiagnosisStatus.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\ST_EthercatSlaveInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\FB_EthercatDiagnosis.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\I_EthercatDiagnosis.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\EthercatHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\FB_HasTaskInfo.TcPOU">
@@ -145,15 +187,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Beckhoff\AdsHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Beckhoff\EthercatHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Beckhoff\I_RequiresAmsAddress.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Errors\AdsErrorHelper.TcPOU">
@@ -258,6 +291,12 @@
     <Compile Include="TESTS\Test suites\FB_ErrorSource_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_EthercatDiagnosis_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_EthercatHelper_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_HasInstanceName_ExtensionForTests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -283,8 +322,13 @@
     <Folder Include="SOURCE\Alarms\DUTs" />
     <Folder Include="SOURCE\Alarms\Actions - fluent" />
     <Folder Include="SOURCE\Array\DUTs" />
-    <Folder Include="SOURCE\Beckhoff\CoE" />
-    <Folder Include="SOURCE\Beckhoff\CoE\DUTs" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT\CoE" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs" />
+    <Folder Include="SOURCE\Beckhoff\Ads" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs" />
+    <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state" />
     <Folder Include="SOURCE\Errors\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />
@@ -326,10 +370,62 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_UPPER_BOUND</Key>
+          <Value>15</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_EXP</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_ADDRESS</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_COMMENT</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_OUTSTRING</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_SHOW_VALID_ITEMS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSES</Key>
+          <Value>50</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSEDEVICES</Key>
+          <Value>16</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXCPUCOUNT</Key>
+          <Value>64</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCHARACTERS</Key>
+          <Value>16#FFFFFFF0</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXFILESONDONGLE</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCSVFIELDVALUESIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -340,6 +436,44 @@
       <Condition>
       </Condition>
       <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
+          <Value>100</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>LOGEXTENDEDRESULTS</Key>
+          <Value>TRUE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITENABLEPUBLISH</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITBUFFERSIZE</Key>
+          <Value>65535</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>2000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#0ms</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
