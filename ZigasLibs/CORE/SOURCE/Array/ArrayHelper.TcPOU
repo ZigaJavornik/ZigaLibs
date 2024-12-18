@@ -311,11 +311,18 @@ Tc2_System.MEMSET(
 VAR_INPUT
 	arr	: ANY;
 END_VAR
+VAR
+	isArray		: BOOL;
+	isReference	: BOOL;
+	isPointer	: BOOL;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ValidateArrayVar := F_CompareTypeClassWithBaseLib(
-	typeClass := arr.TypeClass, 
-	baseLibraryClass := IBaseLibrary.TYPE_ARRAY);
+        <ST><![CDATA[isArray := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_ARRAY);
+isReference := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_REFERENCE);
+isPointer := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_POINTER);
+
+ValidateArrayVar := isArray OR isPointer or isReference;
 ]]></ST>
       </Implementation>
     </Method>
