@@ -26,6 +26,10 @@ END_VAR
 VAR
 	arr		: ARRAY[0..99] OF REAL;
 	arr2	: ARRAY[22..33] OF REAL;
+	refArr	: REFERENCE TO ARRAY[0..99] OF REAL;
+	refArr2	: REFERENCE TO ARRAY[22..33] OF REAL;
+	ptrArr	: POINTER TO ARRAY[0..99] OF REAL;
+	ptrArr2	: POINTER TO ARRAY[22..33] OF REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -36,10 +40,34 @@ AssertEquals_DINT(
 	Expected := 100,
 	Message := 'Getting array element count failed!');
 	
+refArr REF= arr;
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := refArr, dataType := refArr[0]),
+	Expected := 100,
+	Message := 'Getting array element count for REFERENCE TO ARRAY failed!');
+	
+ptrArr := ADR(arr);
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := ptrArr, dataType := ptrArr^[0]),
+	Expected := 100,
+	Message := 'Getting array element count for POINTER TO ARRAY failed!');
+	
 AssertEquals_DINT(
 	Actual := ArrayHelper.GetElementCount(arr := arr2, dataType := arr2[22]),
 	Expected := 33 - 22 + 1,
 	Message := 'Getting array element count for array with non-zero start element index failed!');
+	
+refArr2 REF= arr2;
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := refArr2, dataType := refArr2[22]),
+	Expected := 33 - 22 + 1,
+	Message := 'Getting array element count for REFERENCE TO ARRAY with non-zero start element index failed!');
+	
+ptrArr2 := ADR(arr2);
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(arr := ptrArr2, dataType := ptrArr2^[22]),
+	Expected := 33 - 22 + 1,
+	Message := 'Getting array element count for POINTER TO ARRAY with non-zero start element index failed!');
 	
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -308,6 +336,7 @@ AssertEquals_DINT(
 AssertTrue(
 	Condition := notAnArray, 
 	Message := 'When non-array is provided to any method, the method should not execute anything!');
+
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
@@ -402,6 +431,35 @@ AssertTrue(
 	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
 	Message := 'Array does contain the item on 2nd index, but also includes non empty elements before and after, method should return TRUE.');	
 	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test11_ClearArray_ExpectEmptyArray" Id="{cc53d4a8-f18c-0f01-352b-998b267791ec}">
+      <Declaration><![CDATA[METHOD Test11_ClearArray_ExpectEmptyArray
+VAR_INPUT
+END_VAR
+VAR_INST
+	arrUnmodified	: ARRAY[0..20] OF BOOL;
+	arrModified				: ARRAY[0..20] OF BOOL;
+	idx				: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test11_ClearArray_ExpectEmptyArray');
+
+FOR idx := 0 TO 20 BY 1 DO
+	arrModified[idx] := TRUE;
+END_FOR
+
+AssertTrue(
+	Condition := ArrayHelper.Clear(arrModified),
+	Message := 'Clearing array returned FALSE when it should have been TRUE.');
+
+AssertArrayEquals_BOOL(
+	Actuals := arrModified,
+	Expecteds := arrUnmodified,
+	Message := 'Array contents were not cleared.');
+
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>

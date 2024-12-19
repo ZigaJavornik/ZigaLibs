@@ -9,8 +9,8 @@ PROGRAM ArrayHelper
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="Clear" Id="{be15889c-c0e1-09a6-20bb-cafe31f0b982}">
-      <Declaration><![CDATA[// Clears the entire array
-METHOD PUBLIC Clear
+      <Declaration><![CDATA[// Clears the entire array. Returns TRUE if operation was sucessfull.
+METHOD PUBLIC Clear : BOOL
 VAR_INPUT
 	arr			: ANY;	// Array to be cleared
 END_VAR
@@ -20,10 +20,12 @@ END_VAR
 	RETURN;
 END_IF
 
-MEMSET(
+Tc2_System.MEMSET(
 	destAddr := arr.pValue,
 	fillByte := 0,
-	n := DINT_TO_UDINT(arr.diSize));]]></ST>
+	n := DINT_TO_UDINT(arr.diSize));
+	
+Clear := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="DoesArrayContainItem" Id="{4bfa90e6-378d-00b9-19dc-21db7c691e2f}">
