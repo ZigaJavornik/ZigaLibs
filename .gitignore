@@ -286,3 +286,4 @@ _CompileInfo/
 _Libraries/
 _ModuleInstall/
 /ZigasLibs/_Config/PLC
+*.sln
