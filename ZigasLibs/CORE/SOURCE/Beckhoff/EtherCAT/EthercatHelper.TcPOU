@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="EthercatHelper" Id="{18c8e82e-8363-065e-3a67-80a80ad75944}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'hide_all_locals'}
 PROGRAM EthercatHelper
@@ -12,7 +12,8 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="ConvertBeckhoffEcStateToCustomStruct" Id="{902d4751-1f99-088d-257f-ddcd12172007}">
-      <Declaration><![CDATA[METHOD ConvertBeckhoffEcStateToCustomStruct : ST_EcSlaveState
+      <Declaration><![CDATA[// Converts ecSlaveState of data type Tc2_EtherCAT.ST_EcSlaveState to ZigaLibs_Core.ST_EcSlaveState
+METHOD ConvertBeckhoffEcStateToCustomStruct : ST_EcSlaveState
 VAR_INPUT
 	ecSlaveState	: Tc2_EtherCAT.ST_EcSlaveState;
 END_VAR

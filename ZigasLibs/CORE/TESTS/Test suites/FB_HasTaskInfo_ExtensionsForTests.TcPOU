@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_HasTaskInfo_ExtensionsForTests" Id="{039b3b48-b4ab-003b-21ce-ce2cfc334b7f}" SpecialFunc="None">
     <Declaration><![CDATA[// Since FB_HasTaskInfo is an ABSTRACT class, the functionality needs to be implemented by extending the base class
-FUNCTION_BLOCK FB_HasTaskInfo_ExtensionsForTests EXTENDS FB_HasTaskInfo
+FUNCTION_BLOCK INTERNAL FB_HasTaskInfo_ExtensionsForTests EXTENDS FB_HasTaskInfo
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
