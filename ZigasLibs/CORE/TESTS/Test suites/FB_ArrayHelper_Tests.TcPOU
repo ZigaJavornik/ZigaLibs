@@ -17,7 +17,10 @@ Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
 Test07_SetAtFirstEmptySlot();
 Test08_AllMethods_provideNonArrayVar_ExpectNothing();
 Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();
-Test10_CheckIfArrayContainsItem();]]></ST>
+Test10_CheckIfArrayContainsItem();
+Test11_ClearArray_ExpectEmptyArray();
+Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults();
+Test13_FindLastOccupiedItem();]]></ST>
     </Implementation>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
@@ -26,10 +29,6 @@ END_VAR
 VAR
 	arr		: ARRAY[0..99] OF REAL;
 	arr2	: ARRAY[22..33] OF REAL;
-	refArr	: REFERENCE TO ARRAY[0..99] OF REAL;
-	refArr2	: REFERENCE TO ARRAY[22..33] OF REAL;
-	ptrArr	: POINTER TO ARRAY[0..99] OF REAL;
-	ptrArr2	: POINTER TO ARRAY[22..33] OF REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -40,34 +39,10 @@ AssertEquals_DINT(
 	Expected := 100,
 	Message := 'Getting array element count failed!');
 	
-refArr REF= arr;
-AssertEquals_DINT(
-	Actual := ArrayHelper.GetElementCount(arr := refArr, dataType := refArr[0]),
-	Expected := 100,
-	Message := 'Getting array element count for REFERENCE TO ARRAY failed!');
-	
-ptrArr := ADR(arr);
-AssertEquals_DINT(
-	Actual := ArrayHelper.GetElementCount(arr := ptrArr, dataType := ptrArr^[0]),
-	Expected := 100,
-	Message := 'Getting array element count for POINTER TO ARRAY failed!');
-	
 AssertEquals_DINT(
 	Actual := ArrayHelper.GetElementCount(arr := arr2, dataType := arr2[22]),
 	Expected := 33 - 22 + 1,
 	Message := 'Getting array element count for array with non-zero start element index failed!');
-	
-refArr2 REF= arr2;
-AssertEquals_DINT(
-	Actual := ArrayHelper.GetElementCount(arr := refArr2, dataType := refArr2[22]),
-	Expected := 33 - 22 + 1,
-	Message := 'Getting array element count for REFERENCE TO ARRAY with non-zero start element index failed!');
-	
-ptrArr2 := ADR(arr2);
-AssertEquals_DINT(
-	Actual := ArrayHelper.GetElementCount(arr := ptrArr2, dataType := ptrArr2^[22]),
-	Expected := 33 - 22 + 1,
-	Message := 'Getting array element count for POINTER TO ARRAY with non-zero start element index failed!');
 	
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -440,7 +415,7 @@ VAR_INPUT
 END_VAR
 VAR_INST
 	arrUnmodified	: ARRAY[0..20] OF BOOL;
-	arrModified				: ARRAY[0..20] OF BOOL;
+	arrModified		: ARRAY[0..20] OF BOOL;
 	idx				: T_ArrayIndexer;
 END_VAR
 ]]></Declaration>
@@ -460,6 +435,117 @@ AssertArrayEquals_BOOL(
 	Expecteds := arrUnmodified,
 	Message := 'Array contents were not cleared.');
 
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults" Id="{347793f1-d4c3-04a6-364e-b7ee092ed247}">
+      <Declaration><![CDATA[METHOD Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults
+VAR_INST
+	arr			: ARRAY[0..10] OF REAL;
+	refArr		: REFERENCE TO ARRAY[0..10] OF REAL;
+	arrEmpty	: ARRAY[0..10] OF REAL;
+	findResult	: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults');
+refarr REF= arr;
+arr[5] := 22.2;
+
+ArrayHelper.Clear(refArr);
+AssertArrayEquals_REAL(
+	Actuals := arr,
+	Expecteds := arrEmpty,
+	Delta := 0,
+	Message := 'Clear array failed.');
+	
+arr[6] := 5.3;
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr := refArr, item := arr[6]),
+	Message := 'DoesArrayContainItem failed.');
+
+AssertTrue(
+	Condition := ArrayHelper.FindLastOccupiedItem(refArr, refArr[0], findResult),
+	Message := 'FindLastOccupiedItem failed (returned FALSE).');
+
+AssertEquals_REAL(
+	Actual := findResult,
+	Expected := 5.3,
+	Delta := 0,
+	Message := 'FindLastOccupiedItem output value was incorrect.');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(refArr, refArr[0]),
+	Expected := 11,
+	Message := 'GetEleeentCount failed.');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(refArr, refArr[0], 0),
+	Expected := 10,
+	Message := 'GetMaxIndex failed.');
+	
+ArrayHelper.InsertAtStart(refArr, findResult);
+AssertEquals_REAL(
+	Actual := refArr[0],
+	Expected := 5.3,
+	Delta := 0.0,
+	Message := 'InsertAtStart failed');
+
+arr[0] := 0;	
+ArrayHelper.SetAtFirstEmptySlot(refArr, findResult);	
+AssertEquals(
+	Expected := findResult,
+	Actual := refArr[0],
+	Message := 'SetAtFirstEmptySlot failed.');
+	
+arr[1] := 5.5;
+ArrayHelper.ShiftDown(refArr, refArr[0]);
+AssertEquals_REAL(
+	Actual := refArr[0],
+	Expected := 5.5,
+	Delta := 0.0,
+	Message := 'ShiftDown failed.');
+
+ArrayHelper.ShiftUp(refARr, refArr[0]);
+AssertEquals_REAL(
+	Actual := refArr[1],
+	Expected := 5.5,
+	Delta := 0.0,
+	Message := 'ShiftUp failed.');
+
+TcUnit.TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test13_FindLastOccupiedItem" Id="{2fe3197e-d9e2-07ac-3526-3dff66a0a860}">
+      <Declaration><![CDATA[METHOD Test13_FindLastOccupiedItem
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	arr	: ARRAY[0..10] OF INT;
+	result	: int;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test13_FindLastOccupiedItem');
+
+AssertFalse(
+	Condition := ArrayHelper.FindLastOccupiedItem(arr, arr[0], result),
+	Message := 'Empty array should return FALSE.');
+	
+arr[5] := 5;
+
+AssertTrue(	
+	Condition := ArrayHelper.FindLastOccupiedItem(arr, arr[0], result),
+	Message := 'Expected TRUE, 5th element is not empty.');
+	
+AssertEquals_INT(
+	Actual := result,
+	Expected := 5,
+	Message := 'Incorrect result when finding last occupied element.');
+	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>

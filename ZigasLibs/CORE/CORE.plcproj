@@ -183,9 +183,6 @@
     <Compile Include="SOURCE\Errors\FB_ErrorSource.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\FB_HasInstanceName.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -205,6 +202,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\File\ST_FileExtensions.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\FB_HasInstanceName.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
