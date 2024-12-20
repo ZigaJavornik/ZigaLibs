@@ -114,14 +114,14 @@ END_IF
 
 FOR i := maxIndex TO 0 BY -1 DO
 	compareResult := Tc2_System.MEMCMP(
-		pBuf1 := arr.pValue + (arr.diSize * SIZEOF(BYTE)) - (i * dataType.diSize),
+		pBuf1 := arr.pValue +  DINT_TO_DWORD(i * dataType.diSize),
 		pBuf2 := ptrAllocatedBytes_emptyElement,
 		n := DINT_TO_UDINT(dataType.diSize));
 		
 	// If element is not empty, return
 	IF compareResult <> E_MemCmpResults.IDENTICAL THEN
 		Tc2_System.MEMCPY(
-			srcAddr := arr.pValue,
+			srcAddr := arr.pValue +  DINT_TO_DWORD(i * dataType.diSize),
 			destAddr := result.pValue,
 			n := DINT_TO_UDINT(dataType.diSize));
 		FindLastOccupiedItem := TRUE;
