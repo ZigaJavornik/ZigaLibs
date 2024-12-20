@@ -1,27 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_PulseGenerator" Id="{a7b115c4-297e-08a0-01a8-70a89d6d7f0e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_PulseGenerator
 VAR
 	TonPwmGenerator_Pos	: TON;
 	TonPwmGenerator_Neg	: TON;
-	_enable		: BOOL;
-	_period		: TIME;
-	_dutyCycle	: REAL;
+	_enable				: BOOL;
+	_period				: TIME;
+	_dutyCycle			: REAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Property Name="DutyCycle" Id="{957e41bf-8d3c-02be-310b-07693f75a233}">
-      <Declaration><![CDATA[// Gets or sets the duty cycle of the modulated signal in percent (0 - 100)
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the duty cycle of the modulated signal in percent (0 - 100)
 PROPERTY PUBLIC DutyCycle : REAL]]></Declaration>
       <Get Name="Get" Id="{a198fd2d-827d-04ea-29d6-ebf243aec3f9}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[]]></ST>
+          <ST><![CDATA[DutyCycle := _dutyCycle;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{22a192c9-9b02-0a96-211d-72c682f15d6e}">
@@ -29,12 +30,13 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[]]></ST>
+          <ST><![CDATA[_dutyCycle := DutyCycle;]]></ST>
         </Implementation>
       </Set>
     </Property>
     <Property Name="Enable" Id="{4a228d3e-063b-08d2-3458-9b3f43e69c86}">
-      <Declaration><![CDATA[// Gets or sets if execution is enabled.
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets if execution is enabled.
 PROPERTY PUBLIC Enable : BOOL]]></Declaration>
       <Get Name="Get" Id="{03c5614b-73b5-0140-3758-7fe88166f21e}">
         <Declaration><![CDATA[VAR
@@ -102,7 +104,8 @@ _period := tPeriod;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Period" Id="{ef29054b-c8f8-0f0d-044f-2fb7f0abd397}">
-      <Declaration><![CDATA[// Gets or sets the period of the modulated signal.
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the period of the modulated signal.
 PROPERTY PUBLIC Period : TIME]]></Declaration>
       <Get Name="Get" Id="{aef030a7-a476-05b6-194c-f717a8dd518e}">
         <Declaration><![CDATA[VAR
