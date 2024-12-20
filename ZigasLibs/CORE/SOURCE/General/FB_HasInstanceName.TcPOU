@@ -6,6 +6,7 @@
 // InstancePath - the FULL instance path
 
 {attribute 'reflection'}
+{attribute 'hide_all_locals'}
 FUNCTION_BLOCK ABSTRACT FB_HasInstanceName
 VAR
 	{attribute 'instance-path'} 
@@ -34,14 +35,23 @@ END_VAR
 VAR
 	instanceName	: Tc2_System.T_MaxString;
 	dotPosition		: INT;
-	iteration	: INT;
-	maxAttempts	: INT := 10;
+	iteration		: INT;
+	maxAttempts		: INT := 10;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[instanceName := _instancePath;
 
-WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> 0 AND (iteration < maxAttempts) DO
-	dotPosition := Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.');
+// Limiting maximum number of dots in the instancePath to 10.
+// In theory, I don't think it would ever go above 10, unless some very deep object nesting is done.
+// Example Project.Plc.Main.Fb.Fb.Fb.Fb.Fb...
+
+WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> E_MemCmpResults.IDENTICAL AND 
+	 (iteration < maxAttempts) 
+DO
+	dotPosition := Tc2_Standard.FIND(
+		STR1 := instanceName, 
+		STR2 := '.');
+		
 	instanceName := Tc2_Standard.DELETE(
 		STR := instanceName,
 		POS := 1,	
