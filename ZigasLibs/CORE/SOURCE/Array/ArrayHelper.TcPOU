@@ -242,20 +242,6 @@ __DELETE(ptrAllocatedBytes);
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SetAtIndex" Id="{4e90c91b-dce8-0a78-1e55-30ac0855858c}">
-      <Declaration><![CDATA[METHOD SetAtIndex
-VAR_INPUT
-	arr		: ANY;
-	value	: ANY;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
-	RETURN;
-END_IF
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="ShiftDown" Id="{bf9c2e03-6302-0e64-05d0-eb3dbb49d451}">
       <Declaration><![CDATA[// Shifts the array down, losing first element and clearing last element in the process.
 METHOD ShiftDown
@@ -316,15 +302,13 @@ END_VAR
 VAR
 	isArray		: BOOL;
 	isReference	: BOOL;
-	isPointer	: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[isArray := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_ARRAY);
 isReference := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_REFERENCE);
-isPointer := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_POINTER);
 
-ValidateArrayVar := isArray OR isPointer OR isReference;
+ValidateArrayVar := isArray OR isReference;
 ]]></ST>
       </Implementation>
     </Method>
