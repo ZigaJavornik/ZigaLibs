@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_StringBuilderEx_Any" Id="{a3b9c09e-cbc8-08a7-18f4-a792c9208864}" SpecialFunc="None">
+    <Declaration><![CDATA[// An extension to FB_StringBuilderBase. The ethods acceppt ANY data type as entry. Values are converted internally.
+FUNCTION_BLOCK FB_StringBuilderEx_Any IMPLEMENTS I_StringBuilderEx_Any
+VAR
+	_stringBuilderBase	: FB_StringBuilderBase;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddAny" Id="{b9fd09fd-5727-0ce3-0bbd-b877aa1783cd}">
+      <Declaration><![CDATA[(* Adds the variable of any data type to the sequence. Conversion is done automatically from within. 
+Returns I_StringBuilderEx_Any for further string building capability.
+
+Some extra info: 
+	- BOOL and BIT will have the string converted to 'TRUE' and 'FALSE' respectively.
+	- BYTE, WORD, DWORD and LWORD will be converted without any additional options. Use AddAnyBit method for these instead!
+	- REAL and LREAL will be added as T_MaxString values. Please use AddAnyReal method for these instead.*)
+
+METHOD AddAny : I_StringBuilderEx_Any
+VAR_INPUT
+	anyVar	: ANY;
+END_VAR
+
+VAR
+	result	: Tc2_System.T_MaxString;
+	ptrWstring	: POINTER TO WSTRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE TO_INT(anyVar.TypeClass) OF 
+	IBaseLibrary.TypeClass.TYPE_BOOL:
+		IF Tc2_Utilities.PBOOL_TO_BOOL(anyVar.pValue) = TRUE THEN
+			result :=	'TRUE';
+		ELSE
+			result := 'FALSE';
+		END_IF
+		
+	IBaseLibrary.TypeClass.TYPE_BYTE: 
+		result := BYTE_TO_STRING(Tc2_Utilities.PBYTE_TO_BYTE(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_DATE:
+		result := DATE_TO_STRING(Tc2_Utilities.PDATE_TO_DATE(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_DATEANDTIME:
+		result := DT_TO_STRING(Tc2_Utilities.PDT_TO_DT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_DINT:
+		result := DINT_TO_STRING(Tc2_Utilities.PDINT_TO_DINT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_DWORD:
+		result := DWORD_TO_STRING(Tc2_Utilities.PDWORD_TO_DWORD(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_ENUM:
+		result := TO_STRING(anyVar.pValue^);
+	
+	IBaseLibrary.TypeClass.TYPE_INT:
+		result := INT_TO_STRING(Tc2_Utilities.PINT_TO_INT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_LINT:
+		result := LINT_TO_STRING(Tc2_Utilities.PLINT_TO_LINT(anyVar.pValue));
+		
+	IBaseLibrary.TypeClass.TYPE_LREAL:
+		result := LREAL_TO_STRING(Tc2_Utilities.PLREAL_TO_LREAL(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_LTIME:
+		result := LTIME_TO_STRING(Tc2_Utilities.PLTIME_TO_LTIME(anyVar.pValue));
+		
+	IBaseLibrary.TypeClass.TYPE_LWORD:
+		result := LWORD_TO_STRING(Tc2_Utilities.PLWORD_TO_LWORD(anyVar.pValue));
+		
+	IBaseLibrary.TypeClass.TYPE_REAL:
+		result := REAL_TO_STRING(Tc2_Utilities.PREAL_TO_REAL(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_SINT:
+		result := SINT_TO_STRING(Tc2_Utilities.PSINT_TO_SINT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_STRING:
+		result := TO_STRING(Tc2_Utilities.PSTRING_TO_STRING(anyVar.pValue));
+		
+	IBaseLibrary.TypeClass.TYPE_TIME:
+		result := TIME_TO_STRING(Tc2_Utilities.PTIME_TO_TIME(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_TIMEOFDAY:
+		result := TOD_TO_STRING(Tc2_Utilities.PTOD_TO_TOD(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_UDINT:
+		result := UDINT_TO_STRING(Tc2_Utilities.PUDINT_TO_UDINT(anyVar.pValue));		
+	
+	IBaseLibrary.TypeClass.TYPE_UINT:
+		result := UINT_TO_STRING(Tc2_Utilities.PUINT_TO_UINT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_ULINT:
+		result := ULINT_TO_STRING(Tc2_Utilities.PULINT_TO_ULINT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_USINT:
+		result := USINT_TO_STRING(Tc2_Utilities.PUSINT_TO_USINT(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_WORD:
+		result := WORD_TO_STRING(Tc2_Utilities.PWORD_TO_WORD(anyVar.pValue));
+	
+	IBaseLibrary.TypeClass.TYPE_WSTRING:
+		ptrWstring := anyVar.pValue;
+		result := WSTRING_TO_STRING(ptrWstring^);
+		
+	ELSE
+		result := TO_STRING(anyVar.pValue^);
+	
+END_CASE
+
+_stringBuilderBase.AddString(result);
+AddAny := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddAnyBit" Id="{b8b5349f-82bc-0ac0-2894-a1005cd28a23}">
+      <Declaration><![CDATA[// Adds a variable of type ANY_BIT to the string generating sequence, based on the provided parameters.
+// This includes: BYTE, WORD, DWORD, LWORD, 
+METHOD AddAnyBit : I_StringBuilderEx_Any
+VAR_INPUT
+	anyBit					: ANY_BIT;				// Value to be converterd
+	option					: E_AddAnyBitOptions;	// Select how the value is converter
+	lowerCase				: BOOL;					// If hexadecimal option is selected, the result string can be converted to either lower or upper case
+	displayedDigitsCount	: INT;					// This determines how many digits are to be displayed. If actual digits count is lower, the string is filled with zeros from the left side. If left at 0, the result string will be an empty string!
+END_VAR
+VAR
+	result : Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning 'Create tests to verify functionality!'}
+CASE anyBit.TypeClass OF
+	__SYSTEM.TYPE_CLASS.TYPE_WORD:
+		CASE option OF
+			E_AddAnyBitOptions.BINARY:
+				result := Tc2_Utilities.WORD_TO_BINSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.DECIMAL:
+				result := Tc2_Utilities.WORD_TO_DECSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.HEXADECIMAL:
+				result := Tc2_Utilities.WORD_TO_HEXSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount,
+					bLoCase := lowerCase);
+				
+			E_AddAnyBitOptions.OCTAL:
+				result := Tc2_Utilities.WORD_TO_OCTSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+		END_CASE
+		
+	IBaseLibrary.TypeClass.TYPE_BYTE:
+		CASE option OF
+			E_AddAnyBitOptions.BINARY:
+				result := Tc2_Utilities.BYTE_TO_BINSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.DECIMAL:
+				result := Tc2_Utilities.BYTE_TO_DECSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.HEXADECIMAL:
+				result := Tc2_Utilities.BYTE_TO_HEXSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount,
+					bLoCase := lowerCase);
+				
+			E_AddAnyBitOptions.OCTAL:
+				result := Tc2_Utilities.BYTE_TO_OCTSTR(
+					in := anyBit.pValue^, 
+					iPrecision := displayedDigitsCount);
+		END_CASE
+	
+	IBaseLibrary.TypeClass.TYPE_DWORD:
+		CASE option OF
+			E_AddAnyBitOptions.BINARY:
+				result := Tc2_Utilities.WORD_TO_BINSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.DECIMAL:
+				result := Tc2_Utilities.WORD_TO_DECSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.HEXADECIMAL:
+				result := Tc2_Utilities.WORD_TO_HEXSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount,
+					bLoCase := lowerCase);
+				
+			E_AddAnyBitOptions.OCTAL:
+				result := Tc2_Utilities.WORD_TO_OCTSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+		END_CASE
+	
+	IBaseLibrary.TypeClass.TYPE_LWORD:
+		CASE option OF
+			E_AddAnyBitOptions.BINARY:
+				result := Tc2_Utilities.LWORD_TO_BINSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.DECIMAL:
+				result := Tc2_Utilities.LWORD_TO_DECSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+				
+			E_AddAnyBitOptions.HEXADECIMAL:
+				result := Tc2_Utilities.LWORD_TO_HEXSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount,
+					bLoCase := lowerCase);
+				
+			E_AddAnyBitOptions.OCTAL:
+				result := Tc2_Utilities.LWORD_TO_OCTSTR(
+					in := anyBit.pValue^,
+					iPrecision := displayedDigitsCount);
+		END_CASE
+END_CASE
+
+_stringBuilderBase.AddString(result);
+AddAnyBit := THIS^;
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddAnyReal" Id="{c64b3256-4480-0cfd-3dd0-b1062a076d36}">
+      <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
+METHOD AddAnyReal : I_StringBuilderEx_Any
+VAR_INPUT
+	anyReal		: ANY_REAL;	// Value to be converter
+	precision	: INT;		// Precision
+	round		: BOOL;		// Rounding of the last displayed digit
+END_VAR
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning 'Create tests to verify functionality!'}
+_stringBuilderBase.AddString(LREAL_TO_FMTSTR(
+	in := TO_LREAL(anyReal.pValue^),
+	iPrecision := precision,
+	bRound := round));
+	
+AddAnyReal := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{b37645ef-ea8f-0e2e-3ae1-fde44b144eb3}">
+      <Declaration><![CDATA[METHOD Create : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Create := _stringBuilderBase.Create();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{8e8460a6-a7df-0ad5-1839-d7ff2c62e7f2}">
+      <Declaration><![CDATA[(* Reset the string build sequence, clear any string built so far.*)
+METHOD Reset : I_StringBuilderEx_Any
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_stringBuilderBase.Reset();
+Reset := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_StringBuilderEx_Any">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any.AddAny">
+      <LineId Id="3" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="52" Count="2" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="58" Count="2" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="61" Count="1" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="63" Count="1" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="116" Count="2" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="119" Count="1" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="121" Count="1" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="124" Count="3" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="101" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any.AddAnyBit">
+      <LineId Id="188" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="67" Count="2" />
+      <LineId Id="110" Count="1" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="112" Count="1" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="114" Count="1" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="117" Count="2" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="75" Count="1" />
+      <LineId Id="120" Count="20" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="141" Count="20" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="162" Count="21" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="41" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any.AddAnyReal">
+      <LineId Id="45" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="40" Count="4" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any.Create">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any.Reset">
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,633 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_StringBuilderEx_Any_Tests" Id="{993fbc3e-5c9d-0f17-0385-4fce2f3aa1dd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringBuilderEx_Any_Tests EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	stringBuilderExAny	: FB_StringBuilderEx_Any;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_BOOL();
+Test02_Byte_ExpectDecimalString();
+Test03_DATE();
+Test04_DateAndTime();
+Test05_DINT();
+Test06_DWORD();
+Test07_ENUM();
+Test08_INT();
+Test09_LINT();
+Test10_LREAL();
+Test11_LTIME();
+Test12_LWORD();
+Test13_REAL();
+Test14_SINT();
+Test15_STRING();
+Test16_TIME();
+Test17_TOD();
+Test18_UDINT();
+Test19_UINT();
+Test20_ULINT();
+Test21_USINT();
+Test22_WORD();
+Test23_WSTRING();]]></ST>
+    </Implementation>
+    <Method Name="Test01_BOOL" Id="{cfb9a40b-eb82-0aeb-29ca-569dd72e79c7}">
+      <Declaration><![CDATA[METHOD Test01_BOOL
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	bTrue		: BOOL := TRUE;
+	bFalse		: BOOL := FALSE;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_BOOL') THEN
+
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(bTrue).Create(),
+		Expected := 'TRUE',
+		Message := 'Adding boolean failed');
+		
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(bFalse).Create(),
+		Expected := 'FALSE',
+		Message := 'Adding boolean failed');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_BYTE_ExpectDecimalString" Id="{c4fd4cb4-7ad4-0c82-28ce-eca0288b2bd4}">
+      <Declaration><![CDATA[METHOD Test02_BYTE_ExpectDecimalString
+VAR_INPUT
+END_VAR
+VAR
+	byteVar	: BYTE := 17;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test02_BYTE_ExpectDecimalString') THEN
+	
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(byteVar).Create(),
+		Expected := '17',
+		Message := 'Adding BYTE failed.');
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_DATE" Id="{2e1f0d36-48a6-0114-01e4-b61e830c0de7}">
+      <Declaration><![CDATA[METHOD Test03_DATE
+VAR
+	someVar	: DATE := D#1970-01-01;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test03_DATE') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'D#1970-01-01',
+		Message := 'Adding DATE failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_DateAndTime" Id="{43674567-cbf3-0b60-3a1a-25c0832a193a}">
+      <Declaration><![CDATA[METHOD Test04_DateAndTime
+VAR
+	someVar	: DATE_AND_TIME := DT#1970-1-1-0:0:1;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test04_DateAndTime') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'DT#1970-01-01-00:00:01',
+		Message := 'Adding DATE_AND_TIME failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_DINT" Id="{d74a7aab-7f5a-0848-0fd8-3c29d1e1cf1d}">
+      <Declaration><![CDATA[METHOD Test05_DINT
+VAR
+	someVar	: DINT := 15;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test05_DINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '15',
+		Message := 'Adding DINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_DWORD" Id="{8f64b908-2c4e-05d5-1577-c9f32c694f35}">
+      <Declaration><![CDATA[METHOD Test06_DWORD
+VAR
+	someVar	: DWORD := 777;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test06_DWORD') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '777',
+		Message := 'Adding DWORD failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_ENUM" Id="{71268857-77ee-0509-1941-f38bd3e4031a}">
+      <Declaration><![CDATA[METHOD Test07_ENUM
+VAR
+	someVar	: E_AddAnyBitOptions := E_AddAnyBitOptions.HEXADECIMAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test07_ENUM') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '2',
+		Message := 'Adding ENUM failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_INT" Id="{50412636-13a0-03e7-292c-fcb255f8bd55}">
+      <Declaration><![CDATA[METHOD Test08_INT
+VAR
+	someVar	: INT := 22;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test08_INT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '22',
+		Message := 'Adding INT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test09_LINT" Id="{8005f92e-a205-0e43-38d5-826ab2a0292f}">
+      <Declaration><![CDATA[METHOD Test09_LINT
+VAR
+	someVar	: LINT := 6666;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test09_LINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '6666',
+		Message := 'Adding LINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test10_LREAL" Id="{9113eedd-ee6c-0191-2fe7-457e71b3657e}">
+      <Declaration><![CDATA[METHOD Test10_LREAL
+VAR
+	someVar	: LREAL := 11.11;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test10_LREAL') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '11.11',
+		Message := 'Adding LREAL failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test11_LTIME" Id="{fc4e2ed8-904a-075b-1438-0244b9d03c7f}">
+      <Declaration><![CDATA[METHOD Test11_LTIME
+VAR
+	someVar	: LTIME := LTIME#100D2H30M40S500MS600US700NS;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test11_LTIME') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'LTIME#100d2h30m40s500ms600us700ns',
+		Message := 'Adding LTIME failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_LWORD" Id="{b67d9c3d-52b4-0b6b-35cf-913ba29a6594}">
+      <Declaration><![CDATA[METHOD Test12_LWORD
+VAR
+	someVar	: LWORD := 123456;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test12_LWORD') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '123456',
+		Message := 'Adding LWORD failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test13_REAL" Id="{2816e998-89c0-096b-3a74-9a11ab704eb8}">
+      <Declaration><![CDATA[METHOD Test13_REAL
+VAR
+	someVar	: REAL := 12345.6789;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test13_REAL') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '12345.679',
+		Message := 'Adding REAL failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test14_SINT" Id="{6c7665bf-0153-0ce1-0e35-d654cb2ce2aa}">
+      <Declaration><![CDATA[METHOD Test14_SINT
+VAR
+	someVar	: SINT := -34;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test14_SINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '-34',
+		Message := 'Adding SINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test15_STRING" Id="{94253549-fafe-0f80-09c6-89ebc1d88293}">
+      <Declaration><![CDATA[METHOD Test15_STRING
+VAR
+	someVar	: STRING := 'haha';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test15_STRING') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'haha',
+		Message := 'Adding STRING failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test16_TIME" Id="{2160ef82-12b9-0d94-27e9-4339ba76733c}">
+      <Declaration><![CDATA[METHOD Test16_TIME
+VAR
+	someVar	: TIME := T#15D10S;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test16_TIME') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'T#15d10s',
+		Message := 'Adding TIME failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test17_TOD" Id="{d7841bc8-20ff-0ac3-2e6d-e7ec37f51186}">
+      <Declaration><![CDATA[METHOD Test17_TOD
+VAR
+	someVar	: TOD := TOD#14:01:05.123;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test17_TOD') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'TOD#14:01:05.123',
+		Message := 'Adding TOD failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test18_UDINT" Id="{bd53d0e6-72cd-0c1c-1e1f-e2cba32aa961}">
+      <Declaration><![CDATA[METHOD Test18_UDINT
+VAR
+	someVar	: UDINT := 23452352;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test18_UDINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '23452352',
+		Message := 'Adding UDINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test19_UINT" Id="{fe13564c-b104-0e32-105a-b836699707c7}">
+      <Declaration><![CDATA[METHOD Test19_UINT
+VAR
+	someVar	: UINT := 12341;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test19_UINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '12341',
+		Message := 'Adding UINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test20_ULINT" Id="{bd8cb3b1-9a8b-0c9a-2994-527d8693f902}">
+      <Declaration><![CDATA[METHOD Test20_ULINT
+VAR
+	someVar	: ULINT := 12345678;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test20_ULINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '12345678',
+		Message := 'Adding ULINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test21_USINT" Id="{22dcfb33-d0bc-0d5f-3114-b0b2104acc31}">
+      <Declaration><![CDATA[METHOD Test21_USINT
+VAR
+	someVar	: USINT := 123;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test21_USINT') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '123',
+		Message := 'Adding USINT failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test22_WORD" Id="{ab55a167-5334-0617-2b2d-8531f2f2e240}">
+      <Declaration><![CDATA[METHOD Test22_WORD
+VAR
+	someVar	: WORD := 16#A;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test22_WORD') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := '10',
+		Message := 'Adding WORD failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test23_WSTRING" Id="{7b808dee-1ef7-0617-2d8c-b16a5c3b233b}">
+      <Declaration><![CDATA[METHOD Test23_WSTRING
+VAR
+	someVar	: WSTRING := "test";
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TEST_ORDERED('Test23_WSTRING') THEN
+	AssertEquals_STRING(
+		Actual := stringBuilderExAny.Reset().AddAny(someVar).Create(),
+		Expected := 'test',
+		Message := 'Adding WSTRING failed.');
+
+	TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests">
+      <LineId Id="37" Count="21" />
+      <LineId Id="36" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test01_BOOL">
+      <LineId Id="12" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="23" Count="2" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test02_BYTE_ExpectDecimalString">
+      <LineId Id="5" Count="1" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test03_DATE">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test04_DateAndTime">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test05_DINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test06_DWORD">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test07_ENUM">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test08_INT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test09_LINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test10_LREAL">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test11_LTIME">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test12_LWORD">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test13_REAL">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test14_SINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test15_STRING">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test16_TIME">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test17_TOD">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test18_UDINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test19_UINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test20_ULINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test21_USINT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test22_WORD">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test23_WSTRING">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

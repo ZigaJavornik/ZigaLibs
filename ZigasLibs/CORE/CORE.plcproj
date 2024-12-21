@@ -165,9 +165,6 @@
     <Compile Include="SOURCE\Beckhoff\EtherCAT\EthercatHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\FB_HasTaskInfo.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -207,6 +204,9 @@
     <Compile Include="SOURCE\General\FB_HasInstanceName.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -234,10 +234,19 @@
     <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\FB_StringBuilderBase.TcPOU">
+    <Compile Include="SOURCE\String\StringBuilder\Base\FB_StringBuilderBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\I_StringBuilder.TcIO">
+    <Compile Include="SOURCE\String\StringBuilder\Base\I_StringBuilderBase.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\E_AddAnyBitOptions.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\FB_StringBuilderEx_Any.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\I_StringBuilderEx_Any.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringConstants.TcPOU">
@@ -309,6 +318,9 @@
     <Compile Include="TESTS\Test suites\FB_HasTaskInfo_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_StringBuilderEx_Any_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -342,6 +354,10 @@
     <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
+    <Folder Include="SOURCE\String\StringBuilder" />
+    <Folder Include="SOURCE\String\StringBuilder\Base" />
+    <Folder Include="SOURCE\String\StringBuilder\Extensions" />
+    <Folder Include="SOURCE\String\StringBuilder\Extensions\AddAny" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />

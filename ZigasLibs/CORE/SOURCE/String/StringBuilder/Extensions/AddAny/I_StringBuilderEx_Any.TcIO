@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_StringBuilderEx_Any" Id="{752d1019-5c50-0392-35bf-7da2d72860cf}">
+    <Declaration><![CDATA[INTERFACE I_StringBuilderEx_Any
+]]></Declaration>
+    <Method Name="AddAny" Id="{2d4f861a-753f-0d21-3ce8-61aec3774d26}">
+      <Declaration><![CDATA[(* Adds the variable of any data type to the sequence. Conversion is done automatically from within.
+Some extra info: 
+	- BOOL and BIT will have the string converted to 'TRUE' and 'FALSE' respectively.
+	- floating point variables will have their values precision based on constructor realFormatPrecision and will be rounded based on the roundRealValues
+*)
+METHOD AddAny : I_StringBuilderEx_Any
+VAR_INPUT
+	anyVar	: ANY;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="AddAnyBit" Id="{218ef548-fd63-02c6-0d6b-2aa3bbbafffc}">
+      <Declaration><![CDATA[// Adds a variable of type ANY_BIT to the string generating sequence, based on the provided parameters.
+// This includes: BYTE, WORD, DWORD, LWORD, 
+METHOD AddAnyBit : I_StringBuilderEx_Any
+VAR_INPUT
+	anyBit					: ANY_BIT;				// Value to be converterd
+	option					: E_AddAnyBitOptions;	// Select how the value is converter
+	lowerCase				: BOOL;					// If hexadecimal option is selected, the result string can be converted to either lower or upper case
+	displayedDigitsCount	: INT;					// This determines how many digits are to be displayed. If actual digits count is lower, the string is filled with zeros from the left side. If left at 0, the result string will be an empty string!
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="AddAnyReal" Id="{638aae62-d03d-0df9-0ab3-ed46ca6c0a89}">
+      <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
+METHOD AddAnyReal : I_StringBuilderEx_Any
+VAR_INPUT
+	anyReal		: ANY_REAL;	// Value to be converter
+	precision	: INT;		// Precision
+	round		: BOOL;		// Rounding of the last displayed digit
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Create" Id="{d8d3d2e9-758d-00eb-2642-7d98b4a070e4}">
+      <Declaration><![CDATA[METHOD Create : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{ec7f4f1c-b66f-0757-01f9-69b45a4d44c9}">
+      <Declaration><![CDATA[METHOD Reset : I_StringBuilderEx_Any
+
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
