@@ -41,6 +41,9 @@ METHOD Reset
     <Method Name="Scan" Id="{29224ec9-7a49-0d17-189f-59b55a857805}">
       <Declaration><![CDATA[// Performs a scan on the EtherCAT master, returns TRUE when done.
 METHOD Scan	: BOOL
+VAR_INPUT
+	EcMasterNetId	: AMSNETID;
+END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="Status" Id="{fdb7ce96-3bdc-0157-2dc9-65994c8f356b}">
