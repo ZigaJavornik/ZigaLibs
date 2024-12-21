@@ -438,6 +438,60 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Test24_ANY_BIT_WORD" Id="{cb289a5e-b78c-01b6-05a8-fb68091cd4fb}">
+      <Declaration><![CDATA[METHOD Test24_ANY_BIT_WORD
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test25_ANY_BIT_BYTE" Id="{3e550e7b-2522-0e59-252d-d1f17213e7d2}">
+      <Declaration><![CDATA[METHOD Test25_ANY_BIT_BYTE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test26_ANY_BIT_DWORD" Id="{d34ecae9-fdb6-0c8a-1e30-9d1313ab862c}">
+      <Declaration><![CDATA[METHOD Test26_ANY_BIT_DWORD
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test27_ANY_BIT_LWORD" Id="{f929254d-fa61-062f-0af3-37cbe0ae0a1d}">
+      <Declaration><![CDATA[METHOD Test27_ANY_BIT_LWORD
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test28_ANY_REAL_REAL" Id="{6d237f3d-660f-087b-1049-692edac18b97}">
+      <Declaration><![CDATA[METHOD Test28_ANY_REAL_REAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test29_ANY_REAL_LREAL" Id="{7049dc39-845e-069a-24dd-c1ad1129622a}">
+      <Declaration><![CDATA[METHOD Test29_ANY_REAL_LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_StringBuilderEx_Any_Tests">
       <LineId Id="37" Count="21" />
       <LineId Id="36" Count="0" />
@@ -628,6 +682,24 @@ END_IF]]></ST>
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test24_ANY_BIT_WORD">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test25_ANY_BIT_BYTE">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test26_ANY_BIT_DWORD">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test27_ANY_BIT_LWORD">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test28_ANY_REAL_REAL">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test29_ANY_REAL_LREAL">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
