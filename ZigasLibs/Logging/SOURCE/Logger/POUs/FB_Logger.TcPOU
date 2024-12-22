@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Logger" Id="{86b60fa4-cbc9-0995-00ad-63ce008210aa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger IMPLEMENTS ZigaLibs_Core.I_LoggerEx
 VAR
@@ -12,7 +12,7 @@ VAR
 	_fileExists				: BOOL;
 	_localSystemTime		: ZigaLibs_Core.FB_LocalSystemTimeProvider;
 	_localSystemTimeString	: Tc2_System.T_MaxString;
-	_stringBuilder			: ZigaLibs_Core.FB_StringBuilderBase;
+	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	_amsAddress				: Tc2_System.ST_AmsAddr;
 	_dateForLogName			: STRING;
 END_VAR]]></Declaration>
