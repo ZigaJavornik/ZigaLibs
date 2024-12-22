@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FileHelper" Id="{937eb662-c0cd-004b-2265-3a2c8b97ceb1}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM FileHelper
 VAR
@@ -18,7 +18,7 @@ VAR_INPUT
 END_VAR
 
 VAR
-	stringBuilder	: FB_StringBuilderBase;
+	stringBuilder	: FB_StringBuilder;
 END_VAR
 ]]></Declaration>
       <Implementation>

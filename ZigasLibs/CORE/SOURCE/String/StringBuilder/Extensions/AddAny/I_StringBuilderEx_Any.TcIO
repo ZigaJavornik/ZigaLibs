@@ -9,7 +9,7 @@ Some extra info:
 	- BOOL and BIT will have the string converted to 'TRUE' and 'FALSE' respectively.
 	- floating point variables will have their values precision based on constructor realFormatPrecision and will be rounded based on the roundRealValues
 *)
-METHOD AddAny : I_StringBuilderEx_Any
+METHOD AddAny : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyVar	: ANY;
 END_VAR]]></Declaration>
@@ -17,7 +17,7 @@ END_VAR]]></Declaration>
     <Method Name="AddAnyBit" Id="{218ef548-fd63-02c6-0d6b-2aa3bbbafffc}">
       <Declaration><![CDATA[// Adds a variable of type ANY_BIT to the string generating sequence, based on the provided parameters.
 // This includes: BYTE, WORD, DWORD, LWORD, 
-METHOD AddAnyBit : I_StringBuilderEx_Any
+METHOD AddAnyBit : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyBit					: ANY_BIT;				// Value to be converterd
 	option					: E_AddAnyBitOptions;	// Select how the value is converter
@@ -31,23 +31,12 @@ END_VAR
       <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
 // Please note that REAL values will ALWAYS be automatically rounded on 3rd decimal digit.
 // Anything after it will be whatever TwinCAT representation decides to do.
-METHOD AddAnyReal : I_StringBuilderEx_Any
+METHOD AddAnyReal : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyReal		: ANY_REAL;	// Value to be converter
 	precision	: INT;		// Precision
 	round		: BOOL;		// Rounding of the last displayed digit
 END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="Create" Id="{d8d3d2e9-758d-00eb-2642-7d98b4a070e4}">
-      <Declaration><![CDATA[METHOD Create : T_MaxString
-VAR_INPUT
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="Reset" Id="{ec7f4f1c-b66f-0757-01f9-69b45a4d44c9}">
-      <Declaration><![CDATA[METHOD Reset : I_StringBuilderEx_Any
-
 ]]></Declaration>
     </Method>
   </Itf>

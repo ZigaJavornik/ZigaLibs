@@ -234,19 +234,16 @@
     <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\StringBuilder\Base\FB_StringBuilderBase.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\String\StringBuilder\Base\I_StringBuilderBase.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\E_AddAnyBitOptions.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\FB_StringBuilderEx_Any.TcPOU">
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\I_StringBuilderEx_Any.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\I_StringBuilderEx_Any.TcIO">
+    <Compile Include="SOURCE\String\StringBuilder\FB_StringBuilder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\StringBuilder\I_StringBuilder.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringConstants.TcPOU">
@@ -355,7 +352,6 @@
     <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
     <Folder Include="SOURCE\String\StringBuilder" />
-    <Folder Include="SOURCE\String\StringBuilder\Base" />
     <Folder Include="SOURCE\String\StringBuilder\Extensions" />
     <Folder Include="SOURCE\String\StringBuilder\Extensions\AddAny" />
     <Folder Include="SOURCE\Time" />

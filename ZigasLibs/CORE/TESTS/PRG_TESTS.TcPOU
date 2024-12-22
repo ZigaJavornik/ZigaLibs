@@ -12,8 +12,7 @@ VAR
 	DateTimeToStringConverterTest	: FB_DateTimeToStringConverter_Tests;
 	ErrorSourceTests				: FB_ErrorSource_Tests;
 	HasInstanceNameTests			: FB_HasInstanceName_Tests;
-	StringBuilderBaseTest			: FB_StringBuilder_Tests;
-	StringBuilderExAnyTests			: FB_StringBuilderEx_Any_Tests;
+	StringBuilderTests				: FB_StringBuilder_Tests;
 	HasTaskInfoTests				: FB_HasTaskInfo_Tests;
 	AlarmManagerTests				: FB_AlarmManager_Tests;
 	BoolExTests						: FB_BoolEx_Tests;
@@ -46,9 +45,5 @@ TcUnit.RUN_IN_SEQUENCE();
         </TypeList>
       </XmlArchive>
     </ObjectProperties>
-    <LineIds Name="PRG_TESTS">
-      <LineId Id="3" Count="4" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

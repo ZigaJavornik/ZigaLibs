@@ -1,17 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
-  <POU Name="FB_StringBuilderEx_Any" Id="{a3b9c09e-cbc8-08a7-18f4-a792c9208864}" SpecialFunc="None">
-    <Declaration><![CDATA[// An extension to FB_StringBuilderBase. The ethods acceppt ANY data type as entry. Values are converted internally.
-FUNCTION_BLOCK FB_StringBuilderEx_Any IMPLEMENTS I_StringBuilderEx_Any
+  <POU Name="FB_StringBuilder" Id="{4af2ae7b-34e5-0402-2ab5-b787ed381493}" SpecialFunc="None">
+    <Declaration><![CDATA[(* Provides basic string builder implementation.
+IMPORTANT NOTE! Doing too many method chains might cause the codesys compiler to either be very slow
+when doing the "generating code" part or even fail. Restrain to not using too many or too
+many nested methods ( method(fb.Method(fb2.Method())... ).
+*)
+FUNCTION_BLOCK FB_StringBuilder IMPLEMENTS I_StringBuilder, I_StringBuilderEx_Any 
 VAR
-	_stringBuilderBase	: FB_StringBuilderBase;
+	_string	: Tc2_System.T_MaxString;
 END_VAR
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="AddAny" Id="{b9fd09fd-5727-0ce3-0bbd-b877aa1783cd}">
+    <Method Name="AddAny" Id="{c4c05828-1ba6-0402-3bbc-0582503d2048}">
       <Declaration><![CDATA[(* Adds the variable of any data type to the sequence. Conversion is done automatically from within. 
 Returns I_StringBuilderEx_Any for further string building capability.
 
@@ -20,7 +23,7 @@ Some extra info:
 	- BYTE, WORD, DWORD and LWORD will be converted without any additional options. Use AddAnyBit method for these instead!
 	- REAL and LREAL will be added as T_MaxString values. Please use AddAnyReal method for these instead.*)
 
-METHOD AddAny : I_StringBuilderEx_Any
+METHOD AddAny : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyVar	: ANY;
 END_VAR
@@ -111,14 +114,14 @@ END_VAR
 	
 END_CASE
 
-_stringBuilderBase.AddString(result);
-AddAny := THIS^;]]></ST>
+THIS^.AddString(result);
+AddAny REF= THIS^;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AddAnyBit" Id="{b8b5349f-82bc-0ac0-2894-a1005cd28a23}">
+    <Method Name="AddAnyBit" Id="{0bc46e66-9185-0294-12aa-5ad96ee0ed97}">
       <Declaration><![CDATA[// Adds a variable of type ANY_BIT to the string generating sequence, based on the provided parameters.
 // This includes: BYTE, WORD, DWORD, LWORD, 
-METHOD AddAnyBit : I_StringBuilderEx_Any
+METHOD AddAnyBit  : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyBit					: ANY_BIT;				// Value to be converterd
 	option					: E_AddAnyBitOptions;	// Select how the value is converter
@@ -130,8 +133,7 @@ VAR
 	result : Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{warning 'Create tests to verify functionality!'}
-CASE anyBit.TypeClass OF
+        <ST><![CDATA[CASE anyBit.TypeClass OF
 	__SYSTEM.TYPE_CLASS.TYPE_WORD:
 		CASE option OF
 			E_AddAnyBitOptions.BINARY:
@@ -245,18 +247,18 @@ IF addNotation THEN
 	END_CASE
 END_IF
 
-_stringBuilderBase.AddString(result);
-AddAnyBit := THIS^;
+THIS^.AddString(result);
+AddAnyBit REF= THIS^;
 
 
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AddAnyReal" Id="{c64b3256-4480-0cfd-3dd0-b1062a076d36}">
+    <Method Name="AddAnyReal" Id="{088ed481-b63d-090e-2d20-76d4cef29e01}">
       <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
 // Please note that REAL values will ALWAYS be automatically rounded on 3rd decimal digit.
 // Anything after it will be whatever TwinCAT decides to do.
-METHOD AddAnyReal : I_StringBuilderEx_Any
+METHOD AddAnyReal : REFERENCE TO FB_StringBuilder
 VAR_INPUT
 	anyReal		: ANY_REAL;	// Value to be converter
 	precision	: INT;		// Precision of decimal digits
@@ -265,7 +267,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF anyReal.diSize = SIZEOF(REAL) THEN
 	// REAL
-	_stringBuilderBase.AddString(
+	THIS^.AddString(
 		Tc2_Utilities.LREAL_TO_FMTSTR(
 			in := REAL_TO_LREAL(Tc2_Utilities.PREAL_TO_REAL(anyReal.pValue)),
 			iPrecision := precision, 
@@ -273,35 +275,89 @@ END_VAR]]></Declaration>
 		
 ELSE
 	// LREAL
-	_stringBuilderBase.AddString(Tc2_Utilities.LREAL_TO_FMTSTR(
+	THIS^.AddString(Tc2_Utilities.LREAL_TO_FMTSTR(
 		in := Tc2_Utilities.PLREAL_TO_LREAL(anyReal.pValue),
 		iPrecision := precision,
 		bRound := round));	
 END_IF
 
-AddAnyReal := THIS^;
+AddAnyReal REF= THIS^;
 
 
 	
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Create" Id="{b37645ef-ea8f-0e2e-3ae1-fde44b144eb3}">
-      <Declaration><![CDATA[METHOD Create : T_MaxString
+    <Method Name="AddString" Id="{a1f2665a-9e23-0057-3cb2-001019efbfb5}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence.*)
+METHOD AddString : I_StringBuilder
 VAR_INPUT
+	(* String to be added.*)
+	str	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Create := _stringBuilderBase.Create();]]></ST>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := str);
+	
+AddString := THIS^;
+]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Reset" Id="{8e8460a6-a7df-0ad5-1839-d7ff2c62e7f2}">
-      <Declaration><![CDATA[(* Reset the string build sequence, clear any string built so far.*)
-METHOD Reset : I_StringBuilderEx_Any
+    <Method Name="AddWithDblQuotationMarks" Id="{0e9fd4de-15c4-07a9-0872-3820188174d7}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence and wraps the str in double quotation marks "str"*)
+METHOD AddWithDblQuotationMarks : I_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_stringBuilderBase.Reset();
-Reset := THIS^;]]></ST>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := Tc2_Standard.CONCAT(
+		STR1 := StringConstants.DoubleQuotationMark, 
+		STR2 := Tc2_Standard.CONCAT(
+			STR1 := str, 
+			STR2 := StringConstants.DoubleQuotationMark))); 
+	
+AddWithDblQuotationMarks := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddWithQuotationMark" Id="{71b839a6-f4de-0e1d-0723-bae3b89369d5}">
+      <Declaration><![CDATA[(* Adds a string to the build sequence and wraps the str in quotation marks 'str'*)
+METHOD AddWithQuotationMark : I_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := Tc2_Standard.CONCAT(
+	STR1 := _string, 
+	STR2 := Tc2_Standard.CONCAT(
+		STR1 := StringConstants.SingleQuotationMark, 
+		STR2 := Tc2_Standard.CONCAT(
+			STR1 := str, 
+			STR2 := StringConstants.SingleQuotationMark))); 
+		
+AddWithQuotationMark := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{837ad951-dde3-0ecc-1e91-80edffc6563f}">
+      <Declaration><![CDATA[(* Finishes string generation and returns the generated string*)
+METHOD Create : Tc2_System.T_MaxString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Create := _string;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{c0b64bb0-ab5a-04e6-313f-3575f6a54110}">
+      <Declaration><![CDATA[(* Reset the string build sequence, clear any string built so far.*)
+METHOD Reset : REFERENCE TO FB_StringBuilder
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_string := '';
+Reset REF= THIS^;]]></ST>
       </Implementation>
     </Method>
   </POU>

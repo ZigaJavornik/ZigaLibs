@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_AlarmManager" Id="{3eb86085-e2c4-0140-28bd-03ee6f0441da}" SpecialFunc="None">
     <Declaration><![CDATA[// Alarm manager function block. 
 // Make sure to call the body of this block before doing any method calls so that the array to be managed is assigned via the var_in_out.
@@ -9,7 +9,7 @@ FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
 VAR
 	_enable						: BOOL;
 	_alarmArrayProperties		: ST_ArrayProperties;
-	_stringBuilder				: FB_StringBuilderBase;
+	_stringBuilder				: FB_StringBuilder;
 	_dateTime					: FB_LocalSystemTimeProvider;
 	_initialized				: BOOL := FALSE;
 	

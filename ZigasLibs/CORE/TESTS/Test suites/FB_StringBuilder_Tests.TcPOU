@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_StringBuilder_Tests" Id="{c594d149-3a7b-0c5b-0fe5-6461e89a91f6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringBuilder_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringBuilder_Tests EXTENDS FB_StringBuilderEx_Any_Tests
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	_stringBuilder	: FB_StringBuilderBase;
+	_stringBuilder	: FB_StringBuilder;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -15,7 +15,9 @@ END_VAR
 Test02_AddWithSingleQuotationMarks();
 Test03_AddWithDoubleQuotationMarks();
 Test04_CreateDoesNotResetStringSequence();
-Test05_ResetClearsBuildSequence();]]></ST>
+Test05_ResetClearsBuildSequence();
+SUPER^();
+]]></ST>
     </Implementation>
     <Method Name="Test01_AddStrings_ExpectConcat" Id="{b2fbe99a-3454-0bcc-39be-f7bffdfd0ffd}">
       <Declaration><![CDATA[METHOD Test01_AddStrings_ExpectConcat
@@ -23,17 +25,17 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test01_AddStrings_ExpectConcat');
-
-AssertEquals_STRING(
-	Actual := _stringBuilder.Reset()
-		.AddString('test')
-		.AddString('test2')
-		.Create(),
-	Expected := 'testtest2',
-	Message := 'AddString of two strings failed!');
-	
-TcUnit.TEST_FINISHED();
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_AddStrings_ExpectConcat') THEN
+	AssertEquals_STRING(
+		Actual := _stringBuilder.Reset()
+			.AddString('test')
+			.AddString('test2')
+			.Create(),
+		Expected := 'testtest2',
+		Message := 'AddString of two strings failed!');
+		
+	TcUnit.TEST_FINISHED();
+END_IF
 	]]></ST>
       </Implementation>
     </Method>
@@ -43,18 +45,17 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test02_AddWithSingleQuotationMarks');
-
-AssertEquals_STRING(
-	Actual := _stringBuilder.Reset()
-		.AddWithQuotationMark('test')
-		.AddWithQuotationMark('test2')
-		.Create(),
-	Expected := '$'test$'$'test2$'',
-	Message := 'AddString of two strings failed!');
-	
-TcUnit.TEST_FINISHED();
-]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_AddWithSingleQuotationMarks') THEN
+	AssertEquals_STRING(
+		Actual := _stringBuilder.Reset()
+			.AddWithQuotationMark('test')
+			.AddWithQuotationMark('test2')
+			.Create(),
+		Expected := '$'test$'$'test2$'',
+		Message := 'AddString of two strings failed!');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test03_AddWithDoubleQuotationMarks" Id="{aa3f53ed-7237-0c2e-0a1b-54f993f2c200}">
@@ -63,18 +64,17 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test03_AddWithDoubleQuotationMarks');
-
-AssertEquals_STRING(
-	Actual := _stringBuilder.Reset()
-		.AddWithDblQuotationMarks('test')
-		.AddWithDblQuotationMarks('test2')
-		.Create(),
-	Expected := '"test""test2"',
-	Message := 'AddString of two strings failed!');
-	
-TcUnit.TEST_FINISHED();
-]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_AddWithDoubleQuotationMarks') THEN
+	AssertEquals_STRING(
+		Actual := _stringBuilder.Reset()
+			.AddWithDblQuotationMarks('test')
+			.AddWithDblQuotationMarks('test2')
+			.Create(),
+		Expected := '"test""test2"',
+		Message := 'AddString of two strings failed!');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test04_CreateDoesNotResetStringSequence" Id="{e64e7164-aabd-0691-1ca5-d48bedc77cb3}">
@@ -83,19 +83,19 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test04_CreateDoesNotResetStringSequence');
-
-_stringBuilder.Reset()
-	.AddString('a')
-	.AddString('b')
-	.Create();
-	
-AssertEquals_STRING(
-	Actual := _stringBuilder.AddString('c').Create(),
-	Expected := 'abc',
-	Message := 'Calling .Create() should result in the string creation remaining intact, until Reset() is called explicitly!');
-	
-TcUnit.TEST_FINISHED();]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_CreateDoesNotResetStringSequence') THEN
+	_stringBuilder.Reset()
+		.AddString('a')
+		.AddString('b')
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := _stringBuilder.AddString('c').Create(),
+		Expected := 'abc',
+		Message := 'Calling .Create() should result in the string creation remaining intact, until Reset() is called explicitly!');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test05_ResetClearsBuildSequence" Id="{f2b87b37-e29c-07b5-29ea-dd58e34e2695}">
@@ -104,21 +104,20 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test05_ResetClearsBuildSequence');
-
-_stringBuilder.Reset()
-	.AddString('a')
-	.AddString('b')
-	.Reset()
-	.AddString('c');
-
-AssertEquals_STRING(
-	Actual := _stringBuilder.Create(),
-	Expected := 'c',
-	Message := 'Calling Reset() method should result in the sequnce being cleared!');
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_ResetClearsBuildSequence') THEN
+	_stringBuilder.Reset()
+		.AddString('a')
+		.AddString('b')
+		.Reset()
+		.AddString('c');
 	
-	
-TcUnit.TEST_FINISHED();]]></ST>
+	AssertEquals_STRING(
+		Actual := _stringBuilder.Create(),
+		Expected := 'c',
+		Message := 'Calling Reset() method should result in the sequnce being cleared!');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
   </POU>
