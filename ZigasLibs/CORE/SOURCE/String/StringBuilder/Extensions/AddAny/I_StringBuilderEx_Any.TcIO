@@ -23,11 +23,14 @@ VAR_INPUT
 	option					: E_AddAnyBitOptions;	// Select how the value is converter
 	lowerCase				: BOOL;					// If hexadecimal option is selected, the result string can be converted to either lower or upper case
 	displayedDigitsCount	: INT;					// This determines how many digits are to be displayed. If actual digits count is lower, the string is filled with zeros from the left side. If left at 0, the result string will be an empty string!
+	addNotation				: BOOL;					// If this is set to TRUE, a notation will be prepended: (DEC)10, (BIN)10, (HEX)10, (OCT)10
 END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="AddAnyReal" Id="{638aae62-d03d-0df9-0ab3-ed46ca6c0a89}">
       <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
+// Please note that REAL values will ALWAYS be automatically rounded on 3rd decimal digit.
+// Anything after it will be whatever TwinCAT representation decides to do.
 METHOD AddAnyReal : I_StringBuilderEx_Any
 VAR_INPUT
 	anyReal		: ANY_REAL;	// Value to be converter

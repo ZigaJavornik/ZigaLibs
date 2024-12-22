@@ -123,6 +123,7 @@ VAR_INPUT
 	option					: E_AddAnyBitOptions;	// Select how the value is converter
 	lowerCase				: BOOL;					// If hexadecimal option is selected, the result string can be converted to either lower or upper case
 	displayedDigitsCount	: INT;					// This determines how many digits are to be displayed. If actual digits count is lower, the string is filled with zeros from the left side. If left at 0, the result string will be an empty string!
+	addNotation				: BOOL;					// If this is set to TRUE, a notation will be prepended: (DEC)10, (BIN)10, (HEX)10, (OCT)10
 END_VAR
 VAR
 	result : Tc2_System.T_MaxString;
@@ -227,6 +228,22 @@ CASE anyBit.TypeClass OF
 		END_CASE
 END_CASE
 
+IF addNotation THEN
+	CASE option OF
+		E_AddAnyBitOptions.BINARY:
+			result := Tc2_Standard.CONCAT('(BIN)', result);
+			
+		E_AddAnyBitOptions.DECIMAL:
+			result := Tc2_Standard.CONCAT('(DEC)', result);
+		
+		E_AddAnyBitOptions.HEXADECIMAL:
+			result := Tc2_Standard.CONCAT('(HEX)', result);
+		
+		E_AddAnyBitOptions.OCTAL:
+			result := Tc2_Standard.CONCAT('(OCT)', result);
+	END_CASE
+END_IF
+
 _stringBuilderBase.AddString(result);
 AddAnyBit := THIS^;
 
@@ -236,23 +253,36 @@ AddAnyBit := THIS^;
     </Method>
     <Method Name="AddAnyReal" Id="{c64b3256-4480-0cfd-3dd0-b1062a076d36}">
       <Declaration><![CDATA[// Adds any REAL or LREAL value to the generating string sequence.
+// Please note that REAL values will ALWAYS be automatically rounded on 3rd decimal digit.
+// Anything after it will be whatever TwinCAT decides to do.
 METHOD AddAnyReal : I_StringBuilderEx_Any
 VAR_INPUT
 	anyReal		: ANY_REAL;	// Value to be converter
-	precision	: INT;		// Precision
+	precision	: INT;		// Precision of decimal digits
 	round		: BOOL;		// Rounding of the last displayed digit
-END_VAR
-VAR
-	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{warning 'Create tests to verify functionality!'}
-_stringBuilderBase.AddString(LREAL_TO_FMTSTR(
-	in := TO_LREAL(anyReal.pValue^),
-	iPrecision := precision,
-	bRound := round));
+        <ST><![CDATA[IF anyReal.diSize = SIZEOF(REAL) THEN
+	// REAL
+	_stringBuilderBase.AddString(
+		Tc2_Utilities.LREAL_TO_FMTSTR(
+			in := REAL_TO_LREAL(Tc2_Utilities.PREAL_TO_REAL(anyReal.pValue)),
+			iPrecision := precision, 
+			bRound := round));
+		
+ELSE
+	// LREAL
+	_stringBuilderBase.AddString(Tc2_Utilities.LREAL_TO_FMTSTR(
+		in := Tc2_Utilities.PLREAL_TO_LREAL(anyReal.pValue),
+		iPrecision := precision,
+		bRound := round));	
+END_IF
+
+AddAnyReal := THIS^;
+
+
 	
-AddAnyReal := THIS^;]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Create" Id="{b37645ef-ea8f-0e2e-3ae1-fde44b144eb3}">
@@ -362,7 +392,20 @@ Reset := THIS^;]]></ST>
       <LineId Id="162" Count="21" />
       <LineId Id="60" Count="0" />
       <LineId Id="54" Count="0" />
+      <LineId Id="217" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="207" Count="1" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="209" Count="1" />
+      <LineId Id="203" Count="0" />
       <LineId Id="185" Count="0" />
+      <LineId Id="218" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="187" Count="0" />
       <LineId Id="186" Count="0" />
@@ -370,9 +413,22 @@ Reset := THIS^;]]></ST>
       <LineId Id="41" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any.AddAnyReal">
-      <LineId Id="45" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="40" Count="4" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="105" Count="1" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="94" Count="2" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="42" Count="2" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any.Create">
       <LineId Id="5" Count="0" />

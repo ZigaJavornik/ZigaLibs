@@ -12,7 +12,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test01_BOOL();
-Test02_Byte_ExpectDecimalString();
+Test02_BYTE();
 Test03_DATE();
 Test04_DateAndTime();
 Test05_DINT();
@@ -33,7 +33,13 @@ Test19_UINT();
 Test20_ULINT();
 Test21_USINT();
 Test22_WORD();
-Test23_WSTRING();]]></ST>
+Test23_WSTRING();
+Test24_ANY_BIT_WORD();
+Test25_ANY_BIT_BYTE();
+Test26_ANY_BIT_DWORD();
+Test27_ANY_BIT_LWORD();
+Test28_ANY_REAL_REAL();
+Test29_ANY_REAL_LREAL();]]></ST>
     </Implementation>
     <Method Name="Test01_BOOL" Id="{cfb9a40b-eb82-0aeb-29ca-569dd72e79c7}">
       <Declaration><![CDATA[METHOD Test01_BOOL
@@ -62,8 +68,8 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test02_BYTE_ExpectDecimalString" Id="{c4fd4cb4-7ad4-0c82-28ce-eca0288b2bd4}">
-      <Declaration><![CDATA[METHOD Test02_BYTE_ExpectDecimalString
+    <Method Name="Test02_BYTE" Id="{c4fd4cb4-7ad4-0c82-28ce-eca0288b2bd4}">
+      <Declaration><![CDATA[METHOD Test02_BYTE
 VAR_INPUT
 END_VAR
 VAR
@@ -71,7 +77,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TEST_ORDERED('Test02_BYTE_ExpectDecimalString') THEN
+        <ST><![CDATA[IF TEST_ORDERED('Test02_BYTE') THEN
 	
 	AssertEquals_STRING(
 		Actual := stringBuilderExAny.Reset().AddAny(byteVar).Create(),
@@ -442,59 +448,616 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD Test24_ANY_BIT_WORD
 VAR_INPUT
 END_VAR
-]]></Declaration>
+VAR
+	wordVar	: WORD := 16#AB;
+	result	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test24_ANY_BIT_WORD') THEN
+	
+	// BINARY with notations
+	result := stringBuilderExAny.Reset().
+		AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(BIN)0000000010101011',
+		Message := 'Adding word as BINARY with addNotation = TRUE was incorrect');
+		
+	// BINARY without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000010101011',
+		Message := 'Adding word as BINARY with addNotation = FALSE was incorrect');
+		
+	// DECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(DEC)0000000000000171',
+		Message := 'Adding word as DECIMAL with addNotation = TRUE was incorrect');
+		
+	// DECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000000000171',
+		Message := 'Adding word as DECIMAL with addNotation = FALSE was incorrect');
+
+	// HEXADECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(HEX)00000000000000AB',
+		Message := 'Adding word as HEXADECIMAL with addNotation = TRUE was incorrect');
+		
+	// HEXADECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000000000000AB',
+		Message := 'Adding word as HEXADECIMAL with addNotation = FALSE was incorrect');
+	
+	// OCTAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(OCT)0000000000000253',
+		Message := 'Adding word as OCTAL with addNotation = TRUE was incorrect');
+		
+	// OCTAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := wordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 16, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000000000253',
+		Message := 'Adding word as OCTAL with addNotation = FALSE was incorrect');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test25_ANY_BIT_BYTE" Id="{3e550e7b-2522-0e59-252d-d1f17213e7d2}">
       <Declaration><![CDATA[METHOD Test25_ANY_BIT_BYTE
 VAR_INPUT
 END_VAR
-]]></Declaration>
+VAR
+	byteVar	: BYTE := 16#AB;
+	result	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test25_ANY_BIT_BYTE') THEN
+	
+	// BINARY with notations
+	result := stringBuilderExAny.Reset().
+		AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(BIN)10101011',
+		Message := 'Adding byte as BINARY with addNotation = TRUE was incorrect');
+		
+	// BINARY without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '10101011',
+		Message := 'Adding byte as BINARY with addNotation = FALSE was incorrect');
+		
+	// DECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(DEC)00000171',
+		Message := 'Adding byte as DECIMAL with addNotation = TRUE was incorrect');
+		
+	// DECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000171',
+		Message := 'Adding byte as DECIMAL with addNotation = FALSE was incorrect');
+
+	// HEXADECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(HEX)000000AB',
+		Message := 'Adding byte as HEXADECIMAL with addNotation = TRUE was incorrect');
+		
+	// HEXADECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '000000AB',
+		Message := 'Adding byte as HEXADECIMAL with addNotation = FALSE was incorrect');
+	
+	// OCTAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(OCT)00000253',
+		Message := 'Adding byte as OCTAL with addNotation = TRUE was incorrect');
+		
+	// OCTAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := byteVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 8, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000253',
+		Message := 'Adding byte as OCTAL with addNotation = FALSE was incorrect');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test26_ANY_BIT_DWORD" Id="{d34ecae9-fdb6-0c8a-1e30-9d1313ab862c}">
       <Declaration><![CDATA[METHOD Test26_ANY_BIT_DWORD
-VAR_INPUT
-END_VAR
-]]></Declaration>
+VAR
+	dwordVar	: DWORD := 16#AB;
+	result	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test26_ANY_BIT_DWORD') THEN
+	
+	// BINARY with notations
+	result := stringBuilderExAny.Reset().
+		AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(BIN)00000000000000000000000010101011',
+		Message := 'Adding dword as BINARY with addNotation = TRUE was incorrect');
+		
+	// BINARY without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000000000000000000000010101011',
+		Message := 'Adding dword as BINARY with addNotation = FALSE was incorrect');
+		
+	// DECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(DEC)00000000000000000000000000000171',
+		Message := 'Adding dword as DECIMAL with addNotation = TRUE was incorrect');
+		
+	// DECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000000000000000000000000000171',
+		Message := 'Adding dword as DECIMAL with addNotation = FALSE was incorrect');
+
+	// HEXADECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(HEX)000000000000000000000000000000AB',
+		Message := 'Adding dword as HEXADECIMAL with addNotation = TRUE was incorrect');
+		
+	// HEXADECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '000000000000000000000000000000AB',
+		Message := 'Adding dword as HEXADECIMAL with addNotation = FALSE was incorrect');
+	
+	// OCTAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(OCT)00000000000000000000000000000253',
+		Message := 'Adding dword as OCTAL with addNotation = TRUE was incorrect');
+		
+	// OCTAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := dwordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 32, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000000000000000000000000000253',
+		Message := 'Adding dword as OCTAL with addNotation = FALSE was incorrect');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test27_ANY_BIT_LWORD" Id="{f929254d-fa61-062f-0af3-37cbe0ae0a1d}">
       <Declaration><![CDATA[METHOD Test27_ANY_BIT_LWORD
-VAR_INPUT
+VAR
+	lwordVar	: LWORD := 16#AB;
+	result	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test27_ANY_BIT_LWORD') THEN
+	
+	// BINARY with notations
+	result := stringBuilderExAny.Reset().
+		AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(BIN)0000000000000000000000000000000000000000000000000000000010101011',
+		Message := 'Adding lword as BINARY with addNotation = TRUE was incorrect');
+		
+	// BINARY without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.BINARY, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000000000000000000000000000000000000000000000000000010101011',
+		Message := 'Adding lword as BINARY with addNotation = FALSE was incorrect');
+		
+	// DECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(DEC)0000000000000000000000000000000000000000000000000000000000000171',
+		Message := 'Adding lword as DECIMAL with addNotation = TRUE was incorrect');
+		
+	// DECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.DECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000000000000000000000000000000000000000000000000000000000171',
+		Message := 'Adding lword as DECIMAL with addNotation = FALSE was incorrect');
+
+	// HEXADECIMAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(HEX)00000000000000000000000000000000000000000000000000000000000000AB',
+		Message := 'Adding lword as HEXADECIMAL with addNotation = TRUE was incorrect');
+		
+	// HEXADECIMAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.HEXADECIMAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '00000000000000000000000000000000000000000000000000000000000000AB',
+		Message := 'Adding lword as HEXADECIMAL with addNotation = FALSE was incorrect');
+	
+	// OCTAL with notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := TRUE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '(OCT)0000000000000000000000000000000000000000000000000000000000000253',
+		Message := 'Adding lword as OCTAL with addNotation = TRUE was incorrect');
+		
+	// OCTAL without notations
+	result := stringBuilderExAny.Reset()
+		.AddAnyBit(
+			anyBit := lwordVar, 
+			option := E_AddAnyBitOptions.OCTAL, 
+			lowerCase := FALSE, 
+			displayedDigitsCount := 64, 
+			addNotation := FALSE)
+		.Create();
+		
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '0000000000000000000000000000000000000000000000000000000000000253',
+		Message := 'Adding lword as OCTAL with addNotation = FALSE was incorrect');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test28_ANY_REAL_REAL" Id="{6d237f3d-660f-087b-1049-692edac18b97}">
       <Declaration><![CDATA[METHOD Test28_ANY_REAL_REAL
-VAR_INPUT
+VAR
+	realVar	: REAL := 12345.123888;
+	result	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test28_ANY_REAL_REAL') THEN
+	result := stringBuilderExAny.Reset().
+		AddAnyReal(
+			anyReal := realVar,
+			precision := 2,
+			round := FALSE)
+		.Create();	
+
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '12345.12',
+		Message := 'Adding REAL with round = FALSE failed.');
+		
+	result := stringBuilderExAny.Reset().
+		AddAnyReal(
+			anyReal := realVar,
+			precision := 3,
+			round := TRUE)
+		.Create();	
+
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '12345.124',
+		Message := 'Adding REAL with round = TRUE failed.');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test29_ANY_REAL_LREAL" Id="{7049dc39-845e-069a-24dd-c1ad1129622a}">
       <Declaration><![CDATA[METHOD Test29_ANY_REAL_LREAL
-VAR_INPUT
+VAR
+	lrealVar	: LREAL := 12345.12345678;
+	result	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[{error 'Implement test!'}]]></ST>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test29_ANY_REAL_LREAL') THEN
+	result := stringBuilderExAny.Reset().
+		AddAnyReal(
+			anyReal := lrealVar,
+			precision := 5,
+			round := FALSE)
+		.Create();	
+
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '12345.12345',
+		Message := 'Adding LREAL with round = FALSE failed.');
+		
+	result := stringBuilderExAny.Reset().
+		AddAnyReal(
+			anyReal := lrealVar,
+			precision := 7,
+			round := TRUE)
+		.Create();	
+
+	AssertEquals_STRING(
+		Actual := result,
+		Expected := '12345.1234568',
+		Message := 'Adding LREAL with round = TRUE failed.');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_StringBuilderEx_Any_Tests">
-      <LineId Id="37" Count="21" />
-      <LineId Id="36" Count="0" />
+      <LineId Id="73" Count="27" />
+      <LineId Id="72" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test01_BOOL">
       <LineId Id="12" Count="1" />
@@ -508,7 +1071,7 @@ END_VAR
       <LineId Id="14" Count="0" />
       <LineId Id="16" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test02_BYTE_ExpectDecimalString">
+    <LineIds Name="FB_StringBuilderEx_Any_Tests.Test02_BYTE">
       <LineId Id="5" Count="1" />
       <LineId Id="9" Count="1" />
       <LineId Id="15" Count="1" />
@@ -685,20 +1248,63 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test24_ANY_BIT_WORD">
       <LineId Id="5" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="26" Count="3" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="33" Count="11" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="48" Count="27" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="81" Count="27" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="110" Count="28" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test25_ANY_BIT_BYTE">
+      <LineId Id="141" Count="122" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test26_ANY_BIT_DWORD">
+      <LineId Id="139" Count="122" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test27_ANY_BIT_LWORD">
+      <LineId Id="140" Count="122" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test28_ANY_REAL_REAL">
       <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="17" Count="3" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="27" Count="9" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringBuilderEx_Any_Tests.Test29_ANY_REAL_LREAL">
+      <LineId Id="43" Count="25" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
