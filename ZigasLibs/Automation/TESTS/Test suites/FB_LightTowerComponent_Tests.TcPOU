@@ -19,29 +19,37 @@ VAR_INST
 	timer	 		: Tc2_Standard.TON;
 	timerOff		: Tc2_Standard.TON;
 	component		: FB_LightTowerComponent := (component := componentItem);
+	onOffTestDone	: BOOL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test01_AllFunctionalityTests');
 component();
-component.Activate();
-AssertTrue(Condition := componentItem, Message := 'component activation failed.');
-component.Deactivate();
+
+IF NOT onOffTestDone THEN
+	component.Activate();
+	AssertTrue(Condition := componentItem, Message := 'component activation failed.');
+	component.Deactivate();
+	onOffTestDone := TRUE;
+END_IF
+
 component.PulseWithInterval(DurationOn := T#100MS, DurationOff := T#100MS);
-IF timer.ET = T#0S AND timerOff.ET = T#0S THEN
-	AssertTrue(Condition := componentItem, Message := 'Component should immediately activate after setting pulse interval.');
-END_IF
-
-timer(IN := TRUE, PT := T#100MS);
-IF timer.Q THEN
-	timerOff(In := TRUE);
-	AssertFalse(Condition := componentItem, Message := 'Component should be deactivated when duration on is elapsed.');
-
-END_IF
-
-timerOff();
-IF timerOff.Q THEN
-	AssertTrue(Condition := componentItem, Message := 'Component should be activated when duration off is elapsed.');
-	TcUnit.TEST_FINISHED();
+timer(in := TRUE, PT := T#100MS);
+IF NOT timer.Q THEN
+	AssertTrue(
+		Condition := component.Value, 
+		Message := 'Component should be activated until duration on is elapsed.');
+ELSE
+	timerOff(IN := TRUE, PT := T#100MS);
+	IF timerOff.Q THEN
+		AssertTrue(
+			Condition := component.Value, 
+			Message := 'Component should be activated when duration off is elapsed.');
+		TcUnit.TEST_FINISHED();
+		RETURN;
+	END_IF
+	AssertFalse(
+		Condition := component.Value, 
+		Message := 'Component should be deactivated until duration off is elapsed.');
 END_IF
 ]]></ST>
       </Implementation>
