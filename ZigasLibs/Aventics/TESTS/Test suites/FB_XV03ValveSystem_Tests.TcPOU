@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_XV03ValveSystem_Tests" Id="{6e93b8ca-791a-0f0b-085c-81624b4b6d87}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_XV03ValveSystem_Tests EXTENDS FB_TestSuite
@@ -69,7 +69,7 @@ VAR
 	indexValueToAdd					: UINT;
 	indexValueToSubstract			: UINT;
 	expectedValue					: USINT;
-	strinbBuilder					: ZigaLibs_Core.FB_StringBuilderBase;
+	stringBuilder					: ZigaLibs_Core.FB_StringBuilder;
 	addressToAdd					: DWORD;
 END_VAR
 
@@ -91,7 +91,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 	expectedValue := LREAL_TO_USINT(EXPT(2, iteration - 1 + indexValueToAdd - indexValueToSubstract));
 	AssertTrue(
 		Condition := ptrUsint^ = expectedValue,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 12 was not opened.')
@@ -101,7 +101,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 	fbValveSystem_XV03();
 	AssertTrue(
 		Condition := ptrUsint^ = 0,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 12 was not closed.')
@@ -116,7 +116,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
 	AssertTrue(
 		Condition := ptrUsint^ = expectedValue,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not opened.')
@@ -128,7 +128,7 @@ FOR iteration := 1 TO 24 BY 1 DO
 	fbValveSystem_XV03();
 	AssertTrue(
 		Condition := ptrUsint^ = 0,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not closed.')

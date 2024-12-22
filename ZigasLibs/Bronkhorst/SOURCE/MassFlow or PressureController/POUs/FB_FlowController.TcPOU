@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_FlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
     <Declaration><![CDATA[(* Bronkhorst mass flow/pressure controller device implementation.
-Includes constructor parameters:
-bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
-fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
-sPredictedGasType		: STRING;// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
-sPredictedFlowUnit		: STRING; // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided
-mode					: E_ControllerMode;	// Controller initial mode *)
+============================================================================================================================================================================================
+CONSTRUCTOR TEMPLATE - COPY EVERYTHING BELOW, ADJUST PARAMETERS ACCORDINGLY!
+============================================================================================================================================================================================	
+(fPredictedFlowCapacity	:= 100, // [REAL] Predicted flow capacity. If logger is provided and the read capacity differs, the error will be reported by the logger.
+sPredictedGasType := N2, // [STRING] Predicted gas type. If logger is provided and the read gas type differs, the error will be reported by the logger.
+sPredictedFlowUnit := sccm, // [STRING] Predicted flow unit. If logger is provided and the read flow unit differs, the error will be reported by the logger.
+iLogger := 0, // [ZigaLibs_Core.I_LoggerEx] Logger implementation provided, set to 0 if not required.
+mode := E_ControllerMode.Controlling); // [E_ControllerMode] Controller initial mode
+============================================================================================================================================================================================
+*)
 
 FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceName IMPLEMENTS ZigaLibs_Core.I_ReadsCoE
 VAR_INPUT
@@ -29,7 +32,7 @@ END_VAR
 
 VAR
 	bFirstExecution			: BOOL := TRUE;
-	_stringBuilder			: ZigaLibs_Core.FB_StringBuilderBase;
+	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	_CoeList				: ST_ControllerCoeList;
 	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ' :');
 	_logger					: ZigaLibs_Core.I_LoggerEx;
@@ -142,11 +145,10 @@ VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
 	
-	bWriteLogs				: BOOL;	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
 	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bWriteLogs is set to TRUE and the read capacity differs, the error will be reported by the logger.
 	sPredictedGasType		: STRING;// Predicted gas type. If bWriteLogs is set to TRUE and the read gas type differs, the error will be reported by the logger.
 	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bWriteLogs is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-	iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided
+	iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided, set to 0 if not required.
 	mode					: E_ControllerMode;	// Controller initial mode
 END_VAR
 ]]></Declaration>
@@ -156,7 +158,7 @@ _predictedGasType := sPredictedGasType;
 _predictedFlowUnit := sPredictedFlowUnit;
 _logger := iLogger;
 _mode := mode;
-_writeLogs := bWriteLogs;]]></ST>
+_writeLogs := __ISVALIDREF(iLogger);]]></ST>
       </Implementation>
     </Method>
     <Property Name="Mode" Id="{4c7e1d0e-6e00-01e7-36c0-8b3b117df91e}">
@@ -291,11 +293,11 @@ END_VAR]]></Declaration>
 						.AddString(_logPrefix)
 						.AddString('Invalid flow capacity found! Predicted capacity is ')
 						.AddWithDblQuotationMarks('')
-						.AddString(REAL_TO_STRING(_predictedFlowCapacity)).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+						.AddAnyReal(_predictedFlowCapacity, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
 						.AddWithDblQuotationMarks('')
 						.AddString(' and actual flow capacity found is ')
 						.AddWithDblQuotationMarks('')
-						.AddString(REAL_TO_STRING(_CoeList.Capacity.Value)).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+						.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
 						.AddWithDblQuotationMarks('')
 						.Create());
 					END_IF
