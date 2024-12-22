@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_LaudaPro_P20" Id="{cecc2dfb-a781-4ff5-89b2-b84a5abfedf0}" SpecialFunc="None">
     <Declaration><![CDATA[(* LaudaPro P20 control via TCP/IP
 Includes constructor parameters:
@@ -45,7 +45,7 @@ VAR
 	TonDelayAwaitResponse	: Tc2_Standard.TON := (PT := T#100MS);
 	// Logging
 	bLoggerProvided			: BOOL;
-	fbStringBuilder			: ZigaLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	
 	// Property access fields
 	_actualValues				: ST_LaudaActualValuesCollection;	// Actual values, reported back from the unit
