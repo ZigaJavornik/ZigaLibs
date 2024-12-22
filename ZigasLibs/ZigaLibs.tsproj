@@ -185,7 +185,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{8B499E84-28F2-0784-DA45-3F0EE0E01154}">
+				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{7B873C4E-A6FB-FD91-0D0E-03B7EBADB649}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
