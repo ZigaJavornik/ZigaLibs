@@ -165,9 +165,6 @@
     <Compile Include="SOURCE\Beckhoff\EtherCAT\EthercatHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Errors\DUTs\E_AdsErrorCode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -207,19 +204,25 @@
     <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
+    <Compile Include="SOURCE\General\ST_Value.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\F_DoesVarTypeEqual.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\F_GetVarInfo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Variable extensions\BoolEx.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\ST_Value.TcDUT">
+    <Compile Include="SOURCE\General\Variable information\ST_VarInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\ST_VarInfo.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\T_VarSize.TcDUT">
+    <Compile Include="SOURCE\General\Variable information\T_VarSize.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
@@ -229,9 +232,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Logger\I_LoggerEx.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\E_AddAnyBitOptions.TcDUT">
@@ -341,14 +341,14 @@
     <Folder Include="SOURCE\Errors\DUTs" />
     <Folder Include="SOURCE\File" />
     <Folder Include="SOURCE\File\DUTs" />
+    <Folder Include="SOURCE\General\Variable information" />
+    <Folder Include="SOURCE\General\Memory" />
     <Folder Include="SOURCE\General\Variable extensions" />
     <Folder Include="SOURCE\Logger" />
     <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\Beckhoff" />
-    <Folder Include="SOURCE\DataType" />
-    <Folder Include="SOURCE\Memory" />
     <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
     <Folder Include="SOURCE\String\StringBuilder" />

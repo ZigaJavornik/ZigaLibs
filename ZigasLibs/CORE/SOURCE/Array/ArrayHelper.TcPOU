@@ -305,8 +305,8 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[isArray := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_ARRAY);
-isReference := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_REFERENCE);
+        <ST><![CDATA[isArray := F_DoesVarTypeEqual(arr, IBaseLibrary.TYPE_ARRAY);
+isReference := F_DoesVarTypeEqual(arr, IBaseLibrary.TYPE_REFERENCE);
 
 ValidateArrayVar := isArray OR isReference;
 ]]></ST>
