@@ -182,7 +182,7 @@ END_VAR]]></Declaration>
 					iPrecision := displayedDigitsCount);
 		END_CASE
 	
-	IBaseLibrary.TypeClass.TYPE_DWORD:
+	__SYSTEM.TYPE_CLASS.TYPE_DWORD:
 		CASE option OF
 			E_AddAnyBitOptions.BINARY:
 				result := Tc2_Utilities.WORD_TO_BINSTR(
@@ -206,7 +206,7 @@ END_VAR]]></Declaration>
 					iPrecision := displayedDigitsCount);
 		END_CASE
 	
-	IBaseLibrary.TypeClass.TYPE_LWORD:
+	__SYSTEM.TYPE_CLASS.TYPE_LWORD:
 		CASE option OF
 			E_AddAnyBitOptions.BINARY:
 				result := Tc2_Utilities.LWORD_TO_BINSTR(
