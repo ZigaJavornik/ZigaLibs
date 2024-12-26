@@ -33,11 +33,12 @@ _alarmArrayProperties.EndIndex := UPPER_BOUND(refAlarms, 1);
 _alarmArrayProperties.Count := (_alarmArrayProperties.EndIndex - _alarmArrayProperties.StartIndex) + 1;]]></ST>
     </Implementation>
     <Folder Name="Constructor" Id="{540d7602-4dd8-0316-1d8f-b030614fbb56}" />
-    <Folder Name="Methods - Private" Id="{2081bf70-075e-0c16-2099-9284fdb2b80a}" />
-    <Folder Name="Methods - public" Id="{0151f663-d300-0140-0e71-d12dddb36b94}">
+    <Folder Name="Methods - internal" Id="{e69fa24b-5daa-0696-2bb5-c3097fd8dd8b}">
       <Folder Name="Actions - ById" Id="{24586308-ecc5-0e50-2fa8-9135d7fff715}" />
       <Folder Name="Actions - ByName" Id="{e2bcd09c-87db-03cf-333a-5fca6bd7ba00}" />
     </Folder>
+    <Folder Name="Methods - Private" Id="{2081bf70-075e-0c16-2099-9284fdb2b80a}" />
+    <Folder Name="Methods - public" Id="{0151f663-d300-0140-0e71-d12dddb36b94}" />
     <Folder Name="Properties - public" Id="{0e5f18d4-d4f9-0c87-2317-22c815bdc375}" />
     <Method Name="AcknowledgeAlarm" Id="{49bf6711-a2a3-0bae-1c07-9de351f9ccfe}" FolderPath="Methods - Private\">
       <Declaration><![CDATA[METHOD INTERNAL AcknowledgeAlarm
@@ -65,9 +66,9 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AcknowledgeAlarmById" Id="{734f7742-a0fc-0dc5-34e4-5ca1d673303d}" FolderPath="Methods - public\Actions - ById\">
+    <Method Name="AcknowledgeAlarmById" Id="{734f7742-a0fc-0dc5-34e4-5ca1d673303d}" FolderPath="Methods - internal\Actions - ById\">
       <Declaration><![CDATA[(* Acknowledges the alarm with the provided id*)
-METHOD AcknowledgeAlarmById
+METHOD INTERNAL AcknowledgeAlarmById
 VAR_INPUT
 	nId	: T_ArrayIndexer;
 END_VAR
@@ -90,9 +91,9 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="AcknowledgeAlarmByName" Id="{65c0a185-eb5e-0a64-3ad5-34d1d325dc4a}" FolderPath="Methods - public\Actions - ByName\">
+    <Method Name="AcknowledgeAlarmByName" Id="{65c0a185-eb5e-0a64-3ad5-34d1d325dc4a}" FolderPath="Methods - internal\Actions - ByName\">
       <Declaration><![CDATA[(* Acknowledges the alarm with the provided name.*)
-METHOD AcknowledgeAlarmByName
+METHOD INTERNAL AcknowledgeAlarmByName
 VAR_INPUT
 	sName	: Tc2_System.T_MaxString;
 END_VAR
@@ -178,9 +179,9 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeactivateAlarmById" Id="{95d37b42-a850-0394-240a-fb99f44b0a7d}" FolderPath="Methods - public\Actions - ById\">
+    <Method Name="DeactivateAlarmById" Id="{95d37b42-a850-0394-240a-fb99f44b0a7d}" FolderPath="Methods - internal\Actions - ById\">
       <Declaration><![CDATA[(* Deactivates the alarm with the provided Id (if it exists).*)
-METHOD DeactivateAlarmById
+METHOD INTERNAL DeactivateAlarmById
 VAR_INPUT
 	(* Alarm id to be deactivated.*)
 	nId	: T_ArrayIndexer;
@@ -205,9 +206,9 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeactivateAlarmByName" Id="{be438fb5-61fe-0976-2b73-63f968632459}" FolderPath="Methods - public\Actions - ByName\">
+    <Method Name="DeactivateAlarmByName" Id="{be438fb5-61fe-0976-2b73-63f968632459}" FolderPath="Methods - internal\Actions - ByName\">
       <Declaration><![CDATA[(* Deactivates the alarm with the provided name (if it exists)*)
-METHOD DeactivateAlarmByName
+METHOD INTERNAL DeactivateAlarmByName
 VAR_INPUT
 	(* Alarm name to be deactivated.*)
 	sName	: Tc2_System.T_MaxString;
@@ -293,7 +294,7 @@ _logger REF= iLogger;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetAlarmById" Id="{04cf1bea-b90c-08ce-01da-5e78e3b14c19}" FolderPath="Methods - public\Actions - ById\">
+    <Method Name="GetAlarmById" Id="{04cf1bea-b90c-08ce-01da-5e78e3b14c19}" FolderPath="Methods - public\">
       <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
 (* Gets the alarm with the provided id. 
  If no mathching alarm exists, an empty alarm is returned.*)
@@ -322,7 +323,7 @@ GetAlarmById REF= _emptyAlarm;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetAlarmByName" Id="{7445463b-ef45-03e3-3b6b-6ac076786824}" FolderPath="Methods - public\Actions - ByName\">
+    <Method Name="GetAlarmByName" Id="{7445463b-ef45-03e3-3b6b-6ac076786824}" FolderPath="Methods - public\">
       <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
 (* Gets the alarm with the provided name. 
  If no mathching alarm exists, an empty alarm is returned.*)
@@ -417,9 +418,9 @@ IF __ISVALIDREF(_logger) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="RaiseAlarmById" Id="{09fa4eeb-a927-062d-02d5-65db13becfa1}" FolderPath="Methods - public\Actions - ById\">
+    <Method Name="RaiseAlarmById" Id="{09fa4eeb-a927-062d-02d5-65db13becfa1}" FolderPath="Methods - internal\Actions - ById\">
       <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
-METHOD RaiseAlarmById
+METHOD INTERNAL RaiseAlarmById
 VAR_INPUT
 	(* Alarm id to be activated*)
 	nId	: T_ArrayIndexer;
@@ -443,9 +444,9 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="RaiseAlarmByName" Id="{98ddc441-4696-0e5f-3229-fab0993563f1}" FolderPath="Methods - public\Actions - ByName\">
+    <Method Name="RaiseAlarmByName" Id="{98ddc441-4696-0e5f-3229-fab0993563f1}" FolderPath="Methods - internal\Actions - ByName\">
       <Declaration><![CDATA[(* Activates the alarm with the provided name*)
-METHOD RaiseAlarmByName
+METHOD INTERNAL RaiseAlarmByName
 VAR_INPUT
 	(* Alarm name to be actived*)
 	sName	: Tc2_System.T_MaxString;

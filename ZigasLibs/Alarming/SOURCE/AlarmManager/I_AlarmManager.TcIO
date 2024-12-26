@@ -3,22 +3,6 @@
   <Itf Name="I_AlarmManager" Id="{08ed33cf-534a-0dd0-0916-694bc76d6975}">
     <Declaration><![CDATA[INTERFACE I_AlarmManager
 ]]></Declaration>
-    <Method Name="AcknowledgeAlarmById" Id="{2c771ee6-03a2-09ac-18df-9ebed7360da2}">
-      <Declaration><![CDATA[// Acknowledges the alarm with the provided id
-METHOD AcknowledgeAlarmById
-VAR_INPUT
-	nId	: T_ArrayIndexer;
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="AcknowledgeAlarmByName" Id="{92ae39ee-2ab5-095a-339e-904cb84b699f}">
-      <Declaration><![CDATA[// Acknowledges the alarm with the provided name.
-METHOD AcknowledgeAlarmByName
-VAR_INPUT
-	sName	: Tc2_System.T_MaxString;
-END_VAR
-]]></Declaration>
-    </Method>
     <Method Name="AcknowledgeAllAlarms" Id="{1e530507-ece4-0bf2-30ca-7dc1ee9b6502}">
       <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
 METHOD AcknowledgeAllAlarms]]></Declaration>
@@ -38,22 +22,6 @@ PROPERTY ActiveAlarmsCount : UINT]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Method Name="DeactivateAlarmById" Id="{e83d9909-dbef-0f38-2a3f-00ca95c91155}">
-      <Declaration><![CDATA[// Deactivates the alarm with the provided Id (if it exists).
-METHOD DeactivateAlarmById
-VAR_INPUT
-	nId	: T_ArrayIndexer; // Alarm id to be deactivated.
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="DeactivateAlarmByName" Id="{295498cf-94d4-0f53-0d14-3a25f3c0e234}">
-      <Declaration><![CDATA[// Deactivates the alarm with the provided name (if it exists)
-METHOD DeactivateAlarmByName
-VAR_INPUT
-	sName	: Tc2_System.T_MaxString;	// Alarm name to be deactivated.
-END_VAR
-]]></Declaration>
-    </Method>
     <Property Name="Enable" Id="{0ae510b3-be57-0ba1-3645-7ca74f263283}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!
@@ -91,22 +59,6 @@ PROPERTY MaximumAlarmsCount : UDINT]]></Declaration>
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Method Name="RaiseAlarmById" Id="{8f2d32a0-124e-0462-3bf4-d4fbba499318}">
-      <Declaration><![CDATA[// Activates the alarm with the provided Id (if it exists)
-METHOD RaiseAlarmById
-VAR_INPUT
-	nId	: T_ArrayIndexer;	// Alarm id to be activated
-END_VAR
-]]></Declaration>
-    </Method>
-    <Method Name="RaiseAlarmByName" Id="{47799015-5462-0536-0988-27f179a42ec1}">
-      <Declaration><![CDATA[// Activates the alarm with the provided name
-METHOD RaiseAlarmByName
-VAR_INPUT
-	sName	: Tc2_System.T_MaxString;	// Alarm name to be actived
-END_VAR
-]]></Declaration>
-    </Method>
     <Method Name="RegisterAlarm" Id="{7b9e25e7-d788-0c73-0fbd-360da521ec34}">
       <Declaration><![CDATA[// Registers a new alarm with the provided information. 
 // Returns TRUE if new alarm was registered or false if not
