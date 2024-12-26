@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ErrorSource_Tests" Id="{6855d925-cd35-00c6-3a17-d11f72133451}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ErrorSource_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -40,12 +40,12 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test02_ErrorCode');
 
-_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_CLIENT_ERROR;
+_errorSourceSut.eAdsErrorCodeToTest := TcError.AdsErrorCodes.ADSERR_CLIENT_ERROR;
 _errorSourceSut();
 
 AssertEquals_UDINT(
 	Actual := _errorSourceSut.ErrorSource.ErrorInfo.Code,
-	Expected := E_AdsErrorCode.ADSERR_CLIENT_ERROR,
+	Expected := TcError.AdsErrorCodes.ADSERR_CLIENT_ERROR,
 	Message := 'The error code provided in the ErrorInfo.Code property is incorrect!'
 );
 
@@ -59,7 +59,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test03_ErrorMessage');
 
-_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_DEVICE_ABORTED;
+_errorSourceSut.eAdsErrorCodeToTest := TcError.AdsErrorCodes.ADSERR_DEVICE_ABORTED;
 _errorSourceSut();
 
 AssertEquals_STRING(
