@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <Itf Name="I_AlarmActionBy" Id="{f7a660f9-61d5-0659-338c-794a0d2a44cb}">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_AlarmActionBy" Id="{1bdf0514-5e3c-01ed-0fa4-01e579a6736b}">
     <Declaration><![CDATA[INTERFACE I_AlarmActionBy
 ]]></Declaration>
-    <Method Name="ById" Id="{4d5e26f7-2e36-0f90-03cc-d14cc4a6133c}">
+    <Method Name="ById" Id="{4f271eb0-1f2d-0be5-24b2-cb757c34f8dc}">
       <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided ID
 METHOD ById
 VAR_INPUT
@@ -11,7 +11,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Method Name="ByName" Id="{0f27e611-20cd-0a43-346c-7251c69f8e44}">
+    <Method Name="ByName" Id="{aff66f81-733d-0247-127b-64fe41825268}">
       <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided name
 METHOD ByName
 VAR_INPUT

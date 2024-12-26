@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <DUT Name="ST_AlarmInfo" Id="{b6274670-819a-0d01-0a2f-6b2a5a9fefcb}">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_AlarmInfo" Id="{463a7f24-175c-0f47-0a80-135f9f8b1f98}">
     <Declaration><![CDATA[TYPE ST_AlarmInfo :
 STRUCT
 	Name			: Tc2_System.T_MaxString;

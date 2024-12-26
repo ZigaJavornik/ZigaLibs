@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_AlarmManager_Tests" Id="{b130fb6f-8b4f-0495-3730-ec04c33d7bdb}" SpecialFunc="None">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_AlarmManager_Tests" Id="{10bfaa3e-65e7-0c01-2813-1ee946632c0a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_AlarmManager_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
@@ -34,7 +34,7 @@ Test15_AcknowledgeById();
 Test16_TimeInfos();
 Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive();]]></ST>
     </Implementation>
-    <Method Name="Test00_RegisterAlarms" Id="{e3481e3b-1449-0574-29d8-60404d623878}">
+    <Method Name="Test00_RegisterAlarms" Id="{51a6cd53-1880-0584-2f70-df4bc0e86a21}">
       <Declaration><![CDATA[METHOD Test00_RegisterAlarms
 VAR_INPUT
 END_VAR
@@ -102,7 +102,7 @@ AssertFalse(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm" Id="{9b1c592e-cc76-0bee-3ad8-28e7cb6b4bd3}">
+    <Method Name="Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm" Id="{7f0e9f4c-5bc2-0878-1385-3574e587c2ae}">
       <Declaration><![CDATA[METHOD Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm
 VAR_INPUT
 END_VAR
@@ -140,7 +140,7 @@ AssertEquals_UINT(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged" Id="{7c9f10b9-d1cd-0984-3f11-39a43f41ca58}">
+    <Method Name="Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged" Id="{166cfe6f-deb4-0095-3098-ac602a6b90d2}">
       <Declaration><![CDATA[METHOD Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged
 VAR_INPUT
 END_VAR
@@ -163,7 +163,7 @@ AssertEquals_BOOL(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount" Id="{10dfea8f-c6e2-0ed8-005c-f001e2b54921}">
+    <Method Name="Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount" Id="{7965def8-d7ed-02d1-3b57-b23c8065de36}">
       <Declaration><![CDATA[METHOD Test03_ActivateExistingAlarm_ExpectSameActiveAlarmCount
 VAR_INPUT
 END_VAR
@@ -198,7 +198,7 @@ AssertEquals_UINT(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test04_DeactivateAlarm_ExpectNotActiveAcknowledged" Id="{c90f406f-b4aa-00e6-3b58-9e9dd380a015}">
+    <Method Name="Test04_DeactivateAlarm_ExpectNotActiveAcknowledged" Id="{96dcec83-f316-0d03-070c-713bf1d2bb41}">
       <Declaration><![CDATA[METHOD Test04_DeactivateAlarm_ExpectNotActiveAcknowledged
 VAR_INPUT
 END_VAR
@@ -230,7 +230,7 @@ AssertEquals_UINT(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive" Id="{57171f97-e6ab-0277-376d-9e325dc8b13e}">
+    <Method Name="Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive" Id="{beee53a0-3829-0e73-085d-3463db81918b}">
       <Declaration><![CDATA[METHOD Test05_AcknowlidgeInactiveAlarm_ExpectAcknowledgedNotActive
 VAR_INPUT
 END_VAR
@@ -265,7 +265,7 @@ AssertEquals_UINT(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test06_DisableManager_ExpectNoActiveAlarms" Id="{61d52f1e-6c75-0a56-0857-ae9b851fb091}">
+    <Method Name="Test06_DisableManager_ExpectNoActiveAlarms" Id="{b03481cc-e0d8-0ce1-3ecb-3abcdb72167d}">
       <Declaration><![CDATA[METHOD Test06_DisableManager_ExpectNoActiveAlarms
 VAR_INPUT
 END_VAR
@@ -297,7 +297,7 @@ _alarmManager.Enable := TRUE;
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged" Id="{b9eaba69-2f6e-05d7-364f-00d6655aa101}">
+    <Method Name="Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged" Id="{1a04ca75-ed21-0b83-3992-f864a8578b80}">
       <Declaration><![CDATA[METHOD Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged
 VAR_INPUT
 END_VAR
@@ -337,7 +337,7 @@ AssertEquals_UINT(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test08_ActivateByName" Id="{6570a093-9568-07a3-22a8-55d06cc88f21}">
+    <Method Name="Test08_ActivateByName" Id="{cb90bc6c-a663-0c9c-1b33-727dc3854afd}">
       <Declaration><![CDATA[METHOD Test08_ActivateByName
 VAR_INPUT
 END_VAR
@@ -377,7 +377,7 @@ AssertFalse(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test09_DeactivateByName" Id="{2a91d4bb-980f-0ce8-3024-53eef98592a9}">
+    <Method Name="Test09_DeactivateByName" Id="{99c997c1-4ac4-020e-34d2-567e99eb8a63}">
       <Declaration><![CDATA[METHOD Test09_DeactivateByName
 VAR_INPUT
 END_VAR
@@ -411,7 +411,7 @@ AssertFalse(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test10_AcknowledgeByName" Id="{458fbcda-a528-09fc-3681-887d5d5998c3}">
+    <Method Name="Test10_AcknowledgeByName" Id="{153a742d-7155-0960-3ec2-022d030aac91}">
       <Declaration><![CDATA[METHOD Test10_AcknowledgeByName
 VAR_INPUT
 END_VAR
@@ -436,7 +436,7 @@ AssertTrue(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test11_GetAlarmByName" Id="{96f09601-4dae-0dc0-2b2f-a3cb43f168d9}">
+    <Method Name="Test11_GetAlarmByName" Id="{4d533791-6062-0bdf-2d13-a36fcb1dcdfe}">
       <Declaration><![CDATA[METHOD Test11_GetAlarmByName
 VAR_INPUT
 END_VAR
@@ -462,7 +462,7 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test12_GetAlarmById" Id="{cb3671fe-21bd-0cef-2a9f-51bdf7ac7e68}">
+    <Method Name="Test12_GetAlarmById" Id="{b2630015-c400-05d0-091b-055cd024cccf}">
       <Declaration><![CDATA[METHOD Test12_GetAlarmById
 VAR_INPUT
 END_VAR
@@ -487,7 +487,7 @@ TcUnit.TEST_FINISHED();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test13_ActivateById" Id="{22a01bfc-9e00-0fdb-0eb8-4a94e22c27b2}">
+    <Method Name="Test13_ActivateById" Id="{8d5ea681-fb36-0ca1-2731-31b329eb662b}">
       <Declaration><![CDATA[METHOD Test13_ActivateById
 VAR_INPUT
 END_VAR
@@ -527,7 +527,7 @@ AssertFalse(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test14_DeactivateById" Id="{488d434c-be9c-0d2d-1a32-d0b1abb3bbf1}">
+    <Method Name="Test14_DeactivateById" Id="{fc5934bc-8eb0-0ffa-36ea-9b401169248a}">
       <Declaration><![CDATA[METHOD Test14_DeactivateById
 VAR_INPUT
 END_VAR
@@ -561,7 +561,7 @@ AssertFalse(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test15_AcknowledgeById" Id="{818eebe6-f990-0feb-303b-b323cafbcad0}">
+    <Method Name="Test15_AcknowledgeById" Id="{c509bed5-546c-02a1-09cd-cec74a9aa394}">
       <Declaration><![CDATA[METHOD Test15_AcknowledgeById
 VAR_INPUT
 END_VAR
@@ -586,7 +586,7 @@ AssertTrue(
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test16_TimeInfos" Id="{7119724e-946e-01a5-10d2-4f0eba1adb0b}">
+    <Method Name="Test16_TimeInfos" Id="{655ee826-7aca-00ae-013d-246f4b134f0a}">
       <Declaration><![CDATA[METHOD Test16_TimeInfos
 VAR_INPUT
 END_VAR
@@ -784,7 +784,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive" Id="{8edfb727-a222-0420-3004-14ba50e928a2}">
+    <Method Name="Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive" Id="{3b6b474e-0cb7-0914-0086-cb6760c65883}">
       <Declaration><![CDATA[METHOD Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive
 VAR_INPUT
 END_VAR

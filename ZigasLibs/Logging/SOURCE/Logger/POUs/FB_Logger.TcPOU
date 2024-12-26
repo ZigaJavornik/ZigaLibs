@@ -18,8 +18,8 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_localSystemTime();
-_localSystemTimeString := _localSystemTime.ConvertToString()
-	.DateTime(dateSeperator := '.',
+_localSystemTimeString := _localSystemTime.ConvertToString().DateTime(
+		dateSeperator := '.',
 		fillWithZeros := TRUE,
 		IncludeMilliseconds := FALSE,
 		timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
@@ -77,11 +77,6 @@ _oldState := _state;]]></ST>
       <Declaration><![CDATA[METHOD PRIVATE AddLogEntry
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
-END_VAR
-
-VAR
-	i				: ZigaLibs_Core.T_ArrayIndexer;
-	eventsMaxIndex	: ZigaLibs_Core.T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[message := Tc2_Standard.CONCAT(
@@ -154,7 +149,7 @@ END_VAR
       <Declaration><![CDATA[(* Logs the message without any additions.*)
 METHOD LogDefault
 VAR_INPUT
-	message	: ZigaLibs_Core.Tc2_System.T_MaxString;
+	message	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -174,7 +169,7 @@ AddLogEntry(_stringBuilder.Reset()
       <Declaration><![CDATA[(* Logs the message by adding the error header to the start.*)
 METHOD LogError
 VAR_INPUT
-	message	: ZigaLibs_Core.Tc2_System.T_MaxString;
+	message	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -194,7 +189,7 @@ AddLogEntry(_stringBuilder.Reset()
       <Declaration><![CDATA[(* Logs the message by adding the info header to the start.*)
 METHOD LogInfo
 VAR_INPUT
-	message	: ZigaLibs_Core.Tc2_System.T_MaxString;
+	message	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -236,7 +231,7 @@ END_VAR
       <Declaration><![CDATA[(* Logs the message by adding the info header to the start.*)
 METHOD LogWarning
 VAR_INPUT
-	message	: ZigaLibs_Core.Tc2_System.T_MaxString;
+	message	: Tc2_System.T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -266,7 +261,7 @@ END_VAR
       </Get>
     </Property>
     <Method Name="RemoveLogEntry" Id="{134d7547-21a2-03bc-1ab5-77c94d18ef87}">
-      <Declaration><![CDATA[METHOD RemoveLogEntry
+      <Declaration><![CDATA[METHOD PRIVATE RemoveLogEntry
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ZigaLibs_Core.ArrayHelper.ShiftDown(

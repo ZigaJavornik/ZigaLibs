@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <Itf Name="I_AlarmActions" Id="{6fe788ed-b8fe-037d-186b-e4a0a1d8baaf}">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_AlarmActions" Id="{78311afd-5039-09e9-2e01-ec212a338902}">
     <Declaration><![CDATA[INTERFACE I_AlarmActions
 ]]></Declaration>
-    <Method Name="Acknowledge" Id="{a835e518-0661-094a-227c-8a35d7d52de8}">
+    <Method Name="Acknowledge" Id="{27cadfb9-70a1-0f63-1fa5-1c36d13f7186}">
       <Declaration><![CDATA[METHOD Acknowledge : I_AlarmActionBy
 VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Method Name="Deactivate" Id="{c42eb63c-f69e-057b-1915-2340ce3be9f0}">
+    <Method Name="Deactivate" Id="{4b0cc508-0a65-0c13-0908-4c5fa0752ee4}">
       <Declaration><![CDATA[METHOD Deactivate : I_AlarmActionBy
 VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Method Name="Raise" Id="{5760bf2f-a9dd-01b1-1d16-fcc4cdc7ac11}">
+    <Method Name="Raise" Id="{350c0da9-4251-06d5-39cb-5a5af1876fd3}">
       <Declaration><![CDATA[METHOD Raise : I_AlarmActionBy
 VAR_INPUT
 END_VAR

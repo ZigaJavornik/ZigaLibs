@@ -60,30 +60,6 @@
     <CompilerDefines>test</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\FB_AlarmActionBuilder.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActionBy.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActions.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\E_AlarmLevel.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -272,9 +248,6 @@
     <Compile Include="TESTS\Test suites\FB_AdsHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_AlarmManager_Tests.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -319,8 +292,6 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\Alarms\DUTs" />
-    <Folder Include="SOURCE\Alarms\Actions - fluent" />
     <Folder Include="SOURCE\Array\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\CoE" />
@@ -340,7 +311,6 @@
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\Beckhoff" />
-    <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
     <Folder Include="SOURCE\String\StringBuilder" />
     <Folder Include="SOURCE\String\StringBuilder\Extensions" />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="FB_AlarmActionBuilder" Id="{4edb77a2-8229-0823-369b-2ad9688f2b1d}" SpecialFunc="None">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_AlarmActionBuilder" Id="{cf92893f-c46c-0cad-3a1f-3e982e8ce72f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_AlarmActionBuilder IMPLEMENTS I_AlarmActionBy, I_AlarmActions
 VAR_INPUT
 END_VAR
@@ -9,7 +9,6 @@ END_VAR
 VAR
 	_alarmAction 	: (ACTION_ACKNOWLEDGE, ACTTION_RAISE, ACTION_DEACTIVATE);
 	_selectedAlarm	: REFERENCE TO ST_AlarmInfo;
-
 	_alarmManager	: REFERENCE TO FB_AlarmManager;
 END_VAR
 
@@ -21,7 +20,7 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="Acknowledge" Id="{6b972571-5310-0771-2b00-afd772012e06}">
+    <Method Name="Acknowledge" Id="{ec3b6a2d-f8f4-080c-39cc-793e7b4fefaf}">
       <Declaration><![CDATA[METHOD Acknowledge : I_AlarmActionBy
 VAR_INPUT
 END_VAR
@@ -31,7 +30,7 @@ END_VAR
 Acknowledge := THIS^;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ById" Id="{d3b0e87b-961f-0d35-0ee0-7e99bcb1cb80}">
+    <Method Name="ById" Id="{15bccc9e-311d-07d8-07f9-0b551d64ab1f}">
       <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided ID
 METHOD ById
 VAR_INPUT
@@ -45,7 +44,7 @@ END_VAR]]></Declaration>
 DoAction();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ByName" Id="{d893ad39-83d1-099d-1c1e-e19f6f0b4db4}">
+    <Method Name="ByName" Id="{6c000c08-a5b9-0289-097f-bd36cbfd51af}">
       <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided name
 METHOD ByName
 VAR_INPUT
@@ -60,7 +59,7 @@ END_VAR]]></Declaration>
 DoAction();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Deactivate" Id="{65e90bb7-6342-043c-1a8c-e9f2ad1d55ef}">
+    <Method Name="Deactivate" Id="{bed0843b-36b5-034a-232f-b416d6d0b76a}">
       <Declaration><![CDATA[METHOD Deactivate : I_AlarmActionBy
 VAR_INPUT
 END_VAR
@@ -70,7 +69,7 @@ END_VAR
 Deactivate := THIS^;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DoAction" Id="{66781b69-88d4-00b4-3e3e-823ffb8e7dd4}">
+    <Method Name="DoAction" Id="{74be2ef5-dc73-017b-0666-72826976b57c}">
       <Declaration><![CDATA[METHOD PRIVATE DoAction
 
 ]]></Declaration>
@@ -93,7 +92,7 @@ CASE _alarmAction OF
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="FB_init" Id="{aea7498c-4be8-09bb-3b9d-eddaf730d272}">
+    <Method Name="FB_init" Id="{4e5f7e03-115f-04e9-1e03-129289791e84}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
@@ -105,7 +104,7 @@ END_VAR
         <ST><![CDATA[_alarmManager REF= alarmManager;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Raise" Id="{7ca0e933-54a4-089f-1f73-5c7ab6bf652e}">
+    <Method Name="Raise" Id="{3af8436e-f397-0704-2860-c8f26cdb4adb}">
       <Declaration><![CDATA[METHOD Raise : I_AlarmActionBy
 VAR_INPUT
 END_VAR
@@ -115,9 +114,9 @@ END_VAR
 Raise := THIS^;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="SelectedAlarm" Id="{2b0be61b-9058-00f6-1cea-ef439af671f6}">
+    <Property Name="SelectedAlarm" Id="{1a689882-c53b-047d-1338-4cd1c5ea1074}">
       <Declaration><![CDATA[PROPERTY SelectedAlarm : REFERENCE TO ST_AlarmInfo]]></Declaration>
-      <Get Name="Get" Id="{d323cb56-1227-07ef-3726-0bd26f6eab3e}">
+      <Get Name="Get" Id="{9ab70128-2027-0ed8-2720-fcca32b6fab7}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
