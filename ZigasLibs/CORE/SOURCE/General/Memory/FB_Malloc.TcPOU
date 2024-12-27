@@ -21,7 +21,7 @@ END_VAR
 // Returns TRUE if allocation has been sucessfull - this can fail if incorrect parameters are provided (sie <= 0 or numberOfElements = 0)
 METHOD Allocate : BOOL
 VAR_INPUT
-	elementSize			: DINT;		// Size of the element.
+	elementSize			: DINT;	// Size of the element.
 	numberOfElements	: DINT;	// Number of elements that will occupy the memory space.
 END_VAR
 ]]></Declaration>
@@ -52,6 +52,42 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[AllocateAny :=  Allocate(dataType.diSize, numberOfElements);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Expand" Id="{1b80cdda-ccbf-0848-3974-31677f40b2b3}">
+      <Declaration><![CDATA[// Expands the current allocated memory
+METHOD Expand : BOOL
+VAR_INPUT
+	elementsToAdd	: DINT; // Number of new elements to be added
+END_VAR
+VAR
+	tmpValues			: POINTER TO BYTE;
+	originalProperties	: ST_AllocatedMemoryProperties;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT IsAllocated THEN
+	RETURN;
+END_IF
+
+// Copy current contents
+originalProperties := _properties;
+tmpValues := __NEW(BYTE, _properties.Size);
+Tc2_System.MEMCPY(
+	srcAddr := _allocatedMemory, 
+	destAddr := tmpValues,
+ 	n := DINT_TO_UDINT(_properties.Size));
+
+// Free the memory	
+THIS^.Free();
+
+// Create new, expanded memory
+THIS^.Allocate(originalProperties.Size,originalProperties.NumberOfElements + elementsToAdd);
+
+// Delete the temporary allocated memory
+__DELETE(tmpValues);
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="FB_exit" Id="{d0b550c0-38cb-0759-3d4a-46ee780519a7}" FolderPath="Constructor/Destructor\">
@@ -116,6 +152,22 @@ Tc2_System.MEMCPY(
 	n := DINT_TO_UDINT(_properties.BaseTypeSize));
 	
 Get := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetPtr" Id="{5ebdfa92-dc68-0e78-2533-90295bfa7094}">
+      <Declaration><![CDATA[// Gets the pointer to the provided index
+// This can be used to alter the contents by using POINTER TO <DATA_TYPE>. by calling it from another method
+METHOD GetPtr : PVOID
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.ValidateIndex(index) AND 
+   THIS^.IsAllocated 
+THEN
+	GetPtr := UDINT_TO_DINT(_properties.StartAddress) + index * _properties.BaseTypeSize;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Property Name="IsAllocated" Id="{41cdef4a-c146-0493-196c-372840dd8c09}" FolderPath="Properties\">
