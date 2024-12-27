@@ -183,7 +183,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ValidateIndex := index <= (_properties.NumberOfElements - 1) AND index > 0;]]></ST>
+        <ST><![CDATA[ValidateIndex := index <= (_properties.NumberOfElements - 1) AND index >= 0;]]></ST>
       </Implementation>
     </Method>
     <Method Name="ValidateInputVar" Id="{2b64497a-eea4-0ebb-37df-fd90efb28edf}" FolderPath="Methods - private\">
