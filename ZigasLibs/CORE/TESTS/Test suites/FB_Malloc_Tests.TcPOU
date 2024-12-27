@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_Malloc_Tests" Id="{9aafeb30-9fd4-0748-2c9d-578a63aad36b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Malloc_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_malloc	: FB_MALLOC(0,0);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_ProvideIncorrectParameters_ExpectNoAllocation();
+Test02_Allocate10Integers_ExpectNoError_ValidateProperties();
+Test03_Free_ExpectNoMemoryAllocated();
+Test04_SetAndGet_ExpectGetReturnsCorrectValue();
+Test05_SetAtIncorrectIndex_ExpectFalseReturned();
+Test06_GetFromIncorrectIndex_ExpectTargetValueUnchanged_MethodReturnFalse();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ProvideIncorrectParameters_ExpectNoAllocation" Id="{fc5cb9bf-042c-0d4a-32dd-f6223dd55e48}">
+      <Declaration><![CDATA[METHOD Test01_ProvideIncorrectParameters_ExpectNoAllocation
+VAR_INPUT
+END_VAR
+VAR
+	testMallocVar	: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_ProvideIncorrectParameters_ExpectNoAllocation') THEN
+	
+	// Manual allocation, element size = 0
+	AssertFalse(_malloc.Allocate(0, 10), 
+		'If provided size of the element is 0, Allocate should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');
+	ValidatePropertiesAfterFailedAllocation('Allocate - element size = 0');
+	
+	// Manual allocation, element count = 0
+	AssertFalse(_malloc.Allocate(10, 0),
+		'If provided number of elements is 0, Allocat should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');
+	ValidatePropertiesAfterFailedAllocation('Allocate - element count = 0');
+	
+	// Manual allocation, element size = -10
+	AssertFalse(_malloc.Allocate(-10, 10), 
+		'If provided size of the element is -10, AllocateManual should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');
+	ValidatePropertiesAfterFailedAllocation('Allocate - element size = -10');
+	
+	// Manual allocation, element count = -10
+	AssertFalse(_malloc.Allocate(10, -10),
+		'If provided number of elements is -10, Allocate should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');
+	ValidatePropertiesAfterFailedAllocation('Allocate - element size = -10');
+			
+	// Any allocation, element count = 0
+	AssertFalse(_malloc.AllocateAny(testMallocVar, 0),
+		'If provided number of elements is 0, AllocateAny should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');		
+	ValidatePropertiesAfterFailedAllocation('AllocateAny - element count = 0');
+	
+	
+	// Any allocation, element count = -10
+	AssertFalse(_malloc.AllocateAny(testMallocVar, -10),
+		'If provided number of elements is 0, AllocateAny should return FALSE.');	
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated property should be false when failing AllocateManual');		
+	ValidatePropertiesAfterFailedAllocation('AllocateAny - element count = -10');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Allocate10Integers_ExpectNoError_ValidateProperties" Id="{1f14c79f-b9b5-0cfd-081c-4dd12ed2d6c3}">
+      <Declaration><![CDATA[METHOD Test02_Allocate10Integers_ExpectNoError_ValidateProperties
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_Allocate10Integers_ExpectNoError_ValidateProperties') THEN
+	AssertTrue(_malloc.Allocate(SIZEOF(INT), 10),
+		'Allocation of 10 integers should return TRUE.');
+		
+	AssertEquals_DINT(10, _malloc.Properties.NumberOfElements,
+		'NumberOfElements is incorrect.');
+	AssertEquals_DINT(2, _malloc.Properties.BaseTypeSize,
+		'BaseTypeSize  is incorrect.');
+	AssertEquals_DINT(10 * 2, _malloc.Properties.Size,
+		'Size is incorrect.');
+	AssertTrue(_malloc.Properties.StartAddress <> 0,
+		'StartAddress should not be 0.');
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_Free_ExpectNoMemoryAllocated" Id="{07f9e97a-71af-00c8-1266-8943e325ef3f}">
+      <Declaration><![CDATA[METHOD Test03_Free_ExpectNoMemoryAllocated
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_Free_ExpectNoMemoryAllocated') THEN
+	_malloc.Allocate(10,10);
+	AssertTrue(_malloc.Free(),
+		'Freeing allocated memory should return TRUE.');
+		
+	AssertEquals_DINT(0, _malloc.Properties.NumberOfElements,
+		'NumberOfElements should be 0 after freeing.');
+	AssertEquals_DINT(0, _malloc.Properties.BaseTypeSize,
+		'BaseTypeSize  should be 0 after freeing.');
+	AssertEquals_DINT(0, _malloc.Properties.Size,
+		'Size should be 0 after freeing.');
+	AssertEquals_DINT(0, _malloc.Properties.StartAddress,
+		'StartAddress should be 0 after freeing.');
+	AssertFalse(_malloc.IsAllocated,
+		'IsAllocated should be FALSE when freeing.');
+		
+	AssertFalse(_malloc.Free(),
+		'If no memory is allocated, Free() should return FALSE.');
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_SetAndGet_ExpectGetReturnsCorrectValue" Id="{d59f2e24-69de-0ea0-05d4-6b58f197d1e7}">
+      <Declaration><![CDATA[METHOD Test04_SetAndGet_ExpectGetReturnsCorrectValue
+VAR_INPUT
+END_VAR
+VAR
+	data	: INT;
+	result	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_SetAndGet_ExpectGetReturnsCorrectValue') THEN
+	_malloc.Free();
+	_malloc.Allocate(SIZEOF(data), 5);
+	
+	data := 13;
+	AssertTrue(_malloc.Set(2, data), 'Setting value failed.');
+		
+	_malloc.Get(2, result);
+	AssertEquals(data, result, 'Value fetched with Get is not correct.');
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_SetAtIncorrectIndex_ExpectFalseReturned" Id="{cdc5cb6e-a5be-0e4e-09b9-cbd972f1df65}">
+      <Declaration><![CDATA[METHOD Test05_SetAtIncorrectIndex_ExpectFalseReturned
+VAR_INPUT
+END_VAR
+VAR
+	value	: int;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_SetAtIncorrectIndex_ExpectFalseReturned') THEN
+	_malloc.Free();
+	_malloc.Allocate(SIZEOF(value),5);
+
+	AssertFalse(_malloc.Set(5, value), 'Setting at index outside range should return FALSE.');	
+
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_GetFromIncorrectIndex_ExpectTargetValueUnchanged_MethodReturnFalse" Id="{961a2e8b-8d94-0e40-3619-6a38ca569d84}">
+      <Declaration><![CDATA[METHOD Test06_GetFromIncorrectIndex_ExpectTargetValueUnchanged_MethodReturnFalse
+VAR_INPUT
+END_VAR
+
+VAR
+	result	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test06_GetFromIncorrectIndex_ExpectTargetValueUnchanged_MethodReturnFalse') THEN
+	_malloc.Free();
+	
+	_malloc.AllocateAny(result, 5);
+	result := 5;
+	AssertFalse(_malloc.Get(5, result), 
+		'When getting from index outsied of allocated memory, FALSE should be returned.');
+	AssertEquals_int(5,result,
+		'Getting from outside the bounds of allocated memory area, result variable should not be changed.');
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidatePropertiesAfterFailedAllocation" Id="{a03b15ed-a2f5-08b6-2e65-b24dec16bbe3}">
+      <Declaration><![CDATA[METHOD ValidatePropertiesAfterFailedAllocation
+VAR_INPUT
+	mallocMethodCalled	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Validate properties
+AssertEquals_UDINT(0, _malloc.Properties.BaseTypeSize,
+	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - BaseTypeSize should be 0 when failing allocation.'));
+AssertEquals_UDINT(0, _malloc.Properties.NumberOfElements,
+	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - NumberOfElements should be 0 when failing allocation.'));	
+AssertEquals_UDINT(0, _malloc.Properties.Size,
+	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - Size should be 0 when failing allocation.'));			
+AssertEquals_UDINT(0, _malloc.Properties.StartAddress,
+	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - StartAddress should be 0 when failing allocation.'));]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

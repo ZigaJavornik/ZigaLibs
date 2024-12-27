@@ -174,6 +174,12 @@
     <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\General\Memory\FB_Malloc.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\ST_AllocatedMemoryProperties.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\General\ST_Value.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -279,6 +285,9 @@
     <Compile Include="TESTS\Test suites\FB_HasTaskInfo_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_Malloc_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_StringBuilderEx_Any_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -359,6 +368,12 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, 1.2.0.0 (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -376,7 +391,7 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.2.0.0 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

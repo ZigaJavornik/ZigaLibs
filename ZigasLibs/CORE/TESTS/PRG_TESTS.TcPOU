@@ -16,6 +16,7 @@ VAR
 	BoolExTests						: FB_BoolEx_Tests;
 	EthercatHelperTests				: FB_EthercatHelper_Tests;
 	EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
+	MallocTests						: FB_Malloc_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>
