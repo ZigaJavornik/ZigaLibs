@@ -58,33 +58,42 @@ END_VAR
       <Declaration><![CDATA[// Expands the current allocated memory
 METHOD Expand : BOOL
 VAR_INPUT
-	elementsToAdd	: DINT; // Number of new elements to be added
+	elementsToAdd	: DINT; // Number of new elements to be added. Only accepting values larger than 0.
 END_VAR
 VAR
-	tmpValues			: POINTER TO BYTE;
+	oldAllocatedMemory	: POINTER TO BYTE;
 	originalProperties	: ST_AllocatedMemoryProperties;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT IsAllocated THEN
+        <ST><![CDATA[IF NOT IsAllocated OR elementsToAdd <= 0 THEN
 	RETURN;
 END_IF
 
 // Copy current contents
 originalProperties := _properties;
-tmpValues := __NEW(BYTE, _properties.Size);
+oldAllocatedMemory := __NEW(BYTE, _properties.Size);
+
 Tc2_System.MEMCPY(
 	srcAddr := _allocatedMemory, 
-	destAddr := tmpValues,
+	destAddr := oldAllocatedMemory,
  	n := DINT_TO_UDINT(_properties.Size));
 
 // Free the memory	
 THIS^.Free();
 
 // Create new, expanded memory
-THIS^.Allocate(originalProperties.Size,originalProperties.NumberOfElements + elementsToAdd);
-
+THIS^.Allocate(
+	elementSize := originalProperties.BaseTypeSize ,
+	numberOfElements:=  originalProperties.NumberOfElements + elementsToAdd);
+	
+// Copy the old values to the new allocation.	
+Tc2_System.MEMCPY(
+	srcAddr := oldAllocatedMemory,
+	destAddr := _allocatedMemory,
+	n := DINT_TO_UDINT(originalProperties.Size));
+	
 // Delete the temporary allocated memory
-__DELETE(tmpValues);
+__DELETE(oldAllocatedMemory);
 
 
 ]]></ST>
@@ -196,6 +205,83 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="Remove" Id="{14da5a8a-1e69-011d-391c-685c8a8f7f4a}">
+      <Declaration><![CDATA[// Removes the element at the index.
+METHOD Remove
+VAR_INPUT
+	index	: DINT;
+END_VAR
+
+VAR
+	byteCountLowerPart	: DINT;
+	byteCountUpperPart	: DINT;
+	upperPart			: POINTER TO BYTE;
+	lowerPart			: POINTER TO BYTE;
+	originalProperties	: ST_AllocatedMemoryProperties;
+	newSize				: DINT;
+	combinedSize		: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT IsAllocated OR NOT ValidateIndex(index) THEN
+	RETURN;
+END_IF
+
+// If 0th element is the only element, then just free the memory space.
+IF index = 0 AND _properties.NumberOfElements = 1 THEN
+	THIS^.Free();
+	RETURN;
+END_IF
+
+originalProperties := _properties;
+
+// Example:
+// 10 elements, max index 9
+// remove 5th element
+// Lower part should be from 0 to 4, so 5 elements = index - 1 => address = adr + SIZEOF(base) * (index - 1)
+byteCountLowerPart := _properties.BaseTypeSize * (index - 1);
+lowerPart := __NEW(BYTE, byteCountLowerPart);
+Tc2_System.MEMCPY(
+	srcAddr := _allocatedMemory,
+	destAddr := lowerPart,
+	n := DINT_TO_UDINT(byteCountLowerPart));
+	
+// Upper part should be from 6 to 9, so 4 elements = elementCount - index + 1 => addres = adr + sizeof(base) * (elementCounte + index - 1)
+// If index = max, 9, then: 10 - 9 + 1 = 0 => upper part is nothing
+byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - index );
+IF byteCountUpperPart <> 0 THEN
+	upperPart := __NEW(BYTE, byteCountUpperPart);
+	Tc2_System.MEMCPY(
+		srcAddr := _allocatedMemory + DINT_TO_DWORD(_properties.Size - byteCountUpperPart),
+		destAddr := upperPart,
+		n := DINT_TO_UDINT(byteCountUpperPart));	
+END_IF
+
+THIS^.Free();
+
+// For debug purpose, new size and combined size should be the same.
+newSize := originalProperties.NumberOfElements - 1;
+combinedSize := (byteCountLowerPart + byteCountUpperPart) / originalProperties.BaseTypeSize;
+
+THIS^.Allocate(originalProperties.BaseTypeSize, originalProperties.NumberOfElements - 1);
+Tc2_System.MEMCPY(
+	srcAddr := lowerPart,
+	destAddr := _allocatedMemory,
+	n := DINT_TO_UDINT(byteCountLowerPart));
+	
+IF byteCountUpperPart <> 0 THEN
+	Tc2_System.MEMCPY(
+		srcAddr := upperPart,
+		destAddr := _allocatedMemory + DINT_TO_UDINT(byteCountLowerPart),
+		n := DINT_TO_UDINT(byteCountUpperPart));
+END_IF	
+	
+__DELETE(lowerPart);	
+IF upperPart <> 0 THEN
+	__DELETE(upperPart);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Set" Id="{7071028e-74bc-097d-3e1e-cd5732aad5f2}">
       <Declaration><![CDATA[METHOD Set : BOOL
 VAR_INPUT
