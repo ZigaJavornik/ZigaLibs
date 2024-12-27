@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_LocalSystemTimeProvider" Id="{5429ddc3-78d0-058e-1e56-29d8805b55eb}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LocalSystemTimeProvider
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LocalSystemTimeProvider IMPLEMENTS I_LocalSystemTimeProvider
 VAR
 	_localSystemTime			: Tc2_Utilities.FB_LocalSystemTime;
 	_currentSystemTimeInfo		: ST_CurrentSystemTimeInfo;

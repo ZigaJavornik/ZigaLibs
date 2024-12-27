@@ -245,6 +245,9 @@
     <Compile Include="SOURCE\Time\I_DateTimeToStringConverter.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Time\I_LocalSystemTimeProvider.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
