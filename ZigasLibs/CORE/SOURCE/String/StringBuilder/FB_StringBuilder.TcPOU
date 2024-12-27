@@ -158,7 +158,7 @@ END_VAR]]></Declaration>
 					iPrecision := displayedDigitsCount);
 		END_CASE
 		
-	IBaseLibrary.TypeClass.TYPE_BYTE:
+	__SYSTEM.TYPE_CLASS.TYPE_BYTE:
 		CASE option OF
 			E_AddAnyBitOptions.BINARY:
 				result := Tc2_Utilities.BYTE_TO_BINSTR(

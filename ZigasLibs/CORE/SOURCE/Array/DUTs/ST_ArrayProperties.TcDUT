@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <DUT Name="ST_ArrayProperties" Id="{02b249c7-c9e9-011f-0bda-6af185fc35b9}">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_ArrayProperties" Id="{b1c37182-4802-057e-1db3-4f1525616de3}">
     <Declaration><![CDATA[TYPE ST_ArrayProperties :
 STRUCT
 	Count		: DINT;
