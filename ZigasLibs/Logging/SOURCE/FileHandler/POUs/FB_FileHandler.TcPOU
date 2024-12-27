@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_FileHandler" Id="{02d1b2c6-8a3e-0334-2039-591ab85dc02c}" SpecialFunc="None">
     <Declaration><![CDATA[// A function block containing multiple file handling methods. 
 // Note that the body of this FB does NOT need to be called as it holds no logic.
@@ -84,7 +84,7 @@ END_CASE
 
 _error := _error OR fbFileClose.bError;
 IF fbFileClose.bError THEN
-	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileClose.nErrId);
+	_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFileClose.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -228,7 +228,7 @@ END_VAR]]></Declaration>
 		nCheckFileExistState := FILE_EXIST_STATE_PREPARE;
 		
 	FILE_EXIST_STATE_ERROR:
-		_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileExists.nErrID);
+		_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFileExists.nErrID);
 		nCheckFileExistState := FILE_EXIST_STATE_DONE;
 		refFileExists := FALSE;
 END_CASE
@@ -297,7 +297,7 @@ fbFileOpen(
 	
 _error := _error OR fbFileOpen.bError;	
 IF fbFileOpen.bError THEN
-	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileOpen.nErrId);
+	_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFileOpen.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -363,7 +363,7 @@ CASE nReadState OF
 		
 	READ_STATE_ERROR:
 		nReadState := READ_STATE_DONE;
-		_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileRead.nErrId);
+		_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFileRead.nErrId);
 END_CASE
 
 _error := _error OR fbFileRead.bError;
@@ -430,7 +430,7 @@ END_CASE
 
 _error := _error OR fbFileWrite.bError;
 IF fbFileWrite.bError THEN
-	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFileWrite.nErrId);
+	_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFileWrite.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -517,7 +517,7 @@ END_CASE
 
 _error := _error OR fbFilePuts.bError;
 IF fbFilePuts.bError THEN
-	_errorSource.ErrorInfo.Code := ZigaLibs_Core.AdsErrorHelper.ErrorIdToEnum(fbFilePuts.nErrId);
+	_errorSource.ErrorInfo.Code := TcError.ToAdsErrorCode(fbFilePuts.nErrId);
 END_IF]]></ST>
       </Implementation>
     </Method>
