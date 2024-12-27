@@ -16,7 +16,7 @@
     <LibraryReferences>{e027f640-2090-40c7-977b-e2dc88118b84}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>Alarming</Title>
-    <ProjectVersion>0.0.1.2</ProjectVersion>
+    <ProjectVersion>0.0.1.3</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
