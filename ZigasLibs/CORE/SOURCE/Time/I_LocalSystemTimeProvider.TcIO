@@ -10,7 +10,7 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="CurrentTime" Id="{dc69b815-82ab-011b-2f1d-6f6ae8497b56}">
-      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets current system timo info as a <ST_CurrentSystemTimeInfo>
 PROPERTY CurrentTime : REFERENCE TO ST_CurrentSystemTimeInfo]]></Declaration>
       <Get Name="Get" Id="{e71af7c8-9bcc-0614-14bc-beaaca577c88}">
