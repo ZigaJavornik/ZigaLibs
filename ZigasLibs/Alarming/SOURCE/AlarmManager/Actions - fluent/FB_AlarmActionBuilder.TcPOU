@@ -36,7 +36,11 @@ VAR
 	i	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_selectedAlarm REF= _alarmManager.GetAlarmById(Id);
+        <ST><![CDATA[IF NOT __ISVALIDREF(_alarmManager.GetAlarmById(Id)) THEN
+	RETURN;
+END_IF
+
+_selectedAlarm REF= _alarmManager.GetAlarmById(Id);
 DoAction();]]></ST>
       </Implementation>
     </Method>
@@ -51,7 +55,10 @@ VAR_INST
 	i	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_selectedAlarm REF= _alarmManager.GetAlarmByName(name);
+        <ST><![CDATA[IF NOT __ISVALIDREF(_alarmManager.GetAlarmByName(name)) THEN
+	RETURN;
+END_IF
+_selectedAlarm REF= _alarmManager.GetAlarmByName(name);
 DoAction();]]></ST>
       </Implementation>
     </Method>
@@ -70,15 +77,7 @@ Deactivate := THIS^;]]></ST>
 
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Tc2_System.MEMCMP(
-	n := SIZEOF(ST_alarmInfo), 
-	pBuf1 := ADR(_emptyAlarm), 
-	pBuf2 := ADR(_selectedAlarm)) = E_MemCmpResults.IDENTICAL 
-THEN
-	RETURN;
-END_IF
-
-CASE _alarmAction OF
+        <ST><![CDATA[CASE _alarmAction OF
 	ACTION_ACKNOWLEDGE:
 		_alarmManager.AcknowledgeAlarm(_selectedAlarm);
 	ACTTION_RAISE:

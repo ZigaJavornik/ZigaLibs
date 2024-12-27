@@ -13,6 +13,25 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="AddNew" Id="{2ee8993c-2570-00f1-3b4b-e879418ac64d}">
+      <Declaration><![CDATA[METHOD AddNew
+VAR_INPUT
+	alarm	: ST_AlarmInfo;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _malloc.IsAllocated THEN
+	THIS^.Create(1);
+	THIS^.GetPtr(0)^ := alarm;
+ELSE
+	_malloc.Expand(1);
+	_malloc.Set(_malloc.Properties.NumberOfElements - 1, alarm);
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Create" Id="{fc4c953e-f606-0e60-282d-9b1207596240}">
       <Declaration><![CDATA[METHOD Create : BOOL
 VAR_INPUT
@@ -58,6 +77,16 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="Remove" Id="{0d3d4deb-38cb-044d-25d3-4040ec6dae84}">
+      <Declaration><![CDATA[METHOD Remove
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_malloc.Remove(index);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Set" Id="{ec4e9c2c-b666-0fb4-304e-98fde3130216}">
       <Declaration><![CDATA[METHOD Set : BOOL
 VAR_INPUT
