@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_AlarmManager" Id="{66ff5c63-0690-045e-3836-b8992628f846}" SpecialFunc="None">
-    <Declaration><![CDATA[// Alarm manager function block. 
-// Make sure to call the body of this block before doing any method calls so that the array to be managed is assigned via the var_in_out.
-// If you, for example, register an alarm before assigning the array, the alarm will not be registered due to invalid reference of the array.
+    <Declaration><![CDATA[(* 
+Alarm manager function block. 
+The body does not contain any logic, this it does not require being called.
+
+====================================================
+Constructor template
+
+(enable := TRUE, // [BOOL] - Enables alarm generation
+logger := 0, // [REFERENCE TO ZigaLibs_Core.I_LoggerEx] - optional, logger.
+maximumAlarms := 100, // [UINT] - maximum alarms, inital value. Can be expanded. You can leave it at 0 and value will increase with every new registered alarm
+timeProvider := _dateTime); //[ZigaLibs_Core.I_LocalSystemTimeProvider] - required, date time provider.
+*)
+
 FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
 
 VAR
 	_enable						: BOOL;
-	_alarmArrayProperties		: ST_ArrayProperties;
-	_stringBuilder				: FB_StringBuilder;
-	_dateTime					: FB_LocalSystemTimeProvider;
-	_initialized				: BOOL := FALSE;
-	
+	_stringBuilder				: ZigaLibs_Core.FB_StringBuilder;
+	_dateTime					: ZigaLibs_Core.I_LocalSystemTimeProvider;
 	_activeAlarmCount			: UINT;
 	_unacknowledgedAlarmCount	: UINT;
-	_logger						: REFERENCE TO I_LoggerEx;	// If provided, logging will be used.
+	_logger						: ZigaLibs_Core.I_LoggerEx;	// If provided, logging will be used.
 	_emptyAlarm					: ST_AlarmInfo;
 	_registeredAlarmsCount		: UDINT;
 	_alarmActionBuilder			: FB_AlarmActionBuilder(THIS^);
-END_VAR
-
-VAR_IN_OUT
-	// Array of alarms which the alarm manager will manage.
-	refAlarms : ARRAY[*] OF ST_AlarmInfo;
+	_alarmsBuffer				: AlarmsArray;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_dateTime();
-_alarmArrayProperties.StartIndex := LOWER_BOUND(refAlarms, 1);
-_alarmArrayProperties.EndIndex := UPPER_BOUND(refAlarms, 1);
-_alarmArrayProperties.Count := (_alarmArrayProperties.EndIndex - _alarmArrayProperties.StartIndex) + 1;]]></ST>
+      <ST><![CDATA[]]></ST>
     </Implementation>
     <Folder Name="Constructor" Id="{540d7602-4dd8-0316-1d8f-b030614fbb56}" />
     <Folder Name="Methods - internal" Id="{e69fa24b-5daa-0696-2bb5-c3097fd8dd8b}">
@@ -120,16 +120,14 @@ VAR
 	alarmIndex	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
-	RETURN;
-END_IF
-
-FOR alarmIndex := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
-	AcknowledgeAlarm(alarm := refAlarms[alarmIndex]);
+        <ST><![CDATA[FOR alarmIndex := 0 TO _alarmsBuffer.NumberOfAlarms - 1 BY 1 DO
+	IF _alarmsBuffer.GetPtr(alarmIndex) <> 0 THEN 
+		AcknowledgeAlarm(_alarmsBuffer.GetPtr(alarmIndex)^);
+	END_IF
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Actions" Id="{380b72fb-4b0d-03f2-00dd-30b54fd3fcc1}">
+    <Method Name="Actions" Id="{380b72fb-4b0d-03f2-00dd-30b54fd3fcc1}" FolderPath="Methods - public\">
       <Declaration><![CDATA[// Provides access to action builder with fluent approach.
 METHOD PUBLIC Actions : I_AlarmActions
 VAR_INPUT
@@ -239,9 +237,9 @@ VAR
 	alarmIndex	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR alarmIndex := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
-	IF refAlarms[alarmIndex].IsActive THEN
-		DeactivateAlarm(refAlarms[alarmIndex]);
+        <ST><![CDATA[FOR alarmIndex := 0 TO _alarmsBuffer.NumberOfAlarms BY 1 DO
+	IF _alarmsBuffer.GetPtr(alarmIndex) <> 0 AND_THEN _alarmsBuffer.GetPtr(alarmIndex)^.IsActive THEN
+		DeactivateAlarm(_alarmsBuffer.GetPtr(alarmIndex)^);
 	END_IF
 END_FOR]]></ST>
       </Implementation>
@@ -283,20 +281,22 @@ _enable := Enable;]]></ST>
     <Method Name="FB_init" Id="{2d9c09d1-e406-01ab-27dc-0d93a9ba2b35}" FolderPath="Constructor\">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
-	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-	bEnable	: BOOL;
-	iLogger	: REFERENCE TO I_LoggerEx;	// If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	enable			: BOOL;	// Enables alarm generation
+	logger			: REFERENCE TO ZigaLibs_Core.I_LoggerEx; // If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
+	maximumAlarms	: UINT;	// Maximum number of alars to be created. This will internally allocate memory, so use it with caution (do not use too large values)
+	timeProvider	: ZigaLibs_Core.I_LocalSystemTimeProvider;	// Date time provider.
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_enable := bEnable;
-_logger REF= iLogger;
-]]></ST>
+        <ST><![CDATA[_enable := enable;
+_logger := logger;
+_alarmsBuffer.Create(maximumAlarms);
+_dateTime := timeProvider;]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetAlarmById" Id="{04cf1bea-b90c-08ce-01da-5e78e3b14c19}" FolderPath="Methods - public\">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
-(* Gets the alarm with the provided id. 
+      <Declaration><![CDATA[(* Gets the alarm with the provided id. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmById : REFERENCE TO ST_AlarmInfo
 VAR_INPUT
@@ -308,13 +308,9 @@ VAR
 	index	: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
-	GetAlarmById REF= _emptyAlarm;
-END_IF
-
-FOR index := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
-	IF refAlarms[index].Id = nId THEN
-		GetAlarmById REF= refAlarms[index];
+        <ST><![CDATA[FOR index := 0 TO _alarmsBuffer.NumberOfAlarms - 1 BY 1 DO
+	IF _alarmsBuffer.GetPtr(index) <> 0 AND_THEN _alarmsBuffer.GetPtr(index)^.Id = nId THEN
+		GetAlarmById REF= _alarmsBuffer.GetPtr(index)^;
 		RETURN;
 	END_IF
 END_FOR
@@ -324,8 +320,7 @@ GetAlarmById REF= _emptyAlarm;
       </Implementation>
     </Method>
     <Method Name="GetAlarmByName" Id="{7445463b-ef45-03e3-3b6b-6ac076786824}" FolderPath="Methods - public\">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
-(* Gets the alarm with the provided name. 
+      <Declaration><![CDATA[(* Gets the alarm with the provided name. 
  If no mathching alarm exists, an empty alarm is returned.*)
 METHOD GetAlarmByName : REFERENCE TO ST_AlarmInfo
 VAR_INPUT
@@ -338,27 +333,14 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT THIS^.ValidateArrayRef() THEN
-	GetAlarmByName REF= _emptyAlarm;
-END_IF
-
-FOR index := _alarmArrayProperties.StartIndex TO GetMaxAlarmArrayIndex() BY 1 DO
-	IF refAlarms[index].Name = sName THEN
-		GetAlarmByName REF= refAlarms[index];
+        <ST><![CDATA[FOR index := 0 TO _alarmsBuffer.NumberOfAlarms - 1 BY 1 DO
+	IF _alarmsBuffer.GetPtr(index) <> 0 AND_THEN _alarmsBuffer.GetPtr(index)^.Name = sName THEN
+		GetAlarmByName REF= _alarmsBuffer.GetPtr(index)^;
 		RETURN;
 	END_IF
 END_FOR
 
 GetAlarmByName REF= _emptyAlarm;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="GetMaxAlarmArrayIndex" Id="{6421d87c-48b6-05a1-11d6-d58eb2e120b7}" FolderPath="Methods - Private\">
-      <Declaration><![CDATA[METHOD PRIVATE GetMaxAlarmArrayIndex : T_ArrayIndexer
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[GetMaxAlarmArrayIndex := (_alarmArrayProperties.StartIndex + UDINT_TO_DINT(RegisteredAlarmsCount)) - 1;]]></ST>
       </Implementation>
     </Method>
     <Property Name="MaximumAlarmsCount" Id="{574f6a7f-c95b-020e-3b75-fa8d2b652f2d}" FolderPath="Properties - public\">
@@ -371,7 +353,7 @@ PROPERTY MaximumAlarmsCount : UDINT
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[MaximumAlarmsCount := DINT_TO_UDINT(_alarmArrayProperties.Count);]]></ST>
+          <ST><![CDATA[MaximumAlarmsCount := DINT_TO_UDINT(_alarmsBuffer.NumberOfAlarms);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -392,7 +374,7 @@ _activeAlarmCount := _activeAlarmCount + 1;
 _unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
 alarm.IsActive := TRUE;
 alarm.IsAcknowledged := FALSE;
-MEMSET(
+Tc2_System.MEMSET(
 	destAddr := ADR(alarm.TimeInfos),
 	fillByte := 0,
 	n := SIZEOF(alarm.TimeInfos));
@@ -486,24 +468,32 @@ VAR_INPUT
 END_VAR
 
 VAR
-	foundAlarm		: ST_AlarmInfo;
+	alarmIndex	: T_ArrayIndexer;
+	alarm		:  ST_AlarmInfo;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF _registeredAlarmsCount >= MaximumAlarmsCount THEN
+        <ST><![CDATA[// Maximum ammount of alarms is already registered.
+IF _registeredAlarmsCount >= MaximumAlarmsCount THEN
 	RETURN;
 END_IF
 
-foundAlarm := GetAlarmById(nID := Id);
-IF foundAlarm.Id = Id THEN
+// Alarm already exists, return.
+IF GetAlarmById(nID := Id).Id = Id THEN
 	RETURN;
 END_IF
 
-refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Id := Id;
-refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Name := Name;
-refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Message := Message;
-refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].IsAcknowledged := TRUE;
-refAlarms[_alarmArrayProperties.StartIndex + UDINT_TO_DINT(_registeredAlarmsCount)].Level := Level;
+// Create the alarm
+alarm.Id := Id;
+alarm.Name := Name;
+alarm.Message := Message;
+alarm.IsAcknowledged := TRUE;
+alarm.Level := Level;
+
+// Set the alarm in the buffer
+_alarmsBuffer.Set(alarm := alarm, index := UDINT_TO_DINT(_registeredAlarmsCount));
+
+// Increase count and return TRUE
 _registeredAlarmsCount := _registeredAlarmsCount + 1;
 RegisterAlarm := TRUE;
 
@@ -536,28 +526,17 @@ PROPERTY UnacknowledgedAlarmsCount : UINT
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[maxAlarmIndex :=  GetMaxAlarmArrayIndex();
-_unacknowledgedAlarmCount := 0;
+          <ST><![CDATA[_unacknowledgedAlarmCount := 0;
 
-FOR alarmIndex := _alarmArrayProperties.StartIndex TO maxAlarmIndex BY 1 DO
-	IF NOT refAlarms[alarmIndex].IsAcknowledged THEN
+FOR alarmIndex := 0 TO _alarmsBuffer.NumberOfAlarms - 1 BY 1 DO
+	IF _alarmsBuffer.GetPtr(alarmIndex) <> 0 AND_THEN NOT _alarmsBuffer.GetPtr(alarmIndex)^.IsAcknowledged THEN
 		_unacknowledgedAlarmCount := _unacknowledgedAlarmCount + 1;
 	END_IF
-	
 END_FOR
 
 UnacknowledgedAlarmsCount := _unacknowledgedAlarmCount;]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="ValidateArrayRef" Id="{5bf7baa0-d3ee-00ba-0fc2-1e40a79aa2c4}" FolderPath="Methods - Private\">
-      <Declaration><![CDATA[METHOD PRIVATE ValidateArrayRef : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[ValidateArrayRef := refAlarms <> 0;]]></ST>
-      </Implementation>
-    </Method>
   </POU>
 </TcPlcObject>

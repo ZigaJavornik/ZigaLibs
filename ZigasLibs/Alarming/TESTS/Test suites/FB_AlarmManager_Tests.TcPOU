@@ -2,19 +2,17 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_AlarmManager_Tests" Id="{10bfaa3e-65e7-0c01-2813-1ee946632c0a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_AlarmManager_Tests EXTENDS FB_TestSuite
-VAR_INPUT
-END_VAR
-VAR_OUTPUT
-END_VAR
-VAR;
-	_alarmManager	: FB_AlarmManager(TRUE, 0);
-	_alarmsArray	: ARRAY[0..100] OF ST_AlarmInfo;
-	n				: T_ArrayIndexer;
+VAR
+	_dateTime	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
+	_alarmManager : FB_AlarmManager(
+		enable := TRUE, // [BOOL] - Enables alarm generation
+		logger := 0, // [REFERENCE TO ZigaLibs_Core.I_LoggerEx] - optional, logger.
+		maximumAlarms := 100, // [UINT] - maximum alarms, inital value. Can be expanded. You can leave it at 0 and value will increase with every new registered alarm
+		timeProvider := _dateTime); //[ZigaLibs_Core.I_LocalSystemTimeProvider] - required, date time provider.
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_alarmManager(refAlarms := _alarmsArray);
-
+      <ST><![CDATA[_dateTime();
 Test00_RegisterAlarms();
 Test01_ActivateNewAlarm_ExpectUnacknowledgedActiveAlarm();
 Test02_AcknowledgeActiveAlarm_ExpectActiveAcknowledged();
@@ -45,7 +43,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test00_RegisterAlarms');
-_alarmManager.Actions().Acknowledge();
+
 AssertEquals_UDINT(
 	Actual := _alarmManager.MaximumAlarmsCount,
 	Expected := 101,
@@ -304,13 +302,13 @@ END_VAR
 
 VAR
 	n				: T_ArrayIndexer;
-	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0,61);
 	arrAlarms		: ARRAY[0..60] OF ST_AlarmInfo;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test07_AcknowledgeAllAlarms_ExpectActiveAlarmsUnchanged');
 
-fbAlarmManager(refAlarms := arrAlarms);
+fbAlarmManager();
 FOR n := 1 TO 40 BY 1 DO
 	fbAlarmManager.RegisterAlarm(n, TO_STRING(n), '', E_AlarmLevel.INFO);
 	fbAlarmManager.RaiseAlarmById(n);
@@ -442,13 +440,12 @@ VAR_INPUT
 END_VAR
 
 VAR_INST
-	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0,11);
 	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
 	i				: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test11_GetAlarmByName');
-fbAlarmManager(refAlarms := alarms);
 
 FOR i := 1 TO 11 BY 1 DO
 	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '',E_AlarmLevel.INFO);
@@ -467,14 +464,12 @@ TcUnit.TEST_FINISHED();
 VAR_INPUT
 END_VAR
 VAR_INST
-	fbAlarmManager	: FB_AlarmManager(TRUE, 0);
+	fbAlarmManager	: FB_AlarmManager(TRUE, 0,11);
 	alarms			: ARRAY[0..10] OF ST_AlarmInfo;
 	i				: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test12_GetAlarmById');
-fbAlarmManager(refAlarms := alarms);
-
 FOR i := 1 TO 11 BY 1 DO
 	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), '', E_AlarmLevel.INFO);
 	AssertEquals_DINT(
@@ -592,7 +587,7 @@ VAR_INPUT
 END_VAR
 
 VAR_INST
-	fbAlarmManager			: FB_AlarmManager(TRUE, 0);
+	fbAlarmManager			: FB_AlarmManager(TRUE, 0,11);
 	alarms					: ARRAY[0..10] OF ST_AlarmInfo;
 	i						: T_ArrayIndexer;
 	stTimeStruct			: Tc2_Utilities.TIMESTRUCT;
@@ -603,7 +598,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test16_TimeInfos');
-fbAlarmManager(refAlarms := alarms);
+fbAlarmManager();
 IF fbAlarmManager._dateTime.CurrentTime.IsValid THEN
 	FOR i := 0 TO 10 BY 1 DO
 		fbAlarmManager.RegisterAlarm(i+1,'','', E_AlarmLevel.INFO);
