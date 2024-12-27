@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Malloc_Tests" Id="{9aafeb30-9fd4-0748-2c9d-578a63aad36b}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Malloc_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK internal FB_Malloc_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT

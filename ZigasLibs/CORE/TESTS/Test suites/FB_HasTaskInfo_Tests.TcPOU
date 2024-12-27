@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_HasTaskInfo_Tests" Id="{aa6dd85a-0488-09a3-0f0b-577b2983b8b5}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_HasTaskInfo_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK internal FB_HasTaskInfo_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
