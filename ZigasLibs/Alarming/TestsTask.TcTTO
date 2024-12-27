@@ -5,7 +5,7 @@
     <CycleTime>10000</CycleTime>
     <Priority>20</Priority>
     <PouCall>
-      <Name>inPRG_TESTS</Name>
+      <Name>PRG_TESTS</Name>
     </PouCall>
     <TaskFBGuid>{35dd21b6-41e3-4b36-af0b-4f8c495290a0}</TaskFBGuid>
     <Fb_init>{08585dcf-be0b-4577-bc12-a338915bed07}</Fb_init>

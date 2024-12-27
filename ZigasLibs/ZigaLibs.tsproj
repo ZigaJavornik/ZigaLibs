@@ -361,7 +361,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{040EBB8C-20A1-4DDD-9D6C-204C4EF197FF}" Name="Alarming" PrjFilePath="Alarming\Alarming.plcproj" TmcFilePath="Alarming\Alarming.tmc" ReloadTmc="true" AmsPort="859" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{82BB4169-242A-1AB4-B98B-FB9E4A215EC8}">
+				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{9C6C9410-94A6-6C96-08C6-DD6F0E22B64D}">
 					<Name>Alarming Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
