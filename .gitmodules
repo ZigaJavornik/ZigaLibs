@@ -1,4 +1,4 @@
 [submodule "Examples"]
 	path = Examples
-	url = C:\\Work\\GitHub\\TwinCAT\\ZigasLibs\\Examples
+	url = https://github.com/ZigaJavornik/ZigaLibs-Examples
 	branch = master
