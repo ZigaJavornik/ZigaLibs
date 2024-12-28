@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PositionSensorObserverBase" Id="{2ab8856f-e4f4-0529-1efd-e2a591634266}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_PositionSensorObserverBase EXTENDS ZigaLibs_Core.FB_HasInstanceName
+
+VAR
+	_topPositionObserver 	: ZigaLibs_Core.BoolEx;
+	_topPositionError		: Tc2_Standard.R_TRIG;
+	
+	_bottoPositionObserver	: ZigaLibs_Core.BoolEx;
+	_bottomPositionError	: Tc2_Standard.R_TRIG;
+	
+	_logger					: ZigaLibs_Core.I_LoggerEx;
+	_sb						: ZigaLibs_Core.FB_StringBuilder;
+END_VAR
+
+VAR
+	{attribute 'hide'}
+	_topPositionSensor		: BOOL;
+	{attribute 'hide'}
+	_bottomPositionSensor	: BOOL;
+END_VAR
+
+VAR CONSTANT
+	MAXIMUM_DURATION_AT_BOTTOM_POSITION : TIME := T#10S;
+	MAXIMUM_DURATION_AT_TOP_POSITION 	: TIME := T#10S;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_topPositionObserver(variable := TopPositionSensor);
+_bottoPositionObserver(variable := BottomPositionSensor);
+_topPositionError(CLK := _topPositionObserver.HasBeenTrueForAtLeast(MAXIMUM_DURATION_AT_TOP_POSITION));
+_bottomPositionError(CLK := _bottoPositionObserver.HasBeenTrueForAtLeast(MAXIMUM_DURATION_AT_BOTTOM_POSITION));]]></ST>
+    </Implementation>
+    <Property Name="BottomPositionSensor" Id="{45ba5b9d-ffef-09d6-0dc3-4f2f5b861e26}">
+      <Declaration><![CDATA[PROPERTY BottomPositionSensor : REFERENCE TO BOOL]]></Declaration>
+      <Get Name="Get" Id="{5eb07ddd-020d-0fcb-0f9f-2301d15eb2b5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BottomPositionSensor REF= _bottomPositionSensor;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{eaff412f-b5cd-048f-2e6b-cf6ad53d26a9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_bottomPositionSensor := BottomPositionSensor;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="TopPositionSensor" Id="{686a2265-43ce-0c22-2f7a-998313a90f37}">
+      <Declaration><![CDATA[PROPERTY TopPositionSensor : REFERENCE TO BOOL]]></Declaration>
+      <Get Name="Get" Id="{b0cdeef8-4973-02c4-2d92-64be248ebdcf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[TopPositionSensor REF= _topPositionSensor;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a15de8f0-c7d2-0cca-33da-dc4ee9cff5b1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_topPositionSensor := TopPositionSensor;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

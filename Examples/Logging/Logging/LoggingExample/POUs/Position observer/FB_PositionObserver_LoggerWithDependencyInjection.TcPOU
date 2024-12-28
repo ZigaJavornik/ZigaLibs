@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PositionObserver_LoggerWithDependencyInjection" Id="{d462a79b-dd94-0ac1-0f72-4d735d99316c}" SpecialFunc="None">
+    <Declaration><![CDATA[// A function block with I_LoggerEX as required parameter passed trought FB_Init (dependency injection)
+FUNCTION_BLOCK FB_PositionObserver_LoggerWithDependencyInjection EXTENDS FB_PositionSensorObserverBase
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Calling the base class body, FB_PositionSensorObserverBase. It assigns and calls the observers, triggers, ...
+// If you want to change how the triggers behave, you could just not call SUPER and do your own implementaiton.
+SUPER^();
+
+// =======================================================================================
+// ================================ WARNING ==============================================
+// =======================================================================================
+IF _bottoPositionObserver.HasRisingEdge THEN
+	// Lets imagine the bottom position indicates a warning
+	_logger.LogWarning(_sb.Reset()
+		.AddString('Source: ')
+		.AddWithDblQuotationMarks(THIS^.InstanceName)
+		.AddString(' Bottom position reached.')
+		.Create());
+END_IF
+
+
+// =======================================================================================
+// ================================ ERROR ================================================
+// =======================================================================================
+// And after certain time, we need to trigger an error
+IF _bottomPositionError.Q THEN
+	_logger.LogError(_sb.Reset()
+		.AddString('Source: ').AddWithDblQuotationMarks(THIS^.InstanceName)
+		.AddString(' - bottom position has been active for too long!')
+		.AddString('Maximum allowed duration is ').AddString(TO_STRING(MAXIMUM_DURATION_AT_BOTTOM_POSITION)).AddString('!')
+		.Create());
+END_IF
+
+// =======================================================================================
+// ================================ INFO =================================================
+// =======================================================================================
+IF _bottoPositionObserver.HasFallingEdge THEN
+	_logger.LogInfo(_sb.Reset()
+		.AddString('Source: ').AddWithDblQuotationMarks(THIS^.InstanceName)
+		.AddString(' No longer at bottom position. ')
+		.AddString('Bottom position was active for ')
+		.Create());
+END_IF
+
+// =======================================================================================
+// ================================ INFO =================================================
+// =======================================================================================
+IF _topPositionObserver.HasRisingEdge THEN
+	_logger.LogInfo(_sb.Reset()
+		.AddString('Source: ')
+		.AddWithDblQuotationMarks(THIS^.InstanceName)
+		.AddString(' Top position reached.')
+		.Create());
+END_IF
+
+// =======================================================================================
+// ================================ INFO =================================================
+// =======================================================================================
+IF _topPositionObserver.HasFallingEdge THEN
+	_logger.LogInfo(_sb.Reset()
+		.AddString('Source: ')
+		.AddWithDblQuotationMarks(THIS^.InstanceName)
+		.AddString(' No longer at top position.')
+		.Create());
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{85b750f2-e2f1-040c-3411-b7c2844ed1df}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger	: ZigaLibs_Core.I_LoggerEx;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Assign the internal interface to the one provided - interface is basically a pointer. Passing the address this way.
+_logger := logger;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

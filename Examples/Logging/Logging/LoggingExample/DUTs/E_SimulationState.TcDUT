@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_SimulationState" Id="{b05ff59e-5e9c-44c6-b104-d34d4f22f0d7}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+
+// Adding this attribute allows to call TO_STRING(enumVariable), which will result in the name of the enum member
+{attribute 'to_string'}
+
+TYPE E_SimulationState :
+(
+	IDLE, 
+	BOTTOM, 
+	BOTTOM_FOR_10_SECONDS, 
+	TOP, TOP_FOR_10_SECONDS 
+):= IDLE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
