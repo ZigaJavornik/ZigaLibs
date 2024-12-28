@@ -1,0 +1,4 @@
+[submodule "Examples"]
+	path = ZigaLibs-Examples
+	url = https://github.com/ZigaJavornik/ZigaLibs-Examples
+	branch = master
