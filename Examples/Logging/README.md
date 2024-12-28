@@ -4,9 +4,9 @@ In this example, you can see a simple project displaying how logging can be used
 
 ```
 VAR CONSTANT
-	MY_TARGET_DEVICE_NET_ID 		: Tc2_System.T_AmsNetIdArr := [192,168,56,1,1,1]; // Empty = local
+	MY_TARGET_DEVICE_NET_ID 	: Tc2_System.T_AmsNetIdArr := [192,168,56,1,1,1]; // Empty = local
 	MY_LOGGER_EXAMPLE_FILE_LOCATION	: Tc2_System.T_MaxString := 'C:\';
-	MY_LOGGER_EXAMPLE_FILE_NAME		: Tc2_System.T_MaxString := 'ExampleLog';
+	MY_LOGGER_EXAMPLE_FILE_NAME	: Tc2_System.T_MaxString := 'ExampleLog';
 END_VAR
 ```
 
