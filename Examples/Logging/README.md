@@ -1,7 +1,14 @@
 **ZigaLibs_Logging Example project**
 
-In this example, you can see a simple project displaying how logging can be used with `ZigaLibs_Logging.FB_Logger` and `ZigaLibs_Core.ILoggerEx` interface that it implements. You can download and run the source code on a TwinCAT3 runtime. The things you should adjust are located in `VAR_CONSTANT` inside the `MAIN` POU.
-![image](https://github.com/user-attachments/assets/900b2e6e-434b-4215-8570-37d34bf60726)
+In this example, you can see a simple project displaying how logging can be used with `ZigaLibs_Logging.FB_Logger` and `ZigaLibs_Core.ILoggerEx` interface that it implements. You can download and run the source code on a TwinCAT3 runtime. The things you should adjust are located in `VAR_CONSTANT` inside the `MAIN` POU:
+
+```
+VAR CONSTANT
+	MY_TARGET_DEVICE_NET_ID 		: Tc2_System.T_AmsNetIdArr := [192,168,56,1,1,1]; // Empty = local
+	MY_LOGGER_EXAMPLE_FILE_LOCATION	: Tc2_System.T_MaxString := 'C:\';
+	MY_LOGGER_EXAMPLE_FILE_NAME		: Tc2_System.T_MaxString := 'ExampleLog';
+END_VAR
+```
 
 Adjust these to wherever your path to the file is, NetID runtime and, optionally, adjust file name. When done, you can download and run the applicaiton. 
 
@@ -53,4 +60,4 @@ END_VAR
 ```
 Here is an example of running it and looking at the generated log file:
 
-![ExapleSimulation](https://github.com/user-attachments/assets/058e724e-9a41-4f1e-9ad6-1c96d87b25fa)
+![ExapleSimulation](https://raw.githubusercontent.com/ZigaJavornik/ZigaLibs/refs/heads/master/Examples/Logging/Gifs/ExapleSimulation.gif)
