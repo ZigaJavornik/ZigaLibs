@@ -14,9 +14,9 @@
     <Implicit_KindOfTask>{852f68de-2414-4e5f-84f7-4095d25d228b}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{74383b45-060a-462b-b2ef-532a2fb8e2d1}</Implicit_Jitter_Distribution>
     <LibraryReferences>{e027f640-2090-40c7-977b-e2dc88118b84}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>ZigaLibs.Alarming</Company>
     <Title>Alarming</Title>
-    <ProjectVersion>0.0.1.4</ProjectVersion>
+    <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -75,10 +75,10 @@
     <SelectedLibraryCategories>
       <Id xmlns="">{7700afa9-3688-4b10-b0ff-2254a02219d8}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_Alarming</DefaultNamespace>
-    <Placeholder>ZigaLibs_Alarming</Placeholder>
+    <DefaultNamespace>ZigaLibs.Alarming</DefaultNamespace>
+    <Placeholder>ZigaLibs.Alarming</Placeholder>
     <Author>Ziga Javornik</Author>
-    <Description>A library for alarm management. Uses ZigaLibs_Logging to create the alarm logs.</Description>
+    <Description>A library for alarm management. Uses ZigaLibs_Logging to create the alarm logs files.</Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\AlarmManager\Actions - fluent\FB_AlarmActionBuilder.TcPOU">
@@ -153,13 +153,14 @@
           <Value>'C:\tcunit_xunit_testresults.xml'</Value>
         </Parameter>
       </Parameters>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Core">
-      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Logging">
-      <DefaultResolution>Logging, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
@@ -170,15 +171,6 @@
     <PlaceholderResolution Include="SysFile">
       <Resolution>SysFile, 3.5.9.0 (System)</Resolution>
     </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc2_ControllerToolbox">
-      <Resolution>Tc2_ControllerToolbox, 3.6.1.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc2_EtherCAT">
-      <Resolution>Tc2_EtherCAT, 3.5.1.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc2_IoFunctions">
-      <Resolution>Tc2_IoFunctions, 3.4.3.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_Standard">
       <Resolution>Tc2_Standard, 3.4.5.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
@@ -188,20 +180,11 @@
     <PlaceholderResolution Include="Tc2_Utilities">
       <Resolution>Tc2_Utilities, 3.8.2.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc3_EventLogger">
-      <Resolution>Tc3_EventLogger, 3.3.10.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc3_Module">
       <Resolution>Tc3_Module, 3.4.5.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
       <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="ZigaLibs_Core">
-      <Resolution>Core, 0.0.1.0 (Ziga)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="ZigaLibs_Logging">
-      <Resolution>Logging, 0.0.1.5 (Ziga)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ItemGroup>

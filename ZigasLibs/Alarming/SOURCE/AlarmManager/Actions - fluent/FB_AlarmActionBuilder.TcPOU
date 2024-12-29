@@ -8,10 +8,6 @@ VAR
 	_alarmManager	: REFERENCE TO FB_AlarmManager;
 END_VAR
 
-VAR CONSTANT
-	_emptyAlarm		: ST_AlarmInfo;	
-END_VAR
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>

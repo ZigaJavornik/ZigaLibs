@@ -165,7 +165,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{E6A01062-DE47-675A-39AE-B3A1D5F3F59B}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{F246315A-C476-9BC1-C003-B097E0C40AD6}">
 					<Name>Logging Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -361,7 +361,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{040EBB8C-20A1-4DDD-9D6C-204C4EF197FF}" Name="Alarming" PrjFilePath="Alarming\Alarming.plcproj" TmcFilePath="Alarming\Alarming.tmc" ReloadTmc="true" AmsPort="859" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{9C6C9410-94A6-6C96-08C6-DD6F0E22B64D}">
+				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{E8811C23-A435-5E63-13A7-65CFFC674E5D}">
 					<Name>Alarming Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
