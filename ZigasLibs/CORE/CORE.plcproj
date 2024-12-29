@@ -57,7 +57,8 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>test</CompilerDefines>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
