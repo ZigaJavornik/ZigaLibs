@@ -15,10 +15,10 @@
     <Implicit_Jitter_Distribution>{c4f6ebc7-ab53-4cdb-9a8d-93089f0515ad}</Implicit_Jitter_Distribution>
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>Core</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
-    <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
-    <Placeholder>ZigaLibs_Core</Placeholder>
+    <Title>ZigaLibs.Core</Title>
+    <ProjectVersion>0.0.2.0</ProjectVersion>
+    <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
+    <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>A collection of core objects for work with further libraries implementations.</Description>
     <LibraryCategories>
