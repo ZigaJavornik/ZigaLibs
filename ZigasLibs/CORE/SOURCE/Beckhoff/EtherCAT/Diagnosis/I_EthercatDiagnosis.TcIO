@@ -12,7 +12,7 @@ PROPERTY Error : BOOL]]></Declaration>
     </Property>
     <Property Name="IgnoredSlaves" Id="{582d728a-e4e9-0e33-0a0a-9fcf28b5ab19}">
       <Declaration><![CDATA[// Gets an array of slaves that have been added to ignore list
-PROPERTY IgnoredSlaves : REFERENCE TO ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString]]></Declaration>
+PROPERTY IgnoredSlaves : REFERENCE TO ARRAY[0..255] OF Tc2_System.T_MaxString]]></Declaration>
       <Get Name="Get" Id="{45efd74d-e3fb-019d-01b6-950e28d5a59b}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
@@ -28,7 +28,7 @@ END_VAR
     </Method>
     <Property Name="MissingSlaves" Id="{7e540e48-5049-0c72-3a49-fcb1f0bb50f7}">
       <Declaration><![CDATA[// Returns an array of misisng slave names
-PROPERTY MissingSlaves : REFERENCE TO ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo]]></Declaration>
+PROPERTY MissingSlaves : REFERENCE TO ARRAY[0..255] OF ST_EthercatSlaveInfo]]></Declaration>
       <Get Name="Get" Id="{4de20bd8-7b08-0c86-2e67-b4b28be93441}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
