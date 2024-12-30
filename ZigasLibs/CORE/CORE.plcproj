@@ -179,12 +179,6 @@
     <Compile Include="SOURCE\General\Memory\FB_Malloc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Memory\I_GetRouterData.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\General\Memory\I_GetRouterDataDone.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\General\Memory\MemoryHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>

@@ -47,7 +47,7 @@ Allocate := _allocatedMemory <> 0;]]></ST>
 METHOD AllocateAny : BOOL
 VAR_INPUT
 	dataType			: ANY;		// Provide the variable that will be used as base type here
-	numberOfElements	: UDINT;	// Number of elements that should be allocated.
+	numberOfElements	: DINT;	// Number of elements that should be allocated.
 END_VAR
 ]]></Declaration>
       <Implementation>

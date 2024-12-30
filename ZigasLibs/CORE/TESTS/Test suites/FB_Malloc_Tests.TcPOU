@@ -183,7 +183,7 @@ THEN
 			'BaseTypeSize  should be 0 after freeing.');
 		AssertEquals_DINT(0, _malloc.Properties.Size,
 			'Size should be 0 after freeing.');
-		AssertEquals_DINT(0, _malloc.Properties.StartAddress,
+		AssertEquals_UDINT(0, _malloc.Properties.StartAddress,
 			'StartAddress should be 0 after freeing.');
 		AssertFalse(_malloc.IsAllocated,
 			'IsAllocated should be FALSE when freeing.');
