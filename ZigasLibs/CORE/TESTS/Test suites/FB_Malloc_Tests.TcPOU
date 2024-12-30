@@ -421,11 +421,11 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Validate properties
-AssertEquals_UDINT(0, _malloc.Properties.BaseTypeSize,
+AssertEquals_DINT(0, _malloc.Properties.BaseTypeSize,
 	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - BaseTypeSize should be 0 when failing allocation.'));
-AssertEquals_UDINT(0, _malloc.Properties.NumberOfElements,
+AssertEquals_DINT(0, _malloc.Properties.NumberOfElements,
 	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - NumberOfElements should be 0 when failing allocation.'));	
-AssertEquals_UDINT(0, _malloc.Properties.Size,
+AssertEquals_DINT(0, _malloc.Properties.Size,
 	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - Size should be 0 when failing allocation.'));			
 AssertEquals_UDINT(0, _malloc.Properties.StartAddress,
 	CONCAT(CONCAT('Calling method ', mallocMethodCalled), ' - StartAddress should be 0 when failing allocation.'));]]></ST>

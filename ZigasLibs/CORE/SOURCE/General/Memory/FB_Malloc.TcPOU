@@ -175,7 +175,7 @@ END_VAR
         <ST><![CDATA[IF THIS^.ValidateIndex(index) AND 
    THIS^.IsAllocated 
 THEN
-	GetPtr := UDINT_TO_DINT(_properties.StartAddress) + index * _properties.BaseTypeSize;
+	GetPtr := _properties.StartAddress + DINT_TO_UDINT(index * _properties.BaseTypeSize);
 END_IF]]></ST>
       </Implementation>
     </Method>

@@ -12,7 +12,7 @@ END_VAR
     <Implementation>
       <ST><![CDATA[F_GetVarInfo.Address := variable.pValue;
 F_GetVarInfo.DataType := variable.TypeClass;
-F_GetVarInfo.Size := variable.diSize;]]></ST>
+F_GetVarInfo.Size := DINT_TO_UDINT(variable.diSize);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
