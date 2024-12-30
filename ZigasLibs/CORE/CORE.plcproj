@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\FB_EthercatDiagnosis.TcPOU">
       <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\I_EthercatDiagnosis.TcIO">
       <SubType>Code</SubType>
@@ -176,6 +177,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Memory\FB_Malloc.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\I_GetRouterData.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\I_GetRouterDataDone.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\MemoryHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Memory\ST_AllocatedMemoryProperties.TcDUT">
@@ -273,6 +283,7 @@
     </Compile>
     <Compile Include="TESTS\Test suites\FB_EthercatDiagnosis_Tests.TcPOU">
       <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_EthercatHelper_Tests.TcPOU">
       <SubType>Code</SubType>
@@ -368,16 +379,14 @@
     <PlaceholderReference Include="TcError">
       <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
+      <Condition>
+      </Condition>
+      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, 1.2.0.0 (www.tcunit.org)</DefaultResolution>
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

@@ -234,12 +234,7 @@ IF index = 0 AND _properties.NumberOfElements = 1 THEN
 END_IF
 
 originalProperties := _properties;
-
-// Example:
-// 10 elements, max index 9
-// remove 5th element
-// Lower part should be from 0 to 4, so 5 elements = index - 1 => address = adr + SIZEOF(base) * (index - 1)
-byteCountLowerPart := _properties.BaseTypeSize * (index - 1);
+byteCountLowerPart := _properties.BaseTypeSize * index;
 lowerPart := __NEW(BYTE, byteCountLowerPart);
 Tc2_System.MEMCPY(
 	srcAddr := _allocatedMemory,
@@ -248,11 +243,11 @@ Tc2_System.MEMCPY(
 	
 // Upper part should be from 6 to 9, so 4 elements = elementCount - index + 1 => addres = adr + sizeof(base) * (elementCounte + index - 1)
 // If index = max, 9, then: 10 - 9 + 1 = 0 => upper part is nothing
-byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - index );
+byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - 1 - index );
 IF byteCountUpperPart <> 0 THEN
 	upperPart := __NEW(BYTE, byteCountUpperPart);
 	Tc2_System.MEMCPY(
-		srcAddr := _allocatedMemory + DINT_TO_DWORD(_properties.Size - byteCountUpperPart),
+		srcAddr := _allocatedMemory + DINT_TO_DWORD(_properties.Size) -  DINT_TO_DWORD(byteCountUpperPart),
 		destAddr := upperPart,
 		n := DINT_TO_UDINT(byteCountUpperPart));	
 END_IF
