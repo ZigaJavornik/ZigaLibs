@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_LogBuffer" Id="{1343ead6-a199-05b8-0c52-866351bc1b9c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LogBuffer
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_malloc	: ZigaLibs_Core.FB_Malloc;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Dequeue" Id="{15b0b48e-5c54-0d7a-03ef-d4e626875ce7}">
+      <Declaration><![CDATA[METHOD Dequeue : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _malloc.IsAllocated THEN
+	_malloc.Get(0, Dequeue);
+	_malloc.Remove(0);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Enqueue" Id="{a8e22dc4-1ba3-080b-1799-83e595f39578}">
+      <Declaration><![CDATA[METHOD Enqueue
+VAR_INPUT
+	entry	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _malloc.IsAllocated THEN
+	_malloc.AllocateAny(entry,1);
+ELSE
+	_malloc.Expand(1);
+END_IF
+
+_malloc.Set(_malloc.Properties.NumberOfElements - 1, entry);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IsEmpty" Id="{4259a758-a937-04ef-24b7-4a5718aef051}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY IsEmpty : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1b475040-dcb7-018c-3945-9d56bdc244b8}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsEmpty := NOT _malloc.IsAllocated;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
