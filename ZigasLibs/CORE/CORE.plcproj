@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Core</Title>
-    <ProjectVersion>0.0.2.0</ProjectVersion>
+    <ProjectVersion>0.0.3.2</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
     <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -146,34 +146,37 @@
     <Compile Include="SOURCE\Errors\DUTs\ST_AdsError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\DUTs\ST_ErrorSource.TcDUT">
+    <Compile Include="SOURCE\Errors\DUTs\ST_GenericError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Errors\FB_ErrorSource.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
+    <Compile Include="SOURCE\Errors\I_HasError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
+    <Compile Include="SOURCE\Errors\I_ErrorSource.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\DUTs\ST_FileProperties.TcDUT">
+    <Compile Include="SOURCE\Errors\I_HasAdsError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\FileHelper.TcPOU">
+    <Compile Include="SOURCE\Errors\I_HasGenericError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\I_FileProperties.TcIO">
+    <Compile Include="SOURCE\General\Collections\FB_Collection.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\ST_FileExtensions.TcDUT">
+    <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\FB_HasInstanceName.TcPOU">
+    <Compile Include="SOURCE\General\FB_HasInstanceNameAndPath.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\InstanceNameHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Memory\FB_Malloc.TcPOU">
@@ -186,6 +189,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\ST_Value.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\T_VarInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Variable information\F_DoesVarTypeEqual.TcPOU">
@@ -204,15 +210,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Variable information\T_VarSize.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Logger\I_Logger.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Logger\I_LoggerEx.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\E_AddAnyBitOptions.TcDUT">
@@ -319,13 +316,10 @@
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state" />
     <Folder Include="SOURCE\Errors\DUTs" />
-    <Folder Include="SOURCE\File" />
-    <Folder Include="SOURCE\File\DUTs" />
+    <Folder Include="SOURCE\General\Collections" />
     <Folder Include="SOURCE\General\Variable information" />
     <Folder Include="SOURCE\General\Memory" />
     <Folder Include="SOURCE\General\Variable extensions" />
-    <Folder Include="SOURCE\Logger" />
-    <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\Beckhoff" />
@@ -398,7 +392,7 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
