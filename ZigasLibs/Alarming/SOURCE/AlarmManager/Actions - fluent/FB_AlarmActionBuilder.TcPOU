@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="FB_AlarmActionBuilder" Id="{cf92893f-c46c-0cad-3a1f-3e982e8ce72f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_AlarmActionBuilder IMPLEMENTS I_AlarmActionBy, I_AlarmActions
 VAR

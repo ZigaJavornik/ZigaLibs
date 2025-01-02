@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1">
   <Itf Name="I_AlarmActionBy" Id="{1bdf0514-5e3c-01ed-0fa4-01e579a6736b}">
     <Declaration><![CDATA[INTERFACE I_AlarmActionBy
 ]]></Declaration>

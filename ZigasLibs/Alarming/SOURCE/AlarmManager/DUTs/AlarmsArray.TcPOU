@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="AlarmsArray" Id="{5ae36814-b12d-0cb1-107f-413dbe3482e3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK AlarmsArray
 VAR_INPUT

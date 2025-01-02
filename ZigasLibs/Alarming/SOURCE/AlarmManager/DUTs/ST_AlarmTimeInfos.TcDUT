@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1">
   <DUT Name="ST_AlarmTimeInfos" Id="{d6222138-e632-0fde-0530-505c32c5c78b}">
     <Declaration><![CDATA[TYPE ST_AlarmTimeInfos :
 STRUCT

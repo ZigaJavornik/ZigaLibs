@@ -79,6 +79,7 @@
     <Placeholder>ZigaLibs.Alarming</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>A library for alarm management. Uses ZigaLibs_Logging to create the alarm logs files.</Description>
+    <WriteProductVersion>false</WriteProductVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SOURCE\AlarmManager\Actions - fluent\FB_AlarmActionBuilder.TcPOU">
