@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_HasInstanceName_Tests" Id="{fc7f1c45-4e05-0854-19c6-d70a4b102dae}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_HasInstanceName_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -11,7 +11,8 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test01_InstanceName();]]></ST>
+      <ST><![CDATA[Test01_InstanceName();
+Test02_InstancePath();]]></ST>
     </Implementation>
     <Method Name="Test01_InstanceName" Id="{5d7d088d-abcc-0fd9-2182-97fbd3514b3d}">
       <Declaration><![CDATA[METHOD Test01_InstanceName
@@ -23,13 +24,8 @@ END_VAR
 
 AssertEquals_STRING(
 	Expected := 'fbHasInstanceName',
-	Actual := fbHasInstanceName.GetInstanceName(),
-	Message := 'GetInstanceName method returned incorrect instance name!');
-
-AssertEquals_STRING(
-	Expected := 'fbHasInstanceName',
 	Actual := fbHasInstanceName.InstanceName,
-	Message := 'InstanceName property returned incorret value!');
+	Message := 'InstanceName is not correct.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
@@ -40,7 +36,14 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[TcUnit.TEST('Test02_InstancePath');
+
+AssertEquals_STRING(
+	Expected := 'PRG_TESTS.HasInstanceNameTests.fbHasInstanceName',
+	Actual := fbHasInstanceName.InstancePath,
+	Message := 'Instance path is incorrect.');
+
+TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
   </POU>
