@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_HasAdsError" Id="{e75419f9-9772-052d-1289-5c83376c53b9}">
+    <Declaration><![CDATA[INTERFACE I_HasAdsError
+]]></Declaration>
+    <Property Name="AdsError" Id="{75724db2-49ea-06b6-2bd2-0790872e1531}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets the Ads error - note that code to message conversion is done automatically.
+PROPERTY AdsError : REFERENCE TO ST_AdsError]]></Declaration>
+      <Get Name="Get" Id="{5182ae44-a51e-01e6-03b3-bf59937062a4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

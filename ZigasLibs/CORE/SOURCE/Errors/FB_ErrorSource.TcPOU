@@ -1,29 +1,86 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ErrorSource" Id="{39c13ed9-6860-004f-28d1-bfe8a964ba5b}" SpecialFunc="None">
-    <Declaration><![CDATA[// Provides error souricng implementation (ADS code and information as well as the source instance name)
+    <Declaration><![CDATA[// Provides I_ErrorSource base implementation.
 
 {attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
-FUNCTION_BLOCK ABSTRACT FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
+FUNCTION_BLOCK ABSTRACT FB_ErrorSource EXTENDS FB_HasInstanceNameAndPath IMPLEMENTS I_ErrorSource
 VAR
-	_errorSource : ST_ErrorSource := (
-		InstanceName := GetInstanceName(),
-		InsatncePath := THIS^.InstancePath);
+	_adsError		: ST_AdsError;
+	_error			: BOOL;
+	_genericError	: ST_GenericError;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Property Name="ErrorSource" Id="{15c87816-e531-04de-26f6-1439ba97e2e1}">
-      <Declaration><![CDATA[PROPERTY ErrorSource : REFERENCE TO ST_ErrorSource
+    <Property Name="AdsError" Id="{fff5cc41-9e38-00c1-1b75-9796a67b2f9a}">
+      <Declaration><![CDATA[// Gets or sets the Ads error - note that code to message conversion is done automatically.
+{attribute 'monitoring':='call'}
+PROPERTY AdsError : REFERENCE TO ST_AdsError
 ]]></Declaration>
-      <Get Name="Get" Id="{02786464-5879-0c4a-39ea-a502d632abf5}">
+      <Get Name="Get" Id="{dfdc6b45-412b-0ab1-2e65-901d5c96b6f9}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ErrorSource REF= _errorSource;]]></ST>
+          <ST><![CDATA[_adsError.Message := TcError.AdsErrorCodeDescription(_adsError.Code);
+AdsError REF= _adsError;]]></ST>
         </Implementation>
       </Get>
+      <Set Name="Set" Id="{55ee30fc-c5f2-0e2c-268a-16c256632a7b}">
+        <Declaration><![CDATA[PROTECTED 
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_adsError := AdsError;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Error" Id="{07bf3a7c-73d5-05d3-0971-3b805a069dd3}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Returns TRUE if an error has occurred*)
+PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{394c58bd-dea7-0c90-144a-d0e072a91898}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := _error; ]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1ee874ec-33dc-0ea1-06de-e755582adbbd}">
+        <Declaration><![CDATA[PROTECTED 
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_error := Error;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="GenericError" Id="{9c0b3dd9-8646-0f31-3d57-d81ecd2c1767}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY GenericError : REFERENCE TO ST_GenericError
+]]></Declaration>
+      <Get Name="Get" Id="{b4449b0d-1bcf-00fd-2471-fd3865c77e8d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[GenericError REF= _genericError;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{dfc860ee-0a5d-0648-0fd5-1f75d5153a8a}">
+        <Declaration><![CDATA[PROTECTED 
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_genericError := GenericError;]]></ST>
+        </Implementation>
+      </Set>
     </Property>
   </POU>
 </TcPlcObject>
