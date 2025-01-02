@@ -2,9 +2,13 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ErrorSource" Id="{39c13ed9-6860-004f-28d1-bfe8a964ba5b}" SpecialFunc="None">
     <Declaration><![CDATA[// Provides error souricng implementation (ADS code and information as well as the source instance name)
+
+{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
 FUNCTION_BLOCK ABSTRACT FB_ErrorSource EXTENDS FB_HasInstanceName IMPLEMENTS I_HasErrorSourcing
 VAR
-	_errorSource	: ST_ErrorSource := (InstanceName := GetInstanceName());
+	_errorSource : ST_ErrorSource := (
+		InstanceName := GetInstanceName(),
+		InsatncePath := THIS^.InstancePath);
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -17,8 +21,7 @@ END_VAR]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_errorSource.ErrorInfo.Message := TcError.AdsErrorCodeDescription(_errorSource.ErrorInfo.Code);
-ErrorSource REF= _errorSource;]]></ST>
+          <ST><![CDATA[ErrorSource REF= _errorSource;]]></ST>
         </Implementation>
       </Get>
     </Property>
