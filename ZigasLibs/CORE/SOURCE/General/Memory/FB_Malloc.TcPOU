@@ -207,7 +207,7 @@ END_VAR
     </Property>
     <Method Name="Remove" Id="{14da5a8a-1e69-011d-391c-685c8a8f7f4a}">
       <Declaration><![CDATA[// Removes the element at the index.
-METHOD Remove
+METHOD Remove	: BOOL;
 VAR_INPUT
 	index	: DINT;
 END_VAR
@@ -229,6 +229,7 @@ END_IF
 
 // If 0th element is the only element, then just free the memory space.
 IF index = 0 AND _properties.NumberOfElements = 1 THEN
+	Remove := TRUE;
 	THIS^.Free();
 	RETURN;
 END_IF
@@ -274,7 +275,9 @@ END_IF
 __DELETE(lowerPart);	
 IF upperPart <> 0 THEN
 	__DELETE(upperPart);
-END_IF]]></ST>
+END_IF
+
+Remove := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="Set" Id="{7071028e-74bc-097d-3e1e-cd5732aad5f2}">
