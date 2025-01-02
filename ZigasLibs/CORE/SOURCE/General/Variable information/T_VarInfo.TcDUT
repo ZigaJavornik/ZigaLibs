@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="T_VarInfo" Id="{c31cf113-93e8-018d-198e-e742916a858b}">
+    <Declaration><![CDATA[TYPE T_VarInfo : __SYSTEM.VAR_INFO; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
