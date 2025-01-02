@@ -5,7 +5,9 @@
 TYPE ST_ErrorSource :
 STRUCT
 	InstanceName	: Tc2_System.T_MaxString;
-	ErrorInfo		: ST_AdsError;
+	InsatncePath	: Tc2_System.T_MaxString;
+	AdsError		: ST_AdsError;
+	GenericError	: ST_GenericError;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
