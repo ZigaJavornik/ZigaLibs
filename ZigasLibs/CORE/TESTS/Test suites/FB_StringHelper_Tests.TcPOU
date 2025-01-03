@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_StringHelper_Tests" Id="{37e03e3a-145c-0efe-00fc-1f5db969facc}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringHelper_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_StartsWith();]]></ST>
+    </Implementation>
+    <Method Name="Test01_StartsWith" Id="{35ad7b9c-c7be-02d7-193e-ebf2529b27e6}">
+      <Declaration><![CDATA[METHOD Test01_StartsWith
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_StartsWith');
+
+AssertFalse(StringHelper.StartsWith('I start with an "I"...','B'), 
+	'The provided string does not start with B. Method should return FALSE.');
+	
+AssertTrue(StringHelper.StartsWith('I start with an "I"...','I'), 
+	'The provided string start with I. Method should return TRUE..');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

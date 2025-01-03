@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="StringHelper" Id="{6038c506-8015-0cf2-2085-30a677155028}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM StringHelper
 VAR
@@ -8,6 +8,19 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="StartsWith" Id="{5c75a7b6-3cc1-0540-0cd5-16739591bdb3}">
+      <Declaration><![CDATA[// Checks if STRING `str` starts with the `char`
+// Returs TRUE if first character in the provided string is `char` provided
+METHOD StartsWith : BOOL
+VAR_INPUT
+	str		: Tc2_System.T_MaxString;	// String to be checked
+	char	: STRING(1);				// Character that the string will be checked, if it starts with it.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[StartsWith := Tc2_System.F_ToCHR(str[0]) = char;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToLowerCase" Id="{04af86ff-c3c4-0ee5-29da-879b8d09b6b9}">
       <Declaration><![CDATA[// Converts the provided string to all lower case and returns the converted value.
 METHOD ToLowerCase : T_MaxString

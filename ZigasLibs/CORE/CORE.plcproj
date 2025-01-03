@@ -146,6 +146,9 @@
     <Compile Include="SOURCE\Errors\DUTs\ST_AdsError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Errors\DUTs\ST_Error.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Errors\DUTs\ST_GenericError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -301,6 +304,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_BoolEx_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_StringHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
