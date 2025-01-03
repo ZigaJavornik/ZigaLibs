@@ -20,7 +20,7 @@ Every project and object can and should have tests for them written. TcUnit fram
 
 Inside the "TEST" folder, there are test suites for  every ```FUNCTION_BLOCK```,```PROGRAM```,```FUNCTION```, etc... Example of how to create different logs with the logger tests:
 
-```
+```ruby
 IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
   fbLogger.LogError('Error text....');
   fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
