@@ -5,7 +5,23 @@
         <Version>1.0.0.0</Version>
         <DefaultName>ZigaLibs</DefaultName>
     </LibraryCategory>
-    
+
+    <!--
+    Categories structure as follows as of 03.03.2025:
+
+    ZigaLibs
+        Core
+
+        Utilitis
+            Reporting
+
+        Comm
+        
+        Automation
+            ProcessContorl
+            Vendors
+    -->
+
     <!-- ZigaLibs_Core -->
     <LibraryCategory>
         <Id>e42e9899-3114-40a3-911f-5f44e2769932</Id>
@@ -16,15 +32,25 @@
         <DefaultName>Core</DefaultName>
     </LibraryCategory>
 
-    <!-- ZigaLibs_Reporting -->
-    <LibraryCategory>
-        <Id>7700afa9-3688-4b10-b0ff-2254a02219d8</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-            <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
-        </ParentCategory>
-        <DefaultName>Reporting</DefaultName>
-    </LibraryCategory>
+        <!-- ZigaLibs_Utilities -->
+        <LibraryCategory>
+            <Id>503439b7-d75f-4f44-9f16-d7c811226cbd</Id>
+            <Version>1.0.0.0</Version>
+            <ParentCategory>
+                <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
+            </ParentCategory>
+            <DefaultName>Utilities</DefaultName>
+        </LibraryCategory>
+
+            <!-- ZigaLibs_Reporting -->
+            <LibraryCategory>
+                <Id>7700afa9-3688-4b10-b0ff-2254a02219d8</Id>
+                <Version>1.0.0.0</Version>
+                <ParentCategory>
+                    <Id>503439b7-d75f-4f44-9f16-d7c811226cbd</Id>
+                </ParentCategory>
+                <DefaultName>Reporting</DefaultName>
+            </LibraryCategory>
 
     <!-- ZigaLibs_Comm -->
     <LibraryCategory>

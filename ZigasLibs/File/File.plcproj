@@ -22,12 +22,12 @@
     <Author>Žiga Javornik</Author>
     <Description>Library containing logic for file handling and helper programs.</Description>
     <LibraryCategories>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         <Version>1.0.0.0</Version>
         <DefaultName>ZigaLibs</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -35,15 +35,23 @@
         </ParentCategory>
         <DefaultName>Core</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
-        <Id>{7700afa9-3688-4b10-b0ff-2254a02219d8}</Id>
+      <LibraryCategory>
+        <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
           <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         </ParentCategory>
+        <DefaultName>Utilities</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{7700afa9-3688-4b10-b0ff-2254a02219d8}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
+        </ParentCategory>
         <DefaultName>Reporting</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -51,7 +59,7 @@
         </ParentCategory>
         <DefaultName>Comm</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -59,7 +67,7 @@
         </ParentCategory>
         <DefaultName>Automation</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -67,7 +75,7 @@
         </ParentCategory>
         <DefaultName>ProcessControl</DefaultName>
       </LibraryCategory>
-      <LibraryCategory xmlns="">
+      <LibraryCategory>
         <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
@@ -77,7 +85,7 @@
       </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id xmlns="">{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+      <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
     </SelectedLibraryCategories>
   </PropertyGroup>
   <ItemGroup>
