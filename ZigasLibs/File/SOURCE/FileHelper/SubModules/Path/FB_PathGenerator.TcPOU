@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PathGenerator" Id="{725f52c5-2b5a-03d7-0ec9-ecd61a68d683}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PathGenerator IMPLEMENTS I_PathGenerator, I_Wildcards
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_path			: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddWildcard" Id="{14a2e9ea-6423-0925-0c43-309bd7c4d04a}">
+      <Declaration><![CDATA[// Provides ability to add allowed wildcards to the generating path.
+METHOD AddWildcard : I_Wildcards
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddWildcard := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Asterisk" Id="{9fea453e-6dba-0b5a-1fd9-dcb3f1ce7bb0}">
+      <Declaration><![CDATA[// Adds the asterisk (*) wildcard between the left and right strings provided
+// Example Asterix('abc','def') => '<path so far>abc*def'
+METHOD Asterisk : I_PathGenerator
+VAR_INPUT
+	left	: Tc2_System.T_MaxString;
+	right	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(left, Wildcards.Asterisk);
+ZigaLibs_Core.StringHelper.Join(left, right);
+ZigaLibs_Core.StringHelper.Join(_path, left);
+Asterisk := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{6f4e0564-2209-003c-3389-e9f5caf88c1f}">
+      <Declaration><![CDATA[METHOD Create : Tc2_System.T_MaxString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Create := _path;
+_path := '';]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Join" Id="{91f6edc3-9560-0f0e-04ba-f8a955747638}">
+      <Declaration><![CDATA[// Concatines the path with previously added paths. 
+// If the provided path does not starts with the system-based path seperator, it is added
+
+// Example:
+// Join('C:/Program Files/').Join('Utilities/SystemUtilities') 
+// will result in 'C:/Program Files/Utilities/SystemUtilities'
+METHOD Join : I_PathGenerator
+VAR_INPUT
+	path	: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Join := THIS^;
+
+// If this is the root, skip adding seperator to start.
+IF Tc2_Standard.FIND(path, ':') <> 0 THEN
+	ZigaLibs_Core.StringHelper.Join(_path, path);
+	RETURN;
+END_IF
+
+// Add path seperator, if not starting with it.
+IF NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.SystemIndependent) AND
+   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.SystemIndependent)
+ THEN
+	path := Tc2_Standard.CONCAT(PathSeperator.SystemIndependent, path);
+END_IF
+ZigaLibs_Core.StringHelper.Join(_path, path);
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Questionmark" Id="{da691807-fdab-08a2-10d5-970a612bc34f}">
+      <Declaration><![CDATA[// Adds the question mark (?) wildcard to the end of the currently generated path.
+METHOD Questionmark : I_PathGenerator
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(_path, Wildcards.QuestionMark);
+Questionmark := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FileHelper_Tests" Id="{9989709f-a59d-0c20-3f70-73122c507dbf}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_FileHelper_Tests EXTENDS FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_ValidateReferences();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ValidateReferences" Id="{0d42137c-8623-0088-35c6-235fb63fc1b1}">
+      <Declaration><![CDATA[METHOD Test01_ValidateReferences
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_ValidateReferences');
+
+AssertTrue(FileHelper.Directory <> 0, 'Directory property is not valid!');
+AssertTrue(FileHelper.File <> 0, 'File property is not valid!');
+AssertTrue(FileHelper.Path <> 0, 'Path property is not valid!');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

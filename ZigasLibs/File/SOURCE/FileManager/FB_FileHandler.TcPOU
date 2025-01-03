@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FileHandler" Id="{ced76f9f-82d7-00ef-2259-233acd438959}" SpecialFunc="None">
+    <Declaration><![CDATA[// A function block containing multiple file handling methods. 
+// Note that the body of this FB does NOT need to be called as it holds no logic.
+// All the methods should be called untill they return true, if they provide error information, 
+// it will be trough a reference variable.
+//
+// For examples refer to tests in the folder "TESTS/Test suites", file "FB_FileHandlerTests".
+
+{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+FUNCTION_BLOCK FB_FileHandler EXTENDS ZigaLibs_Core.FB_ErrorSource IMPLEMENTS I_FileHandler
+
+VAR
+	_fileInfo	: ST_FileInfo;
+	_netId		: Tc2_System.T_AmsNetID;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Close" Id="{fd83d39e-5189-0d8d-30a1-fc0cd272c0e3}">
+      <Declaration><![CDATA[// Closes the file and returns TRUE when done.
+METHOD Close : BOOL
+
+VAR_INST
+	fbFileClose	: Tc2_System.FB_FileClose;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileClose(
+	bExecute := NOT fbFileClose.bBusy,
+	hFile := File.Handle,
+	sNetId := File.NetId);
+
+IF NOT fbFileClose.bBusy THEN
+	Close := TRUE;
+	IF fbFileClose.bError THEN
+		varInfo := __VARINFO(fbFileClose);
+		THIS^.RaiseAdsError(Tc2_Standard.CONCAT(THIS^.InstancePath, varInfo.Symbol), fbFileClose.nErrId);
+		THIS^.GenericError.Message := Tc2_Standard.CONCAT('An error occured when closing the file ', File.Name);
+		fbFileClose(bExecute := FALSE);	
+		RETURN;
+	END_IF
+
+	File.Handle := 0;
+	File.IsOpened := FALSE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{db135558-7082-0976-0533-068312031e70}">
+      <Declaration><![CDATA[// Creates the file, if it does not yet exist,
+METHOD Create : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT file.IsOpened THEN
+	THIS^.Open(
+		path := path,
+		name := name,
+		mode := E_FileOpenMode.BINARY_APPEND,
+		netId := netId);
+		
+	// Error opening the file, report and stop.
+	IF THIS^.Error THEN
+		THIS^.GenericError.Source := sb.Reset()
+			.AddString(THIS^.InstancePath)
+			.AddString('.Create()')
+			.Create();
+		
+		THIS^.GenericError.Message := sb.Reset()
+			.AddString('An error occurred when creating the file, while opening it:')
+			.AddString(' Path = ').AddWithDblQuotationMarks(path)
+			.AddString(' Name = ').AddWithDblQuotationMarks(name)
+			.AddString(' NetId = ').AddWithDblQuotationMarks(netId)
+			.AddString('. Refer to AdsError for more info.')
+			.Create();
+		Create := TRUE;
+		RETURN;
+	END_IF
+ELSE
+	Create := THIS^.Close();
+	
+	// Error closing the file. Report and stop.
+	IF THIS^.Error THEN
+		THIS^.GenericError.Source := sb.Reset()
+			.AddString(THIS^.InstancePath)
+			.AddString('.Create()')
+			.Create();
+		THIS^.GenericError.Message := sb.Reset()
+			.AddString('An error occurred when creating the file, while closing it:')
+			.AddString(' Path = ').AddWithDblQuotationMarks(path)
+			.AddString(' Name = ').AddWithDblQuotationMarks(name)
+			.AddString(' NetId = ').AddWithDblQuotationMarks(netId)
+			.AddString('. Refer to AdsError for more info.')
+			.Create();
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="File" Id="{af587ba4-f1af-0723-10cc-2475f9362808}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the current file properties.*)
+PROPERTY File : REFERENCE TO ST_FileInfo
+]]></Declaration>
+      <Get Name="Get" Id="{a5cf36d4-84c2-0626-0d42-bfe92224b35a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[File REF= _fileInfo;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{7f2a75a3-5c5e-009d-2e8b-0623e7b1209f}">
+        <Declaration><![CDATA[PROTECTED 
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fileInfo := File;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Open" Id="{7d720987-37e9-0fce-1fc8-b172b6327f39}">
+      <Declaration><![CDATA[// Opens the file in the path provided. If a file is already opened nothing happens.
+// Returns: TRUE when done.
+METHOD Open : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	mode	: E_FileOpenMode;			// Mode in which the file will be opened
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR
+
+VAR_INST
+	fbFileOpen	: Tc2_System.FB_FileOpen;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.File.IsOpened THEN
+	Open := TRUE;
+	RETURN;
+END_IF
+
+fbFileOpen(
+	bExecute := NOT fbFileOpen.bBusy,
+	nMode := mode,
+	sNetId := netID,
+	sPathName := FileHelper.Path.Generate().Join(path).Join(name).Create());
+	
+IF NOT fbFileOpen.bBusy THEN
+	Open := TRUE;
+	IF fbFileOpen.bError THEN
+		varInfo := __VARINFO(fbFileOpen);
+		THIS^.RaiseAdsError(Tc2_Standard.CONCAT(THIS^.InstancePath, varInfo.Symbol), fbFileOpen.nErrId);
+		fbFileOpen(bExecute := FALSE);
+		RETURN;
+	END_IF
+	
+	File.Handle := fbFileOpen.hFile;
+	File.Name := name;
+	File.Path := path;
+	File.NetId := netId;
+	File.IsOpened := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RaiseAdsError" Id="{11bb7eac-00b2-0545-18dd-8c65e0bb7ac7}">
+      <Declaration><![CDATA[// Raise an error for a certain FB instance (calls from methods)
+METHOD PROTECTED RaiseAdsError : BOOL
+VAR_INPUT
+	source	: STRING;
+	code 	: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.AdsError.Code := TcError.ToAdsErrorCode(code);
+THIS^.AdsError.Source := source;
+THIS^.Error := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Read" Id="{f0e75126-46de-08dd-11f7-1487dff764b1}">
+      <Declaration><![CDATA[// Reads the file and writes the content to the result variable.
+// Resturns TRUE when done.
+METHOD Read : BOOL
+
+VAR_INPUT
+	result	: ANY;
+END_VAR
+
+VAR_INST
+	fbFileRead	: Tc2_System.FB_FileRead;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileRead(
+	bExecute := NOT fbFileRead.bBusy,
+	sNetId := File.NetId,
+	hFile := File.Handle,
+	pReadBuff := result.pValue,
+	cbReadLen := DINT_TO_UDINT(result.diSize));
+	
+IF NOT fbFileRead.bBusy THEN
+	Read := TRUE;
+	IF fbFileRead.bError THEN
+		varInfo := __VARINFO(fbFileRead);
+		THIS^.GenericError.Message := Tc2_Standard.CONCAT('An error occured when reading the file ', File.Name);
+		THIS^.RaiseAdsError(Tc2_Standard.CONCAT(THIS^.InstancePath, varInfo.Symbol), fbFileRead.nErrId);
+		fbFileRead(bExecute := FALSE);
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{46d8a829-a30e-06ac-3c2a-ff8223a84623}">
+      <Declaration><![CDATA[// Reset any existing error.
+METHOD Reset]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.ResetError();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteBinary" Id="{dec0a7b1-f937-092c-23b6-95753861b16f}">
+      <Declaration><![CDATA[// Writes binary content to the file.
+// Returns TRUE when done.
+METHOD WriteBinary : BOOL
+
+VAR_INPUT
+	data		: ANY;	// Bincary content to be written
+END_VAR
+
+VAR_INST
+	fbFileWrite	: Tc2_System.FB_FileWrite;
+END_VAR
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileWrite(
+	bExecute := NOT fbFileWrite.bBusy,
+	sNetId := File.NetId,
+	hFile := File.Handle,
+	pWriteBuff := data.pValue);
+	
+IF NOT fbFileWrite.bBusy THEN
+	WriteBinary := TRUE;
+	IF fbFileWrite.bError THEN
+		varInfo := __VARINFO(fbFileWrite);
+		THIS^.RaiseAdsError(Tc2_Standard.CONCAT(THIS^.InstancePath, varInfo.Symbol), fbFileWrite.nErrId);
+		fbFileWrite(bExecute := FALSE);
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteLine" Id="{27555d66-493b-0776-001f-cf9f50c82f71}">
+      <Declaration><![CDATA[// Writes a single line to the file
+// Returns TRUE when done.
+METHOD WriteLine : BOOL
+
+VAR_INPUT
+	line	: Tc2_System.T_MaxString;	// Text to be written
+END_VAR
+
+VAR_INST
+	fbFilePuts		: Tc2_System.FB_FilePuts;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFilePuts(
+	bExecute := NOT fbFilePuts.bBusy,
+	sNetId := File.NetId,
+	hFile := File.Handle,
+	sLine := line);
+	
+IF NOT fbFilePuts.bBusy THEN
+	WriteLine := TRUE;
+	varInfo := __VARINFO(fbFilePuts);
+	IF fbFilePuts.bError THEN
+		THIS^.RaiseAdsError(Tc2_Standard.CONCAT(THIS^.InstancePath, varInfo.Symbol), fbFilePuts.nErrId);
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

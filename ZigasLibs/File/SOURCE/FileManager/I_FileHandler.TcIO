@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_FileHandler" Id="{bc1e906e-84bd-0ba1-1f10-651ea93dc7d0}">
+    <Declaration><![CDATA[INTERFACE I_FileHandler extends I_FileProperties]]></Declaration>
+    <Method Name="Close" Id="{f7a3c844-ff4d-0d08-191b-a0408294da75}">
+      <Declaration><![CDATA[// Closes the file and returns TRUE when done.
+METHOD Close : BOOL
+]]></Declaration>
+    </Method>
+    <Method Name="Create" Id="{03c22ca2-5bd0-0704-13e8-14b401cc7e00}">
+      <Declaration><![CDATA[// Creates the file
+METHOD Create : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="Error" Id="{881c6d39-0f87-0d39-3f7a-92cbc9a4271e}">
+      <Declaration><![CDATA[// Gets the error state, if any of the functions failed.
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c8ab21cf-e7cd-0b4c-0005-3ae21c9138be}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Open" Id="{eef091a9-76bb-02bd-2b8a-1918d51f5985}">
+      <Declaration><![CDATA[// Opens the file in the path provided. If a file is already opened nothing happens.
+// Returns: TRUE when done.
+METHOD Open : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	mode	: E_FileOpenMode;			// Mode in which the file will be opened
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Read" Id="{1510c307-a8cf-03a2-2042-aac949d24ca5}">
+      <Declaration><![CDATA[// Reads the file and writes the content to the result variable.
+// Resturns TRUE when done.
+METHOD Read : BOOL
+VAR_INPUT
+	result	: ANY;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{2b23fe4c-65df-0c01-019b-3a887cf568be}">
+      <Declaration><![CDATA[// Reset any existing error.
+METHOD Reset]]></Declaration>
+    </Method>
+    <Method Name="WriteBinary" Id="{be99495e-b5eb-0641-022b-d08a5516dda7}">
+      <Declaration><![CDATA[// Writes binary content to the file.
+// Returns TRUE when done.
+METHOD WriteBinary : BOOL
+VAR_INPUT
+	data		: ANY;	// Bincary content to be written
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="WriteLine" Id="{46159f7b-834e-097f-3333-a123a335cb18}">
+      <Declaration><![CDATA[// Writes a single line to the file
+// Returns TRUE when done.
+METHOD WriteLine : BOOL
+VAR_INPUT
+	line	: Tc2_System.T_MaxString;	// Text to be written
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

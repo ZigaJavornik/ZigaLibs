@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_DirectoryUtilities" Id="{db17547a-e0e3-0247-1987-14342fc00f3f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DirectoryUtilities IMPLEMENTS I_Directory
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetAllFiles" Id="{7a70de90-771b-0602-06e3-6e7ed61d5525}">
+      <Declaration><![CDATA[(* Looks in the directory `path` and iterates the content. 
+ When method returns TRUE, the collection of items is found in the result I_Collection.*)
+METHOD GetAllFiles : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
+	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
+	files	: TcDynCollections.I_List;	// Collection of found files in the provided location.
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError;	// Error information will be provided here
+END_VAR
+
+VAR_INST
+	fbFindFileEntries	: Tc2_Utilities.FB_EnumFindFileEntry;
+	eGetFilesState		: E_GetFilesState;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eGetFilesState OF
+	
+	E_GetFilesState.READY:
+		fbFindFileEntries(bExecute := FALSE, 
+			eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_First);
+		files.Clear();
+		eGetFilesState := E_GetFilesState.START;
+
+	E_GetFilesState.START:
+		error := FALSE;
+		errorInfo.Code := 0;
+		errorInfo.Source := '';
+		
+		fbFindFileEntries(bExecute := TRUE, sNetId := netId,
+			sPathName := FileHelper.Path.Generate()
+				.Join(path)
+				.AddWildcard().Asterisk('','')
+				.AddWildcard().Asterisk('.', '')
+				.Create());
+			
+		eGetFilesState := E_GetFilesState.AWAIT_RESULT;
+	
+	E_GetFilesState.AWAIT_RESULT:
+		fbFindFileEntries(bExecute := FALSE);
+		
+		IF fbFindFileEntries.bError THEN
+			eGetFilesState := E_GetFilesState.ERROR;
+			RETURN;
+		END_IF
+		
+		IF fbFindFileEntries.bBusy THEN
+			RETURN;
+		END_IF
+		
+		IF NOT fbFindFileEntries.bEOE THEN
+			files.Append(fbFindFileEntries.stFindFile.sFileName);
+			fbFindFileEntries.eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_Next;
+			eGetFilesState := E_GetFilesState.START;
+			RETURN;
+		END_IF
+		
+		eGetFilesState := E_GetFilesState.ALL_FILES_FOUND;
+	
+	E_GetFilesState.ALL_FILES_FOUND:
+		GetAllFiles := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+		
+	E_GetFilesState.ERROR:
+		error := TRUE;
+		errorInfo.Code := TcError.ToAdsErrorCode(fbFindFileEntries.nErrID);
+		varInfo := __VARINFO(fbFindFileEntries);
+		errorInfo.Source := varInfo.Symbol;
+		
+		GetAllFiles := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

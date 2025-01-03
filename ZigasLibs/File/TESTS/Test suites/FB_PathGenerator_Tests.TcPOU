@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PathGenerator_Tests" Id="{7e011e1d-9f73-0e74-3214-4d177cb890f1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PathGenerator_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_pathGenerator	: FB_PathGenerator;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_VariousPathOptions();]]></ST>
+    </Implementation>
+    <Method Name="Test01_VariousPathOptions" Id="{485575b1-91c3-041c-3305-0baea30259d9}">
+      <Declaration><![CDATA[METHOD Test01_VariousPathOptions
+
+// These test values were taken from microsoft Path.Join documentation at 
+// https://learn.microsoft.com/en-us/dotnet/api/system.io.path.join?view=net-9.0
+VAR
+	path1 : STRING := 'C:/Program Files/';
+	path2 : STRING := 'Utilities/SystemUtilities';
+	expectedResult_path1_2	: STRING := 'C:/Program Files/Utilities/SystemUtilities';
+	
+	
+	path3 : STRING := 'C:/';
+	path4 : STRING := '/Program Files';
+	expectedResult_path3_4	: STRING := 'C://Program Files';
+	
+	path5 : STRING := 'C:/Users/Public/Documents/';
+	path6 : STRING := 'C:/Users/User1/Documents/Financial/';
+	expectedResult_path5_6	: STRING := 'C:/Users/Public/Documents/C:/Users/User1/Documents/Financial/';	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_VariousPathOptions');
+
+AssertEquals_STRING(
+	Expected := expectedResult_path1_2, 
+	Actual := _pathGenerator.Join(path1).Join(path2).Create(),
+	'Joining paths 1 and 2 failed.');
+	
+AssertEquals_STRING(
+	Expected := expectedResult_path3_4, 
+	Actual := _pathGenerator.Join(path3).Join(path4).Create(),
+	'Joining paths 2 and 3 failed.');
+	
+AssertEquals_STRING(
+	Expected := expectedResult_path5_6, 
+	Actual := _pathGenerator.Join(path5).Join(path6).Create(),
+	'Joining paths 4 and 5 failed.');
+		
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

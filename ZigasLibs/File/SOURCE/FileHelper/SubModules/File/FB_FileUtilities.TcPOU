@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FileUtilities" Id="{eb045cde-089e-0474-01d4-a297f62f2021}" SpecialFunc="None">
+    <Declaration><![CDATA[// Provides file functionalities.
+FUNCTION_BLOCK FB_FileUtilities IMPLEMENTS I_File
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Create" Id="{91cf5afe-ea95-0852-1a9c-dbe1bc5a9cd4}">
+      <Declaration><![CDATA[METHOD Create : BOOL
+VAR_INPUT
+	(* Path to where the file will be created*)
+	path	: Tc2_System.T_MaxString;
+	(* Name of the file to create.*)
+	name	: Tc2_System.T_MaxString;
+	(* NetId of the device where the file will be created*)
+	netId	: Tc2_System.T_AmsNetID;
+	(* If set to TRUE, if the file with the provided name already exists, it will be overwritten*)
+	overwrite	: BOOL;
+END_VAR
+
+VAR_INST
+	fbFileHandler	: FB_FileHandler;
+	mode			: E_FileOpenMode;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF overwrite THEN
+	mode := E_FileOpenMode.BINARY_READ_APPEND_OVERWRITE_EXISTING;
+ELSE
+	mode := E_FileOpenMode.BINARY_READ_MUST_EXIST;
+END_IF
+
+IF NOT fbFileHandler.File.IsOpened THEN
+	fbFileHandler.Open(
+		mode := mode,
+		name := name,
+		netId := netId,
+		path := path);
+ELSE
+	IF fbFileHandler.Close() THEN
+		Create := TRUE;
+		RETURN; 
+	END_IF
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Delete" Id="{242adaac-573c-0a26-2083-d0fa53776251}">
+      <Declaration><![CDATA[(* Deletes the file. Returns TRUE when done.*)
+METHOD Delete : BOOL
+VAR_INPUT
+	(* Location of the file*)
+	path	: Tc2_System.T_MaxString;
+	(* File to be deleted*)
+	name	: Tc2_System.T_MaxString;
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+
+VAR_INST
+	fbFileDelete	: Tc2_System.FB_FileDelete;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFileDelete(
+	sPathName := FileHelper.Path.Generate().Join(path).Join(name).Create(),
+	sNetId := netId,
+	bExecute := NOT fbFileDelete.bBusy);
+	
+IF NOT fbFileDelete.bBusy THEN
+	Delete := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Exists" Id="{a3a023f8-ba17-0f5a-12f0-155341491db6}">
+      <Declaration><![CDATA[(* Checks the content at `path` and looks for the file with `name`. Returns TRUE when done. 
+ If file exissts, the result ˛`result` will be TRUE, else it will be fALSE.*)
+METHOD Exists : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR
+VAR_OUTPUT
+	(* Result, if the file exists or not - check when method returns TRUE.*)
+	result	: BOOL;
+END_VAR
+	
+VAR_INST
+	foundFiles	: TcDynCollections.FB_List;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF FileHelper.Directory.GetAllFiles(path, netId, foundFiles) THEN
+	Exists := TRUE;
+	result := foundFiles.Contains(name);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

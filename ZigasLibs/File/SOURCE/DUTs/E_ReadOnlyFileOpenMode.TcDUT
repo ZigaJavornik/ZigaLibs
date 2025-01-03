@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_ReadOnlyFileOpenMode" Id="{af0311c6-d78a-00ca-173a-8ff56504da76}">
+    <Declaration><![CDATA[{warning disable C0327}
+// Read-only modes
+TYPE E_ReadOnlyFileOpenMode :
+(
+	BINARY := E_FileOpenMode.BINARY_READ_MUST_EXIST,	// Opens the file in binary mode
+	TEXT	:= E_FileOpenMode.TEXT_READ_MUST_EXIST// Opens the file in text mode
+)DWORD;
+END_TYPE
+{warning enable C0327}]]></Declaration>
+  </DUT>
+</TcPlcObject>

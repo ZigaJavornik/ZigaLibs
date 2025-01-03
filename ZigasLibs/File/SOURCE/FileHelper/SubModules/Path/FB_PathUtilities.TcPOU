@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PathUtilities" Id="{aa4bc240-593b-0fc8-096f-eb4a070d9a09}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PathUtilities IMPLEMENTS I_Path
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_pathGenerator	: FB_PathGenerator;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Exists" Id="{91811280-46ee-03e8-22db-c845ddec0ad1}">
+      <Declaration><![CDATA[(* Checks if path exists, return TRUE when done and the result is returned in `result` output var.*)
+METHOD Exists : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;
+END_VAR
+VAR_OUTPUT
+	result	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Generate" Id="{57891d39-aafb-055c-337c-0e7884702c01}">
+      <Declaration><![CDATA[(* Generates the file path based on the location, file name and extension*)
+METHOD Generate : I_PathGenerator
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Generate := _pathGenerator;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

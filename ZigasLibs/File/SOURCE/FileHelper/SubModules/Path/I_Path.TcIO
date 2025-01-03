@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_Path" Id="{6917d7e9-b647-082b-2d8a-322553823248}">
+    <Declaration><![CDATA[INTERFACE I_Path
+]]></Declaration>
+    <Method Name="Exists" Id="{ce4bbee1-aa9a-0f4c-3fc6-baa5cb974012}">
+      <Declaration><![CDATA[// Checks if path exists, return TRUE when done and the result is returned in `result` output var.
+METHOD Exists : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;
+END_VAR
+VAR_OUTPUT
+	result	: BOOL;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Generate" Id="{fcc0b159-bfa0-0000-3fc7-81379924184b}">
+      <Declaration><![CDATA[// Generates the file path based on the location, file name and extension
+METHOD Generate : I_PathGenerator]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

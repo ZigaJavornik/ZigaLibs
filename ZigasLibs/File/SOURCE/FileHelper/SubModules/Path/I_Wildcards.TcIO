@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_Wildcards" Id="{ad4ccec5-364c-0839-382d-fc6bce9721ba}">
+    <Declaration><![CDATA[INTERFACE I_Wildcards
+]]></Declaration>
+    <Method Name="Asterisk" Id="{3499261a-9b3d-0eb0-0832-99df6b3cd2b3}">
+      <Declaration><![CDATA[METHOD Asterisk : I_PathGenerator
+VAR_INPUT
+	left	: Tc2_System.T_MaxString;
+	right	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Questionmark" Id="{3b82a598-06cc-065d-24a6-80e901df76f0}">
+      <Declaration><![CDATA[METHOD Questionmark : I_PathGenerator
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
