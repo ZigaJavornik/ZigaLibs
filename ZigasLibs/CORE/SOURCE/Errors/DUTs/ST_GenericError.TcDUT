@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <DUT Name="ST_GenericError" Id="{49ae69fd-0251-0b91-3d6c-84dfea2ea8b1}">
-    <Declaration><![CDATA[TYPE ST_GenericError :
+    <Declaration><![CDATA[TYPE ST_GenericError EXTENDS ST_Error :
 STRUCT
 	Code	: DINT;
 	Message	: Tc2_System.T_MaxString;

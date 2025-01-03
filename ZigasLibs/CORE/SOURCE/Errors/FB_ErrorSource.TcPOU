@@ -82,5 +82,19 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Method Name="ResetError" Id="{113ed5f4-1b6c-0ca3-0a8c-e732b19d29b1}">
+      <Declaration><![CDATA[// Reset all errors
+METHOD PROTECTED ResetError : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.Error := FALSE;
+THIS^.AdsError.Code := TcError.ToAdsErrorCode(0);
+THIS^.AdsError.Source := '';
+THIS^.GenericError.Code := 0;
+THIS^.GenericError.Source := '';]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
