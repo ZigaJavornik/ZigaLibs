@@ -4,18 +4,14 @@ Current libraries include:
 
 ![image](https://github.com/user-attachments/assets/a412012d-70e0-4f8a-9ab3-066319f4da57)
 
-
-
-
-
 As a side note, the libraries contain "helper classes", which are programs that do not hold any body logic, thus they do not require being called. These "classes" have only ```methods``` and ```constants```. As an example, this is a helper class for Ams:
 
 ![image](https://github.com/user-attachments/assets/75aac691-a353-4d93-a660-af2455a43738)
 
 And here is an exaple of calling it:
-
-```
+```ruby
 sNetId := ZigasLibs_Core.AmsHelper.NetIdToString(_amsAddress.netId)
+{% endhighlight %}
 ```
 
 Every project and object can and should have tests for them written. TcUnit framework is used for writting tests For more info see https://tcunit.org/#/ . The tests should serve as a guidline how to use the functionality of the library. Every library has same project structure, created from a template:
