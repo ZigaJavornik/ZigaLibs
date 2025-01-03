@@ -64,7 +64,7 @@ END_VAR]]></Declaration>
 AssertFalse(StringHelper.EndsWith(testString, 'B'),
 	'Provided string does not end with "B"- returned value should be FALSE.');
 AssertTrue(StringHelper.EndsWith(testString, 'A'),
-	'Provided string does not end with "B"- returned value should be FALSE.');
+	'Provided string ends with "A"- returned value should be TRUE.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
