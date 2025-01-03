@@ -8,6 +8,17 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="EndsWith" Id="{ae3c099d-30b2-0f82-0a20-ce3ad2e77fa0}">
+      <Declaration><![CDATA[METHOD EndsWith : BOOL
+VAR_INPUT
+	str		: Tc2_System.T_MaxString;
+	char	: T_Char;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[EndsWith := Tc2_Standard.RIGHT(str, 1) = char;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Join" Id="{99346997-fd62-0afc-1ca1-062e8359a9d5}">
       <Declaration><![CDATA[// Joins the provided string with the string to add.
 // The refStr is altered in the process, this no additional assignments are required as oposed to CONCAT which returns the resulting string.

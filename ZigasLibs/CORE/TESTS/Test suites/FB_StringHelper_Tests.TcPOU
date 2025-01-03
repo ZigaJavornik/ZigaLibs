@@ -11,7 +11,8 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test01_StartsWith();
-Test02_Join();]]></ST>
+Test02_Join();
+Test03_EndsWith();]]></ST>
     </Implementation>
     <Method Name="Test01_StartsWith" Id="{35ad7b9c-c7be-02d7-193e-ebf2529b27e6}">
       <Declaration><![CDATA[METHOD Test01_StartsWith
@@ -47,6 +48,25 @@ AssertEquals_STRING('My cats name is Jerry', sourceString,
 
 TcUnit.TEST_FINISHED();
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_EndsWith" Id="{629b9ac3-8af8-06e6-3dc2-e90db0606944}">
+      <Declaration><![CDATA[METHOD Test03_EndsWith
+VAR_INPUT
+END_VAR
+
+VAR
+	testString	: STRING := 'I end with an A';
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test03_EndsWith');
+
+AssertFalse(StringHelper.EndsWith(testString, 'B'),
+	'Provided string does not end with "B"- returned value should be FALSE.');
+AssertTrue(StringHelper.EndsWith(testString, 'A'),
+	'Provided string does not end with "B"- returned value should be FALSE.');
+	
+TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
   </POU>
