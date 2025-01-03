@@ -8,6 +8,19 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="Join" Id="{99346997-fd62-0afc-1ca1-062e8359a9d5}">
+      <Declaration><![CDATA[// Joins the provided string with the string to add.
+// The refStr is altered in the process, this no additional assignments are required as oposed to CONCAT which returns the resulting string.
+METHOD Join
+VAR_INPUT
+	refStr		: REFERENCE TO Tc2_System.T_MaxString;
+	strToJoin	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[refStr := Tc2_Standard.CONCAT(refStr, strToJoin);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="StartsWith" Id="{5c75a7b6-3cc1-0540-0cd5-16739591bdb3}">
       <Declaration><![CDATA[// Checks if STRING `str` starts with the `char`
 // Returs TRUE if first character in the provided string is `char` provided

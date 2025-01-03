@@ -10,7 +10,8 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test01_StartsWith();]]></ST>
+      <ST><![CDATA[Test01_StartsWith();
+Test02_Join();]]></ST>
     </Implementation>
     <Method Name="Test01_StartsWith" Id="{35ad7b9c-c7be-02d7-193e-ebf2529b27e6}">
       <Declaration><![CDATA[METHOD Test01_StartsWith
@@ -27,6 +28,25 @@ AssertTrue(StringHelper.StartsWith('I start with an "I"...','I'),
 	'The provided string start with I. Method should return TRUE..');
 
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Join" Id="{369c5294-09d6-0fc1-1d5c-b4531416cae1}">
+      <Declaration><![CDATA[METHOD Test02_Join
+VAR_INPUT
+END_VAR
+
+VAR
+	sourceString	: Tc2_System.T_MaxString := 'My cats name is ';
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_Join');
+
+StringHelper.Join(sourceString, 'Jerry');
+AssertEquals_STRING('My cats name is Jerry', sourceString,
+	'Joining 2 strings failed.');
+
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
   </POU>
