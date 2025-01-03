@@ -233,6 +233,9 @@
     <Compile Include="SOURCE\String\StringHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\String\T_Char.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Time\DUTs\E_TimeFormat.TcDUT">
       <SubType>Code</SubType>
     </Compile>

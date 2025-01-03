@@ -14,7 +14,7 @@ END_VAR
 METHOD StartsWith : BOOL
 VAR_INPUT
 	str		: Tc2_System.T_MaxString;	// String to be checked
-	char	: STRING(1);				// Character that the string will be checked, if it starts with it.
+	char	: T_Char;	// Character that the string will be checked, if it starts with it.
 END_VAR
 ]]></Declaration>
       <Implementation>
