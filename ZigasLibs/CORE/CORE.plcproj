@@ -385,6 +385,9 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="TwinCat Dynamic Collections">
+      <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
+    </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="CORE.tmc">

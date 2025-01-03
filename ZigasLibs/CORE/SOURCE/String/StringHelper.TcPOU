@@ -32,6 +32,45 @@ END_VAR
         <ST><![CDATA[refStr := Tc2_Standard.CONCAT(refStr, strToJoin);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Split" Id="{b1d8d28d-cd99-072e-272d-5198c12d1482}">
+      <Declaration><![CDATA[// Splits the STRING `str` based on the character `splitChar`.
+// listOfSplitStrings eturns a collection of strings, or an empty list if no items were found
+// If an empty string is provided, an empty stirng is the result
+// If splitChar is an empty string, the string is split at every white space.
+METHOD Split
+VAR_INPUT
+	str					: Tc2_System.T_MaxString;	// String that will be iterated
+	splitChar			: T_Char;	// Character based on which the string is split up. These characters are removed
+	listOfSplitStrings	: TcDynCollections.I_List;	// Resulting split strings.
+END_VAR
+VAR
+	currentSplitString	: STRING;
+	charPosition		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF listOfSplitStrings = 0 THEN
+	RETURN;
+END_IF
+
+listOfSplitStrings.Clear();
+IF str = '' THEN
+	RETURN;
+END_IF
+
+IF splitChar = '' THEN
+	splitChar := ' ';
+END_IF
+
+WHILE Tc2_Standard.FIND(STR1 := str, STR2 := splitChar) <> 0 DO
+	charPosition := Tc2_Standard.FIND(str, splitChar);
+	currentSplitString := Tc2_Standard.LEFT(str, charPosition - 1);
+	listOfSplitStrings.Append(currentSplitString);	
+	str := Tc2_Standard.DELETE(str, charPosition, 1);
+END_WHILE
+
+listOfSplitStrings.Append(str);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="StartsWith" Id="{5c75a7b6-3cc1-0540-0cd5-16739591bdb3}">
       <Declaration><![CDATA[// Checks if STRING `str` starts with the `char`
 // Returs TRUE if first character in the provided string is `char` provided
