@@ -11,7 +11,10 @@ VAR_INPUT
 	netId		: Tc2_System.T_AmsNetID;	// NetId of the device where the file will be created
 	overwrite	: BOOL;						// If set to TRUE, if the file with the provided name already exists, it will be overwritten
 END_VAR
-]]></Declaration>
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
     </Method>
     <Method Name="Delete" Id="{4395932f-e788-03a9-2800-06515f238a60}">
       <Declaration><![CDATA[// Deletes the file. Returns TRUE when done.
@@ -21,7 +24,10 @@ VAR_INPUT
 	name	: Tc2_System.T_MaxString;	// File to be deleted
 	netId	: Tc2_System.T_AmsNetID;
 END_VAR
-]]></Declaration>
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
     </Method>
     <Method Name="Exists" Id="{028582fb-e707-0246-3a99-de4ed3a1ab5d}">
       <Declaration><![CDATA[// Checks the content at `path` and looks for the file with `name`. Returns TRUE when done. 
@@ -34,7 +40,9 @@ VAR_INPUT
 END_VAR
 
 VAR_OUTPUT
-	result	: BOOL;	// Result, if the file exists or not - check when method returns TRUE.
+	result		: BOOL; // Result, if the file exists or not - check when method returns TRUE
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError; // Error information will be provided here
 END_VAR
 ]]></Declaration>
     </Method>

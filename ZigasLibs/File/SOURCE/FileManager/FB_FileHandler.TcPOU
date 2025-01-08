@@ -45,7 +45,7 @@ IF NOT fbFileClose.bBusy THEN
 		fbFileClose(bExecute := FALSE);	
 		RETURN;
 	END_IF
-
+	fbFileClose(bExecute := FALSE);	
 	File.Handle := 0;
 	File.IsOpened := FALSE;
 END_IF
@@ -160,7 +160,7 @@ fbFileOpen(
 	bExecute := NOT fbFileOpen.bBusy,
 	nMode := mode,
 	sNetId := netID,
-	sPathName := FileHelper.Path.Generate().Join(path).Join(name).Create());
+	sPathName := Utilities.Path.Generate().Join(path).Join(name).Create());
 	
 IF NOT fbFileOpen.bBusy THEN
 	Open := TRUE;

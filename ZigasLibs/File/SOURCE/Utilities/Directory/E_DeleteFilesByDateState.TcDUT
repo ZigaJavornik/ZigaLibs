@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_DeleteFilesByDateState" Id="{ab0f82b1-57f4-0f6f-04f3-09fe1ce0c689}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_DeleteFilesByDateState :
+(
+	START,
+	GET_FILE,
+	WAIT_FOR_DELETE
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

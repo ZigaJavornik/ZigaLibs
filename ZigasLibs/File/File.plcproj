@@ -101,13 +101,37 @@
     <Compile Include="SOURCE\DUTs\T_FileHandle.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Path\FB_PathGenerator.TcPOU">
+    <Compile Include="SOURCE\Utilities\Directory\E_DeleteFilesByDateState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Path\I_PathGenerator.TcIO">
+    <Compile Include="SOURCE\Utilities\Directory\E_GetFilesState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Path\I_Wildcards.TcIO">
+    <Compile Include="SOURCE\Utilities\Directory\FB_DirectoryUtilities.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Directory\I_Directory.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\File\FB_FileUtilities.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\File\I_File.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Path\FB_PathGenerator.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Path\FB_PathUtilities.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Path\I_Path.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Path\I_PathGenerator.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Utilities\Path\I_Wildcards.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\FileManager\FB_FileHandler.TcPOU">
@@ -119,28 +143,7 @@
     <Compile Include="SOURCE\FileManager\I_FileProperties.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileHelper\FileHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Directory\E_GetFilesState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Directory\FB_DirectoryUtilities.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Directory\I_Directory.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\File\FB_FileUtilities.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\File\I_File.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Path\FB_PathUtilities.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\FileHelper\SubModules\Path\I_Path.TcIO">
+    <Compile Include="SOURCE\Utilities\Utilities.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\PathSeperator.TcPOU">
@@ -155,13 +158,22 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_DirectoryUtilities_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_FileHandler_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_FileHelper_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_FileUtilities_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_Utilities_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_PathGenerator_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_PathUtilities_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -170,11 +182,10 @@
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\FileManager" />
     <Folder Include="SOURCE\DUTs" />
-    <Folder Include="SOURCE\FileHelper" />
-    <Folder Include="SOURCE\FileHelper\SubModules" />
-    <Folder Include="SOURCE\FileHelper\SubModules\Directory" />
-    <Folder Include="SOURCE\FileHelper\SubModules\File" />
-    <Folder Include="SOURCE\FileHelper\SubModules\Path" />
+    <Folder Include="SOURCE\Utilities" />
+    <Folder Include="SOURCE\Utilities\Directory" />
+    <Folder Include="SOURCE\Utilities\File" />
+    <Folder Include="SOURCE\Utilities\Path" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>

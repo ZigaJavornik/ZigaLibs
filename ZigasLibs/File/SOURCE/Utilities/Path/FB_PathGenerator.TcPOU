@@ -68,9 +68,11 @@ IF Tc2_Standard.FIND(path, ':') <> 0 THEN
 END_IF
 
 // Add path seperator, if not starting with it.
-IF NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.SystemIndependent) AND
-   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.SystemIndependent)
- THEN
+IF NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.Windows) AND
+   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.Windows) AND
+   NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.Unix) AND
+   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.Unix)
+THEN
 	path := Tc2_Standard.CONCAT(PathSeperator.SystemIndependent, path);
 END_IF
 ZigaLibs_Core.StringHelper.Join(_path, path);

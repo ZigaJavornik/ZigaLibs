@@ -20,6 +20,11 @@ VAR_INPUT
 	overwrite	: BOOL;
 END_VAR
 
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR
+
 VAR_INST
 	fbFileHandler	: FB_FileHandler;
 	mode			: E_FileOpenMode;
@@ -29,21 +34,21 @@ END_VAR
         <ST><![CDATA[IF overwrite THEN
 	mode := E_FileOpenMode.BINARY_READ_APPEND_OVERWRITE_EXISTING;
 ELSE
-	mode := E_FileOpenMode.BINARY_READ_MUST_EXIST;
+	mode := E_FileOpenMode.BINARY_APPEND;
 END_IF
 
 IF NOT fbFileHandler.File.IsOpened THEN
-	fbFileHandler.Open(
-		mode := mode,
-		name := name,
-		netId := netId,
-		path := path);
+fbFileHandler.Open(
+	mode := mode, 
+	name := name, 
+	netId := netId, 
+	path := path);
 ELSE
-	IF fbFileHandler.Close() THEN
-		Create := TRUE;
-		RETURN; 
-	END_IF
+	Create := fbFileHandler.Close();
 END_IF
+
+error := fbFileHandler.Error;
+errorInfo := fbFileHandler.AdsError;
 
 ]]></ST>
       </Implementation>
@@ -58,15 +63,23 @@ VAR_INPUT
 	name	: Tc2_System.T_MaxString;
 	netId	: Tc2_System.T_AmsNetID;
 END_VAR
+VAR_OUTPUT
+	error		: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR
 
 VAR_INST
 	fbFileDelete	: Tc2_System.FB_FileDelete;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbFileDelete(
-	sPathName := FileHelper.Path.Generate().Join(path).Join(name).Create(),
+	sPathName := Utilities.Path.Generate().Join(path).Join(name).Create(),
 	sNetId := netId,
 	bExecute := NOT fbFileDelete.bBusy);
+	
+error := fbFileDelete.bError;
+errorInfo.Code := TcError.ToAdsErrorCode(fbFileDelete.nErrId);
+errorInfo.Message := TcError.AdsErrorCodeDescription(errorInfo.Code);
 	
 IF NOT fbFileDelete.bBusy THEN
 	Delete := TRUE;
@@ -82,17 +95,19 @@ VAR_INPUT
 	name	: Tc2_System.T_MaxString;	// Name of the file
 	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
 END_VAR
+
 VAR_OUTPUT
-	(* Result, if the file exists or not - check when method returns TRUE.*)
-	result	: BOOL;
+	result		: BOOL; // Result, if the file exists or not - check when method returns TRUE
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError; // Error information will be provided here
 END_VAR
 	
 VAR_INST
-	foundFiles	: TcDynCollections.FB_List;
+	foundFiles			: TcDynCollections.FB_List;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF FileHelper.Directory.GetAllFiles(path, netId, foundFiles) THEN
+        <ST><![CDATA[IF Utilities.Directory.ListFiles(path, netId, foundFiles) THEN
 	Exists := TRUE;
 	result := foundFiles.Contains(name);
 END_IF]]></ST>

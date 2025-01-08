@@ -11,10 +11,14 @@ VAR
 END_VAR
 
 VAR CONSTANT
-	VM_FILE_PATH			: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
-	VM_NET_ID				: Tc2_System.T_AmsNetID := '';
-	VM_FILE_TO_CREATE		: Tc2_System.T_MaxString := 'FileName.txt';
-	VM_EXISTING_FILE_NAME	: Tc2_System.T_MaxString := 'ExistingFile.txt';
+	FILE_PATH			: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
+	NET_ID				: Tc2_System.T_AmsNetID := '';
+	NEW_FILE_NAME		: Tc2_System.T_MaxString := 'FileName.txt';
+	EXISTING_FILE_NAME	: Tc2_System.T_MaxString := 'ExistingFile.txt';
+END_VAR
+
+VAR
+	_cleanupDirectoryFinished	: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -22,17 +26,32 @@ END_VAR
 Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty();
 Test02_Close_ExpectFileHandleIsZero();
 Test03_Create_ExpectFileExists();
-Test04_WriteLine_FileNotOpened_ExpectError();]]></ST>
+Test04_WriteLine_FileNotOpened_ExpectError();
+CleanupDirectory();]]></ST>
     </Implementation>
+    <Method Name="CleanupDirectory" Id="{46a16349-0e86-0744-3df9-def9e7102b76}">
+      <Declaration><![CDATA[METHOD CleanupDirectory
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('CleanupDirectory') THEN
+	IF _fileHandler.File.IsOpened THEN
+		_fileHandler.Close();	
+	ELSIF Utilities.Directory.DeleteFilesCreatedBefore(FILE_PATH, NEW_FILE_NAME, '', DT#2106-02-06-06:28:15) THEN
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Test00_Open_NonExistentFile_ExpectError" Id="{cd0a851f-20f9-02fd-0a5b-8ae66174045a}">
       <Declaration><![CDATA[METHOD Test00_Open_NonExistentFile_ExpectError
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test00_Open_NonExistentFile_ExpectError') THEN
 	IF _fileHandler.Open(
-		VM_FILE_PATH, 
+		FILE_PATH, 
 		'I_dont_exist', 
-		E_FileOpenMode.BINARY_READ, VM_NET_ID) 
+		E_FileOpenMode.BINARY_READ, NET_ID) 
 	THEN
 		AssertTrue(_fileHandler.Error, 'Opening non existing file should trigger an error');
 		AssertEquals_STRING('', _fileHandler.File.Path, 'Path property is incorrect');
@@ -53,13 +72,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty') THEN
 	IF _fileHandler.Open(
-		VM_FILE_PATH, 
-		VM_EXISTING_FILE_NAME, 
-		E_FileOpenMode.BINARY_READ, VM_NET_ID) 
+		FILE_PATH, 
+		EXISTING_FILE_NAME, 
+		E_FileOpenMode.BINARY_READ, NET_ID) 
 	THEN
-		AssertEquals_STRING(VM_FILE_PATH,_fileHandler.File.Path, 'Path property is incorrect');
-		AssertEquals_STRING(VM_EXISTING_FILE_NAME,_fileHandler.File.Name, 'Name property is incorrect');
-		AssertEquals_STRING(VM_NET_ID,_fileHandler.File.NetId, 'NetId property is incorrect');
+		AssertEquals_STRING(FILE_PATH,_fileHandler.File.Path, 'Path property is incorrect');
+		AssertEquals_STRING(EXISTING_FILE_NAME,_fileHandler.File.Name, 'Name property is incorrect');
+		AssertEquals_STRING(NET_ID,_fileHandler.File.NetId, 'NetId property is incorrect');
 		AssertTrue(_fileHandler.File.Handle <> 0, 'Handle property should not be 0.');
 		AssertTrue(_fileHandler.File.IsOpened, 'IsOpened property should be TRUE.');
 		TcUnit.TEST_FINISHED();
@@ -73,7 +92,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test25_Close_ExpectFileHandleIsZero') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_Close_ExpectFileHandleIsZero') THEN
 	IF _fileHandler.Close() THEN
 		AssertEquals_uint(0,_fileHandler.File.Handle, 
 			'When file is closed, the handle should be 0.');
@@ -81,6 +100,7 @@ END_VAR
 		AssertFalse(_fileHandler.File.IsOpened, 
 			'When file is closed, "File.IsOpened" should be FALSE');
 			
+		_fileHandler.Reset();
 		TcUnit.TEST_FINISHED();
 	END_IF
 END_IF]]></ST>
@@ -95,8 +115,9 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_Create_ExpectFileExists') THEN
-	IF _fileHandler.Create(VM_FILE_PATH, VM_FILE_TO_CREATE, VM_NET_ID) THEN
-		IF FileHelper.File.Exists(VM_FILE_PATH, VM_FILE_TO_CREATE, VM_NET_ID, result => fileExists) THEN
+	IF _fileHandler.Create(FILE_PATH, NEW_FILE_NAME, NET_ID) THEN
+		AssertFalse(_fileHandler.Error, Tc2_Standard.CONCAT('An error occured: ', _fileHandler.AdsError.Message));
+		IF Utilities.File.Exists(FILE_PATH, NEW_FILE_NAME, NET_ID, result => fileExists) THEN
 			AssertTrue(fileExists, 'File creation failed, not found.');
 			TcUnit.TEST_FINISHED();
 		END_IF
@@ -125,9 +146,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test15_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent') THEN
-	
-	TcUnit.TEST_FINISHED();
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent') THEN
+	(*IF NOT _fileHandler.File.IsOpened THEN
+		_fileHandler.Open(FILE_PATH, NEW_FILE_NAME, E_FileOpenMode.text)
+	END_IF
+	TcUnit.TEST_FINISHED();*)
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -137,7 +160,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test20_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent_1') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
 	
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
@@ -149,7 +172,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test30_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test07_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
 	
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
@@ -161,7 +184,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test35_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
 	
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
@@ -173,7 +196,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test40_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
 	
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
@@ -185,7 +208,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test45_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
 	
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>

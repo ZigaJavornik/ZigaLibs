@@ -18,13 +18,47 @@ END_VAR
 METHOD Exists : BOOL
 VAR_INPUT
 	path	: Tc2_System.T_MaxString;
+	netId	: Tc2_System.T_AmsNetID;
 END_VAR
+
 VAR_OUTPUT
-	result	: BOOL;
+	result		: BOOL; // Result, if the file exists or not - check when method returns TRUE
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError; // Error information will be provided here
+END_VAR
+
+VAR
+	splitPath			: TcDynCollections.FB_List;
+	lastPathPart		: Tc2_System.T_MaxString;
+	pathSeperatorLeft	: STRING := '\';
+	pathSeperatorRight	: STRING := '/';
+	currentFileEntry	: Tc2_Utilities.ST_FindFileEntry;
+	index				: DINT;
+END_VAR
+
+VAR_INST
+	files				: TcDynCollections.FB_List;
+	directoryUtilities	 : FB_DirectoryUtilities;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF directoryUtilities.ListAll(path, netId, files, error => error, errorInfo => errorInfo) THEN
+	StringHelper.Split(path, pathSeperatorLeft, splitPath);
+	WHILE splitPath.Contains(pathSeperatorRight) DO
+		splitPath.Remove(pathSeperatorRight);
+	END_WHILE
+	splitPath.Get(splitPath._End, lastPathPart);
+	
+	FOR index := files._Begin TO files._End BY 1 DO
+		files.Get(index, currentFileEntry);
+		IF currentFileEntry.sFileName = lastPathPart THEN
+			result := TRUE;
+			EXIT;
+		END_IF
+	END_FOR
+
+	Exists := TRUE;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Generate" Id="{57891d39-aafb-055c-337c-0e7884702c01}">

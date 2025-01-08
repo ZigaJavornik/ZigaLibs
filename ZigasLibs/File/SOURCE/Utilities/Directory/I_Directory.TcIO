@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_Directory" Id="{cb7661a0-6c20-02b0-24ea-9f5626ca673d}">
+    <Declaration><![CDATA[INTERFACE I_Directory
+]]></Declaration>
+    <Method Name="DeleteFilesCreatedBefore" Id="{98d738a9-600c-0c8f-3444-91bf4e5c4a7f}">
+      <Declaration><![CDATA[// Deletes files in the directory that were created before the provided date.
+METHOD DeleteFilesCreatedBefore : BOOL
+VAR_INPUT
+	path				: Tc2_System.T_MaxString;	// Path to where the deletion should be performed
+	fileNameContains	: Tc2_System.T_MaxString;	// Some characters that the file name should containt
+	netId				: Tc2_System.T_AmsNetID;	// NetId where the search should occurr
+	thresholdDate		: DT;	// If created before this date, the file will be deleted.
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;	
+END_VAR
+
+]]></Declaration>
+    </Method>
+    <Method Name="Exists" Id="{1827d2ba-6c87-0271-0d65-2147c8b7d1dc}">
+      <Declaration><![CDATA[// Looks if the provided directory exists on the disk.
+// Returns TRUE when done
+// Result can be found in the output directoryExists.
+METHOD Exists : BOOL
+VAR_INPUT
+	directory	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
+	netId		: Tc2_System.T_AmsNetID;	// NetId where to search.
+END_VAR
+
+VAR_OUTPUT
+	directoryExists		: BOOL;	// TRUE if it exists, else FALSE. Only valid after method returns TRUE.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ListAll" Id="{8957fa17-2e01-0184-32c2-bd2509e71d55}">
+      <Declaration><![CDATA[(* Looks in the directory `path` and iterates the content. 
+ When method returns TRUE, the collection of items is found in the result I_Collection.*)
+METHOD ListAll : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
+	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
+	items	: TcDynCollections.I_List;	// Collection of found files in the provided location. Items are of type Tc2_Utilities.ST_FindFileEntry!
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError;	// Error information will be provided here
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="ListFiles" Id="{c1dba3ed-539c-00f4-3c7d-1830c5959103}">
+      <Declaration><![CDATA[(* Looks in the directory `path` and iterates the content. 
+ When method returns TRUE, the collection of files is found in the result I_Collection.*)
+METHOD ListFiles : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
+	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
+	files	: TcDynCollections.I_List;	// Collection of found files in the provided location. Items are of type T_MaxString!
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError;	// Error information will be provided here
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>
