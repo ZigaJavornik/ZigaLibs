@@ -5,8 +5,8 @@
 // Read-only modes
 TYPE E_ReadOnlyFileOpenMode :
 (
-	BINARY := E_FileOpenMode.BINARY_READ_MUST_EXIST,	// Opens the file in binary mode
-	TEXT	:= E_FileOpenMode.TEXT_READ_MUST_EXIST// Opens the file in text mode
+	BINARY := E_FileOpenMode.BINARY_READ_WRITE_MUST_EXIST,	// Opens the file in binary mode
+	TEXT	:= E_FileOpenMode.TEXT_READ_WRITE_MUST_EXIST// Opens the file in text mode
 )DWORD;
 END_TYPE
 {warning enable C0327}]]></Declaration>
