@@ -387,6 +387,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TwinCat Dynamic Collections">
       <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
+      <Namespace>TcDynCollections</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
