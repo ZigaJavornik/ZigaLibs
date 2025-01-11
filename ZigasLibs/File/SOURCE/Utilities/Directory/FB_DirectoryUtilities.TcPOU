@@ -122,7 +122,7 @@ END_VAR
         <ST><![CDATA[// List all the items...
 IF THIS^.ListAll(directory, netId, foundItems) THEN
 	// Split the path into directories
-	ZigaLibs_Core.StringHelper.Split(str := directory, splitChar := PathSeperator.SystemIndependent, directories);
+	ZigaLibs_Core.StringHelper.Split(str := directory, splitChar := Constants.PathSeperators.Windows , directories);
 	// Last item in the directories split string is the actual directory we are looking for
 	directories.Get(directories._End, directoryName);
 

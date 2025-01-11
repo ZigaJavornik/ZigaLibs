@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_PathUtilities_Tests" Id="{d8d70865-abf7-0ef9-076a-a8b3d2ff3867}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_PathUtilities_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_PathUtilities_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT

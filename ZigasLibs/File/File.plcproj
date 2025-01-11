@@ -89,6 +89,15 @@
     </SelectedLibraryCategories>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\Constants\Constants.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Constants\FB_PathSeperators.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Constants\FB_Wildcards.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\DUTs\E_FileOpenMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -96,6 +105,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\DUTs\ST_FileInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\DUTs\T_FileAccessMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\DUTs\T_FileHandle.TcDUT">
@@ -134,22 +146,16 @@
     <Compile Include="SOURCE\Utilities\Path\I_Wildcards.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileManager\FB_FileHandler.TcPOU">
+    <Compile Include="SOURCE\FileHandler\FB_FileHandler.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileManager\I_FileHandler.TcIO">
+    <Compile Include="SOURCE\FileHandler\I_FileHandler.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\FileManager\I_FileProperties.TcIO">
+    <Compile Include="SOURCE\FileHandler\I_FileProperties.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Utilities\Utilities.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\PathSeperator.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Wildcards.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
@@ -180,8 +186,9 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\FileManager" />
+    <Folder Include="SOURCE\FileHandler" />
     <Folder Include="SOURCE\DUTs" />
+    <Folder Include="SOURCE\Constants" />
     <Folder Include="SOURCE\Utilities" />
     <Folder Include="SOURCE\Utilities\Directory" />
     <Folder Include="SOURCE\Utilities\File" />

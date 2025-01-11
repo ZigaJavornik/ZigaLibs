@@ -31,7 +31,7 @@ VAR_INPUT
 	right	: Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(left, Wildcards.Asterisk);
+        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(left, Constants.Wildcards.Asterisk);
 ZigaLibs_Core.StringHelper.Join(left, right);
 ZigaLibs_Core.StringHelper.Join(_path, left);
 Asterisk := THIS^;
@@ -68,12 +68,12 @@ IF Tc2_Standard.FIND(path, ':') <> 0 THEN
 END_IF
 
 // Add path seperator, if not starting with it.
-IF NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.Windows) AND
-   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.Windows) AND
-   NOT ZigaLibs_Core.StringHelper.StartsWith(path, PathSeperator.Unix) AND
-   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, PathSeperator.Unix)
+IF NOT ZigaLibs_Core.StringHelper.StartsWith(path, Constants.PathSeperators.Windows) AND
+   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, Constants.PathSeperators.Windows) AND
+   NOT ZigaLibs_Core.StringHelper.StartsWith(path, Constants.PathSeperators.Unix) AND
+   NOT ZigaLibs_Core.StringHelper.EndsWith(_path, Constants.PathSeperators.Unix)
 THEN
-	path := Tc2_Standard.CONCAT(PathSeperator.SystemIndependent, path);
+	path := Tc2_Standard.CONCAT(Constants.PathSeperators.Independent, path);
 END_IF
 ZigaLibs_Core.StringHelper.Join(_path, path);
 
@@ -85,7 +85,7 @@ ZigaLibs_Core.StringHelper.Join(_path, path);
 METHOD Questionmark : I_PathGenerator
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(_path, Wildcards.QuestionMark);
+        <ST><![CDATA[ZigaLibs_Core.StringHelper.Join(_path, Constants.Wildcards.QuestionMark);
 Questionmark := THIS^;
 ]]></ST>
       </Implementation>

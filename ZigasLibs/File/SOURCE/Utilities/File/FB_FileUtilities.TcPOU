@@ -32,9 +32,9 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF overwrite THEN
-	mode := E_FileOpenMode.BINARY_READ_APPEND_OVERWRITE_EXISTING;
+	mode := E_FileOpenMode.BINARY_READ_WRITE_APPEND;
 ELSE
-	mode := E_FileOpenMode.BINARY_APPEND;
+	mode := E_FileOpenMode.BINARY_APPEND_OVERWRITE_EXISTING;
 END_IF
 
 IF NOT fbFileHandler.File.IsOpened THEN

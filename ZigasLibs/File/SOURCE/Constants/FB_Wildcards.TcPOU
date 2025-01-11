@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
-  <POU Name="Wildcards" Id="{2dbc028a-351e-0f8f-0e79-77246e8ee30d}" SpecialFunc="None">
-    <Declaration><![CDATA[// Contains all the available wildcars in TwinCAT3 operations that allow the use of them.
-{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
-PROGRAM Wildcards
-]]></Declaration>
+  <POU Name="FB_Wildcards" Id="{77d495e7-1020-0e62-286d-5845201f3faa}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+FUNCTION_BLOCK INTERNAL FB_Wildcards]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>

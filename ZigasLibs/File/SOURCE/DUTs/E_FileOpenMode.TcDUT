@@ -26,7 +26,7 @@ TYPE E_FileOpenMode :
 	If the file does not exist, a new file is created. For this, the memory path must be known, otherwise error 1804 appears. 
 	All write operations are always performed at end of a file, if the file was opened in the modes a or a+.
 	The file pointer can be moved with FB_FileSeek, although for writing it is moved to the end of the file by default, i.e. existing data cannot be overwritten.*)
-	TEXT_READ_WRITE_APPEND_MUST_EXIST	:= Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
+	TEXT_READ_WRITE_APPEND	:= Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
 	
 	(* r: Opens a file for reading. An error is returned if the file cannot be found or does not exist.*)
 	BINARY_READ_MUST_EXIST	:= Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEBINARY,
@@ -47,7 +47,7 @@ TYPE E_FileOpenMode :
 	If the file does not exist, a new file is created. For this, the memory path must be known, otherwise error 1804 appears. 
 	All write operations are always performed at end of a file, if the file was opened in the modes a or a+.
 	The file pointer can be moved with FB_FileSeek, although for writing it is moved to the end of the file by default, i.e. existing data cannot be overwritten.*)
-	BINARY_READ_WRITE_APPEND_MUST_EXIST := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY
+	BINARY_READ_WRITE_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY
 )DWORD;
 END_TYPE
 ]]></Declaration>
