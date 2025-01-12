@@ -16,7 +16,7 @@
     <LibraryReferences>{a71ffb3f-1a1c-467b-9f97-f045e92e9308}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.File</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <ProjectVersion>0.1.0.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.File</DefaultNamespace>
     <Placeholder>ZigaLibs.File</Placeholder>
     <Author>Žiga Javornik</Author>
