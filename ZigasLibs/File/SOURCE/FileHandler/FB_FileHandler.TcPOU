@@ -84,7 +84,7 @@ END_VAR]]></Declaration>
 	THIS^.Open(
 		path := path,
 		name := name,
-		mode := E_FileOpenMode.BINARY_APPEND_OVERWRITE_EXISTING,
+		mode := E_FileOpenMode.BINARY_APPEND,
 		netId := netId);
 		
 	// Error opening the file, report and stop.

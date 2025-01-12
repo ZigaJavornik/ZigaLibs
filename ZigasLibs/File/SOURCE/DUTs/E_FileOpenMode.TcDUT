@@ -14,7 +14,7 @@ TYPE E_FileOpenMode :
 	TEXT_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODETEXT,
 	
 	(* a: Opens a file for writing at the end of the file (append). If the file does not exist, a new file is created.*)
-	TEXT_APPEND_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODETEXT,
+	TEXT_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODETEXT,
 	
 	(* r+: Opens a file for reading and writing. The file must exist.*)
 	TEXT_READ_WRITE_MUST_EXIST := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
@@ -35,7 +35,7 @@ TYPE E_FileOpenMode :
 	BINARY_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEBINARY,
 	
 	(* a: Opens a file for writing at the end of the file (append). If the file does not exist, a new file is created.*)
-	BINARY_APPEND_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEBINARY,
+	BINARY_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEBINARY,
 	
 	(* r+: Opens a file for reading and writing. The file must exist.*)
 	BINARY_READ_WRITE_MUST_EXIST := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY,
