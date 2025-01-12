@@ -38,6 +38,11 @@ VAR_INPUT
 	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
 END_VAR]]></Declaration>
     </Method>
+    <Method Name="OpenLast" Id="{cbc9ac3c-f0e9-0895-1e7f-2c89ebf11f2d}">
+      <Declaration><![CDATA[// Opens the last file with the provided open parameters. 
+// If file can't be opened or no file has been opened so far, an error is gnerated.
+METHOD OpenLast : BOOL]]></Declaration>
+    </Method>
     <Method Name="Read" Id="{1510c307-a8cf-03a2-2042-aac949d24ca5}">
       <Declaration><![CDATA[// Reads the file and writes the content to the result variable.
 // Resturns TRUE when done.

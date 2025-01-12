@@ -216,19 +216,22 @@ END_VAR]]></Declaration>
 			END_IF
 			
 		1:
-			IF  _fileHandler.WriteLine(THIS^.WRITE_TEST_CONTENT_APPEND)  THEN
-				AssertFalse(_filehandler.Error, 'Error writing content...');
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_APPEND)  THEN
+				AssertFalse(_filehandler.Error, 
+					Tc2_Standard.CONCAT('Error writing content: ',_fileHandler.AdsError.Message));
 				state := state + 1;
 			END_IF
 		
 		2: 
+			// Flush the content so that it appears in the file to be read with .Read()
 			IF _fileHandler.Flush()  THEN
 				state := state + 1;
 			END_IF
 			
 		3:
 			IF _fileHandler.Read(content) THEN
-				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertFalse(_filehandler.Error, 
+					Tc2_Standard.CONCAT('Error writing content: ',_fileHandler.AdsError.Message));
 				AssertEquals_STRING(EXPECTED_RESULT_APPEND, content, 
 						'Written content differs.');
 				state := state + 1;
@@ -462,6 +465,46 @@ END_VAR]]></Declaration>
 				END_IF
 			END_IF
 	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened" Id="{95d9e6ad-198e-0252-182d-24fcd66344ee}">
+      <Declaration><![CDATA[METHOD Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened
+VAR_INPUT
+END_VAR
+VAR_INST
+	state	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened') THEN
+	CASE state OF
+		0: 
+			IF _fileHandler.Open(FILE_PATH, 'RopenFileTest.txt', E_FileOpenMode.TEXT_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+		
+		1:
+			IF _fileHandler.Close() THEN
+				state := state + 1;
+			END_IF
+		2:
+			IF _fileHandler.OpenLast() THEN
+				AssertFalse(_fileHandler.Error, 'Error while opening last file.');
+				AssertTrue(_fileHandler.File.IsOpened, 'File should be opened');
+				AssertTrue(_fileHandler.File.Handle <> 0, 'File handle should not be 0.');
+				state := state + 1;
+			END_IF
+		
+		3:
+			IF _fileHandler.Close THEN
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF Utilities.File.Delete(_fileHandler.File.Path, _fileHandler.File.Name, NET_ID) THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+		END_CASE
 END_IF]]></ST>
       </Implementation>
     </Method>

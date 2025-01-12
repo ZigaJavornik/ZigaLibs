@@ -236,6 +236,48 @@ IF NOT fbFileOpen.bBusy THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="OpenLast" Id="{0c6b0235-98a2-022f-3c40-666e2aa6d625}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+(* Opens the last file with the provided open parameters. 
+ If file can't be opened or no file has been opened so far, an error is gnerated.*)
+METHOD OpenLast : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF File.Name = '' THEN
+	THIS^.Error := TRUE;
+	THIS^.GenericError.Message := 'Can not open file - name is empty.';
+	THIS^.GenericError.Source := Tc2_Standard.CONCAT(THIS^.InstanceName, '.OpenLast()');
+	OpenLast := TRUE;
+	RETURN;
+ELSIF File.Path = '' THEN
+	THIS^.Error := TRUE;
+	THIS^.GenericError.Message := 'Can not open file - path is empty.';
+	THIS^.GenericError.Source := Tc2_Standard.CONCAT(THIS^.InstanceName, '.OpenLast()');	
+	OpenLast := TRUE;
+	RETURN;
+ELSIF _lastOpenMode = 0 THEN
+	THIS^.Error := TRUE;
+	THIS^.GenericError.Message := Tc2_Standard.CONCAT('Can not open file - incorrect file open mode used: ', TO_STRING(_lastOpenMode));
+	THIS^.GenericError.Source := Tc2_Standard.CONCAT(THIS^.InstanceName, '.OpenLast()');	
+	OpenLast := TRUE;
+	RETURN;
+ELSIF File.IsOpened THEN
+	THIS^.Error := TRUE;
+	THIS^.GenericError.Message := 'Can not open last file - file already opened!';
+	THIS^.GenericError.Source := Tc2_Standard.CONCAT(THIS^.InstanceName, '.OpenLast()');	
+	OpenLast := TRUE;
+	RETURN;	
+END_IF
+
+IF THIS^.Open(File.Path, File.Name, _lastOpenMode, File.NetId) THEN
+	OpenLast := TRUE;
+	IF THIS^.Error THEN
+		THIS^.GenericError.Message := 'An error has occurred while attempting to open the last opened file. Refer to AdsError for more info.';
+		THIS^.GenericError.Source := Tc2_Standard.CONCAT(THIS^.InstanceName, '.OpenLast()');	
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="RaiseAdsError" Id="{11bb7eac-00b2-0545-18dd-8c65e0bb7ac7}">
       <Declaration><![CDATA[// Raise an error for a certain FB instance (calls from methods)
 METHOD PROTECTED RaiseAdsError : BOOL
