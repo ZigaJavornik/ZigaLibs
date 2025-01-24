@@ -13,7 +13,10 @@ END_VAR
       <ST><![CDATA[Test01_StartsWith();
 Test02_Join();
 Test03_EndsWith();
-Test04_Split();]]></ST>
+Test04_Split();
+Test05_Contains();
+Test06_ToLowerCase_UnlimitedSize();
+Test07_ToUpperCase_UnlimitedSize();]]></ST>
     </Implementation>
     <Method Name="Test01_StartsWith" Id="{35ad7b9c-c7be-02d7-193e-ebf2529b27e6}">
       <Declaration><![CDATA[METHOD Test01_StartsWith
@@ -136,6 +139,121 @@ AssertEquals_udint(0, listOfStrings._Count, 'Providing empty string should resul
 
 
 listOfStrings.Clear();
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_Contains" Id="{a5f71156-9551-0539-0753-2d9b174decbd}">
+      <Declaration><![CDATA[METHOD Test05_Contains
+VAR_INPUT
+END_VAR
+VAR
+	mainStringAsTmaxString		: Tc2_System.T_MaxString := 'asdfasdfadfasdfadfigsjcan you find mgndfkghdfghgdg!can you find me?';
+	substringToFind_TmaxString	: STRING := 'can you find me';
+	mainStringAsString300		: STRING(300) := 
+		'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklm
+		This is the test sentence.nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789a
+		bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+	substringToFind_String300	: STRING := 'This is the test sentence';	
+	mainStringTmp				: STRING(300);
+	position 					: DINT;
+	test	: int;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test05_Contains');
+
+// T_MaxString tests
+
+// doesen't contain
+AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, 'test123', position => position),
+	'String does not contain the provided substring.');
+AssertEquals_DINT(0, position,
+	'When string is not found, position should be 0');
+
+// Upper case - fail
+AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, StringHelper.ToUpperCase(substringToFind_TmaxString), position => position),
+	'String should not be found, provided string is in upper case.');
+AssertEquals_DINT(0, position,
+	'When string is not found (upper case) , position should be 0');
+
+// Lower case - fail
+AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, StringHelper.ToLowerCase(substringToFind_TmaxString), position => position),
+	'String should not be found, provided string is in lower case.');
+AssertEquals_DINT(0, position,
+	'When string is not found (lower case), position should be 0');
+
+// Contains	
+AssertTrue(StringHelper.FindStringWithin(mainStringAsTmaxString, substringToFind_TmaxString, position => position),
+	'String contains the provided substring, expected returned value should be TRUE.');
+AssertEquals_DINT(52, position,
+	'Incorrect position of the found substring.');
+	
+
+// Strings larger than T_MaxString tests
+// Does not contain
+AssertFalse(StringHelper.FindStringWithin(mainStringAsString300, 'test1234', position => position),
+	'String300 - provided substring does not exist in the main string, expected FALSE.');
+AssertEquals_DINT(0, position,
+	'String300 - when substring is not found, expected position is 0.');
+	
+// Upper case - fail	
+mainStringTmp := mainStringAsString300;
+StringHelper.ToUpperCase_UnlimitedSize(mainStringTmp);
+AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, mainStringTmp, position => position),
+	'String300 upper case - String should not be found, provided string is in upper case.');
+AssertEquals_DINT(0, position,
+	'String300 upper case - When string is not found (upper case) , position should be 0');
+	
+// Lower case - fail
+mainStringTmp := mainStringAsString300;
+StringHelper.ToLowerCase_UnlimitedSize(mainStringTmp);
+AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, mainStringTmp, position => position),
+	'String300 lower case - String should not be found, provided string is in lower case.');
+AssertEquals_DINT(0, position,
+	'String300 lower case - When string is not found (lower case), position should be 0');
+test := Tc2_Standard.FIND(mainStringAsString300, substringToFind_String300);
+// Contains	
+AssertTrue(StringHelper.FindStringWithin(mainStringAsString300, substringToFind_String300, position => position),
+	'String contains the provided substring, expected returned value should be TRUE.');
+AssertEquals_DINT(76, position,
+	'Incorrect position of the found substring.');	
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_ToLowerCase_UnlimitedSize" Id="{a1679d44-1a82-02b9-36a5-a30562cdf41b}">
+      <Declaration><![CDATA[METHOD Test06_ToLowerCase_UnlimitedSize
+VAR_INPUT
+END_VAR
+VAR_INST
+	expectedResult	: STRING(300) := 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmthis is the test sentence.nopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz';
+	providedString	: STRING(300) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMTHIS IS THE TEST SENTENCE.NOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test06_ToLowerCase_UnlimitedSize');
+
+StringHelper.ToLowerCase_UnlimitedSize(providedString);
+AssertEquals(expectedResult, providedString,
+	'Incorrect conversion to lower case of string(300)');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_ToUpperCase_UnlimitedSize" Id="{7d6e1af7-431b-090e-18c9-795ec6bb9246}">
+      <Declaration><![CDATA[METHOD Test07_ToUpperCase_UnlimitedSize
+VAR_INPUT
+END_VAR
+VAR_INST
+	providedString	: STRING(300) := 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmThis is the test sentence.nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+	expectedResult	: STRING(300) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMTHIS IS THE TEST SENTENCE.NOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test07_ToUpperCase_UnlimitedSize');
+
+StringHelper.ToUpperCase_UnlimitedSize(providedString);
+AssertEquals(expectedResult, providedString,
+	'Incorrect conversion to upper case of string(300)');
+	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
