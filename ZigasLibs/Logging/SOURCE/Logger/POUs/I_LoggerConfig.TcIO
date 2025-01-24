@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_LoggerConfig" Id="{bb42e3f5-3123-09b0-0e7d-84e61a15a959}">
+    <Declaration><![CDATA[INTERFACE I_LoggerConfig
+]]></Declaration>
+    <Method Name="Apply" Id="{97b282f8-4249-0806-190f-9a4e82bfb32f}">
+      <Declaration><![CDATA[// Applies the configuration and returns I_Logger
+METHOD Apply : I_Logger
+VAR_INPUT
+	writeConfigToLog	: BOOL;	// Will write applied configuration to the target log file if set to TRUE
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="DeleteLogsAfter" Id="{87176372-6c90-0804-3b4f-9d37315855a8}">
+      <Declaration><![CDATA[(* Set the time after which the logs will be deleted.*)
+METHOD DeleteLogsAfter : I_LoggerConfig
+VAR_INPUT
+	days			: UINT;	// Delete log files after X - days
+	checkInterval	: TIME;	// Check interval for deleting the existing files
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="SetLogExtension" Id="{a5817c73-770b-028d-3b79-475c96629825}">
+      <Declaration><![CDATA[(* Sets the log file extension <file>.<extension>. 
+You can or can't include the dot, it will be checked and added either way.*)
+METHOD SetLogExtension : I_LoggerConfig
+VAR_INPUT
+	extension	: STRING;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetLogFileName" Id="{bfeddf5b-961c-02b2-325a-3bfda6762abd}">
+      <Declaration><![CDATA[// Sets the log file name
+METHOD SetLogFileName : I_LoggerConfig
+VAR_INPUT
+	name	: STRING;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetLogFilePath" Id="{f3a0e5f9-adae-06f0-237b-ca900dbcd9e8}">
+      <Declaration><![CDATA[// Sets the path where the logs will be stored.
+METHOD SetLogFilePath : I_LoggerConfig
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetNetId" Id="{25ffe7e2-0c70-015d-20a2-435e9afb4a50}">
+      <Declaration><![CDATA[// Sets the NetId of the device where logs will be stored.
+METHOD SetNetId : I_LoggerConfig
+VAR_INPUT
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetRollingInterval" Id="{f57fa4b1-bfad-046f-178c-8ce37acdf01a}">
+      <Declaration><![CDATA[// Sets the rolling interval (in hours) - how offten new log file is created. If set to 0, a single file is created. Beware of DeleteCheckInterval, which will delete this file and you will lose these files in that case.
+METHOD SetRollingInterval : I_LoggerConfig
+VAR_INPUT
+	hours	: UINT;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

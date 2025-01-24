@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_LogLevelHeaders" Id="{f8a141c0-97a4-0344-3fb2-17e7c83e461f}">
+    <Declaration><![CDATA[TYPE ST_LogLevelHeaders :
+STRUCT
+	Error	: STRING := '<Error> ';
+	Warning	: STRING := '<Warning> ';
+	Info	: STRING := '<Info> ';
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

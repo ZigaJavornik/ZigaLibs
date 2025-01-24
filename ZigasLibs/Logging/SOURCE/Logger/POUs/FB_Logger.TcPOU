@@ -1,150 +1,303 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Logger" Id="{86b60fa4-cbc9-0995-00ad-63ce008210aa}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger IMPLEMENTS ZigaLibs_Core.I_LoggerEx
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger EXTENDS FB_ErrorSource IMPLEMENTS I_Logger
 VAR
-	_fileProperties			: ST_FileProperties;
-	_logLevelHeaders		: ZigaLibs_Core.ST_LogLevelHeaders;
-	_fileHandler			: FB_FileHandler;
-	_logEntries				: ARRAY[0..100] OF Tc2_System.T_MaxString;
-	_state					: E_LoggerState;
-	_oldState				: E_LoggerState;
-	_fileExists				: BOOL;
-	_localSystemTime		: ZigaLibs_Core.FB_LocalSystemTimeProvider;
-	_localSystemTimeString	: Tc2_System.T_MaxString;
-	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
-	_amsAddress				: Tc2_System.ST_AmsAddr;
-	_dateForLogName			: STRING;
+	_fileHandler				: ZigaLibs_File.FB_FileHandler;
+	_logEntries					: TcDynCollections.FB_Deque;
+	_lastLogEntry				: Tc2_System.T_MaxString;
+	_dequeueStatus				: TcDynCollections.T_Error;
+	_state						: E_LoggerState;
+	_localSystemTimeProvider	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
+	_localSystemTimeString		: Tc2_System.T_MaxString;
+	_stringBuilder				: ZigaLibs_Core.FB_StringBuilder;
+	_dateForLogName				: STRING;
+
+	_currentFileName			: Tc2_System.T_MaxString;
+	_varInfo					: ZigaLibs_Core.T_VarInfo;
+END_VAR
+
+VAR PERSISTENT
+	_config : FB_LoggerConfig(THIS^);
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_localSystemTime();
-_localSystemTimeString := _localSystemTime.ConvertToString().DateTime(
+      <ST><![CDATA[_localSystemTimeProvider();
+_localSystemTimeString := GetLocalSystemTimeAsString();
+_dequeueStatus := _logEntries._Error_Status;
+THIS^.DeleteLogsMonitoring();
+
+
+CASE _state OF 
+	E_LoggerState.IDLE:
+		IF _logEntries._Count <> 0 THEN
+			
+			_logEntries.Back(_lastLogEntry);
+			// Error when looking up the deque of log entries...
+			IF NOT THIS^.ValidateDequeue_IfFailedGoToErrorState() THEN
+				RETURN;
+			END_IF
+			
+			IF AddTimestampIfValidAndNewLine(_lastLogEntry) THEN
+				_state := E_LoggerState.PREPARE_LOG;
+			END_IF		
+		END_IF
+
+		
+	E_LoggerState.PREPARE_LOG:
+		_currentFileName := THIS^.GetLogName();
+		_state := E_LoggerState.OPEN_FILE;
+		
+	E_LoggerState.OPEN_FILE:
+		IF NOT _fileHandler.File.IsOpened THEN
+			_fileHandler.Open(
+				path := Configuration.FilePath, 
+				name := _currentFileName, 
+				mode := ZigaLibs_File.E_FileOpenMode.TEXT_APPEND,
+				netId := Configuration.NetId);
+			RETURN;
+		END_IF	
+		
+		// Error opening the file
+		IF _fileHandler.Error THEN
+			THIS^.GenericError.Message := 'An error has occurred when opening the file!';
+			THIS^.GenericError.Source := THIS^.InstancePath;
+			THIS^.AdsError := _fileHandler.AdsError;
+			_state := E_LoggerState.ERROR;
+			RETURN;
+		END_IF
+		
+		_state := E_LoggerState.WRITE_TO_FILE;
+
+	E_LoggerState.WRITE_TO_FILE:
+		IF NOT _fileHandler.WriteLine(_lastLogEntry) THEN
+			RETURN;
+		END_IF
+		
+		// Error writing to the file
+		IF _fileHandler.Error THEN
+			THIS^.GenericError.Message := 'An error has occurred when writing to file!';
+			THIS^.GenericError.Source := THIS^.InstancePath;
+			THIS^.AdsError := _fileHandler.AdsError;
+			_state := E_LoggerState.ERROR;
+			RETURN;
+		END_IF
+		
+		// Remove the last entry, which was removed.
+		_logEntries.Dequeue_At_Back();
+		IF NOT THIS^.ValidateDequeue_IfFailedGoToErrorState() THEN
+			RETURN;
+		END_IF
+		
+		_state := E_LoggerState.CLOSE_FILE;
+		
+	E_LoggerState.CLOSE_FILE:
+		IF NOT _fileHandler.Close() THEN
+			RETURN;
+		END_IF
+
+		// Error closing file.
+		IF _fileHandler.Error THEN
+			THIS^.GenericError.Message := 'An error occured when closing the file!';
+			THIS^.GenericError.Source := THIS^.InstancePath;
+			THIS^.AdsError := _fileHandler.AdsError;
+			_state := E_LoggerState.ERROR;
+			RETURN;
+		END_IF
+
+		_state := E_LoggerState.IDLE;
+
+	E_LoggerState.ERROR:
+		THIS^.Error := TRUE;
+		// Wait for reset to be called...
+		
+END_CASE]]></ST>
+    </Implementation>
+    <Method Name="AddTimestampIfValidAndNewLine" Id="{a9f8cbb1-04af-09e6-00f2-2d1dd952b9d2}">
+      <Declaration><![CDATA[METHOD PROTECTED AddTimestampIfValidAndNewLine : BOOL
+VAR_INPUT
+	entry	: REFERENCE TO Tc2_System.T_MaxString;
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _localSystemTimeProvider.CurrentTime.IsValid THEN
+	entry := sb.AddString(_localSystemTimeString)
+	.AddString(': ')
+	.AddString(entry)
+	.AddString(ZigaLibs_Core.StringConstants.NewLine)
+	.Create();
+	AddTimestampIfValidAndNewLine := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Configuration" Id="{3733cbfb-c4fb-0cbc-3ba6-2317c49a40cd}">
+      <Declaration><![CDATA[// Gets the logger configuration
+{attribute 'monitoring':='call'}
+PROPERTY Configuration : REFERENCE TO ST_LoggerConfiguration]]></Declaration>
+      <Get Name="Get" Id="{608d8e85-4ef6-0f15-399b-c243db84c1e4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Configuration REF= _config.Configuration;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Configure" Id="{2f78940c-28a4-0c02-2e75-2687ffc5193e}">
+      <Declaration><![CDATA[METHOD Configure : I_LoggerConfig
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Configure := _config;
+_config.Start();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeleteLogsMonitoring" Id="{df88bea8-83d1-0814-3cc7-90cf29c36696}">
+      <Declaration><![CDATA[METHOD PRIVATE DeleteLogsMonitoring
+VAR_INST
+	TonDeleteLogsTimer						: Tc2_Standard.TON;
+	RtrigDelete								: Tc2_Standard.R_TRIG;
+	bErrorDeletingFiles						: BOOL;
+	stErrorDeletingFilesAdsError			: ZigaLibs_Core.ST_AdsError;
+	dateForDeletion							: DT;
+	currentTime								: Tc2_Utilities.TIMESTRUCT;
+	RtrigConfigurationValid					: Tc2_Standard.R_TRIG;
+	bCleanupDirectoryOnConfigurationApplied	: BOOL;
+END_VAR
+VAR
+	sb 					: ZigaLibs_Core.FB_StringBuilder;
+	deletedFiles		: TcDynCollections.FB_List;
+	deletedFileIndex	: DINT;
+	deletedFileName		: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TonDeleteLogsTimer(IN := TRUE AND Configuration.DeleteAfterDays <> 0, PT := Configuration.DeleteCheckInterval);
+
+RtrigConfigurationValid(CLK := Configuration.IsValid AND _localSystemTimeProvider.CurrentTime.IsValid);
+IF RtrigConfigurationValid.Q THEN
+	bCleanupDirectoryOnConfigurationApplied := TRUE;
+END_IF
+
+RtrigDelete(CLK := TonDeleteLogsTimer.Q OR bCleanupDirectoryOnConfigurationApplied);
+
+IF _localSystemTimeProvider.CurrentTime.IsValid AND_THEN (TonDeleteLogsTimer.Q OR bCleanupDirectoryOnConfigurationApplied) THEN
+	
+	IF RtrigDelete.Q THEN
+		dateForDeletion := Tc2_Utilities.SYSTEMTIME_TO_DT(_localSystemTimeProvider.CurrentTime.Value);
+		dateForDeletion := dateForDeletion - (T#1D * Configuration.DeleteAfterDays);
+	END_IF
+
+	IF ZigaLibs_File.Utilities.Directory.DeleteFilesCreatedBefore(
+		path := Configuration.FilePath,
+		fileNameContains := Configuration.FileName,
+		netId := Configuration.NetId,
+		thresholdDate := dateForDeletion,
+		error => bErrorDeletingFiles,
+		errorInfo => stErrorDeletingFilesAdsError,
+		deletedFiles => deletedFiles) 
+	THEN
+		bCleanupDirectoryOnConfigurationApplied := FALSE;
+		TonDeleteLogsTimer(IN := FALSE);
+		IF bErrorDeletingFiles THEN
+			THIS^.LogError(sb.AddString(THIS^.InstancePath)
+				.AddString('An error occurred while attempting to delete files!')
+				.AddString(' Error info:').AddString(stErrorDeletingFilesAdsError.Message)
+				.AddString('Source: ').AddString(stErrorDeletingFilesAdsError.Source)
+				.Create());
+			RETURN;
+		END_IF
+		
+		sb.Reset().AddString('Cyclic files deletion finished. Deleted files created before ')
+			.AddAny(dateForDeletion)
+			.AddString('. Deleted ')
+			.AddString(DINT_TO_STRING(deletedFiles._Count))
+			.AddString(' files: ');
+			
+		FOR deletedFileIndex := deletedFiles._Begin TO deletedFiles._End BY 1 DO
+			deletedFiles.Get(deletedFileIndex, deletedFileName);
+			IF deletedFileIndex = deletedFiles._End THEN
+				sb.AddString(deletedFileName);
+				EXIT;
+			END_IF
+			
+			sb.AddString(deletedFileName).AddString(', ');
+		END_FOR
+		
+		THIS^.LogInfo(sb.Create());
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="EnqueueLogEntry" Id="{fc10775a-92bd-02ee-3fe5-4ec81d8f63a9}">
+      <Declaration><![CDATA[METHOD PROTECTED EnqueueLogEntry
+VAR_INPUT
+	entry	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logEntries.Enqueue_At_Front(entry);
+THIS^.ValidateDequeue_IfFailedGoToErrorState();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetLocalSystemTimeAsString" Id="{aa732986-4455-041b-3382-1693460889a6}">
+      <Declaration><![CDATA[METHOD PRIVATE GetLocalSystemTimeAsString : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLocalSystemTimeAsString :=_localSystemTimeProvider
+	.ConvertToString()
+	.DateTime(
 		dateSeperator := '.',
 		fillWithZeros := TRUE,
 		IncludeMilliseconds := FALSE,
 		timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
-		timeOfDaySeperator := ':');
-
-IF _fileHandler.Error THEN
-	_state := E_LoggerState.Error;
+		timeOfDaySeperator := ':');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetLogName" Id="{4ed4b280-ac59-0165-191f-c1ee2a65a930}">
+      <Declaration><![CDATA[METHOD PRIVATE GetLogName : T_MaxString
+VAR_INPUT
+END_VAR
+VAR_INST
+	sDate 					: Tc2_System.T_MaxString;
+	sFileName				: Tc2_System.T_MaxString;
+	sb						: FB_StringBuilder;
+	rollingIntervalReached	: Tc2_Standard.R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Configuration.RollingInterval = 0 THEN
+	GetLogName := Tc2_Standard.CONCAT(THIS^.Configuration.FileName, THIS^.Configuration.FileExtension);
+	RETURN;
 END_IF
 
-CASE _state OF 
-	E_LoggerState.IDLE:
-		IF _logEntries[0] <> '' AND _localSystemTime.CurrentTime.IsValid THEN
-			_state := E_LoggerState.WRITE_TO_FILE;
-		END_IF		
-		
-	E_LoggerState.WRITE_TO_FILE:
-		_fileHandler.FileProperties.FileLocation := _fileProperties.FileLocation;
-		_fileHandler.AmsAddress.netId := AmsAddress.netId;
-		_dateForLogName := _localSystemTime.ConvertToString().DateTime(
+
+rollingIntervalReached(CLK := (_localSystemTimeProvider.CurrentTime.Value.wHour MOD THIS^.Configuration.RollingInterval) = 0);
+
+IF sFileName = '' OR rollingIntervalReached.Q THEN
+	sDate := _localSystemTimeProvider
+		.ConvertToString()
+		.DateTime(
 			timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
 			timeOfDaySeperator := '',
 			dateSeperator := '',
 			fillWithZeros := TRUE,
 			IncludeMilliseconds := FALSE);
-
-		_dateForLogName := _stringBuilder.Reset()
-			.AddString(str := _dateForLogName)
-			.AddString(str := '_')
-			.AddString(str := _localSystemTime.ConvertToString().Hour(fillWithZeros := TRUE))
-			.Create();
 	
-		_fileHandler.FileProperties.FileName := _stringBuilder.Reset()
-			.AddString(str := _fileProperties.FileName)
-			.AddString(str := '_')
-			.AddString(str := _dateForLogName)
-			.AddString(str := '.txt')
-			.Create();
-		
-		IF NOT _fileHandler.Error AND_THEN 
-			_fileHandler.WriteLine_Append(sContent := _logEntries[0]) 
-		THEN
-			RemoveLogEntry();
-			_state := E_LoggerState.IDLE;
-		END_IF
-		
-	E_LoggerState.ERROR:
-		IF _oldState <> E_LoggerState.ERROR THEN
-			_fileHandler.Reset();
-		END_IF
-END_CASE
+	GetLogName := sb.Reset()
+		.AddString(Configuration.FileName)
+		.AddString('_')
+		.AddString(sDate)
+		.AddString('_')
+		.AddString(_localSystemTimeProvider.ConvertToString().Hour(fillWithZeros := TRUE))
+		.AddString(Configuration.FileExtension)
+		.Create();	
+END_IF
 
-_oldState := _state;]]></ST>
-    </Implementation>
-    <Method Name="AddLogEntry" Id="{6f1fe8ae-e0ba-067e-058b-4c715ea59a5c}">
-      <Declaration><![CDATA[METHOD PRIVATE AddLogEntry
-VAR_INPUT
-	message	: Tc2_System.T_MaxString;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[message := Tc2_Standard.CONCAT(
-	STR1 := message, 
-	STR2 := ZigaLibs_Core.StringConstants.NewLine);
-
-ZigaLibs_Core.ArrayHelper.SetAtFirstEmptySlot(
-	arr := _logEntries,
-	item := message);
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="AmsAddress" Id="{2ff23ff9-8aca-06ba-18c7-b3a879ccb01f}">
-      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
-(* Gets or sets the Ams address structure*)
-PROPERTY AmsAddress : REFERENCE TO ST_AmsAddr
-]]></Declaration>
-      <Get Name="Get" Id="{87378494-b48f-041e-0273-a8548009f45b}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[AmsAddress ref= _amsAddress;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{03e2518e-8422-04ec-3ebc-7cb2c93733f2}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_amsAddress := AmsAddress;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Property Name="BufferFull" Id="{6b3f66ce-c8e6-0c2b-1325-e4b5c4b64233}">
-      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
-PROPERTY PUBLIC BufferFull : BOOL]]></Declaration>
-      <Get Name="Get" Id="{52e4ece1-202f-0628-2423-dc2032edb2da}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[BufferFull := _logEntries[100] <> '';]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Property Name="FileProperties" Id="{673c7f63-7643-01c5-0bc9-18642143b735}">
-      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
-(* Gets or set file properties.*)
-PROPERTY FileProperties : REFERENCE TO ZigaLibs_Core.ST_FileProperties
-]]></Declaration>
-      <Get Name="Get" Id="{ed145f69-492a-0c2c-1788-7460771a661c}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[FileProperties REF= _fileProperties;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{80c6a351-e367-0411-01ac-b6ae657e0bcb}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_fileProperties := FileProperties;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
     <Method Name="LogDefault" Id="{03e59e35-6844-0202-3974-90f98220400a}">
       <Declaration><![CDATA[(* Logs the message without any additions.*)
 METHOD LogDefault
@@ -153,15 +306,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT Ready THEN
-	RETURN;
-END_IF
+        <ST><![CDATA[THIS^.EnqueueLogEntry(message);
 
-AddLogEntry(_stringBuilder.Reset() 
-	.AddString(str := _localSystemTimeString)
-	.AddString(str := ': ')
-	.AddString(str := message)
-	.Create());
 ]]></ST>
       </Implementation>
     </Method>
@@ -171,18 +317,17 @@ METHOD LogError
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
 END_VAR
+VAR
+	sb	: FB_StringBuilder;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT Ready THEN
-	RETURN;
-END_IF
+        <ST><![CDATA[THIS^.EnqueueLogEntry(
+	sb.AddString(Configuration.LogLevelHeaders.Error)
+		.AddString(message)
+		.Create());
 
-AddLogEntry(_stringBuilder.Reset() 
-	.AddString(str := _localSystemTimeString)
-	.AddString(str := ': ')
-	.AddString(str := _logLevelHeaders.Error)
-	.AddString(str := message)
-	.Create());]]></ST>
+	]]></ST>
       </Implementation>
     </Method>
     <Method Name="LogInfo" Id="{fd97ce6f-9592-08da-013c-a727bade2e2b}">
@@ -191,82 +336,78 @@ METHOD LogInfo
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
 END_VAR
-]]></Declaration>
+VAR
+	sb	: FB_StringBuilder;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT Ready THEN
-	RETURN;
-END_IF
-
-AddLogEntry(_stringBuilder.Reset() 
-	.AddString(str := _localSystemTimeString)
-	.AddString(str := ': ')
-	.AddString(str := _logLevelHeaders.Info)
-	.AddString(str := message)
-	.Create());]]></ST>
+        <ST><![CDATA[THIS^.EnqueueLogEntry(
+	sb.AddString(Configuration.LogLevelHeaders.Info)
+		.AddString(message)
+		.Create());]]></ST>
       </Implementation>
     </Method>
-    <Property Name="LogLevelHeaders" Id="{4a2eeb1a-7fb2-0f80-3c56-845a85555842}">
-      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
-(* Gets or sets the headers which are applied to logs for their coresponding log levels.*)
-PROPERTY LogLevelHeaders : REFERENCE TO ZigaLibs_Core.ST_LogLevelHeaders
-]]></Declaration>
-      <Get Name="Get" Id="{659c25b1-4b2a-01f1-1505-fdb1e25ebd68}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[LogLevelHeaders ref= _logLevelHeaders;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{96e644fb-2cc5-081c-3f64-8981e592adf9}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_logLevelHeaders := LogLevelHeaders;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
     <Method Name="LogWarning" Id="{76f0a31c-738d-0885-349f-e0df017a7e19}">
       <Declaration><![CDATA[(* Logs the message by adding the info header to the start.*)
 METHOD LogWarning
 VAR_INPUT
 	message	: Tc2_System.T_MaxString;
 END_VAR
+VAR
+	sb	: FB_StringBuilder;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT Ready THEN
+        <ST><![CDATA[THIS^.EnqueueLogEntry(
+	sb.AddString(Configuration.LogLevelHeaders.Warning)
+		.AddString(message)
+		.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{a5fbca4c-cccb-0c88-1d03-5c0956535ece}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Error THEN
+	_fileHandler.Reset();
+	THIS^.ResetError();
+	_state := E_LoggerState.IDLE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateDequeue_IfFailedGoToErrorState" Id="{cfd71935-cdd3-01a8-1c03-798665fa6211}">
+      <Declaration><![CDATA[// Looks at the dequeue status and sets the state to error, if osmething went wrong.
+// Sets all the error information.
+// If method returns FALSE, you should return from the current method step, upon next call the _state will be E_LoggerState.ERROR
+METHOD PROTECTED ValidateDequeue_IfFailedGoToErrorState : BOOL
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Error when doing dequeuing...
+IF NOT _dequeueStatus.bSTATUS THEN
+	ValidateDequeue_IfFailedGoToErrorState := TRUE;
 	RETURN;
 END_IF
 
-AddLogEntry(_stringBuilder.Reset() 
-	.AddString(str := _localSystemTimeString)
-	.AddString(str := ': ')
-	.AddString(str := _logLevelHeaders.Warning)
-	.AddString(str := message)
-	.Create());]]></ST>
-      </Implementation>
-    </Method>
-    <Property Name="Ready" Id="{c35840e3-946e-0c2d-2fef-3d51340adcda}">
-      <Declaration><![CDATA[{attribute 'monitoring':='call'}
-// Returns TRUE if logger is ready to create logs. This mostly refers to system time being valid.
-PROPERTY PUBLIC Ready : BOOL]]></Declaration>
-      <Get Name="Get" Id="{19b5e194-d7eb-0906-3299-cb36db04d559}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[Ready := _localSystemTime.CurrentTime.IsValid;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Method Name="RemoveLogEntry" Id="{134d7547-21a2-03bc-1ab5-77c94d18ef87}">
-      <Declaration><![CDATA[METHOD PRIVATE RemoveLogEntry
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[ZigaLibs_Core.ArrayHelper.ShiftDown(
-	arr := _logEntries, 
-	dataType := _logEntries[0]);]]></ST>
+THIS^.Error := TRUE;
+_varInfo := __VARINFO(_logEntries);
+
+THIS^.GenericError.Message := sb.Reset()
+	.AddString('Error when working with dynamic object: ')
+	.AddString(_varInfo.TypeName)
+	.Addstring('. Error: ')
+	.AddString(_dequeueStatus.sSOURCE)
+	.Create();
+
+THIS^.GenericError.Code := _dequeueStatus.nCODE;
+THIS^.GenericError.Source := sb.Reset()
+	.AddString(THIS^.InstancePath)
+	.AddString('.')
+	.AddString(_varInfo.Symbol)
+	.Create();;
+	
+_state := E_LoggerState.ERROR;
+]]></ST>
       </Implementation>
     </Method>
   </POU>

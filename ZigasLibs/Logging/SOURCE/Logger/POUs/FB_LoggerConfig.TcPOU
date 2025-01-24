@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_LoggerConfig" Id="{c3f2508f-30e3-0b69-3aac-d62fa2469fd5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LoggerConfig IMPLEMENTS I_LoggerConfig
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_configuration 		: ST_LoggerConfiguration;
+	_configurationTmp	: ST_LoggerConfiguration;
+	_logger			: I_Logger;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Apply" Id="{e8c51628-6356-04e3-3e2f-dd1bcca68ebd}">
+      <Declaration><![CDATA[(* Applies the configuration and returns I_Logger*)
+METHOD Apply : I_Logger
+VAR_INPUT
+	writeConfigToLog	: BOOL;	// Will write applied configuration to the target log file if set to TRUE
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Apply := _logger;
+_configuration := _configurationTmp;
+_configuration.IsValid := TRUE;
+
+IF NOT writeConfigToLog THEN
+	RETURN;
+END_IF
+
+// Too many string chains, CodeSys compiler crashes. Split to multiple lines.
+_logger.LogDefault('==================== APPLYING LOGGER CONFIG ====================');
+_logger.LogDefault(sb.Reset().AddString('NetId: ').AddString(_configuration.NetId).Create());
+_logger.LogDefault(sb.Reset().AddString('File path: ').AddString(_configuration.FilePath).Create());
+_logger.LogDefault(sb.Reset().AddString('File name: ').AddString(_configuration.FileName).Create());
+_logger.LogDefault(sb.Reset().AddString('File extension: ').AddString(_configuration.FileExtension).Create());
+_logger.LogDefault(sb.Reset().AddString('Delete after (days): ').addAny(_configuration.DeleteAfterDays).Create());
+_logger.LogDefault(sb.Reset().AddString('Delete files check period: ').AddAny(_configuration.DeleteCheckInterval).Create());
+_logger.LogDefault(sb.Reset().AddString('Error header: ').AddString(_configuration.LogLevelHeaders.Error).Create());
+_logger.LogDefault(sb.Reset().AddString('Warning header: ').AddString(_configuration.LogLevelHeaders.Warning).Create());
+_logger.LogDefault(sb.Reset().AddString('Info header: ').AddString(_configuration.LogLevelHeaders.Info).Create());
+_logger.LogDefault('==================== LOGGER CONFIG APPLIED ====================');
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Configuration" Id="{7280552a-5d00-025b-3e87-43064275fc9f}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY INTERNAL Configuration : REFERENCE TO ST_LoggerConfiguration]]></Declaration>
+      <Get Name="Get" Id="{93171796-4164-0be1-1bed-a7917e0cf67d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Configuration REF= _configuration;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="DeleteLogsAfter" Id="{62cd07d9-f356-06e4-3b44-92ea2dc2d15b}">
+      <Declaration><![CDATA[(* Set the time after which the logs will be deleted.*)
+METHOD DeleteLogsAfter : I_LoggerConfig
+VAR_INPUT
+	days			: UINT;	// Delete log files after X - days
+	checkInterval	: TIME;	// Check interval for deleting the existing files
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_configurationTmp.DeleteAfterDays := days;
+_configurationTmp.DeleteCheckInterval := checkInterval;
+DeleteLogsAfter := THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{7523725a-80a9-057c-0a06-d7d39c7388bf}">
+      <Declaration><![CDATA[{attribute 'hide'}
+METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger	: I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger := logger;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLogExtension" Id="{1de8f2e6-56f3-04c9-2326-cb9c5f178915}">
+      <Declaration><![CDATA[(* Sets the log file extension <file>.<extension>. 
+You can or can't include the dot, it will be checked and added either way.*)
+METHOD SetLogExtension : I_LoggerConfig
+VAR_INPUT
+	extension	: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Prepend the dot if it is not there already
+IF Tc2_Standard.FIND(extension, '.') <> 1 THEN 
+	extension := Tc2_Standard.CONCAT('.', extension);
+END_IF
+_configurationTmp.FileExtension := extension;
+SetLogExtension := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLogFileName" Id="{a1a59b3b-2e53-0f6e-1b54-f513f8866e1e}">
+      <Declaration><![CDATA[(* Sets the log file name*)
+METHOD SetLogFileName : I_LoggerConfig
+VAR_INPUT
+	name	: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_configurationTmp.FileName := name;
+SetLogFileName := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLogFilePath" Id="{3c1c5ff7-39f4-0ed8-25e1-ddf03c676d5a}">
+      <Declaration><![CDATA[(* Sets the path where the logs will be stored.*)
+METHOD SetLogFilePath : I_LoggerConfig
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_configurationTmp.FilePath := path;
+SetLogFilePath := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetNetId" Id="{7d1315e4-db30-00e4-30c7-61a4141806d8}">
+      <Declaration><![CDATA[(* Sets the NetId of the device where logs will be stored.*)
+METHOD SetNetId : I_LoggerConfig
+VAR_INPUT
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_configurationTmp.NetId := netId;
+SetNetId := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetRollingInterval" Id="{3bb08028-36f4-0b77-2e79-495f822f0485}">
+      <Declaration><![CDATA[// Sets the rolling interval (in hours) - how offten new log file is created. If set to 0, a single file is created. Beware of DeleteCheckInterval, which will delete this file and you will lose these files in that case.
+METHOD SetRollingInterval : I_LoggerConfig
+VAR_INPUT
+	hours	: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetRollingInterval := THIS^;
+_configurationTmp.RollingInterval := hours;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{35f5aaca-b8de-0519-09b1-39c5dc229d61}">
+      <Declaration><![CDATA[// Shoould be called before any calls to configuration setting.
+// This way temp configuration is equated to the current configuration.
+// If some methods are not called, they will still have same values as oritinal configuration.
+METHOD INTERNAL Start
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_configurationTmp := _configuration;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
