@@ -30,6 +30,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="DeleteAll" Id="{4c68625a-8348-0ede-3967-a08de81c0997}">
+      <Declaration><![CDATA[// Deletes all existing alarms from the memory
+METHOD DeleteAll]]></Declaration>
+    </Method>
     <Property Name="Enable" Id="{0ae510b3-be57-0ba1-3645-7ca74f263283}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!

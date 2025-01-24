@@ -32,6 +32,15 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Clear" Id="{92ed3547-8981-00da-022d-962e473da65a}">
+      <Declaration><![CDATA[METHOD Clear
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_malloc.Free();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Create" Id="{fc4c953e-f606-0e60-282d-9b1207596240}">
       <Declaration><![CDATA[METHOD Create : BOOL
 VAR_INPUT

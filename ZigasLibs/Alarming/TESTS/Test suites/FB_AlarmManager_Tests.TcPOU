@@ -31,7 +31,8 @@ Test15_AcknowledgeById();
 Test16_TimeInfos();
 Test17_RaiseUnexisitngAlarm_ExpectNoNewAlarmsActive();
 Test18_DeleteAlarm_ExpectPreviousAlarmsStillExist();
-Test19_DeleteUnexistingAlarm_ExpectNoChangesToExistingAlarms();]]></ST>
+Test19_DeleteUnexistingAlarm_ExpectNoChangesToExistingAlarms();
+Test20_DeleteAll();]]></ST>
     </Implementation>
     <Method Name="Test00_RegisterAlarms" Id="{51a6cd53-1880-0584-2f70-df4bc0e86a21}">
       <Declaration><![CDATA[METHOD Test00_RegisterAlarms
@@ -834,8 +835,8 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test18_DeleteAlarm_ExpectPreviousAlarmsStillExist') THEN
-	fbAlarmManager.RegisterAlarm(1,'1','1',E_AlarmLevel.ERROR);
-	fbAlarmManager.RegisterAlarm(2,'2','2',E_AlarmLevel.INFO);
+	fbAlarmManager.RegisterAlarm(1,'1','1',E_AlarmLevel.WARNING);
+	fbAlarmManager.RegisterAlarm(2,'2','2',E_AlarmLevel.WARNING);
 	fbAlarmManager.RegisterAlarm(3,'3','3',E_AlarmLevel.WARNING);
 	fbAlarmManager.RegisterAlarm(4,'4','4',E_AlarmLevel.WARNING);
 	
@@ -866,8 +867,13 @@ END_VAR]]></Declaration>
 	AssertFalse(
 		Condition := __ISVALIDREF(fbAlarmManager.GetAlarmById(2)),
 		Message := 'Alarm with Id 2 should no longer exist.');
-		
-	// Alarm index 3		
+	
+	
+	// Alarm index 3	
+	AssertTrue(
+			Condition := __ISVALIDREF(fbAlarmManager.GetAlarmById(3)),
+			Message := 'Alarm with Id 3 should exist.');
+			
 	currentAlarm := fbAlarmManager.GetAlarmById(3);
 	AssertEquals_DINT(
 		Expected := 3,
@@ -985,6 +991,35 @@ END_VAR]]></Declaration>
 		
 	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test20_DeleteAll" Id="{43545f14-eb24-03df-2cad-4fdbe5ff7dcf}">
+      <Declaration><![CDATA[METHOD Test20_DeleteAll
+VAR_INST
+	fbAlarmManager	: FB_AlarmManager(
+		enable := TRUE,
+		logger := 0,
+		timeProvider := _dateTime);
+	currentAlarm
+	: ST_AlarmInfo;
+	emptyAlarm		: ST_AlarmInfo;
+	i	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test20_DeleteAll');
+
+FOR i := 0 TO 5 BY 1 DO
+	fbAlarmManager.RegisterAlarm(i, TO_STRING(i), TO_STRING(i), E_AlarmLevel.ERROR);
+	fbAlarmManager.Actions().Raise().ById(i);
+END_FOR
+
+fbAlarmManager.DeleteAll();
+AssertEquals_DINT(0, fbAlarmManager.RegisteredAlarmsCount, 'Deleteing all alarms should result in the registered alarm count being 0.');
+AssertEquals_DINT(0, fbAlarmMAnager.ActiveAlarmsCount, 'Deleting all alarms should result in active alarms count being 0');
+AssertEquals_DINT(0, fbAlarmManager.UnacknowledgedAlarmsCount, 'Deleting all alarms should result in unacknowledged alarms count being 0');
+AssertFalse(__ISVALIDREF(fbAlarmManager.GetAlarmById(1)), 'Attempting to retrive an alarm when they have all been deleted should return an empty reference.');
+
+TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
   </POU>
