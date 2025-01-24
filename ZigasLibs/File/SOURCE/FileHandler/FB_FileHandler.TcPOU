@@ -138,15 +138,6 @@ END_VAR
           <ST><![CDATA[File REF= _fileInfo;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{7f2a75a3-5c5e-009d-2e8b-0623e7b1209f}">
-        <Declaration><![CDATA[PROTECTED 
-VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_fileInfo := File;]]></ST>
-        </Implementation>
-      </Set>
     </Property>
     <Method Name="Flush" Id="{348ffd5a-b3da-06ae-2382-55605fe66f35}">
       <Declaration><![CDATA[// Flushes the current file stream data to the file. 
@@ -304,7 +295,6 @@ END_VAR
 
 VAR_INST
 	fbFileRead	: Tc2_System.FB_FileRead;
-	test	: Tc2_System.T_MaxString;
 END_VAR
 
 VAR
@@ -313,8 +303,8 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbFileRead(
 	bExecute := NOT fbFileRead.bBusy,
-	sNetId := File.NetId,
-	hFile := File.Handle,
+	sNetId := THIS^.File.NetId,
+	hFile := THIS^.File.Handle,
 	pReadBuff := result.pValue,
 	cbReadLen := DINT_TO_UDINT(result.diSize));
 	

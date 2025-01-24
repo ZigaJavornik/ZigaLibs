@@ -14,8 +14,9 @@ VAR_INPUT
 END_VAR
 
 VAR_OUTPUT
-	error		: BOOL;
-	errorInfo	: ZigaLibs_Core.ST_AdsError;	
+	error			: BOOL;
+	errorInfo		: ZigaLibs_Core.ST_AdsError;	
+	deletedFiles	: TcDynCollections.FB_List;	// A list of deleted items, as T_MaxString (file names).
 END_VAR
 
 ]]></Declaration>

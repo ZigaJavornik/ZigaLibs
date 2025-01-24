@@ -201,8 +201,6 @@ END_IF]]></ST>
     </Method>
     <Method Name="Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent" Id="{53b40206-d1bb-0c90-0ce7-d81805c85775}">
       <Declaration><![CDATA[METHOD Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent
-VAR_INPUT
-END_VAR
 VAR_INST
 	content		: Tc2_System.T_MaxString;
 	state		: INT;

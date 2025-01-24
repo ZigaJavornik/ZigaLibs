@@ -101,9 +101,6 @@
     <Compile Include="SOURCE\DUTs\E_FileOpenMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\DUTs\E_ReadOnlyFileOpenMode.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\DUTs\ST_FileInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>

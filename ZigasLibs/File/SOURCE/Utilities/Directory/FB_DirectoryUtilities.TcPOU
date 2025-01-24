@@ -22,9 +22,11 @@ VAR_INPUT
 	thresholdDate		: DT;	// If created before this date, the file will be deleted.
 END_VAR
 VAR_OUTPUT
-	error		: BOOL;
-	errorInfo	: ZigaLibs_Core.ST_AdsError;	
+	error			: BOOL;
+	errorInfo		: ZigaLibs_Core.ST_AdsError;	
+	deletedFiles	: TcDynCollections.FB_List;	// A list of deleted items, as T_MaxString (file names).
 END_VAR
+
 VAR_INST
 	files			: TcDynCollections.FB_List;
 	currentFile		: ST_FindFileEntry;
@@ -86,7 +88,7 @@ END_VAR
 				files.Clear();
 				RETURN;
 			END_IF
-			
+			deletedFiles.Prepend(currentFile.sFileName);
 			files.Remove(currentFile);
 			state := E_DeleteFilesByDateState.GET_FILE;
 		END_IF

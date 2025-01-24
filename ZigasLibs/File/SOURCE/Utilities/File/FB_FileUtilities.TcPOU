@@ -82,6 +82,7 @@ errorInfo.Code := TcError.ToAdsErrorCode(fbFileDelete.nErrId);
 errorInfo.Message := TcError.AdsErrorCodeDescription(errorInfo.Code);
 	
 IF NOT fbFileDelete.bBusy THEN
+	fbFileDelete(bExecute := FALSE);
 	Delete := TRUE;
 END_IF]]></ST>
       </Implementation>
