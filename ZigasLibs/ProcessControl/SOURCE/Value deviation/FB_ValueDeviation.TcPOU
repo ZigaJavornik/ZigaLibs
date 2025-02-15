@@ -7,7 +7,7 @@ VAR
 	_delayDeviation		: Tc2_Standard.TON;
 	_value				: ST_Value;
 	_status				: E_ValueDeviationStatus;
-	_maxDeviation		: REAL;
+	_maxDeviation		: T_ControllerValue;
 	_enable				: BOOL;
 	_activationDelay	: TIME;
 END_VAR]]></Declaration>

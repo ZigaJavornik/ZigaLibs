@@ -15,8 +15,8 @@
     <Implicit_Jitter_Distribution>{b2f8b50b-cdeb-489c-a59a-6072e6812446}</Implicit_Jitter_Distribution>
     <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>ProcessControler</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <Title>ProcessControl</Title>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -73,6 +73,9 @@
     <Description>A library containing objects for process control.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\PID\DUTs\T_ControllerValue.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\PID\POUs\FB_Controller_P.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -117,6 +120,7 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\PID" />
+    <Folder Include="SOURCE\PID\DUTs" />
     <Folder Include="SOURCE\PID\POUs" />
     <Folder Include="SOURCE\Value deviation" />
     <Folder Include="TESTS\Test suites" />
@@ -142,15 +146,9 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Core">
-      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
@@ -158,6 +156,11 @@
     <None Include="ProcessControl.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="TcUnit">
+      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
