@@ -83,7 +83,7 @@ fbValveSystem_XV03.Enable := TRUE;
 
 FOR iteration := 1 TO 24 BY 1 DO
 	// Coil 1 of valve
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
+	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
 	fbValveSystem_XV03();
 	// add + 1 address when next byte should be looked at (4 valves with 2 coils per byte, 8 bits)
 	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
@@ -94,35 +94,8 @@ FOR iteration := 1 TO 24 BY 1 DO
 		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not opened.')
-			.Create());
-	
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
-	fbValveSystem_XV03();
-	AssertTrue(
-		Condition := ptrUsint^ = 0,
-		Message := stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not closed.')
-			.Create());
-	
-	// Coil 2 of valve	
-	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
-	fbValveSystem_XV03();
-	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
-	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
-	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
-	AssertTrue(
-		Condition := ptrUsint^ = expectedValue,
-		Message := stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not opened.')
 			.Create());
-			
-	indexValueToAdd := indexValueToAdd + 1;
 	
 	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := FALSE;
 	fbValveSystem_XV03();
@@ -132,6 +105,32 @@ FOR iteration := 1 TO 24 BY 1 DO
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not closed.')
+			.Create());
+	
+	// Coil 2 of valve	
+	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
+	fbValveSystem_XV03();
+	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
+	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
+	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
+	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
+	AssertTrue(ptrUsint^ = expectedValue,
+		stringBuilder.Reset()
+			.AddString('Valve ')
+			.AddWithDblQuotationMarks(TO_STRING(iteration))
+			.AddString(', coil 12 was not opened.')
+			.Create());
+			
+	indexValueToAdd := indexValueToAdd + 1;
+	
+	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
+	fbValveSystem_XV03();
+	AssertTrue(
+		Condition := ptrUsint^ = 0,
+		Message := stringBuilder.Reset()
+			.AddString('Valve ')
+			.AddWithDblQuotationMarks(TO_STRING(iteration))
+			.AddString(', coil 12 was not closed.')
 			.Create());
 			
 	// In order to have 1 single loop, every loop iteration we need to add 1 value, to increase the 2^n+1 result.

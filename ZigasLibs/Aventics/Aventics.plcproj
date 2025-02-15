@@ -18,8 +18,8 @@
     <LibraryReferences>{36b524b5-0ebe-42d9-b7ba-46bb7107ad2d}</LibraryReferences>
     <Company>Ziga</Company>
     <Released>false</Released>
-    <Title>Aventics</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <Title>ZigaLibs.Aventics</Title>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -70,8 +70,8 @@
     <SelectedLibraryCategories>
       <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_Aventics</DefaultNamespace>
-    <Placeholder>ZigaLibs_Aventics</Placeholder>
+    <DefaultNamespace>ZigaLibs.Aventics</DefaultNamespace>
+    <Placeholder>ZigaLibs.Aventics</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>Aventics devices library colelction.</Description>
   </PropertyGroup>
@@ -148,9 +148,13 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Core">
-      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

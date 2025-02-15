@@ -5,7 +5,7 @@
 VAR
 	_enable					: BOOL;
 	_valves					: T_XV03_ValveSystem;
-	_logger					: REFERENCE TO ZigaLibs_Core.I_LoggerEx;
+	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	_diagnosticsOptios		: ST_DiagnosticsOptions;
 	_diagnosticsTimer		: Tc2_Standard.TON;
 	_init					: BOOL;
@@ -27,58 +27,58 @@ END_VAR
 	Coils.Coils_25_To_32 := 0;
 	Coils.Coils_41_To_48 := 0;
 ELSE
-	Coils.Coils_01_To_08.0 := _valves[1].Coil_12.Active;
-	Coils.Coils_01_To_08.1 := _valves[1].Coil_14.Active;
-	Coils.Coils_01_To_08.2 := _valves[2].Coil_12.Active;
-	Coils.Coils_01_To_08.3 := _valves[2].Coil_14.Active;
-	Coils.Coils_01_To_08.4 := _valves[3].Coil_12.Active;
-	Coils.Coils_01_To_08.5 := _valves[3].Coil_14.Active;
-	Coils.Coils_01_To_08.6 := _valves[4].Coil_12.Active;
-	Coils.Coils_01_To_08.7 := _valves[4].Coil_14.Active;
-	Coils.Coils_09_To_16.0 := _valves[5].Coil_12.Active;
-	Coils.Coils_09_To_16.1 := _valves[5].Coil_14.Active;
-	Coils.Coils_09_To_16.2 := _valves[6].Coil_12.Active;
-	Coils.Coils_09_To_16.3 := _valves[6].Coil_14.Active;
-	Coils.Coils_09_To_16.4 := _valves[7].Coil_12.Active;
-	Coils.Coils_09_To_16.5 := _valves[7].Coil_14.Active;
-	Coils.Coils_09_To_16.6 := _valves[8].Coil_12.Active;
-	Coils.Coils_09_To_16.7 := _valves[8].Coil_14.Active;
+	Coils.Coils_01_To_08.0 := _valves[1].Coil_14.Active;
+	Coils.Coils_01_To_08.1 := _valves[1].Coil_12.Active;
+	Coils.Coils_01_To_08.2 := _valves[2].Coil_14.Active;
+	Coils.Coils_01_To_08.3 := _valves[2].Coil_12.Active;
+	Coils.Coils_01_To_08.4 := _valves[3].Coil_14.Active;
+	Coils.Coils_01_To_08.5 := _valves[3].Coil_12.Active;
+	Coils.Coils_01_To_08.6 := _valves[4].Coil_14.Active;
+	Coils.Coils_01_To_08.7 := _valves[4].Coil_12.Active;
+	Coils.Coils_09_To_16.0 := _valves[5].Coil_14.Active;
+	Coils.Coils_09_To_16.1 := _valves[5].Coil_12.Active;
+	Coils.Coils_09_To_16.2 := _valves[6].Coil_14.Active;
+	Coils.Coils_09_To_16.3 := _valves[6].Coil_12.Active;
+	Coils.Coils_09_To_16.4 := _valves[7].Coil_14.Active;
+	Coils.Coils_09_To_16.5 := _valves[7].Coil_12.Active;
+	Coils.Coils_09_To_16.6 := _valves[8].Coil_14.Active;
+	Coils.Coils_09_To_16.7 := _valves[8].Coil_12.Active;
 	
-	Coils.Coils_17_To_24.0 := _valves[9].Coil_12.Active;
-	Coils.Coils_17_To_24.1 := _valves[9].Coil_14.Active;
-	Coils.Coils_17_To_24.2 := _valves[10].Coil_12.Active;
-	Coils.Coils_17_To_24.3 := _valves[10].Coil_14.Active;
-	Coils.Coils_17_To_24.4 := _valves[11].Coil_12.Active;
-	Coils.Coils_17_To_24.5 := _valves[11].Coil_14.Active;
-	Coils.Coils_17_To_24.6 := _valves[12].Coil_12.Active;
-	Coils.Coils_17_To_24.7 := _valves[12].Coil_14.Active;
+	Coils.Coils_17_To_24.0 := _valves[9].Coil_14.Active;
+	Coils.Coils_17_To_24.1 := _valves[9].Coil_12.Active;
+	Coils.Coils_17_To_24.2 := _valves[10].Coil_14.Active;
+	Coils.Coils_17_To_24.3 := _valves[10].Coil_12.Active;
+	Coils.Coils_17_To_24.4 := _valves[11].Coil_14.Active;
+	Coils.Coils_17_To_24.5 := _valves[11].Coil_12.Active;
+	Coils.Coils_17_To_24.6 := _valves[12].Coil_14.Active;
+	Coils.Coils_17_To_24.7 := _valves[12].Coil_12.Active;
 	
-	Coils.Coils_25_To_32.0 := _valves[13].Coil_12.Active; 
-	Coils.Coils_25_To_32.1 := _valves[13].Coil_14.Active; 
-	Coils.Coils_25_To_32.2 := _valves[14].Coil_12.Active;
-	Coils.Coils_25_To_32.3 := _valves[14].Coil_14.Active;
-	Coils.Coils_25_To_32.4 := _valves[15].Coil_12.Active;
-	Coils.Coils_25_To_32.5 := _valves[15].Coil_14.Active;
-	Coils.Coils_25_To_32.6 := _valves[16].Coil_12.Active;
-	Coils.Coils_25_To_32.7 := _valves[16].Coil_14.Active;
+	Coils.Coils_25_To_32.0 := _valves[13].Coil_14.Active; 
+	Coils.Coils_25_To_32.1 := _valves[13].Coil_12.Active; 
+	Coils.Coils_25_To_32.2 := _valves[14].Coil_14.Active;
+	Coils.Coils_25_To_32.3 := _valves[14].Coil_12.Active;
+	Coils.Coils_25_To_32.4 := _valves[15].Coil_14.Active;
+	Coils.Coils_25_To_32.5 := _valves[15].Coil_12.Active;
+	Coils.Coils_25_To_32.6 := _valves[16].Coil_14.Active;
+	Coils.Coils_25_To_32.7 := _valves[16].Coil_12.Active;
 	                          
-	Coils.Coils_33_To_40.0 := _valves[17].Coil_12.Active;
-	Coils.Coils_33_To_40.1 := _valves[17].Coil_14.Active;
-	Coils.Coils_33_To_40.2 := _valves[18].Coil_12.Active;
-	Coils.Coils_33_To_40.3 := _valves[18].Coil_14.Active;
-	Coils.Coils_33_To_40.4 := _valves[19].Coil_12.Active;
-	Coils.Coils_33_To_40.5 := _valves[19].Coil_14.Active;
-	Coils.Coils_33_To_40.6 := _valves[20].Coil_12.Active;
-	Coils.Coils_33_To_40.7 := _valves[20].Coil_14.Active;
+	Coils.Coils_33_To_40.0 := _valves[17].Coil_14.Active;
+	Coils.Coils_33_To_40.1 := _valves[17].Coil_12.Active;
+	Coils.Coils_33_To_40.2 := _valves[18].Coil_14.Active;
+	Coils.Coils_33_To_40.3 := _valves[18].Coil_12.Active;
+	Coils.Coils_33_To_40.4 := _valves[19].Coil_14.Active;
+	Coils.Coils_33_To_40.5 := _valves[19].Coil_12.Active;
+	Coils.Coils_33_To_40.6 := _valves[20].Coil_14.Active;
+	Coils.Coils_33_To_40.7 := _valves[20].Coil_12.Active;
 	
-	Coils.Coils_41_To_48.0 := _valves[21].Coil_12.Active; 
-	Coils.Coils_41_To_48.1 := _valves[21].Coil_14.Active; 
-	Coils.Coils_41_To_48.2 := _valves[22].Coil_12.Active;
-	Coils.Coils_41_To_48.3 := _valves[22].Coil_14.Active;
-	Coils.Coils_41_To_48.4 := _valves[23].Coil_12.Active;
-	Coils.Coils_41_To_48.5 := _valves[23].Coil_14.Active;
-	Coils.Coils_41_To_48.6 := _valves[24].Coil_12.Active;
-	Coils.Coils_41_To_48.7 := _valves[24].Coil_14.Active;
+	Coils.Coils_41_To_48.0 := _valves[21].Coil_14.Active; 
+	Coils.Coils_41_To_48.1 := _valves[21].Coil_12.Active; 
+	Coils.Coils_41_To_48.2 := _valves[22].Coil_14.Active;
+	Coils.Coils_41_To_48.3 := _valves[22].Coil_12.Active;
+	Coils.Coils_41_To_48.4 := _valves[23].Coil_14.Active;
+	Coils.Coils_41_To_48.5 := _valves[23].Coil_12.Active;
+	Coils.Coils_41_To_48.6 := _valves[24].Coil_14.Active;
+	Coils.Coils_41_To_48.7 := _valves[24].Coil_12.Active;
 END_IF
 
 
@@ -153,7 +153,7 @@ _diagnosticsTimer(IN := FALSE);]]></ST>
 VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-	logger		: REFERENCE TO ZigaLibs_Core.I_LoggerEx;	// If logging will be used, provide it here. Else set this to 0, internal checks will ommit logging.
+	logger		: REFERENCE TO ZigaLibs_Logging.I_Logger;	// If logging will be used, provide it here. Else set this to 0, internal checks will ommit logging.
 END_VAR
 ]]></Declaration>
       <Implementation>
