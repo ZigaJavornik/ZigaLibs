@@ -26,19 +26,11 @@ IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
 ...
 ```
 
-
-~~With every release, the ```TcUnit``` is excluded via the```Compiler defines``` due to compatibility issues with ARM devices (low RAM, which causes issues if including TcUnit, see https://github.com/tcunit/TcUnit/issues/148). Entering ```UnitTests``` to the ```compiler defines``` field will enable the ```TcUnit``` library, which is required for compilation and test running, but not for execution of any library files.~~
-
-
-As it turns out, the upper solutio still does not solve the issue, as by default parameters are set to maximum and you can't exclude TcUnit. What is the best solution is, TcUnit is NOT excluded from build. Instead, the project that uses these libraries should have TcUnit as well, and then set these parameters to the highlighted values, this way you override the parameters from within the library, effectively setting the unit test count to 1:
-
-![image](https://github.com/user-attachments/assets/31997d48-711f-4992-bb0f-0d20825c394e)
-
-
-This results in next to no memory usage by TcUnit in your project while having TcUnit enabled and working properly for library development:
-![image](https://github.com/user-attachments/assets/9e823942-b539-4dea-912b-58a2a228e053)
-
-
+**NOTE**
+In order to avoid having TcUnit downloaded to the production machine, make sure that your environment laptop does not have TcUnit installed. If that is the case, when you donwload the code, anything related to TcUnit will be excluded - if you do have TcUnit installed you will get GVL_TcUnit list, which will have 1000 test suites by default, which will end up taking around 100MB~ of space. You can look at the issues when downloading TcUnit to devices which have limited RAM [here](https://github.com/tcunit/TcUnit/issues/148). Here are the steps you should take before downloading the code including any of the libraries to a machine:
+![ExampleRemoveLibrary](https://raw.githubusercontent.com/ZigaJavornik/ZigaLibs/refs/heads/master/RemoveTcUnitLibrary.gif)
+A good aproach to develop libraries would be, to have the development on a virtual machine, while having your actual PC/laptop (used for loading to the machines) have no reference to the TcUnit library, that way it will always be excluded when downloading the code. Inside the projects, TcUnit will have the option to not trigger errors if it is not installed on the sistem, so that no misleading errors are displayed:
+![image](https://github.com/user-attachments/assets/4869b1a3-e009-40e2-b90f-062e098f85e5)
 
 
 TwinCAT version: 4024.60 (08/09/2024)
