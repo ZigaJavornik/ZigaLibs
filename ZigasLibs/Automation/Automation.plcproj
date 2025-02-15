@@ -153,6 +153,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.ProcessControl">
       <DefaultResolution>ZigaLibs.ProcessControl, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_ProcessControl</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
