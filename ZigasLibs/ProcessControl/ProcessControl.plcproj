@@ -15,7 +15,7 @@
     <Implicit_Jitter_Distribution>{b2f8b50b-cdeb-489c-a59a-6072e6812446}</Implicit_Jitter_Distribution>
     <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>ProcessControl</Title>
+    <Title>ZigaLibs.ProcessControl</Title>
     <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
@@ -67,8 +67,8 @@
     <SelectedLibraryCategories>
       <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_ProcessControl</DefaultNamespace>
-    <Placeholder>ZigaLibs_ProcessControl</Placeholder>
+    <DefaultNamespace>ZigaLibs.ProcessControl</DefaultNamespace>
+    <Placeholder>ZigaLibs.ProcessControl</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>A library containing objects for process control.</Description>
   </PropertyGroup>
