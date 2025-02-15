@@ -1,28 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="PRG_TESTS" Id="{8a697354-56fc-44b0-afc4-e6c08f5bd900}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
-	{IF defined(UnitTests)}
 	FlowControllerTests	: FB_FlowController_Tests;
-	{END_IF}
+	FlowUnitTests		: FB_FlowUnits_Tests;
+	GasTypesTests		: FB_GasTypes_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[{IF defined(UnitTests)}
-GVL_Bronkhorst.Logger.FileProperties.FileLocation := 'Hard disk\Tests\Bronkhorst';
-GVL_Bronkhorst.Logger.FileProperties.FileName := 'Tests';
-GVL_Bronkhorst.Logger();
-
-// Run tests in paralel
+      <ST><![CDATA[// Run tests in paralel
 TcUnit.RUN();
 
 // Run tests in sequence, one after the other. Uncomment if required.
 // TcUnit.RUN_IN_SEQUENCE();
-{END_IF}]]></ST>
+]]></ST>
     </Implementation>
     <ObjectProperties>
       <XmlArchive>

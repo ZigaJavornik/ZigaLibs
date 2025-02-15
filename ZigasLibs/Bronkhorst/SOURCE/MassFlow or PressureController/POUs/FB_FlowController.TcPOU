@@ -13,7 +13,7 @@ mode := E_ControllerMode.Controlling); // [E_ControllerMode] Controller initial 
 ============================================================================================================================================================================================
 *)
 
-FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceName IMPLEMENTS ZigaLibs_Core.I_ReadsCoE
+FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath IMPLEMENTS ZigaLibs_Core.I_ReadsCoE
 VAR_INPUT
 	bEnable			: BOOL;	// Enables controller
 	fSetpoint		: REAL;	// Setpoint to the controller
@@ -35,7 +35,7 @@ VAR
 	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	_CoeList				: ST_ControllerCoeList;
 	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ' :');
-	_logger					: ZigaLibs_Core.I_LoggerEx;
+	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	_writeLogs				: BOOL;
 	_ethercatBoxName		: Tc2_System.T_MaxString;
 	{attribute 'hide'} 
@@ -127,7 +127,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CalculateMeasuredValue :=  UINT_TO_REAL(Inputs.MeassuredValue) / EXPT(10,_CoeList.DecimalDigits.Value);]]></ST>
+        <ST><![CDATA[CalculateMeasuredValue :=  UINT_TO_REAL(Inputs.MeassuredValue) / LREAL_TO_REAL(EXPT(10,_CoeList.DecimalDigits.Value));]]></ST>
       </Implementation>
     </Method>
     <Method Name="CalculateSetpointValue" Id="{86689ca6-4c77-0658-332d-fdb5f75df13a}">
@@ -148,7 +148,7 @@ VAR_INPUT
 	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bWriteLogs is set to TRUE and the read capacity differs, the error will be reported by the logger.
 	sPredictedGasType		: STRING;// Predicted gas type. If bWriteLogs is set to TRUE and the read gas type differs, the error will be reported by the logger.
 	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bWriteLogs is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-	iLogger					: ZigaLibs_Core.I_LoggerEx;	// Logger implementation provided, set to 0 if not required.
+	iLogger					: REFERENCE TO ZigaLibs_Logging.I_Logger;	// Logger implementation provided, set to 0 if not required.
 	mode					: E_ControllerMode;	// Controller initial mode
 END_VAR
 ]]></Declaration>
@@ -156,7 +156,7 @@ END_VAR
         <ST><![CDATA[_predictedFlowCapacity := fPredictedFlowCapacity;
 _predictedGasType := sPredictedGasType;
 _predictedFlowUnit := sPredictedFlowUnit;
-_logger := iLogger;
+_logger REF= iLogger;
 _mode := mode;
 _writeLogs := __ISVALIDREF(iLogger);]]></ST>
       </Implementation>

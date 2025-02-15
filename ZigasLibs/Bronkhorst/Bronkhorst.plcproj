@@ -18,7 +18,7 @@
     </CompilerDefines>
     <Company>Ziga</Company>
     <Title>Bronkhorst</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -75,9 +75,11 @@
     <Description>Various bronkhorst device impleentations.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GVLs\GVL_Bronkhorst.TcGVL">
+    <Compile Include="SOURCE\FlowUnits.TcPOU">
       <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="SOURCE\GasTypes.TcPOU">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ControllerMode.TcDUT">
       <SubType>Code</SubType>
@@ -109,6 +111,12 @@
     <Compile Include="TESTS\Test suites\FB_FlowController_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_FlowUnits_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_GasTypes_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
@@ -136,20 +144,18 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Core">
-      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
-      <Namespace>ZigaLibs_Core</Namespace>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Bronkhorst.tmc">
       <SubType>Content</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <LibraryReference Include="Logging,newest,Ziga">
-      <Namespace>ZigaLibs_Logging</Namespace>
-    </LibraryReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
