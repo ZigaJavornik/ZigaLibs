@@ -15,8 +15,8 @@
     <Implicit_Jitter_Distribution>{89870696-16d2-4bc4-817e-fff5b3e452c8}</Implicit_Jitter_Distribution>
     <LibraryReferences>{0e7eab3b-a905-4040-8a55-2f7f853c1906}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>Lauda</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <Title>ZigaLibs.Lauda</Title>
+    <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -67,9 +67,9 @@
     <SelectedLibraryCategories>
       <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_Lauda</DefaultNamespace>
+    <DefaultNamespace>ZigaLibs.Lauda</DefaultNamespace>
     <Author>Žiga Javornik</Author>
-    <Placeholder>ZigaLibs_Lauda</Placeholder>
+    <Placeholder>ZigaLibs.Lauda</Placeholder>
     <Description>Various Lauda device implementations.</Description>
     <CompilerDefines>
     </CompilerDefines>
@@ -226,9 +226,12 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_Core">
-      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs_TcpIp">
       <DefaultResolution>TcpIp, * (Ziga)</DefaultResolution>

@@ -5,7 +5,7 @@
 Includes constructor parameters:
  - nMaxPumpLevel	: UINT;	// Max pump setting, value ranges from 1-6/8 depending on the device type*)
  
-FUNCTION_BLOCK FB_LaudaPro_P20 EXTENDS ZigaLibs_Core.FB_HasInstanceName
+FUNCTION_BLOCK FB_LaudaPro_P20 EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
 
 VAR_INPUT
 	fTemperatureSet	: REAL;	// Temperature setpoint
@@ -15,7 +15,7 @@ VAR_INPUT
 	bConnect		: BOOL;	// Connects to the device via TCP or disconnects if set to FALSE
 	bKeyboardUnlock	: BOOL;	// Unlocks keyboard control
 	bResendValues	: BOOL;	// Resends all current values to the device
-	logger			: REFERENCE TO ZigaLibs_Core.I_LoggerEx;
+	logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
 END_VAR
 
 VAR
