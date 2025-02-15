@@ -402,6 +402,7 @@
           <Value>1</Value>
         </Parameter>
       </Parameters>
+      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="TwinCat Dynamic Collections">
       <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>

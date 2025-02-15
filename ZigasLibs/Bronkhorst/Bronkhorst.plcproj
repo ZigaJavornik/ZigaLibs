@@ -143,9 +143,11 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Logging">
       <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>

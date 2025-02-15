@@ -217,6 +217,7 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>

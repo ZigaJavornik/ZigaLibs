@@ -115,6 +115,7 @@
         </Parameter>
       </Parameters>
       <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
