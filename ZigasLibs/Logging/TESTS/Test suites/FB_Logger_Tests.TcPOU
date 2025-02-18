@@ -28,7 +28,6 @@ IF NOT _loggerConfigured THEN
 	_loggerConfigured := TRUE;
 END_IF
 
-
 _logger();
 _localSystemTime();
 

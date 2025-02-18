@@ -17,7 +17,7 @@ END_VAR
     </Implementation>
     <Method Name="Apply" Id="{e8c51628-6356-04e3-3e2f-dd1bcca68ebd}">
       <Declaration><![CDATA[(* Applies the configuration and returns I_Logger*)
-METHOD Apply : I_Logger
+METHOD Apply
 VAR_INPUT
 	writeConfigToLog	: BOOL;	// Will write applied configuration to the target log file if set to TRUE
 END_VAR
@@ -25,8 +25,7 @@ VAR
 	sb	: ZigaLibs_Core.FB_StringBuilder;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Apply := _logger;
-_configuration := _configurationTmp;
+        <ST><![CDATA[_configuration := _configurationTmp;
 _configuration.IsValid := TRUE;
 
 IF NOT writeConfigToLog THEN

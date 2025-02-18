@@ -4,8 +4,8 @@
     <Declaration><![CDATA[INTERFACE I_LoggerConfigBuilder
 ]]></Declaration>
     <Method Name="Apply" Id="{97b282f8-4249-0806-190f-9a4e82bfb32f}">
-      <Declaration><![CDATA[// Applies the configuration and returns I_Logger
-METHOD Apply : I_Logger
+      <Declaration><![CDATA[// Applies the configuration
+METHOD Apply
 VAR_INPUT
 	writeConfigToLog	: BOOL;	// Will write applied configuration to the target log file if set to TRUE
 END_VAR
