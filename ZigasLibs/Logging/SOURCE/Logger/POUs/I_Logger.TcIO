@@ -4,18 +4,6 @@
     <Declaration><![CDATA[// Provides logger
 INTERFACE I_Logger
 ]]></Declaration>
-    <Property Name="Configuration" Id="{edcd145b-ef6d-0d72-1fa0-8765e3596706}">
-      <Declaration><![CDATA[PROPERTY Configuration : REFERENCE TO ST_LoggerConfiguration]]></Declaration>
-      <Get Name="Get" Id="{45e35ee2-16ef-0bcc-29de-9617a79dbbb8}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-    </Property>
-    <Method Name="Configure" Id="{62f43fcc-b995-02a1-28d6-25c497a6e98f}">
-      <Declaration><![CDATA[METHOD Configure : I_LoggerConfig
-VAR_INPUT
-END_VAR
-]]></Declaration>
-    </Method>
     <Method Name="LogDefault" Id="{ab048765-d20e-0519-16de-3386aa7aef2d}">
       <Declaration><![CDATA[// Logs the message without any additions.
 METHOD LogDefault

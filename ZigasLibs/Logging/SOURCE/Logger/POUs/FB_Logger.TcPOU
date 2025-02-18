@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Logger" Id="{86b60fa4-cbc9-0995-00ad-63ce008210aa}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger EXTENDS FB_ErrorSource IMPLEMENTS I_Logger
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger EXTENDS FB_ErrorSource IMPLEMENTS I_Logger, I_LoggerConfig
 VAR
 	_fileHandler				: ZigaLibs_File.FB_FileHandler;
 	_logEntries					: TcDynCollections.FB_Deque;
@@ -18,7 +18,7 @@ VAR
 END_VAR
 
 VAR PERSISTENT
-	_config : FB_LoggerConfig(THIS^);
+	_configBuilder : FB_LoggerConfigBuilder(THIS^);
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_localSystemTimeProvider();
@@ -140,16 +140,16 @@ PROPERTY Configuration : REFERENCE TO ST_LoggerConfiguration]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Configuration REF= _config.Configuration;]]></ST>
+          <ST><![CDATA[Configuration REF= _configBuilder.Configuration;]]></ST>
         </Implementation>
       </Get>
     </Property>
     <Method Name="Configure" Id="{2f78940c-28a4-0c02-2e75-2687ffc5193e}">
-      <Declaration><![CDATA[METHOD Configure : I_LoggerConfig
+      <Declaration><![CDATA[METHOD Configure : I_LoggerConfigBuilder
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Configure := _config;
-_config.Start();]]></ST>
+        <ST><![CDATA[Configure := _configBuilder;
+_configBuilder.Start();]]></ST>
       </Implementation>
     </Method>
     <Method Name="DeleteLogsMonitoring" Id="{df88bea8-83d1-0814-3cc7-90cf29c36696}">

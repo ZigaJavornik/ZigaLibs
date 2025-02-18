@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
-  <POU Name="FB_LoggerConfig" Id="{c3f2508f-30e3-0b69-3aac-d62fa2469fd5}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LoggerConfig IMPLEMENTS I_LoggerConfig
+  <POU Name="FB_LoggerConfigBuilder" Id="{c3f2508f-30e3-0b69-3aac-d62fa2469fd5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LoggerConfigBuilder IMPLEMENTS I_LoggerConfigBuilder
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -62,7 +62,7 @@ END_VAR
     </Property>
     <Method Name="DeleteLogsAfter" Id="{62cd07d9-f356-06e4-3b44-92ea2dc2d15b}">
       <Declaration><![CDATA[(* Set the time after which the logs will be deleted.*)
-METHOD DeleteLogsAfter : I_LoggerConfig
+METHOD DeleteLogsAfter : I_LoggerConfigBuilder
 VAR_INPUT
 	days			: UINT;	// Delete log files after X - days
 	checkInterval	: TIME;	// Check interval for deleting the existing files
@@ -91,7 +91,7 @@ END_VAR
     <Method Name="SetLogExtension" Id="{1de8f2e6-56f3-04c9-2326-cb9c5f178915}">
       <Declaration><![CDATA[(* Sets the log file extension <file>.<extension>. 
 You can or can't include the dot, it will be checked and added either way.*)
-METHOD SetLogExtension : I_LoggerConfig
+METHOD SetLogExtension : I_LoggerConfigBuilder
 VAR_INPUT
 	extension	: STRING;
 END_VAR
@@ -107,7 +107,7 @@ SetLogExtension := THIS^;]]></ST>
     </Method>
     <Method Name="SetLogFileName" Id="{a1a59b3b-2e53-0f6e-1b54-f513f8866e1e}">
       <Declaration><![CDATA[(* Sets the log file name*)
-METHOD SetLogFileName : I_LoggerConfig
+METHOD SetLogFileName : I_LoggerConfigBuilder
 VAR_INPUT
 	name	: STRING;
 END_VAR
@@ -119,7 +119,7 @@ SetLogFileName := THIS^;]]></ST>
     </Method>
     <Method Name="SetLogFilePath" Id="{3c1c5ff7-39f4-0ed8-25e1-ddf03c676d5a}">
       <Declaration><![CDATA[(* Sets the path where the logs will be stored.*)
-METHOD SetLogFilePath : I_LoggerConfig
+METHOD SetLogFilePath : I_LoggerConfigBuilder
 VAR_INPUT
 	path	: Tc2_System.T_MaxString;
 END_VAR
@@ -131,7 +131,7 @@ SetLogFilePath := THIS^;]]></ST>
     </Method>
     <Method Name="SetNetId" Id="{7d1315e4-db30-00e4-30c7-61a4141806d8}">
       <Declaration><![CDATA[(* Sets the NetId of the device where logs will be stored.*)
-METHOD SetNetId : I_LoggerConfig
+METHOD SetNetId : I_LoggerConfigBuilder
 VAR_INPUT
 	netId	: Tc2_System.T_AmsNetID;
 END_VAR
@@ -143,7 +143,7 @@ SetNetId := THIS^;]]></ST>
     </Method>
     <Method Name="SetRollingInterval" Id="{3bb08028-36f4-0b77-2e79-495f822f0485}">
       <Declaration><![CDATA[// Sets the rolling interval (in hours) - how offten new log file is created. If set to 0, a single file is created. Beware of DeleteCheckInterval, which will delete this file and you will lose these files in that case.
-METHOD SetRollingInterval : I_LoggerConfig
+METHOD SetRollingInterval : I_LoggerConfigBuilder
 VAR_INPUT
 	hours	: UINT;
 END_VAR

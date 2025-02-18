@@ -99,13 +99,16 @@
       <SubType>Code</SubType>
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
-    <Compile Include="SOURCE\Logger\POUs\FB_LoggerConfig.TcPOU">
+    <Compile Include="SOURCE\Logger\POUs\FB_LoggerConfigBuilder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\POUs\I_LoggerConfig.TcIO">
+    <Compile Include="SOURCE\Logger\POUs\I_LoggerConfigBuilder.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Logger\POUs\I_Logger.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Logger\POUs\I_LoggerConfig.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestsTask.TcTTO">
