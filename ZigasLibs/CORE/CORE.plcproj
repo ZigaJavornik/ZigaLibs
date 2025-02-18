@@ -28,12 +28,28 @@
         <DefaultName>ZigaLibs</DefaultName>
       </LibraryCategory>
       <LibraryCategory>
-        <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
+        <Id>{219002c7-a1e4-456d-af60-86bcf1385365}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
           <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
         </ParentCategory>
         <DefaultName>Core</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Utilities</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{7700afa9-3688-4b10-b0ff-2254a02219d8}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
+        </ParentCategory>
+        <DefaultName>Reporting</DefaultName>
       </LibraryCategory>
       <LibraryCategory>
         <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
@@ -44,16 +60,32 @@
         <DefaultName>Comm</DefaultName>
       </LibraryCategory>
       <LibraryCategory>
-        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
         <Version>1.0.0.0</Version>
         <ParentCategory>
           <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Automation</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
+        </ParentCategory>
+        <DefaultName>ProcessControl</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory>
+        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
         </ParentCategory>
         <DefaultName>Vendors</DefaultName>
       </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
+      <Id>{219002c7-a1e4-456d-af60-86bcf1385365}</Id>
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
@@ -364,10 +396,62 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_UPPER_BOUND</Key>
+          <Value>15</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_EXP</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_ADDRESS</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_COMMENT</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_OUTSTRING</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_SHOW_VALID_ITEMS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSES</Key>
+          <Value>50</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSEDEVICES</Key>
+          <Value>16</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXCPUCOUNT</Key>
+          <Value>64</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCHARACTERS</Key>
+          <Value>16#FFFFFFF0</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXFILESONDONGLE</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCSVFIELDVALUESIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -401,6 +485,26 @@
           <Key>XUNITBUFFERSIZE</Key>
           <Value>1</Value>
         </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>LOGEXTENDEDRESULTS</Key>
+          <Value>TRUE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITENABLEPUBLISH</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>2000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#0ms</Value>
+        </Parameter>
       </Parameters>
       <Optional>true</Optional>
     </PlaceholderReference>
@@ -425,6 +529,9 @@
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
       <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TwinCat Dynamic Collections">
+      <Resolution>TwinCat Dynamic Collections, * (FisoThemes)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
