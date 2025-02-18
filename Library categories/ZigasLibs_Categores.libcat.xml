@@ -89,5 +89,15 @@
                 </ParentCategory>
                 <DefaultName>Vendors</DefaultName>
         </LibraryCategory>
+        
+ <!-- ZigaLibs_MotionControl -->
+    <LibraryCategory>
+        <Id>70f80d6e-a573-4e2a-a021-f0c2c49a5924</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+            <Id>4c30be10-0c29-4796-921e-62ecfda40191</Id>
+        </ParentCategory>
+        <DefaultName>Motion control</DefaultName>
+    </LibraryCategory>
 
 </LibraryCategories>
