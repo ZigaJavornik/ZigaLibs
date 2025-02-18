@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PathUtilities_Tests" Id="{d8d70865-abf7-0ef9-076a-a8b3d2ff3867}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_PathUtilities_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_pathUtilities	: FB_PathUtilities;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_PathExists();
+Test02_PathDoesNotExist_ExpectFalseResult();]]></ST>
+    </Implementation>
+    <Method Name="Test01_PathExists" Id="{3d495868-8164-04e2-3218-7ecf6076a754}">
+      <Declaration><![CDATA[METHOD Test01_PathExists
+VAR_INPUT
+END_VAR
+VAR
+	exists	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_PathExists') THEN
+	IF _pathUtilities.Exists('Hard disk\Tests\FileHandler', '', result => exists) THEN
+		AssertTrue(exists, 'Provided path exists, returned result should be TRUE');
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_PathDoesNotExist_ExpectFalseResult" Id="{1bcdcf37-0b53-03cd-1f20-9b3880c594a7}">
+      <Declaration><![CDATA[METHOD Test02_PathDoesNotExist_ExpectFalseResult
+VAR_INPUT
+END_VAR
+VAR
+	exists	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_PathDoesNotExist_ExpectFalseResult') THEN
+	IF _pathUtilities.Exists('Some randome path...', '', result => exists) THEN
+		AssertFalse(exists, 'Provided path does not exist, returned result should be FALSE.');
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

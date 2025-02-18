@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="InstanceNameHelper" Id="{afac3ef8-3794-0b3b-1d23-581ee4dfd4da}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM InstanceNameHelper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="InstanceNameFromPath" Id="{a1cf8de6-bcf0-05c3-2b5f-a72a8fa34a93}">
+      <Declaration><![CDATA[METHOD InstanceNameFromPath : T_MaxString
+VAR_INPUT
+	path		: Tc2_System.T_MaxString;
+	maxAttempts	: INT;
+END_VAR
+VAR
+	instanceName	: Tc2_System.T_MaxString;
+	dotPosition		: INT;
+	iteration		: INT;
+	
+END_VAR
+
+VAR CONSTANT
+	ABSOLUTE_MAX_ATTEMPTS : INT := 20;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[instanceName := path;
+
+// Limiting maximum number of dots in the instancePath to maximum of 20 with ABSOLUTE_MAX_ATTEMPTS
+// This is mostly important due to the method being called in FB_Init, where I think too long method calls shouldn't be happening.
+// In theory, I don't think it would ever go above 10, unless some very deep object nesting is done.
+// Example Project.Plc.Main.Fb.Fb.Fb.Fb.Fb...
+
+WHILE Tc2_Standard.FIND(STR1 := instanceName, STR2 := '.') <> 0 AND 
+	 (iteration < MIN(maxAttempts, ABSOLUTE_MAX_ATTEMPTS)) 
+DO
+	dotPosition := Tc2_Standard.FIND(
+		STR1 := instanceName, 
+		STR2 := '.');
+		
+	instanceName := Tc2_Standard.DELETE(
+		STR := instanceName,
+		POS := 1,	
+		LEN := dotPosition);
+		
+	iteration := iteration + 1;
+END_WHILE
+
+InstanceNameFromPath := instanceName;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveProjectFromInstancePath" Id="{66e34a75-3648-09af-12aa-54140e7e9873}">
+      <Declaration><![CDATA[METHOD RemoveProjectFromInstancePath : T_MaxString
+VAR_INPUT
+	instancePath	: Tc2_System.T_MaxString;
+END_VAR
+VAR
+	result		: Tc2_System.T_MaxString;
+	dotPosition	: INT;
+	iteration	: INT;
+END_VAR
+
+VAR CONSTANT
+	FILE_PREIX_DOTS_TO_REMOVE	: INT := 2;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RemoveProjectFromInstancePath := InstanceNameFromPath(instancePath,2);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

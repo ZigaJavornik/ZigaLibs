@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_DirectoryUtilities" Id="{db17547a-e0e3-0247-1987-14342fc00f3f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DirectoryUtilities IMPLEMENTS I_Directory
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="DeleteFilesCreatedBefore" Id="{26842599-0472-011e-0d6e-8b713977b88d}">
+      <Declaration><![CDATA[// Deletes matching files in the directory that were created before the provided date.
+METHOD DeleteFilesCreatedBefore : BOOL
+VAR_INPUT
+	path				: Tc2_System.T_MaxString;	// Path to where the deletion should be performed
+	fileNameContains	: Tc2_System.T_MaxString;	// Some characters that the file name should containt
+	netId				: Tc2_System.T_AmsNetID;	// NetId where the search should occurr
+	thresholdDate		: DT;	// If created before this date, the file will be deleted.
+END_VAR
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo		: ZigaLibs_Core.ST_AdsError;	
+	deletedFiles	: TcDynCollections.FB_List;	// A list of deleted items, as T_MaxString (file names).
+END_VAR
+
+VAR_INST
+	files			: TcDynCollections.FB_List;
+	currentFile		: ST_FindFileEntry;
+	state			: E_DeleteFilesByDateState;
+	fileUtilities	: FB_FileUtilities;
+END_VAR
+VAR
+	fileIndex		: DINT;
+	timeOfCreation	: DT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE state OF
+	E_DeleteFilesByDateState.START:
+		IF THIS^.ListAll(path, netId, files, error => error, errorInfo => errorInfo) THEN
+			IF files._Count = 0 OR error THEN
+				files.Clear();
+				DeleteFilesCreatedBefore := TRUE;
+			ELSE
+				state := E_DeleteFilesByDateState.GET_FILE;
+			END_IF
+		END_IF
+	
+	E_DeleteFilesByDateState.GET_FILE:
+		FOR fileIndex := files._Begin TO files._End BY 1 DO
+			files.Get(fileIndex, currentFile);
+			
+			IF Tc2_Standard.FIND(currentFile.sFileName, fileNameContains) = 0 THEN
+				// File name does not contain the provided name part
+				files.Remove_At(fileIndex);
+			ELSE
+				// Matching file found, check date of creation
+				timeOfCreation := Tc2_Utilities.FILETIME_TO_DT(currentFile.creationTime);
+				IF timeOfCreation < thresholdDate THEN
+					// Date is lower than provided date threshold
+					state := E_DeleteFilesByDateState.WAIT_FOR_DELETE;
+					EXIT;
+				ELSE
+					// Date is greater than provided threshold, remove from list and proceed.
+					files.Remove_At(fileIndex);
+				END_IF
+			END_IF 
+		END_FOR
+		
+		IF files._Count = 0 THEN
+			state := E_DeleteFilesByDateState.START;
+			DeleteFilesCreatedBefore := TRUE;
+		END_IF
+	
+	E_DeleteFilesByDateState.WAIT_FOR_DELETE:
+		IF fileUtilities.Delete(
+			path, 
+			currentFile.sFileName, 
+			netId, 
+			error => error, errorInfo => errorInfo) 
+		THEN
+			IF error THEN
+				DeleteFilesCreatedBefore := TRUE;
+				files.Clear();
+				RETURN;
+			END_IF
+			deletedFiles.Prepend(currentFile.sFileName);
+			files.Remove(currentFile);
+			state := E_DeleteFilesByDateState.GET_FILE;
+		END_IF
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Exists" Id="{a4c8d70e-8749-06d7-1c3a-54dc3524e2cb}">
+      <Declaration><![CDATA[(* Looks if the provided directory exists on the disk.
+ Returns TRUE when done
+ Result can be found in the output directoryExists.*)
+METHOD Exists : BOOL
+VAR_INPUT
+	(* Path to the directory that will be searched.*)
+	directory	: Tc2_System.T_MaxString;
+	(* NetId where to search.*)
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+VAR_OUTPUT
+	(* TRUE if it exists, else FALSE. Only valid after method returns TRUE.*)
+	directoryExists	: BOOL;
+END_VAR
+
+VAR
+	foundItems 				: TcDynCollections.I_List;
+	currentItemIndex	: ZigaLibs_Core.T_ArrayIndexer;
+	currentItem			: Tc2_Utilities.ST_FindFileEntry;
+	directoryName		: STRING;
+	directories			: TcDynCollections.FB_List;
+	itemName			: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// List all the items...
+IF THIS^.ListAll(directory, netId, foundItems) THEN
+	// Split the path into directories
+	ZigaLibs_Core.StringHelper.Split(str := directory, splitChar := Constants.PathSeperators.Windows , directories);
+	// Last item in the directories split string is the actual directory we are looking for
+	directories.Get(directories._End, directoryName);
+
+	// Iterate the returned items and check if it is directory and the name is correct. Exit on success.
+	FOR currentItemIndex := foundItems._Begin TO foundItems._End BY 1 DO
+		foundItems.Get(currentItemIndex, currentItem);
+		IF currentItem.fileAttributes.bDirectory AND_THEN
+			currentItem.sFileName = directoryName
+		THEN
+			directoryExists := TRUE;
+			EXIT;
+		END_IF
+	END_FOR
+END_IF
+
+Exists := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ListAll" Id="{f540edc2-550e-001a-055a-40e0b36680b2}">
+      <Declaration><![CDATA[(* Looks in the directory `path` and iterates the content. 
+ When method returns TRUE, the collection of items is found in the result I_Collection<Tc2_Utilities.ST_FindFileEntry>*)
+METHOD ListAll : BOOL
+VAR_INPUT
+	(* Path to the directory that will be searched.*)
+	path	: Tc2_System.T_MaxString;
+	(* NetId where to search.*)
+	netId	: Tc2_System.T_AmsNetID;
+	(* Collection of found files in the provided location. Items are of type Tc2_Utilities.ST_FindFileEntry!*)
+	items	: TcDynCollections.I_List;
+END_VAR
+VAR_OUTPUT
+	(* Will be true if an error occurs while executing the file query*)
+	error	: BOOL;
+	(* Error information will be provided here*)
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR
+VAR_INST
+	fbFindFileEntries	: Tc2_Utilities.FB_EnumFindFileEntry;
+	eGetFilesState		: E_GetFilesState;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eGetFilesState OF
+	
+	E_GetFilesState.READY:
+		fbFindFileEntries(bExecute := FALSE, 
+			eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_First);
+		items.Clear();
+		eGetFilesState := E_GetFilesState.START;
+
+	E_GetFilesState.START:
+		error := FALSE;
+		errorInfo.Code := 0;
+		errorInfo.Source := '';
+		
+		// Path/* returns all entries
+		fbFindFileEntries(bExecute := TRUE, sNetId := netId,
+			sPathName := Utilities.Path.Generate()
+				.Join(path)
+				.AddWildcard().Asterisk(left := '', right :='')
+				.Create());
+			
+		eGetFilesState := E_GetFilesState.AWAIT_RESULT;
+	
+	E_GetFilesState.AWAIT_RESULT:
+		fbFindFileEntries(bExecute := FALSE);
+		
+		IF fbFindFileEntries.bError THEN
+			eGetFilesState := E_GetFilesState.ERROR;
+			RETURN;
+		END_IF
+		
+		IF fbFindFileEntries.bBusy THEN
+			RETURN;
+		END_IF
+		
+		IF NOT fbFindFileEntries.bEOE THEN
+			items.Append(fbFindFileEntries.stFindFile);
+			fbFindFileEntries.eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_Next;
+			eGetFilesState := E_GetFilesState.START;
+			RETURN;
+		END_IF
+		
+		eGetFilesState := E_GetFilesState.ALL_FILES_FOUND;
+	
+	E_GetFilesState.ALL_FILES_FOUND:
+		ListAll := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+		
+	E_GetFilesState.ERROR:
+		error := TRUE;
+		errorInfo.Code := TcError.ToAdsErrorCode(fbFindFileEntries.nErrID);
+		varInfo := __VARINFO(fbFindFileEntries);
+		errorInfo.Source := varInfo.Symbol;
+		
+		ListAll := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ListFiles" Id="{7a70de90-771b-0602-06e3-6e7ed61d5525}">
+      <Declaration><![CDATA[(* Looks in the directory `path` and iterates the content. 
+ When method returns TRUE, the collection of items is found in the result I_Collection.*)
+METHOD ListFiles : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
+	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
+	files	: TcDynCollections.I_List;	// Collection of found files in the provided location.
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError;	// Error information will be provided here
+END_VAR
+
+VAR_INST
+	fbFindFileEntries	: Tc2_Utilities.FB_EnumFindFileEntry;
+	eGetFilesState		: E_GetFilesState;
+END_VAR
+
+VAR
+	varInfo	: ZigaLibs_Core.T_VarInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eGetFilesState OF
+	
+	E_GetFilesState.READY:
+		fbFindFileEntries(bExecute := FALSE, 
+			eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_First);
+		files.Clear();
+		eGetFilesState := E_GetFilesState.START;
+
+	E_GetFilesState.START:
+		error := FALSE;
+		errorInfo.Code := 0;
+		errorInfo.Source := '';
+		
+		// Path/*.* returns all files
+		fbFindFileEntries(bExecute := TRUE, sNetId := netId,
+			sPathName := Utilities.Path.Generate()
+				.Join(path)
+				.AddWildcard().Asterisk('','')
+				.AddWildcard().Asterisk('.', '')
+				.Create());
+			
+		eGetFilesState := E_GetFilesState.AWAIT_RESULT;
+	
+	E_GetFilesState.AWAIT_RESULT:
+		fbFindFileEntries(bExecute := FALSE);
+		
+		IF fbFindFileEntries.bError THEN
+			eGetFilesState := E_GetFilesState.ERROR;
+			RETURN;
+		END_IF
+		
+		IF fbFindFileEntries.bBusy THEN
+			RETURN;
+		END_IF
+		
+		IF NOT fbFindFileEntries.bEOE THEN
+			files.Append(fbFindFileEntries.stFindFile.sFileName);
+			fbFindFileEntries.eCmd := Tc2_Utilities.E_EnumCmdType.eEnumCmd_Next;
+			eGetFilesState := E_GetFilesState.START;
+			RETURN;
+		END_IF
+		
+		eGetFilesState := E_GetFilesState.ALL_FILES_FOUND;
+	
+	E_GetFilesState.ALL_FILES_FOUND:
+		ListFiles := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+		
+	E_GetFilesState.ERROR:
+		error := TRUE;
+		errorInfo.Code := TcError.ToAdsErrorCode(fbFindFileEntries.nErrID);
+		varInfo := __VARINFO(fbFindFileEntries);
+		errorInfo.Source := varInfo.Symbol;
+		
+		ListFiles := TRUE;
+		eGetFilesState := E_GetFilesState.READY;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

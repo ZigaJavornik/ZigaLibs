@@ -1,0 +1,510 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FileHandler_Tests" Id="{6702c01e-3d93-0b4b-2596-38856e9fe5ca}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK INTERNAL FB_FileHandler_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+	_fileHandler								: FB_FileHandler;
+	_binaryWriteText							: STRING(300) := 'In a world full of possibilities, every moment is a chance to embrace growth, explore new horizons, and ignite your inner potential. Believe in the power of change, stay curious, and never stop learning. Your journey is unique, and every step forward brings you closer to your dreams.';
+	WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE 	: Tc2_System.T_MaxString := 'Some random text...';
+	WRITE_TEST_CONTENT_APPEND					: Tc2_System.T_MaxString := 'Some more text....';
+	WRITE_TEST_CONTENT_OVERWRITE_EXTISTING		: Tc2_System.T_MaxString := 'Only this text should exist...';
+	EXPECTED_RESULT_APPEND						: Tc2_System.T_MaxString := 
+		Tc2_Standard.CONCAT(WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE, WRITE_TEST_CONTENT_APPEND);
+END_VAR
+
+VAR CONSTANT
+	FILE_PATH				: Tc2_System.T_MaxString := 'C:\';
+	NET_ID					: Tc2_System.T_AmsNetID := '192.168.56.1.1.1';
+	NEW_TEXT_FILE_NAME		: Tc2_System.T_MaxString := 'FileName.txt';
+	NEW_BINARY_FILE_NAME	: Tc2_System.T_MaxString := 'BinaryFileName.txt';
+	EXISTING_FILE_NAME		: Tc2_System.T_MaxString := 'ExistingFile.txt';
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test00_Open_NonExistentFile_ExpectError();
+Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty();
+Test02_Close_ExpectFileHandleIsZero();
+Test03_Create_ExpectFileExists();
+Test04_WriteLine_FileNotOpened_ExpectError();
+Test05_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent();
+Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent();
+Test07_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent();
+Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent();
+Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent();
+Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent();
+Test11_CreateFile_WriteContent_Flush_ExpectFileContent();
+
+CleanupDirectory();]]></ST>
+    </Implementation>
+    <Method Name="CleanupDirectory" Id="{46a16349-0e86-0744-3df9-def9e7102b76}">
+      <Declaration><![CDATA[METHOD CleanupDirectory
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('CleanupDirectory') THEN
+	IF _fileHandler.File.IsOpened THEN
+		_fileHandler.Close();
+	ELSE
+		TcUnit.TEST_FINISHED();	
+	END_IF
+	(*ELSIF Utilities.Directory.DeleteFilesCreatedBefore(FILE_PATH, NEW_FILE_NAME, NET_ID, DT#2106-02-06-06:28:15) THEN
+		TcUnit.TEST_FINISHED();
+	END_IF*)
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test00_Open_NonExistentFile_ExpectError" Id="{cd0a851f-20f9-02fd-0a5b-8ae66174045a}">
+      <Declaration><![CDATA[METHOD Test00_Open_NonExistentFile_ExpectError
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test00_Open_NonExistentFile_ExpectError') THEN
+	IF _fileHandler.Open(
+		FILE_PATH, 
+		'I_dont_exist', 
+		E_FileOpenMode.BINARY_READ_MUST_EXIST, NET_ID) 
+	THEN
+		AssertTrue(_fileHandler.Error, 'Opening non existing file should trigger an error');
+		AssertEquals_STRING('', _fileHandler.File.Path, 'Path property is incorrect');
+		AssertEquals_STRING('', _fileHandler.File.Name, 'Name property is incorrect');
+		AssertEquals_STRING('', _fileHandler.File.NetId, 'NetId property is incorrect');
+		AssertEquals_DINT(0, _fileHandler.File.Handle, 'Handle property should be 0.');
+		AssertFalse(_fileHandler.File.IsOpened, 'IsOpened property should be FALSE.');
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty" Id="{91dcf79f-9bc2-031e-11a8-46c7baee5d8a}">
+      <Declaration><![CDATA[METHOD Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_Open_ExistingFile_ExpectNoError_ValidateFileProperty') THEN
+	IF _fileHandler.Open(
+		FILE_PATH, 
+		EXISTING_FILE_NAME, 
+		E_FileOpenMode.BINARY_READ_MUST_EXIST, NET_ID) 
+	THEN
+		AssertEquals_STRING(FILE_PATH,_fileHandler.File.Path, 'Path property is incorrect');
+		AssertEquals_STRING(EXISTING_FILE_NAME,_fileHandler.File.Name, 'Name property is incorrect');
+		AssertEquals_STRING(NET_ID,_fileHandler.File.NetId, 'NetId property is incorrect');
+		AssertTrue(_fileHandler.File.Handle <> 0, 'Handle property should not be 0.');
+		AssertTrue(_fileHandler.File.IsOpened, 'IsOpened property should be TRUE.');
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Close_ExpectFileHandleIsZero" Id="{2aef0256-555a-0127-3474-e37be60d170e}">
+      <Declaration><![CDATA[METHOD Test02_Close_ExpectFileHandleIsZero
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_Close_ExpectFileHandleIsZero') THEN
+	IF _fileHandler.Close() THEN
+		AssertEquals_uint(0,_fileHandler.File.Handle, 
+			'When file is closed, the handle should be 0.');
+			
+		AssertFalse(_fileHandler.File.IsOpened, 
+			'When file is closed, "File.IsOpened" should be FALSE');
+			
+		_fileHandler.Reset();
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_Create_ExpectFileExists" Id="{01a39542-7b4e-04ae-1937-62bedb80ec52}">
+      <Declaration><![CDATA[METHOD Test03_Create_ExpectFileExists
+VAR_INPUT
+END_VAR
+VAR
+	fileExists	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_Create_ExpectFileExists') THEN
+	IF _fileHandler.Create(FILE_PATH, NEW_TEXT_FILE_NAME, NET_ID) THEN
+		AssertFalse(_fileHandler.Error, Tc2_Standard.CONCAT('An error occured: ', _fileHandler.AdsError.Message));
+		IF Utilities.File.Exists(FILE_PATH, NEW_TEXT_FILE_NAME, NET_ID, result => fileExists) THEN
+			AssertTrue(fileExists, 'File creation failed, not found.');
+			TcUnit.TEST_FINISHED();
+		END_IF
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_WriteLine_FileNotOpened_ExpectError" Id="{8dc106c8-c662-0833-3b0a-1760ff49b8a3}">
+      <Declaration><![CDATA[METHOD Test04_WriteLine_FileNotOpened_ExpectError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_WriteLine_FileNotOpened_ExpectError') THEN
+	IF _fileHandler.WriteLine('lallala') THEN
+		AssertTrue(_fileHandler.Error, 'Writing to a file if it has not been opened should trigger an error.');
+		AssertFalse(_fileHandler.File.IsOpened, 'If file is not opened, the IsOpened should be false!');
+		_fileHandler.Reset();
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent" Id="{e06f626d-c779-0c0d-39aa-533b91602d69}">
+      <Declaration><![CDATA[METHOD Test05_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_WriteLine_FileOpened_Overwrite_ExpectNoError_ValidateContent') THEN
+	CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_TEXT_FILE_NAME, E_FileOpenMode.TEXT_READ_WRITE_OVERWRITE_EXISTING, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE)  THEN
+				AssertFalse(_filehandler.Error, 'Error writing content...');
+				state := state + 1;
+			END_IF
+		
+		2: 
+			IF _fileHandler.Close()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Open(FILE_PATH, NEW_TEXT_FILE_NAME, E_FileOpenMode.TEXT_READ_MUST_EXIST, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertEquals_STRING(WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		5:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent" Id="{53b40206-d1bb-0c90-0ce7-d81805c85775}">
+      <Declaration><![CDATA[METHOD Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test06_WriteLine_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
+	CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_TEXT_FILE_NAME, E_FileOpenMode.TEXT_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_APPEND)  THEN
+				AssertFalse(_filehandler.Error, 
+					Tc2_Standard.CONCAT('Error writing content: ',_fileHandler.AdsError.Message));
+				state := state + 1;
+			END_IF
+		
+		2: 
+			// Flush the content so that it appears in the file to be read with .Read()
+			IF _fileHandler.Flush()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 
+					Tc2_Standard.CONCAT('Error writing content: ',_fileHandler.AdsError.Message));
+				AssertEquals_STRING(EXPECTED_RESULT_APPEND, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent" Id="{29d251d0-74b7-0476-207a-d2fe85dbcedd}">
+      <Declaration><![CDATA[METHOD Test07_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test07_WriteLine_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
+	CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_TEXT_FILE_NAME, E_FileOpenMode.TEXT_READ_WRITE_OVERWRITE_EXISTING, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_OVERWRITE_EXTISTING)  THEN
+				AssertFalse(_filehandler.Error, 'Error writing content...');
+				state := state + 1;
+			END_IF
+		
+		2: 
+			IF _fileHandler.Close()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Open(FILE_PATH, NEW_TEXT_FILE_NAME, E_FileOpenMode.TEXT_READ_MUST_EXIST, NET_ID) THEN
+				state := state + 1;
+			END_IF	
+			
+		4:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertEquals_STRING(WRITE_TEST_CONTENT_OVERWRITE_EXTISTING, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		5:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent" Id="{733cea8f-f17a-03a3-0509-74780c95f472}">
+      <Declaration><![CDATA[METHOD Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent') THEN
+	CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_BINARY_FILE_NAME, E_FileOpenMode.BINARY_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF _fileHandler.WriteLine(THIS^.WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE)  THEN
+				AssertFalse(_filehandler.Error, 'Error writing content...');
+				state := state + 1;
+			END_IF
+		
+		2: 
+			IF _fileHandler.Flush()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertEquals_STRING(WRITE_TEST_CONTENT_OVERWRITE_EMPTY_FILE, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent" Id="{8073dd1f-7c64-0228-3688-401084e3d8f7}">
+      <Declaration><![CDATA[METHOD Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent : REFERENCE TO FB_Test
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
+	CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_BINARY_FILE_NAME, E_FileOpenMode.BINARY_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_APPEND)  THEN
+				AssertFalse(_filehandler.Error, 'Error writing content...');
+				state := state + 1;
+			END_IF
+		
+		2: 
+			IF _fileHandler.Flush()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertEquals_STRING(EXPECTED_RESULT_APPEND, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent" Id="{a5e4d7a9-4054-07b1-3787-1ce617876ef8}">
+      <Declaration><![CDATA[METHOD Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent : REFERENCE TO FB_Test
+VAR_INST
+	content		: Tc2_System.T_MaxString;
+	state		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent') THEN
+CASE state OF
+		0:
+			IF _fileHandler.Open(FILE_PATH, NEW_BINARY_FILE_NAME, E_FileOpenMode.BINARY_READ_WRITE_OVERWRITE_EXISTING, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF  _fileHandler.WriteLine(WRITE_TEST_CONTENT_OVERWRITE_EXTISTING)  THEN
+				AssertFalse(_filehandler.Error, 'Error writing content...');
+				state := state + 1;
+			END_IF
+		
+		2: 
+			IF _fileHandler.Close()  THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Open(FILE_PATH, NEW_BINARY_FILE_NAME, E_FileOpenMode.BINARY_READ_MUST_EXIST, NET_ID) THEN
+				state := state + 1;
+			END_IF	
+			
+		4:
+			IF _fileHandler.Read(content) THEN
+				AssertFalse(_filehandler.Error, 'Error reading content...');
+				AssertEquals_STRING(WRITE_TEST_CONTENT_OVERWRITE_EXTISTING, content, 
+						'Written content differs.');
+				state := state + 1;
+			END_IF
+			
+		5:
+			IF _fileHandler.Close() THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test11_CreateFile_WriteContent_Flush_ExpectFileContent" Id="{273c6496-bc07-0399-042d-89e73a72543b}">
+      <Declaration><![CDATA[METHOD Test11_CreateFile_WriteContent_Flush_ExpectFileContent
+VAR_INPUT
+END_VAR
+VAR_INST
+	state	: INT;
+	content	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test11_CreateFile_WriteContent_Flush_ExpectFileContent') THEN
+	
+	CASE state OF
+		0:
+			IF _fileHandler.Create(FILE_PATH, 'FlushTestFile.txt', NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		1:
+			IF _fileHandler.Open(FILE_PATH, 'FlushTestFile.txt', E_FileOpenMode.TEXT_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+			
+		2:
+			IF _fileHandler.WriteLine('Some random content....') THEN
+				state := state + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Flush() THEN
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF _fileHandler.Read(content) THEN
+				AssertEquals_STRING('Some random content....', content, 'Content differs');
+				AssertFalse(content = '', 'Flushing did not make the file content appear.');
+				state := state + 1;
+			END_IF
+			
+		5:
+			IF NOT _fileHandler.File.IsOpened OR_ELSE _fileHandler.Close() THEN
+				IF Utilities.File.Delete(FILE_PATH, 'FlushTestFile.txt', NET_ID) THEN
+					TcUnit.TEST_FINISHED();
+				END_IF
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened" Id="{95d9e6ad-198e-0252-182d-24fcd66344ee}">
+      <Declaration><![CDATA[METHOD Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened
+VAR_INPUT
+END_VAR
+VAR_INST
+	state	: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened') THEN
+	CASE state OF
+		0: 
+			IF _fileHandler.Open(FILE_PATH, 'RopenFileTest.txt', E_FileOpenMode.TEXT_READ_WRITE_APPEND, NET_ID) THEN
+				state := state + 1;
+			END_IF
+		
+		1:
+			IF _fileHandler.Close() THEN
+				state := state + 1;
+			END_IF
+		2:
+			IF _fileHandler.OpenLast() THEN
+				AssertFalse(_fileHandler.Error, 'Error while opening last file.');
+				AssertTrue(_fileHandler.File.IsOpened, 'File should be opened');
+				AssertTrue(_fileHandler.File.Handle <> 0, 'File handle should not be 0.');
+				state := state + 1;
+			END_IF
+		
+		3:
+			IF _fileHandler.Close THEN
+				state := state + 1;
+			END_IF
+			
+		4:
+			IF Utilities.File.Delete(_fileHandler.File.Path, _fileHandler.File.Name, NET_ID) THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+		END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

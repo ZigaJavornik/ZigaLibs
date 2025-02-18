@@ -221,7 +221,6 @@ IF TcUnit.IS_TEST_FINISHED('Test05_Toggle_ExpectValueInverts') THEN
 			Message := 'Value should be FALSE after durationOn expires.');
 
 	END_IF
-	TcUnit.TEST_FINISHED();
 END_IF
 
 

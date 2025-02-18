@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_AlarmManager" Id="{66ff5c63-0690-045e-3836-b8992628f846}" SpecialFunc="None">
+    <Declaration><![CDATA[(* 
+Alarm manager function block. 
+The body does not contain any logic, this it does not require being called.
+
+====================================================
+Constructor template:
+
+(enable : , // Enables alarm generation
+logger : , // If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
+timeProvider : ); // Date time provider.*)
+
+FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
+
+VAR
+	_enable						: BOOL;
+	_stringBuilder				: ZigaLibs_Core.FB_StringBuilder;
+	_dateTime					: ZigaLibs_Core.I_LocalSystemTimeProvider;
+	_activeAlarmCount			: UINT;
+	_logger						: REFERENCE TO ZigaLibs_Logging.I_Logger; // If provided, logging will be used.
+	_emptyAlarm					: ST_AlarmInfo;
+	_registeredAlarmsCount		: UDINT;
+	_alarmActionBuilder			: FB_AlarmActionBuilder(THIS^);
+	_alarms						: AlarmsArray;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{540d7602-4dd8-0316-1d8f-b030614fbb56}" />
+    <Folder Name="Methods - internal" Id="{e69fa24b-5daa-0696-2bb5-c3097fd8dd8b}">
+      <Folder Name="Actions - ById" Id="{24586308-ecc5-0e50-2fa8-9135d7fff715}" />
+      <Folder Name="Actions - ByName" Id="{e2bcd09c-87db-03cf-333a-5fca6bd7ba00}" />
+    </Folder>
+    <Folder Name="Methods - Private" Id="{2081bf70-075e-0c16-2099-9284fdb2b80a}" />
+    <Folder Name="Methods - public" Id="{0151f663-d300-0140-0e71-d12dddb36b94}" />
+    <Folder Name="Properties - public" Id="{0e5f18d4-d4f9-0c87-2317-22c815bdc375}" />
+    <Method Name="AcknowledgeAlarm" Id="{49bf6711-a2a3-0bae-1c07-9de351f9ccfe}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD INTERNAL AcknowledgeAlarm
+VAR_INPUT
+	alarm : REFERENCE TO ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF alarm.IsAcknowledged THEN
+	RETURN;
+END_IF
+
+alarm.IsAcknowledged := TRUE;
+alarm.TimeInfos.Acknowledged := _dateTime.CurrentTime.Value;
+
+IF __ISVALIDREF(_logger) THEN 
+	_logger.LogInfo(_stringBuilder.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := alarm.Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
+		.AddString(' acknowledged.')
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeAlarmById" Id="{734f7742-a0fc-0dc5-34e4-5ca1d673303d}" FolderPath="Methods - internal\Actions - ById\">
+      <Declaration><![CDATA[(* Acknowledges the alarm with the provided id*)
+METHOD INTERNAL AcknowledgeAlarmById
+VAR_INPUT
+	nId	: T_ArrayIndexer;
+END_VAR
+
+VAR
+	foundAlarm	: ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmById(nID := nId)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmById(nID := nId);
+IF foundAlarm.Id = nId THEN
+	AcknowledgeAlarm(alarm := GetAlarmById(nID := nId));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeAlarmByName" Id="{65c0a185-eb5e-0a64-3ad5-34d1d325dc4a}" FolderPath="Methods - internal\Actions - ByName\">
+      <Declaration><![CDATA[(* Acknowledges the alarm with the provided name.*)
+METHOD INTERNAL AcknowledgeAlarmByName
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	foundAlarm	: ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmByName(sName := sName)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmByName(sName := sName);
+IF foundAlarm.Name = sName THEN
+	AcknowledgeAlarm(alarm := GetAlarmByName(sName := sName));
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeAllAlarms" Id="{5b392a2e-2d60-0a96-2f73-81bedda5c678}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Acknowledges all uacknowledged alarms.*)
+METHOD AcknowledgeAllAlarms
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := 0 TO _alarms.NumberOfAlarms - 1 BY 1 DO
+	IF _alarms.GetPtr(alarmIndex) <> 0 THEN 
+		AcknowledgeAlarm(_alarms.GetPtr(alarmIndex)^);
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Actions" Id="{380b72fb-4b0d-03f2-00dd-30b54fd3fcc1}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Provides access to action builder with fluent approach.
+METHOD PUBLIC Actions : I_AlarmActions
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Actions := _alarmActionBuilder;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ActiveAlarmsCount" Id="{be420905-14e7-0fad-06c4-6349c17a27aa}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the total count of currently active alarms*)
+PROPERTY ActiveAlarmsCount : UINT
+]]></Declaration>
+      <Get Name="Get" Id="{788d388c-36b3-0e58-1083-b8d4f609d13c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActiveAlarmsCount := _activeAlarmCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="DeactivateAlarm" Id="{51bb9f4e-cec0-0ccf-1670-a8d995654248}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD INTERNAL DeactivateAlarm
+VAR_INPUT
+	alarm : REFERENCE TO ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT alarm.IsActive THEN
+	RETURN;
+END_IF
+
+alarm.IsActive := FALSE;
+alarm.TimeInfos.Deactivated := _dateTime.CurrentTime.Value;
+_activeAlarmCount := _activeAlarmCount - 1;
+
+IF __ISVALIDREF(_logger) THEN
+	_logger.LogInfo(_stringBuilder
+		.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := alarm.Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
+		.AddString(' deactivated.')
+		.Create());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeactivateAlarmById" Id="{95d37b42-a850-0394-240a-fb99f44b0a7d}" FolderPath="Methods - internal\Actions - ById\">
+      <Declaration><![CDATA[(* Deactivates the alarm with the provided Id (if it exists).*)
+METHOD INTERNAL DeactivateAlarmById
+VAR_INPUT
+	(* Alarm id to be deactivated.*)
+	nId	: T_ArrayIndexer;
+END_VAR
+
+VAR
+	foundAlarm	 : ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmById(nID := nId)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmById(nID := nId);
+
+IF foundAlarm.Id = nId THEN
+	DeactivateAlarm(alarm := GetAlarmById(nID := nId));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeactivateAlarmByName" Id="{be438fb5-61fe-0976-2b73-63f968632459}" FolderPath="Methods - internal\Actions - ByName\">
+      <Declaration><![CDATA[(* Deactivates the alarm with the provided name (if it exists)*)
+METHOD INTERNAL DeactivateAlarmByName
+VAR_INPUT
+	(* Alarm name to be deactivated.*)
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	foundAlarm	 : ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmByName(sName := sName)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmByName(sName := sName);
+IF foundAlarm.Name = sName THEN
+	DeactivateAlarm(alarm := GetAlarmByName(sName := sName));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeactivateAllAlarms" Id="{a535657e-4dea-0106-1f69-8617a9ced909}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD PRIVATE DeactivateAllAlarms
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := 0 TO _alarms.NumberOfAlarms BY 1 DO
+	IF _alarms.GetPtr(alarmIndex) <> 0 AND_THEN _alarms.GetPtr(alarmIndex)^.IsActive THEN
+		DeactivateAlarm(_alarms.GetPtr(alarmIndex)^);
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeleteAlarm" Id="{268865f0-2dd5-0170-2411-c1f94d65cc43}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Deletes the alarm with the provided id.*)
+METHOD DeleteAlarm
+VAR_INPUT
+	id	: DINT;
+END_VAR
+VAR
+	exists	: BOOL;
+	index	: DINT;
+	alarm	: POINTER TO ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[index := THIS^.GetAlarmIndex(id, exists => exists);
+IF exists THEN
+	alarm := _alarms.GetPtr(index);
+	IF alarm^.IsActive THEN
+		_activeAlarmCount := _activeAlarmCount - 1;
+	END_IF
+	_alarms.Remove(index);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DeleteAll" Id="{70f5effe-51c1-0882-0cec-0638da471c5b}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Deletes all existing alarms from the memory*)
+METHOD DeleteAll
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_alarms.Clear();
+_activeAlarmCount := 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Enable" Id="{7512f5e5-e0f9-046c-0eb7-8f2b8ab7ee5c}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!*)
+PROPERTY Enable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{918e4531-acfe-0d09-00fb-3fee96d6839a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f6a9f216-71b1-0a78-116c-6d3be0750bcc}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF NOT Enable AND _enable THEN 
+	IF __ISVALIDREF(_logger) THEN
+		_logger.LogInfo('Alarms are now disabled.');
+	END_IF
+	DeactivateAllAlarms();
+	AcknowledgeAllAlarms();
+ELSIF Enable AND NOT _enable THEN
+	IF __ISVALIDREF(_logger) THEN
+		_logger.LogInfo('Alarms are now enabled.');
+	END_IF
+END_IF
+
+_enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{2d9c09d1-e406-01ab-27dc-0d93a9ba2b35}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	enable			: BOOL;	// Enables alarm generation
+	logger			: REFERENCE TO ZigaLibs_Logging.I_Logger; // If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
+	timeProvider	: ZigaLibs_Core.I_LocalSystemTimeProvider;	// Date time provider.
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_enable := enable;
+_logger REF= logger;
+_dateTime := timeProvider;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetAlarmById" Id="{04cf1bea-b90c-08ce-01da-5e78e3b14c19}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Gets the alarm with the provided id. 
+ If no mathching alarm exists, an invalid reference will be returned - check by using __ISVALIDREF() for any further operations!.*)
+METHOD GetAlarmById : REFERENCE TO ST_AlarmInfo
+VAR_INPUT
+	(* Id of the alarm.*)
+	nID	: T_ArrayIndexer;
+END_VAR
+
+VAR
+	index		: ZigaLibs_Core.T_ArrayIndexer;
+	alarmPtr	: POINTER TO ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR index := 0 TO _alarms.NumberOfAlarms - 1 BY 1 DO
+	alarmPtr := _alarms.GetPtr(index);
+	IF alarmPtr <> 0 AND_THEN alarmPtr^.Id = nId THEN
+		GetAlarmById REF= _alarms.GetPtr(index)^;
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetAlarmByName" Id="{7445463b-ef45-03e3-3b6b-6ac076786824}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Gets the alarm with the provided name. 
+ If no mathching alarm exists, an empty alarm is returned.*)
+METHOD GetAlarmByName : REFERENCE TO ST_AlarmInfo
+VAR_INPUT
+	(* Name of the alarm*)
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	index	 : T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR index := 0 TO _alarms.NumberOfAlarms - 1 BY 1 DO
+	IF _alarms.GetPtr(index) <> 0 AND_THEN _alarms.GetPtr(index)^.Name = sName THEN
+		GetAlarmByName REF= _alarms.GetPtr(index)^;
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetAlarmIndex" Id="{ff7a6658-85b0-0e23-2ed1-3bbfb77e2eea}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD PRIVATE GetAlarmIndex : DINT
+VAR_INPUT
+	id	: DINT;
+END_VAR
+VAR_OUTPUT
+	exists	: BOOL;
+END_VAR
+VAR
+	alarmIndex	: DINT;
+	alarmPtr	: POINTER TO ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR alarmIndex := 0 TO _alarms.NumberOfAlarms - 1 BY 1 DO
+	alarmPtr := _alarms.GetPtr(alarmIndex);
+	IF alarmPtr <> 0 AND_THEN alarmPtr^.Id = id THEN 
+		GetAlarmIndex := alarmIndex;
+		exists := TRUE;
+		RETURN;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RaiseAlarm" Id="{64969726-776b-059a-1fcd-7ef4a1062cdc}" FolderPath="Methods - Private\">
+      <Declaration><![CDATA[METHOD INTERNAL RaiseAlarm
+VAR_INPUT
+	alarm : REFERENCE TO ST_AlarmInfo;
+END_VAR
+VAR
+	message	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF alarm.IsActive OR NOT _enable THEN
+	RETURN;
+END_IF
+
+_activeAlarmCount := _activeAlarmCount + 1;
+alarm.IsActive := TRUE;
+alarm.IsAcknowledged := FALSE;
+Tc2_System.MEMSET(
+	destAddr := ADR(alarm.TimeInfos),
+	fillByte := 0,
+	n := SIZEOF(alarm.TimeInfos));
+	
+alarm.TimeInfos.Activated := _dateTime.CurrentTime.Value;
+
+IF __ISVALIDREF(_logger) THEN
+	message := _stringBuilder.Reset()
+		.AddString('Alarm ')
+		.AddWithDblQuotationMarks(str := alarm.Name)
+		.AddString(' with Id ')
+		.AddWithDblQuotationMarks(str := TO_STRING(alarm.Id))
+		.AddString(' actived! ')
+		.AddString(alarm.Message)
+		.Create();
+		
+	CASE alarm.Level OF 
+		E_AlarmLevel.NONE: _logger.LogDefault(message := message);
+		E_AlarmLevel.INFO: _logger.LogInfo(message := message);
+		E_AlarmLevel.WARNING: _logger.LogWarning(message := message);
+		E_AlarmLevel.ERROR: _logger.LogError(message := message);
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RaiseAlarmById" Id="{09fa4eeb-a927-062d-02d5-65db13becfa1}" FolderPath="Methods - internal\Actions - ById\">
+      <Declaration><![CDATA[(* Activates the alarm with the provided Id (if it exists)*)
+METHOD INTERNAL RaiseAlarmById
+VAR_INPUT
+	(* Alarm id to be activated*)
+	nId	: T_ArrayIndexer;
+END_VAR
+
+VAR
+	foundAlarm	 : ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmById(nID := nId)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmById(nID := nId);
+IF foundAlarm.Id = nId THEN
+	RaiseAlarm(alarm := GetAlarmById(nID := nId));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RaiseAlarmByName" Id="{98ddc441-4696-0e5f-3229-fab0993563f1}" FolderPath="Methods - internal\Actions - ByName\">
+      <Declaration><![CDATA[(* Activates the alarm with the provided name*)
+METHOD INTERNAL RaiseAlarmByName
+VAR_INPUT
+	(* Alarm name to be actived*)
+	sName	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	foundAlarm	 : ST_AlarmInfo;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(GetAlarmByName(sName := sName)) THEN
+	RETURN;
+END_IF
+
+foundAlarm := GetAlarmByName(sName := sName);
+IF foundAlarm.Name = sName THEN
+	RaiseAlarm(alarm := GetAlarmByName(sName := sName));
+	RETURN;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RegisterAlarm" Id="{de1a4c4e-6dbf-08e7-0d35-b029c09f962e}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Registers a new alarm with the provided information. 
+ Returns TRUE if new alarm was registered or false if not (alarm buffer is full or the id already exists)*)
+METHOD RegisterAlarm : BOOL
+VAR_INPUT
+	(* Alarm ID*)
+	Id	: T_ArrayIndexer;
+	(* Alarm name*)
+	Name	: Tc2_System.T_MaxString;
+	(* Message when the alarm occurrs*)
+	Message	: Tc2_System.T_MaxString;
+	(* Alarm level *)
+	Level	: E_AlarmLevel;				
+END_VAR
+
+VAR
+	alarmIndex	: T_ArrayIndexer;
+	alarm		:  ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// IF an alar is found, check the id and return.
+IF __ISVALIDREF(GetAlarmById(nID := Id)) AND_THEN GetAlarmById(nID := Id).Id = Id 
+THEN
+	RETURN;
+END_IF
+
+// Create the alarm
+alarm.Id := Id;
+alarm.Name := Name;
+alarm.Message := Message;
+alarm.IsAcknowledged := TRUE;
+alarm.Level := Level;
+_alarms.AddNew(alarm);
+RegisterAlarm := TRUE;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="RegisteredAlarmsCount" Id="{4f0a8335-36c0-03bf-1f9b-68a5187a4d02}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the total number of alarms registered*)
+PROPERTY RegisteredAlarmsCount : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{bbf8a0aa-8a52-00a0-36a0-d4d1e1c279d6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RegisteredAlarmsCount := DINT_TO_UDINT(_alarms.NumberOfAlarms);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="UnacknowledgedAlarmsCount" Id="{5532a814-2599-069d-1ecc-b91352519039}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the current count of alarms that have not yet been acknowledged*)
+PROPERTY UnacknowledgedAlarmsCount : UINT
+]]></Declaration>
+      <Get Name="Get" Id="{5e00a12e-621e-096d-2039-095461d94ee9}">
+        <Declaration><![CDATA[VAR
+	alarmIndex		: T_ArrayIndexer;
+	maxAlarmIndex	: T_ArrayIndexer;
+	count			: UINT;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FOR alarmIndex := 0 TO _alarms.NumberOfAlarms - 1 BY 1 DO
+	IF _alarms.GetPtr(alarmIndex) <> 0 AND_THEN NOT _alarms.GetPtr(alarmIndex)^.IsAcknowledged THEN
+		count := count + 1;
+	END_IF
+END_FOR
+
+UnacknowledgedAlarmsCount := count;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Controller_PI_Tests" Id="{f77be68e-9062-040c-365b-ec0fbd98b3bb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Controller_PI_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -22,6 +22,7 @@ END_VAR
 
 VAR_INST
 	fbController : FB_Controller_PI;
+	result	: T_ControllerValue;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -33,17 +34,17 @@ fbController.Kp := 100;
 fbController.Value.Setpoint := 100;
 fbController.Tn := T#0S;
 
-
-AssertEquals_REAL(
-	Actual := fbController.Execute(),
+fbController.Execute(controllerOutput => result);
+AssertEquals_LREAL(
+	Actual := result,
 	Expected := 0,
 	Delta := 0,
 	Message := 'When controller is disabled, returned value should always be 0.');
 
 fbController.Value.Setpoint := 500;
-
-AssertEquals_REAL(
-	Actual := fbController.Execute(),
+fbController.Execute(controllerOutput => result);
+AssertEquals_LREAL(
+	Actual := result,
 	Expected := 0,
 	Delta := 0,
 	Message := 'When controller is disabled, returned value should always be 0.');
@@ -51,8 +52,9 @@ AssertEquals_REAL(
 fbController.Enable := TRUE;
 fbController.Execute();
 fbController.Enable := FALSE;
-AssertEquals_REAL(
-	Actual := fbController.Execute(),
+fbController.Execute(controllerOutput => result);
+AssertEquals_LREAL(
+	Actual := result,
 	Expected := 0,
 	Delta := 0,
 	Message := 'Disabling controller after being enabled should return 0, instantly.');

@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="AlarmsArray" Id="{5ae36814-b12d-0cb1-107f-413dbe3482e3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK AlarmsArray
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_malloc	: ZigaLibs_Core.FB_Malloc(0,0);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddNew" Id="{2ee8993c-2570-00f1-3b4b-e879418ac64d}">
+      <Declaration><![CDATA[METHOD AddNew
+VAR_INPUT
+	alarm	: ST_AlarmInfo;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _malloc.IsAllocated THEN
+	THIS^.Create(1);
+	THIS^.GetPtr(0)^ := alarm;
+ELSE
+	_malloc.Expand(1);
+	_malloc.Set(_malloc.Properties.NumberOfElements - 1, alarm);
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Clear" Id="{92ed3547-8981-00da-022d-962e473da65a}">
+      <Declaration><![CDATA[METHOD Clear
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_malloc.Free();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Create" Id="{fc4c953e-f606-0e60-282d-9b1207596240}">
+      <Declaration><![CDATA[METHOD Create : BOOL
+VAR_INPUT
+	count	: dint;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Create := _malloc.Allocate(SIZEOF(ST_AlarmInfo), count);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_exit" Id="{87506832-e9ba-0e8f-0275-a6b31064a319}">
+      <Declaration><![CDATA[METHOD FB_exit : BOOL
+VAR_INPUT
+	bInCopyCode : BOOL; // if TRUE, the exit method is called for exiting an instance that is copied afterwards (online change).
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_malloc.Free();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetPtr" Id="{ca61ee79-678d-0197-162b-14fe24230cdb}">
+      <Declaration><![CDATA[METHOD GetPtr : POINTER TO ST_AlarmInfo
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetPtr := _malloc.GetPtr(index);
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="NumberOfAlarms" Id="{7d6cf9ac-d293-0789-06b6-07711939f44b}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+PROPERTY NumberOfAlarms : DINT]]></Declaration>
+      <Get Name="Get" Id="{b4c6bcb7-e8ef-0c31-3f40-04f9718bff37}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[NumberOfAlarms := _malloc.Properties.NumberOfElements;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Remove" Id="{0d3d4deb-38cb-044d-25d3-4040ec6dae84}">
+      <Declaration><![CDATA[METHOD Remove
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_malloc.Remove(index);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{ec4e9c2c-b666-0fb4-304e-98fde3130216}">
+      <Declaration><![CDATA[METHOD Set : BOOL
+VAR_INPUT
+	index	: DINT;
+	alarm	: REFERENCE TO ST_AlarmInfo;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Set := _malloc.Set(index := index, value := alarm);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

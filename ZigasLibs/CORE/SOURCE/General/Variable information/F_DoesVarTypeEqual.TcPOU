@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="F_DoesVarTypeEqual" Id="{85486a24-417f-00fc-34a1-95679daea182}" SpecialFunc="None">
+    <Declaration><![CDATA[// Returns TRUE if the variable's data type equals to the .
+FUNCTION F_DoesVarTypeEqual : BOOL
+VAR_INPUT
+	variable	: ANY;
+	typeClass	: IBaseLibrary.TypeClass;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_DoesVarTypeEqual := UDINT_TO_INT(variable.TypeClass) = typeClass;
+	]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

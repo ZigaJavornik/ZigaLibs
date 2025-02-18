@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ErrorSource_Tests" Id="{6855d925-cd35-00c6-3a17-d11f72133451}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ErrorSource_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -7,28 +7,28 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	_errorSourceSut	: FB_ErrorSource_ExtensionForTests;
+	_errorSourceObject	: FB_ErrorSource_ExtensionForTests;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test01_InstanceName();
+      <ST><![CDATA[Test01_ErrorProperty();
 Test02_ErrorCode();
-Test03_ErrorMessage();]]></ST>
+Test03_ErrorMessage();
+Test04_GenericError();]]></ST>
     </Implementation>
-    <Method Name="Test01_InstanceName" Id="{7a683e36-47cb-089d-0cc5-34e90bb9dc70}">
-      <Declaration><![CDATA[METHOD PRIVATE Test01_InstanceName
+    <Method Name="Test01_ErrorProperty" Id="{5494b363-ee3e-0674-0ec7-08e5578d2c84}">
+      <Declaration><![CDATA[METHOD Test01_ErrorProperty
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test01_InstanceName');
-
-AssertEquals_STRING(
-	Actual := _errorSourceSut.ErrorSource.InstanceName,
-	Expected := '_errorSourceSut',
-	Message := 'Error source instance name is incorrect!'
-);
-
+        <ST><![CDATA[TcUnit.TEST('Test01_ErrorProperty');
+_errorSourceObject.bError := TRUE;
+_errorSourceObject();
+AssertTrue(
+	Condition := _errorSourceObject.Error,
+	Message := 'Error should be TRUE.');	
+	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
@@ -40,14 +40,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test02_ErrorCode');
 
-_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_CLIENT_ERROR;
-_errorSourceSut();
+_errorSourceObject.eAdsErrorCodeToTest := TcError.AdsErrorCodes.ADSERR_CLIENT_ERROR;
+_errorSourceObject();
 
 AssertEquals_UDINT(
-	Actual := _errorSourceSut.ErrorSource.ErrorInfo.Code,
-	Expected := E_AdsErrorCode.ADSERR_CLIENT_ERROR,
-	Message := 'The error code provided in the ErrorInfo.Code property is incorrect!'
-);
+	Actual := _errorSourceObject.AdsError.Code,
+	Expected := TcError.AdsErrorCodes.ADSERR_CLIENT_ERROR,
+	Message := 'The error code provided in the ErrorInfo.Code property is incorrect!');
 
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
@@ -59,15 +58,40 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test03_ErrorMessage');
 
-_errorSourceSut.eAdsErrorCodeToTest := E_AdsErrorCode.ADSERR_DEVICE_ABORTED;
-_errorSourceSut();
+_errorSourceObject.eAdsErrorCodeToTest := TcError.AdsErrorCodes.ADSERR_DEVICE_ABORTED;
+_errorSourceObject();
 
 AssertEquals_STRING(
-	Actual := _errorSourceSut.ErrorSource.ErrorInfo.Message,
+	Actual := _errorSourceObject.AdsError.Message,
 	Expected := 'Request is aborted.',
 	Message := 'The error information was incorrect!');
 
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_GenericError" Id="{a23ac5d5-ed2c-0e5f-13d0-fad7abd9db98}">
+      <Declaration><![CDATA[METHOD Test04_GenericError
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test04_GenericError');
+
+_errorSourceObject.nGenericErrorCode := 10;
+_errorSourceObject.sGenericErrorMessage := 'Error message, generic...';
+_errorSourceObject();
+AssertEquals_DINT(
+	Expected := 10,
+	Actual := _errorSourceObject.GenericError.Code,
+	Message := 'Incorrect error code.');
+	
+AssertEquals_STRING(
+	Expected := 'Error message, generic...',
+	Actual := _errorSourceObject.GenericError.Message,
+	Message := 'Incorrect error message.');
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
   </POU>

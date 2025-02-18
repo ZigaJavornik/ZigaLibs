@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_FileOpenMode" Id="{9e281381-c04d-0c5f-2427-8553dc35cc7b}">
+    <Declaration><![CDATA[// A combination of file open modes, based on available options.
+// Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/30977547.html&id=
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_FileOpenMode :
+(
+	(* r: Opens a file for reading. An error is returned if the file cannot be found or does not exist.*)
+	TEXT_READ_MUST_EXIST := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* 	w: Opens an empty file for writing. If the file already exists, it is overwritten.*)
+	TEXT_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* a: Opens a file for writing at the end of the file (append). If the file does not exist, a new file is created.*)
+	TEXT_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* r+: Opens a file for reading and writing. The file must exist.*)
+	TEXT_READ_WRITE_MUST_EXIST := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* w+: Opens an empty file for reading and writing. If the file already exists, it is overwritten.*)
+	TEXT_READ_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* a+: opens a file for reading and writing at the end of the file (append). 
+	If the file does not exist, a new file is created. For this, the memory path must be known, otherwise error 1804 appears. 
+	All write operations are always performed at end of a file, if the file was opened in the modes a or a+.
+	The file pointer can be moved with FB_FileSeek, although for writing it is moved to the end of the file by default, i.e. existing data cannot be overwritten.*)
+	TEXT_READ_WRITE_APPEND	:= Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODETEXT,
+	
+	(* r: Opens a file for reading. An error is returned if the file cannot be found or does not exist.*)
+	BINARY_READ_MUST_EXIST	:= Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEBINARY,
+	
+	(* 	w: Opens an empty file for writing. If the file already exists, it is overwritten.*)
+	BINARY_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEBINARY,
+	
+	(* a: Opens a file for writing at the end of the file (append). If the file does not exist, a new file is created.*)
+	BINARY_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEBINARY,
+	
+	(* r+: Opens a file for reading and writing. The file must exist.*)
+	BINARY_READ_WRITE_MUST_EXIST := Tc2_System.FOPEN_MODEREAD OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY,
+	
+	(* w+: Opens an empty file for reading and writing. If the file already exists, it is overwritten.*)
+	BINARY_READ_WRITE_OVERWRITE_EXISTING := Tc2_System.FOPEN_MODEWRITE OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY,
+	
+	(* a+: opens a file for reading and writing at the end of the file (append). 
+	If the file does not exist, a new file is created. For this, the memory path must be known, otherwise error 1804 appears. 
+	All write operations are always performed at end of a file, if the file was opened in the modes a or a+.
+	The file pointer can be moved with FB_FileSeek, although for writing it is moved to the end of the file by default, i.e. existing data cannot be overwritten.*)
+	BINARY_READ_WRITE_APPEND := Tc2_System.FOPEN_MODEAPPEND OR Tc2_System.FOPEN_MODEPLUS OR Tc2_System.FOPEN_MODEBINARY
+)DWORD;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

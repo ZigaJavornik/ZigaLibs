@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Controller_P" Id="{c6c15539-81c8-08db-25d4-c0803794dae6}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_P EXTENDS ZigaLibs_Core.FB_HasTaskInfo
 VAR_INPUT
@@ -12,7 +12,7 @@ VAR
 	_Kp					: REAL;
 	_enabled			: BOOL;
 	_basicPid			: Tc2_Utilities.FB_BasicPID;
-	_controllerOutput	: REAL;
+	_controllerOutput	: T_ControllerValue;
 
 END_VAR
 ]]></Declaration>
@@ -76,10 +76,13 @@ END_VAR
     </Property>
     <Method Name="Execute" Id="{1fabdbeb-f214-0265-2f81-01dbf973bc47}">
       <Declaration><![CDATA[// Executes the controller and returns the control output.
-METHOD Execute  : REAL
+METHOD Execute
 VAR_INST
 	cycleTimeCounter	: UINT;
 	delayPidExecution	: TON;
+END_VAR
+VAR_OUTPUT
+	controllerOutput	: LREAL;	// Controller result
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[_basicPid.fKp := _kp;
@@ -116,7 +119,7 @@ END_IF
 
 
 _controllerOutput := _basicPid.fCtrlOutput;
-execute := _basicPid.fCtrlOutput;
+controllerOutput := _controllerOutput;
 ]]></ST>
       </Implementation>
     </Method>

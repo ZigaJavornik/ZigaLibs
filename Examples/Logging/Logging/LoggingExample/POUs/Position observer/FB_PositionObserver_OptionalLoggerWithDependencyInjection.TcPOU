@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PositionObserver_OptionalLoggerWithDependencyInjection" Id="{56262701-d913-0022-3f4d-254df4080bee}" SpecialFunc="None">
+    <Declaration><![CDATA[// A function block with I_LoggerEX as an optional parameter passed trought FB_Init (dependency injection)
+// This way we can kind of achieve multiple constructors, like in other OOP - the only difference is, we make parameters optional 
+FUNCTION_BLOCK FB_PositionObserver_OptionalLoggerWithDependencyInjection EXTENDS FB_PositionSensorObserverBase
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Calling the base class body, FB_PositionSensorObserverBase. It assigns and calls the observers, triggers, ...
+// If you want to change how the triggers behave, you could just not call SUPER and do your own implementaiton.
+SUPER^();
+
+// Since the interface might not be assigned, we need to check for validity of the pointer.
+IF _logger <> 0 THEN
+	IF _bottoPositionObserver.HasRisingEdge THEN
+		_logger.LogInfo(_sb.Reset()
+			.AddString('Source: ')
+			.AddWithDblQuotationMarks(THIS^.InstanceName)
+			.AddString(' Bottom position reached.')
+			.Create());
+	END_IF
+	
+	IF _bottoPositionObserver.HasFallingEdge THEN
+		_logger.LogInfo(_sb.Reset()
+			.AddString('Source: ')
+			.AddWithDblQuotationMarks(THIS^.InstanceName)
+			.AddString(' No longer at bottom position.')
+			.Create());
+	END_IF
+	
+	IF _topPositionObserver.HasRisingEdge THEN
+		_logger.LogInfo(_sb.Reset()
+			.AddString('Source: ')
+			.AddWithDblQuotationMarks(THIS^.InstanceName)
+			.AddString(' Top position reached.')
+			.Create());
+	END_IF
+	
+	IF _topPositionObserver.HasFallingEdge THEN
+		_logger.LogInfo(_sb.Reset()
+			.AddString('Source: ')
+			.AddWithDblQuotationMarks(THIS^.InstanceName)
+			.AddString(' No longer at top position.')
+			.Create());
+	END_IF
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{21c180a1-77af-0023-0a40-d5cf8bef2eac}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger			: REFERENCE TO ZigaLibs_Core.I_LoggerEx;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Assign the internal interface to the one provided - interface is basically a pointer. Passing the address this way.
+// The difference here is, we are passing a reference to the logger. This means it is optional.
+// The user could contruct the fb like this fbSensor : FB_Logger(0); 
+// => it is up to us to check the local instance of the _logger
+IF __ISVALIDREF(logger) THEN
+	_logger := logger;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

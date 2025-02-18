@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Controller_PI" Id="{cebf8388-c6b7-0e55-16da-d4e5b20ae531}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_PI EXTENDS FB_Controller_P
 VAR_INPUT
@@ -14,13 +14,14 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="Execute" Id="{27e74276-09b5-04b2-31da-a99e5e710905}">
-      <Declaration><![CDATA[{attribute'monitoring':='call'}
-// Executes the controller and returns the control output.
-METHOD Execute  : REAL
-]]></Declaration>
+      <Declaration><![CDATA[// Executes the controller and returns the control output.
+METHOD Execute
+VAR_OUTPUT
+	controllerOutput	: LREAL;	// Controller result
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[PID.fTn := SUPER^.TimeToSeconds(_Tn);
-Execute := SUPER^.Execute();]]></ST>
+SUPER^.Execute();]]></ST>
       </Implementation>
     </Method>
     <Property Name="Tn" Id="{42266395-9c97-0108-2576-85c5a3ee3fe3}">

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_HasGenericError" Id="{c533e256-6aac-0ecd-0d8e-5d009f168f8e}">
+    <Declaration><![CDATA[INTERFACE I_HasGenericError
+]]></Declaration>
+    <Property Name="GenericError" Id="{bef66d76-a560-06d4-0b00-132c1d1627c0}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the Generic error
+PROPERTY GenericError : REFERENCE TO ST_GenericError]]></Declaration>
+      <Get Name="Get" Id="{d331d19a-dd98-0efd-2bc6-f7a5e3884980}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

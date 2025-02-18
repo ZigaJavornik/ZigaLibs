@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_Malloc" Id="{26e49174-5c2a-04ab-1df7-bf2b62d134d9}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
+// Function block for memory allocation. It only handles a single memory instance.
+FUNCTION_BLOCK FB_Malloc
+VAR
+	_allocated	: POINTER TO BYTE;
+	_properties	: ST_AllocatedMemoryProperties;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Constructor/Destructor" Id="{8cd0bdb0-0057-0a6f-11d9-a4d71c86f4f8}" />
+    <Folder Name="Methods - private" Id="{e883dd70-0176-0bc3-0a0c-538363993aee}" />
+    <Folder Name="Properties" Id="{437cb435-88fd-027a-1d59-509dde4e8938}" />
+    <Method Name="Allocate" Id="{a73ebe34-c9b7-0f79-1f05-ff8173f21af7}">
+      <Declaration><![CDATA[// Allocates the memory of size = elementSize * numberOfElements.
+// If the memory allocation has already been done, Free() will be called first!
+// Returns TRUE if allocation has been sucessfull - this can fail if incorrect parameters are provided (sie <= 0 or numberOfElements = 0)
+METHOD Allocate : BOOL
+VAR_INPUT
+	elementSize			: DINT;	// Size of the element.
+	numberOfElements	: DINT;	// Number of elements that will occupy the memory space.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF elementSize <= 0 OR numberOfElements <= 0 THEN
+	RETURN;
+END_IF
+
+Free();
+_allocated := __NEW(BYTE, (elementSize * UDINT_TO_DINT(numberOfElements)));
+
+_properties.BaseTypeSize := elementSize;
+_properties.NumberOfElements := numberOfElements;
+_properties.Size := elementSize * numberOfElements;
+_properties.StartAddress := _allocated;
+
+Allocate := _allocated <> 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AllocateAny" Id="{58395c29-5fff-058b-0b19-8cbd84ec635f}">
+      <Declaration><![CDATA[// Allocates memory based on the provided parameters
+// If the memory allocation has already been done, Free() will be called first!
+METHOD AllocateAny : BOOL
+VAR_INPUT
+	dataType			: ANY;		// Provide the variable that will be used as base type here
+	numberOfElements	: DINT;	// Number of elements that should be allocated.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AllocateAny :=  Allocate(dataType.diSize, numberOfElements);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Expand" Id="{1b80cdda-ccbf-0848-3974-31677f40b2b3}">
+      <Declaration><![CDATA[// Expands the current allocated memory
+METHOD Expand : BOOL
+VAR_INPUT
+	elementsToAdd	: DINT; // Number of new elements to be added. Only accepting values larger than 0.
+END_VAR
+VAR
+	oldAllocatedMemory	: POINTER TO BYTE;
+	originalProperties	: ST_AllocatedMemoryProperties;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT IsAllocated OR elementsToAdd <= 0 THEN
+	RETURN;
+END_IF
+
+// Copy current contents
+originalProperties := _properties;
+oldAllocatedMemory := __NEW(BYTE, _properties.Size);
+
+Tc2_System.MEMCPY(
+	srcAddr := _allocated, 
+	destAddr := oldAllocatedMemory,
+ 	n := DINT_TO_UDINT(_properties.Size));
+
+// Free the memory	
+THIS^.Free();
+
+// Create new, expanded memory
+THIS^.Allocate(
+	elementSize := originalProperties.BaseTypeSize ,
+	numberOfElements:=  originalProperties.NumberOfElements + elementsToAdd);
+	
+// Copy the old values to the new allocation.	
+Tc2_System.MEMCPY(
+	srcAddr := oldAllocatedMemory,
+	destAddr := _allocated,
+	n := DINT_TO_UDINT(originalProperties.Size));
+	
+// Delete the temporary allocated memory
+__DELETE(oldAllocatedMemory);
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_exit" Id="{d0b550c0-38cb-0759-3d4a-46ee780519a7}" FolderPath="Constructor/Destructor\">
+      <Declaration><![CDATA[METHOD FB_exit : BOOL
+VAR_INPUT
+	bInCopyCode : BOOL; // if TRUE, the exit method is called for exiting an instance that is copied afterwards (online change).
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Free();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{8d088fbe-9977-02b5-2121-e1764139a585}" FolderPath="Constructor/Destructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	baseTypeSize	: DINT;	// Base data type's that will be used
+	elementCount	: DINT;	// Number of elements
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Allocate(baseTypeSize, elementCount);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Free" Id="{2d36b31c-a6ea-0616-3d4d-f32c827d7aa3}">
+      <Declaration><![CDATA[// Frees the allocated memory area. 
+// Returns TRUE if operation was executed (if nothing is allocated, then FALSE is returned).
+METHOD Free : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _allocated <> 0 THEN
+	__DELETE(_allocated);
+	_properties.BaseTypeSize := 0;
+	_properties.NumberOfElements := 0;
+	_properties.Size := 0;
+	_properties.StartAddress := 0;
+	Free := TRUE;
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Get" Id="{6ae19e1c-d538-0a38-266e-0653bc1d2d54}">
+      <Declaration><![CDATA[// Gets the value at the provided 'index' copies it to the 'result' variable.
+METHOD Get : BOOL
+VAR_INPUT
+	index	: DINT;
+	result	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateAction(index,result) THEN
+	Get := FALSE;
+	RETURN;
+END_IF
+
+Tc2_System.MEMCPY(
+	destAddr := result.pValue,	
+	srcAddr := _properties.StartAddress + DINT_TO_UDINT(index * _properties.BaseTypeSize),
+	n := DINT_TO_UDINT(_properties.BaseTypeSize));
+	
+Get := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetPtr" Id="{5ebdfa92-dc68-0e78-2533-90295bfa7094}">
+      <Declaration><![CDATA[// Gets the pointer to the provided index
+// This can be used to alter the contents by using POINTER TO <DATA_TYPE>. by calling it from another method
+METHOD GetPtr : PVOID
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.ValidateIndex(index) AND 
+   THIS^.IsAllocated 
+THEN
+	GetPtr := _properties.StartAddress + DINT_TO_UDINT(index * _properties.BaseTypeSize);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IsAllocated" Id="{41cdef4a-c146-0493-196c-372840dd8c09}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Returns TRUE if memory has been allocated.
+PROPERTY PUBLIC IsAllocated : BOOL]]></Declaration>
+      <Get Name="Get" Id="{ea3f507b-69fb-0a65-193f-27626b50803d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsAllocated := _properties.StartAddress  <> 0;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Properties" Id="{1aeeb317-c644-0349-1f09-177a161c5bc7}" FolderPath="Properties\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets properties of the allocated memory.
+PROPERTY Properties : REFERENCE TO ST_AllocatedMemoryProperties]]></Declaration>
+      <Get Name="Get" Id="{9a7e1645-9701-0836-2547-44d982008705}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Properties REF= _properties;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Remove" Id="{14da5a8a-1e69-011d-391c-685c8a8f7f4a}">
+      <Declaration><![CDATA[// Removes the element at the index.
+METHOD Remove	: BOOL;
+VAR_INPUT
+	index	: DINT;
+END_VAR
+
+VAR
+	byteCountLowerPart	: DINT;
+	byteCountUpperPart	: DINT;
+	upperPart			: POINTER TO BYTE;
+	lowerPart			: POINTER TO BYTE;
+	originalProperties	: ST_AllocatedMemoryProperties;
+	newSize				: DINT;
+	combinedSize		: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT IsAllocated OR NOT ValidateIndex(index) THEN
+	RETURN;
+END_IF
+
+// If 0th element is the only element, then just free the memory space.
+IF index = 0 AND _properties.NumberOfElements = 1 THEN
+	Remove := TRUE;
+	THIS^.Free();
+	RETURN;
+END_IF
+
+originalProperties := _properties;
+byteCountLowerPart := _properties.BaseTypeSize * index;
+lowerPart := __NEW(BYTE, byteCountLowerPart);
+Tc2_System.MEMCPY(
+	srcAddr := _allocated,
+	destAddr := lowerPart,
+	n := DINT_TO_UDINT(byteCountLowerPart));
+	
+byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - 1 - index );
+IF byteCountUpperPart <> 0 THEN
+	upperPart := __NEW(BYTE, byteCountUpperPart);
+	Tc2_System.MEMCPY(
+		srcAddr := _allocated + DINT_TO_DWORD(_properties.Size) -  DINT_TO_DWORD(byteCountUpperPart),
+		destAddr := upperPart,
+		n := DINT_TO_UDINT(byteCountUpperPart));	
+END_IF
+
+THIS^.Free();
+
+// For debug purpose, new size and combined size should be the same.
+newSize := originalProperties.NumberOfElements - 1;
+combinedSize := (byteCountLowerPart + byteCountUpperPart) / originalProperties.BaseTypeSize;
+
+THIS^.Allocate(originalProperties.BaseTypeSize, newSize);
+Tc2_System.MEMCPY(
+	srcAddr := lowerPart,
+	destAddr := _allocated,
+	n := DINT_TO_UDINT(byteCountLowerPart));
+	
+IF byteCountUpperPart <> 0 THEN
+	Tc2_System.MEMCPY(
+		srcAddr := upperPart,
+		destAddr := _allocated + DINT_TO_UDINT(byteCountLowerPart),
+		n := DINT_TO_UDINT(byteCountUpperPart));
+END_IF	
+	
+__DELETE(lowerPart);	
+IF upperPart <> 0 THEN
+	__DELETE(upperPart);
+END_IF
+
+Remove := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{7071028e-74bc-097d-3e1e-cd5732aad5f2}">
+      <Declaration><![CDATA[METHOD Set : BOOL
+VAR_INPUT
+	index	: DINT;
+	value	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateAction(index,value) THEN
+	Set := FALSE;
+	RETURN;
+END_IF
+
+Tc2_System.MEMCPY(
+	destAddr := _properties.StartAddress + DINT_TO_UDINT(index * _properties.BaseTypeSize),	
+	srcAddr := value.pValue,
+	n := DINT_TO_UDINT(_properties.BaseTypeSize));
+	
+Set := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateAction" Id="{a18c8d15-67bf-06bd-0332-a4bd3f1dd70d}" FolderPath="Methods - private\">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateAction : BOOL
+VAR_INPUT
+	index		: DINT;
+	variable	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateAction := ValidateIndex(index) AND ValidateInputVar(variable) AND IsAllocated;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateIndex" Id="{627d85d2-214d-08d7-114e-a5451a169ed8}" FolderPath="Methods - private\">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateIndex : BOOL
+VAR_INPUT
+	index	: DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateIndex := index <= (_properties.NumberOfElements - 1) AND index >= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateInputVar" Id="{2b64497a-eea4-0ebb-37df-fd90efb28edf}" FolderPath="Methods - private\">
+      <Declaration><![CDATA[METHOD PRIVATE ValidateInputVar : BOOL
+VAR_INPUT
+	variable	: ANY;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateInputVar := variable.diSize = _properties.BaseTypeSize;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

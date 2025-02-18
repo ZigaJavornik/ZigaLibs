@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_StringBuilder" Id="{3747aab2-3bd3-07b0-2f01-57cd97da3929}">
+    <Declaration><![CDATA[INTERFACE I_StringBuilder
+]]></Declaration>
+    <Method Name="AddString" Id="{0ad7aba7-4db1-04cc-1556-52b420102f2c}">
+      <Declaration><![CDATA[// Adds a string to the build sequence.
+METHOD AddString : REFERENCE TO FB_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;	// String to be added.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="AddWithDblQuotationMarks" Id="{f14db449-0a4a-04a7-3fba-e4f8417c0ae0}">
+      <Declaration><![CDATA[// Adds a string to the build sequence and wraps the str in double quotation marks "str"
+METHOD AddWithDblQuotationMarks : REFERENCE TO FB_StringBuilder
+VAR_INPUT
+	str : Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="AddWithQuotationMark" Id="{bc1fabc6-d199-00c0-0489-740c2d0af3da}">
+      <Declaration><![CDATA[// Adds a string to the build sequence and wraps the str in quotation marks 'str'
+METHOD AddWithQuotationMark : REFERENCE TO FB_StringBuilder
+VAR_INPUT
+	str	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Create" Id="{c5baa772-95a0-07ec-3a50-e773e513123b}">
+      <Declaration><![CDATA[// Finishes string generation and returns the generated string
+METHOD Create : Tc2_System.T_MaxString
+]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{a298e174-214e-0f96-1816-a5c517654f47}">
+      <Declaration><![CDATA[(* Reset the string build sequence, clear any string built so far.*)
+METHOD Reset : REFERENCE TO FB_StringBuilder
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

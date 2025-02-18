@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_Error" Id="{0a606e56-e04a-0db5-1068-006e081be61c}">
+    <Declaration><![CDATA[TYPE ST_Error :
+STRUCT
+	Source	: Tc2_System.T_MaxString;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="F_GetVarInfo" Id="{428533f5-71b2-08f8-0455-adf25c0fe5b3}" SpecialFunc="None">
+    <Declaration><![CDATA[// Returns information about the variable as ST_VarInfo.
+FUNCTION F_GetVarInfo : ST_VarInfo
+VAR_INPUT
+	variable	: ANY;	// Variable to get the inforation from
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_GetVarInfo.Address := variable.pValue;
+F_GetVarInfo.DataType := variable.TypeClass;
+F_GetVarInfo.Size := DINT_TO_UDINT(variable.diSize);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_XV03ValveSystem_Tests" Id="{6e93b8ca-791a-0f0b-085c-81624b4b6d87}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_XV03ValveSystem_Tests EXTENDS FB_TestSuite
@@ -69,7 +69,7 @@ VAR
 	indexValueToAdd					: UINT;
 	indexValueToSubstract			: UINT;
 	expectedValue					: USINT;
-	strinbBuilder					: ZigaLibs_Core.FB_StringBuilderBase;
+	stringBuilder					: ZigaLibs_Core.FB_StringBuilder;
 	addressToAdd					: DWORD;
 END_VAR
 
@@ -83,7 +83,7 @@ fbValveSystem_XV03.Enable := TRUE;
 
 FOR iteration := 1 TO 24 BY 1 DO
 	// Coil 1 of valve
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
+	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
 	fbValveSystem_XV03();
 	// add + 1 address when next byte should be looked at (4 valves with 2 coils per byte, 8 bits)
 	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
@@ -91,47 +91,46 @@ FOR iteration := 1 TO 24 BY 1 DO
 	expectedValue := LREAL_TO_USINT(EXPT(2, iteration - 1 + indexValueToAdd - indexValueToSubstract));
 	AssertTrue(
 		Condition := ptrUsint^ = expectedValue,
-		Message := strinbBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not opened.')
-			.Create());
-	
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
-	fbValveSystem_XV03();
-	AssertTrue(
-		Condition := ptrUsint^ = 0,
-		Message := strinbBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not closed.')
-			.Create());
-	
-	// Coil 2 of valve	
-	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
-	fbValveSystem_XV03();
-	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
-	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
-	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
-	AssertTrue(
-		Condition := ptrUsint^ = expectedValue,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not opened.')
 			.Create());
-			
-	indexValueToAdd := indexValueToAdd + 1;
 	
 	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := FALSE;
 	fbValveSystem_XV03();
 	AssertTrue(
 		Condition := ptrUsint^ = 0,
-		Message := strinbBuilder.Reset()
+		Message := stringBuilder.Reset()
 			.AddString('Valve ')
 			.AddWithDblQuotationMarks(TO_STRING(iteration))
 			.AddString(', coil 14 was not closed.')
+			.Create());
+	
+	// Coil 2 of valve	
+	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
+	fbValveSystem_XV03();
+	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
+	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
+	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
+	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
+	AssertTrue(ptrUsint^ = expectedValue,
+		stringBuilder.Reset()
+			.AddString('Valve ')
+			.AddWithDblQuotationMarks(TO_STRING(iteration))
+			.AddString(', coil 12 was not opened.')
+			.Create());
+			
+	indexValueToAdd := indexValueToAdd + 1;
+	
+	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
+	fbValveSystem_XV03();
+	AssertTrue(
+		Condition := ptrUsint^ = 0,
+		Message := stringBuilder.Reset()
+			.AddString('Valve ')
+			.AddWithDblQuotationMarks(TO_STRING(iteration))
+			.AddString(', coil 12 was not closed.')
 			.Create());
 			
 	// In order to have 1 single loop, every loop iteration we need to add 1 value, to increase the 2^n+1 result.

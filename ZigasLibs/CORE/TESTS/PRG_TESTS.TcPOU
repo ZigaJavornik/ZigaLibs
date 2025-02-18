@@ -6,18 +6,18 @@
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
-	AdsErrorHelperTests				: FB_AdsErrorHelper_Tests;
 	AdsHelperTests					: FB_AdsHelper_Tests;
 	ArrayHelperTests				: FB_ArrayHelper_Tests;
 	DateTimeToStringConverterTest	: FB_DateTimeToStringConverter_Tests;
 	ErrorSourceTests				: FB_ErrorSource_Tests;
 	HasInstanceNameTests			: FB_HasInstanceName_Tests;
-	StringBuilderBaseTest			: FB_StringBuilder_Tests;
+	StringBuilderTests				: FB_StringBuilder_Tests;
 	HasTaskInfoTests				: FB_HasTaskInfo_Tests;
-	AlarmManagerTests				: FB_AlarmManager_Tests;
 	BoolExTests						: FB_BoolEx_Tests;
 	EthercatHelperTests				: FB_EthercatHelper_Tests;
-	EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
+	//EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
+	MallocTests						: FB_Malloc_Tests;
+	StringHelperTests				: FB_StringHelper_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

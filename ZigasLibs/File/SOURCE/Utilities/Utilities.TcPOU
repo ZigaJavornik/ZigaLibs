@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="Utilities" Id="{6ee3af3c-bb5a-0bbf-0e0a-dc339ace1c34}" SpecialFunc="None">
+    <Declaration><![CDATA[// A class with helper methods when working with files.
+{attribute 'hide_all_locals'}
+{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+PROGRAM Utilities
+
+VAR
+	_directory	: FB_DirectoryUtilities;
+	_file		: FB_FileUtilities;
+	_path		: FB_PathUtilities;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Directory" Id="{b5c2a1fb-dcb0-04a9-13ed-747fa10f323b}">
+      <Declaration><![CDATA[PROPERTY Directory : I_Directory]]></Declaration>
+      <Get Name="Get" Id="{e8866c8d-9c03-07f7-0393-6d6ca370781a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Directory := _directory;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="File" Id="{b8d87f58-37b0-00fd-299e-7b66a103005d}">
+      <Declaration><![CDATA[PROPERTY File : I_File]]></Declaration>
+      <Get Name="Get" Id="{65d0bf53-4594-01a5-3f01-a29ab15e096d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[File := _file;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Path" Id="{caf0782a-5710-0ee3-3205-abcccb7a7715}">
+      <Declaration><![CDATA[PROPERTY Path : I_Path]]></Declaration>
+      <Get Name="Get" Id="{99e43f93-ab59-0d38-3eef-4e36c7050dcb}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Path := _path;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

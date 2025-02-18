@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <GVL Name="GVL_Bronkhorst" Id="{76cb8281-5d0d-05db-328e-6cb5b830da61}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
-VAR_GLOBAL
-	Logger	: ZigaLibs_Logging.FB_Logger;
-END_VAR]]></Declaration>
-  </GVL>
-</TcPlcObject>

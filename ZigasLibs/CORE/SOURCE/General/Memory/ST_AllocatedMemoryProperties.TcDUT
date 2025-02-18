@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_AllocatedMemoryProperties" Id="{fc2b0f62-35cf-0dc1-2dd9-2d4fdd2a6b91}">
+    <Declaration><![CDATA[// Properties for working with dynamic memory allocation.
+TYPE ST_AllocatedMemoryProperties :
+STRUCT
+	Size				: DINT;		// Size of the allocated memory
+	StartAddress		: PVOID;	// Pointer to the address of the array memory space
+	BaseTypeSize		: DINT;		// Size of the base type provided, when allocated
+	NumberOfElements	: DINT;	// Number of elements provided, when allocated.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

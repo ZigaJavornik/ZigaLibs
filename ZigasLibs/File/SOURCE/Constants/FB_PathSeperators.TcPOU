@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_PathSeperators" Id="{16f2b904-4d10-06d3-00d8-c8ab3d401772}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+FUNCTION_BLOCK INTERNAL FB_PathSeperators
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Independent" Id="{ca5237b4-8f70-0236-0669-056b22050661}">
+      <Declaration><![CDATA[PROPERTY Independent : T_Char]]></Declaration>
+      <Get Name="Get" Id="{ff855f7a-6730-03a7-224b-64f1c6df512b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Independent := '/';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Unix" Id="{cf186e31-1d15-0d65-1312-a2b8d8f3cfa7}">
+      <Declaration><![CDATA[PROPERTY PUBLIC Unix : T_Char]]></Declaration>
+      <Get Name="Get" Id="{7acf389f-f3d0-0fc6-1f65-2396997f0bb9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Unix := '\';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Windows" Id="{ced83814-2c09-0a71-248f-66e2a0f42ea0}">
+      <Declaration><![CDATA[PROPERTY Windows : T_Char]]></Declaration>
+      <Get Name="Get" Id="{0f2f320f-34f1-074e-2125-7b4d7cc46a59}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Windows := '/';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

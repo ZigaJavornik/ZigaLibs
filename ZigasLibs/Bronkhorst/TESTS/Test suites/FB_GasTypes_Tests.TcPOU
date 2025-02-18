@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_GasTypes_Tests" Id="{1a5e4d07-dd5d-05c5-0f1d-8b6e54472ba9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_GasTypes_Tests EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AllGasTypes();]]></ST>
+    </Implementation>
+    <Method Name="Test_AllGasTypes" Id="{fe9c5736-78c3-02a7-1565-8781c2ec7f03}">
+      <Declaration><![CDATA[METHOD Test_AllGasTypes
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test_AllGasTypes');
+
+AssertEquals_STRING('BBr3', GasTypes.BBr3, 'Returned property value is incorrect.');
+AssertEquals_STRING('BCl3', GasTypes.BCl3, 'Returned property value is incorrect.');
+AssertEquals_STRING('Cl2', GasTypes.Cl2, 'Returned property value is incorrect.');
+AssertEquals_STRING('H2', GasTypes.H2, 'Returned property value is incorrect.');
+AssertEquals_STRING('He', GasTypes.He, 'Returned property value is incorrect.');
+AssertEquals_STRING('N2', GasTypes.N2, 'Returned property value is incorrect.');
+AssertEquals_STRING('O2', GasTypes.O2, 'Returned property value is incorrect.');
+AssertEquals_STRING('SF6', GasTypes.SF6, 'Returned property value is incorrect.');
+AssertEquals_STRING('SiF4', GasTypes.SiF4, 'Returned property value is incorrect.');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

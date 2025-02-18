@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_GetFilesState" Id="{abd9e88d-d569-0ff9-0e1b-f54ce7afac12}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE INTERNAL E_GetFilesState :
+(
+	READY,
+	START,
+	AWAIT_RESULT,
+	ALL_FILES_FOUND,
+	ERROR
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

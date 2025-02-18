@@ -15,10 +15,10 @@
     <Implicit_Jitter_Distribution>{c4f6ebc7-ab53-4cdb-9a8d-93089f0515ad}</Implicit_Jitter_Distribution>
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
-    <Title>Core</Title>
-    <ProjectVersion>0.0.0.5</ProjectVersion>
-    <DefaultNamespace>ZigaLibs_Core</DefaultNamespace>
-    <Placeholder>ZigaLibs_Core</Placeholder>
+    <Title>ZigaLibs.Core</Title>
+    <ProjectVersion>0.0.3.2</ProjectVersion>
+    <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
+    <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
     <Description>A collection of core objects for work with further libraries implementations.</Description>
     <LibraryCategories>
@@ -57,33 +57,10 @@
     </SelectedLibraryCategories>
     <DocFormat>
     </DocFormat>
-    <CompilerDefines>test</CompilerDefines>
+    <CompilerDefines>
+    </CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\FB_AlarmActionBuilder.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActionBy.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\Actions - fluent\I_AlarmActions.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmInfo.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\DUTs\ST_AlarmTimeInfos.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\E_AlarmLevel.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\FB_AlarmManager.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Alarms\I_AlarmManager.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Array\ArrayHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -158,6 +135,7 @@
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\FB_EthercatDiagnosis.TcPOU">
       <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\I_EthercatDiagnosis.TcIO">
       <SubType>Code</SubType>
@@ -165,85 +143,97 @@
     <Compile Include="SOURCE\Beckhoff\EtherCAT\EthercatHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Beckhoff\FB_HasTaskInfo.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\DataType\F_CompareTypeClassWithBaseLib.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Errors\DUTs\E_AdsErrorCode.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Errors\DUTs\ST_AdsError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\DUTs\ST_ErrorSource.TcDUT">
+    <Compile Include="SOURCE\Errors\DUTs\ST_Error.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Errors\DUTs\ST_GenericError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Errors\FB_ErrorSource.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\FB_HasInstanceName.TcPOU">
+    <Compile Include="SOURCE\Errors\I_HasError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\I_HasErrorSourcing.TcIO">
+    <Compile Include="SOURCE\Errors\I_ErrorSource.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Errors\AdsErrorHelper.TcPOU">
+    <Compile Include="SOURCE\Errors\I_HasAdsError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\DUTs\E_FileOpenMode.TcDUT">
+    <Compile Include="SOURCE\Errors\I_HasGenericError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\DUTs\ST_FileProperties.TcDUT">
+    <Compile Include="SOURCE\General\Collections\FB_Collection.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\FileHelper.TcPOU">
+    <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\I_FileProperties.TcIO">
+    <Compile Include="SOURCE\General\FB_HasInstanceNameAndPath.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\File\ST_FileExtensions.TcDUT">
+    <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\FB_PulseGenerator.TcPOU">
+    <Compile Include="SOURCE\General\InstanceNameHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\FB_Malloc.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\MemoryHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\ST_AllocatedMemoryProperties.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\ST_Value.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\T_VarInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\F_DoesVarTypeEqual.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Variable information\F_GetVarInfo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\Memory\E_MemCmpResults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Variable extensions\BoolEx.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\ST_Value.TcDUT">
+    <Compile Include="SOURCE\General\Variable information\ST_VarInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\ST_VarInfo.TcDUT">
+    <Compile Include="SOURCE\General\Variable information\T_VarSize.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Variable extensions\T_VarSize.TcDUT">
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\E_AddAnyBitOptions.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\DUTs\ST_LogLevelHeaders.TcDUT">
+    <Compile Include="SOURCE\String\StringBuilder\Extensions\AddAny\I_StringBuilderEx_Any.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\I_Logger.TcIO">
+    <Compile Include="SOURCE\String\StringBuilder\FB_StringBuilder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Logger\I_LoggerEx.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Memory\E_MemCmpResults.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\String\FB_StringBuilderBase.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\String\I_StringBuilder.TcIO">
+    <Compile Include="SOURCE\String\StringBuilder\I_StringBuilder.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringConstants.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\String\StringHelper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\String\T_Char.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Time\DUTs\E_TimeFormat.TcDUT">
@@ -263,19 +253,16 @@
     <Compile Include="SOURCE\Time\I_DateTimeToStringConverter.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Time\I_LocalSystemTimeProvider.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_AdsErrorHelper_Tests.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TESTS\Test suites\FB_AdsHelper_Tests.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TESTS\Test suites\FB_AlarmManager_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_ArrayHelper_Tests.TcPOU">
@@ -293,6 +280,7 @@
     </Compile>
     <Compile Include="TESTS\Test suites\FB_EthercatDiagnosis_Tests.TcPOU">
       <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_EthercatHelper_Tests.TcPOU">
       <SubType>Code</SubType>
@@ -309,18 +297,25 @@
     <Compile Include="TESTS\Test suites\FB_HasTaskInfo_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_Malloc_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_StringBuilderEx_Any_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_StringBuilder_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_BoolEx_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_StringHelper_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\Alarms\DUTs" />
-    <Folder Include="SOURCE\Alarms\Actions - fluent" />
     <Folder Include="SOURCE\Array\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\CoE" />
@@ -330,18 +325,17 @@
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state" />
     <Folder Include="SOURCE\Errors\DUTs" />
-    <Folder Include="SOURCE\File" />
-    <Folder Include="SOURCE\File\DUTs" />
+    <Folder Include="SOURCE\General\Collections" />
+    <Folder Include="SOURCE\General\Variable information" />
+    <Folder Include="SOURCE\General\Memory" />
     <Folder Include="SOURCE\General\Variable extensions" />
-    <Folder Include="SOURCE\Logger" />
-    <Folder Include="SOURCE\Logger\DUTs" />
     <Folder Include="SOURCE\Array" />
     <Folder Include="SOURCE\Errors" />
     <Folder Include="SOURCE\Beckhoff" />
-    <Folder Include="SOURCE\DataType" />
-    <Folder Include="SOURCE\Memory" />
-    <Folder Include="SOURCE\Alarms" />
     <Folder Include="SOURCE\General" />
+    <Folder Include="SOURCE\String\StringBuilder" />
+    <Folder Include="SOURCE\String\StringBuilder\Extensions" />
+    <Folder Include="SOURCE\String\StringBuilder\Extensions\AddAny" />
     <Folder Include="SOURCE\Time" />
     <Folder Include="SOURCE\String" />
     <Folder Include="SOURCE\Time\DUTs" />
@@ -370,110 +364,49 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_UPPER_BOUND</Key>
-          <Value>15</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_EXP</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_ADDRESS</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_COMMENT</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_OUTSTRING</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_SHOW_VALID_ITEMS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSES</Key>
-          <Value>50</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSEDEVICES</Key>
-          <Value>16</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXCPUCOUNT</Key>
-          <Value>64</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCHARACTERS</Key>
-          <Value>16#FFFFFFF0</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXFILESONDONGLE</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCSVFIELDVALUESIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+    <PlaceholderReference Include="TcError">
+      <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
+      <Namespace>TcError</Namespace>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
       <Condition>
       </Condition>
+      <Optional>true</Optional>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
       <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>1000</Value>
+          <Value>200</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>100</Value>
+          <Value>50</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>1000</Value>
+          <Value>200</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+        <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>XUNITBUFFERSIZE</Key>
-          <Value>65535</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>2000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
-          <Value>TIME#0ms</Value>
+          <Value>1</Value>
         </Parameter>
       </Parameters>
+      <Optional>true</Optional>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TwinCat Dynamic Collections">
+      <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
+      <Namespace>TcDynCollections</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -485,6 +418,14 @@
     <LibraryReference Include="Base Interfaces,newest,System">
       <Namespace>IBaseLibrary</Namespace>
     </LibraryReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="TcError">
+      <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcUnit">
+      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

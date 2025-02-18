@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_AlarmActions" Id="{78311afd-5039-09e9-2e01-ec212a338902}">
+    <Declaration><![CDATA[INTERFACE I_AlarmActions
+]]></Declaration>
+    <Method Name="Acknowledge" Id="{27cadfb9-70a1-0f63-1fa5-1c36d13f7186}">
+      <Declaration><![CDATA[METHOD Acknowledge : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Deactivate" Id="{4b0cc508-0a65-0c13-0908-4c5fa0752ee4}">
+      <Declaration><![CDATA[METHOD Deactivate : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Raise" Id="{350c0da9-4251-06d5-39cb-5a5af1876fd3}">
+      <Declaration><![CDATA[METHOD Raise : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

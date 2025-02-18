@@ -25,5 +25,13 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="Value" Id="{6e326837-d14f-07c4-3486-ef1cd3a0639c}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the current state of the component
+PROPERTY Value : BOOL]]></Declaration>
+      <Get Name="Get" Id="{686a55f4-2de0-0644-0815-6830770f12af}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
   </Itf>
 </TcPlcObject>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_PathGenerator" Id="{38e02b37-379a-0d8c-2c0d-db97d77474b3}">
+    <Declaration><![CDATA[INTERFACE I_PathGenerator
+]]></Declaration>
+    <Method Name="AddWildcard" Id="{625d407a-898c-0f12-17e7-3225514af0b6}">
+      <Declaration><![CDATA[METHOD AddWildcard : I_Wildcards
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Create" Id="{c21cd0ff-0edc-057a-1bb0-2fe2fabeda8d}">
+      <Declaration><![CDATA[METHOD Create : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Join" Id="{ddae13e9-cfe1-0f5b-3f5f-fcec755c422d}">
+      <Declaration><![CDATA[// Concatines the path with previously added paths. 
+// If the provided path does not starts with the system-based path seperator, it is added
+
+// Example:
+// Join('C:/Program Files/').Join('Utilities/SystemUtilities') 
+// will result in 'C:/Program Files/Utilities/SystemUtilities'
+METHOD Join : I_PathGenerator
+VAR_INPUT
+	path	: STRING;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

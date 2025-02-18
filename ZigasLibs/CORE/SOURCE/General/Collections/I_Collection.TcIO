@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_Collection" Id="{e70b4864-7705-0186-23ff-3ae6b152ca42}">
+    <Declaration><![CDATA[INTERFACE I_Collection
+]]></Declaration>
+    <Method Name="AddNew" Id="{62d2d9e2-4f32-09b0-1b05-a74f6b293138}">
+      <Declaration><![CDATA[// Adds a new item to the collection.
+METHOD AddNew
+VAR_INPUT
+	item	: ANY;	// Item to add to the collection
+END_VAR
+
+]]></Declaration>
+    </Method>
+    <Method Name="Clear" Id="{e02d86fb-cfc0-0149-2b6e-c594cd76e28a}">
+      <Declaration><![CDATA[// Clears the collection
+METHOD Clear
+]]></Declaration>
+    </Method>
+    <Method Name="Contains" Id="{4f1267b9-8052-07e7-2758-0667f1b7bb08}">
+      <Declaration><![CDATA[// Checks if the collecton contains item and returns TRUE if that is the case.
+METHOD Contains : BOOL
+VAR_INPUT
+	item	: ANY;	// Item to search for
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Count" Id="{ab072a38-7ec9-0ae8-3b46-fafb89fcf8ba}">
+      <Declaration><![CDATA[// Gets the item count in the collection.
+PROPERTY Count : DINT]]></Declaration>
+      <Get Name="Get" Id="{9a8b4f02-c2f6-03b0-0803-1b21d1e1fd1e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Find" Id="{0579fb54-2c1c-0659-02b0-9bf354d47a22}">
+      <Declaration><![CDATA[// Finds the first occurance of the item in the element sequence. If item is not found, 0 is returned.
+METHOD Find : PVOID
+VAR_INPUT
+	item	: ANY;	// Item to look for
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Remove" Id="{7a05502a-f699-095d-2e82-6166fa21355d}">
+      <Declaration><![CDATA[// Removes first occurenece of the item in the collection.
+// Reutrns TRUE if the item was removed, or FALSE if no such item exists.
+METHOD Remove	: BOOL
+VAR_INPUT
+	item	: ANY;	// Item to remove
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="RemoveAt" Id="{4222ceec-792c-0247-18d2-226e4e7d7a2a}">
+      <Declaration><![CDATA[// Removes an item from the collection at the provided index.
+// Reutrns TRUE if the item was removed, or FALSE if no such item exists.
+METHOD RemoveAt : BOOL
+VAR_INPUT
+	index	: DINT;	// Index at which the item will be removed.
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="StringHelper" Id="{6038c506-8015-0cf2-2085-30a677155028}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM StringHelper
 VAR
@@ -8,6 +8,194 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="ConvertToUpperOrLower" Id="{d49c54f8-245d-0b5e-100d-7ae49dadf65c}">
+      <Declaration><![CDATA[METHOD INTERNAL ConvertToUpperOrLower
+VAR_INPUT
+	lower	: BOOL;
+	upper	: BOOL;
+	str		: ANY;
+END_VAR
+VAR
+	charIndex	: DINT;
+	ptrChar		: POINTER TO T_Char;
+	char		: T_Char;
+	malloc		: FB_Malloc(0,0);
+	ptrByte		: POINTER TO BYTE;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF DINT_TO_INT(str.TypeClass) <> IBaseLibrary.TYPE_STRING THEN
+	RETURN;
+END_IF
+
+IF lower THEN	
+	malloc.Allocate(1, str.diSize - 1);		
+	FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
+		ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
+		char := ToLowerCase(ptrChar^);
+		ptrByte := ADR(char);
+		malloc.Set(charIndex, ptrByte^);
+	END_FOR
+	
+	Tc2_System.MEMCPY(
+		destAddr := str.pValue, 
+		srcAddr := malloc.Properties.StartAddress, 
+		n := DINT_TO_UDINT(str.diSize - 1));
+		
+	malloc.Free();
+	RETURN;
+END_IF
+
+IF upper THEN
+	malloc.Allocate(1, str.diSize - 1);		
+	FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
+		ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
+		char := ToUpperCase(ptrChar^);
+		ptrByte := ADR(char);
+		malloc.Set(charIndex, ptrByte^);
+	END_FOR
+	
+	Tc2_System.MEMCPY(
+		destAddr := str.pValue, 
+		srcAddr := malloc.Properties.StartAddress, 
+		n := DINT_TO_UDINT(str.diSize - 1));
+		
+	malloc.Free();
+	RETURN;	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="EndsWith" Id="{ae3c099d-30b2-0f82-0a20-ce3ad2e77fa0}">
+      <Declaration><![CDATA[METHOD EndsWith : BOOL
+VAR_INPUT
+	str		: Tc2_System.T_MaxString;
+	char	: T_Char;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[EndsWith := Tc2_Standard.RIGHT(str, 1) = char;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FindStringWithin" Id="{2f0f077d-67ad-00c3-05fa-2ccee8640db2}">
+      <Declaration><![CDATA[// Checks if the sourceString contains the stringToFind string. 
+// Size of the source string is only limited to TwinCAT limitaitons, which in theory is not limited.
+// Returns TRUE if found, else FALSE. Position of the found strimg is provided in the "position" output variable.
+METHOD FindStringWithin : BOOL
+VAR_INPUT
+	sourceString	: ANY;	// String to look at
+	stringToFind	: Tc2_System.T_MaxString; // String that should be containted in the sourceString
+END_VAR
+VAR_OUTPUT
+	position	: DINT;	// Position of the found string
+END_VAR
+
+VAR
+	tmpStr						: POINTER TO Tc2_System.T_MaxString;
+	charIndex					: DINT;
+	currentMatchingCharIndex	: DINT;
+	tmpByte						: POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF DINT_TO_INT(sourceString.TypeClass) <> IBaseLibrary.TYPE_STRING THEN
+	RETURN;
+END_IF
+
+IF sourceString.diSize <= SIZEOF(Tc2_System.T_MaxString) THEN
+	tmpStr := __NEW(BYTE, SIZEOF(Tc2_System.T_MaxString));
+	tmpStr := sourceString.pValue;
+	position :=  Tc2_Standard.FIND(tmpStr^, stringToFind);
+	FindStringWithin := position <> 0;
+	__DELETE(tmpStr);
+	RETURN;
+END_IF
+
+FOR charIndex := 0 TO sourceString.diSize BY 1 DO
+	
+	// Byte wise comparison, if matching byte, start filling the compared string
+	tmpByte := sourceString.pValue + charIndex * SIZEOF(BYTE);
+	// For debug purpose
+	tmpStr := tmpByte;
+	IF tmpbyte^ = stringToFind[currentMatchingCharIndex] THEN
+		currentMatchingCharIndex := currentMatchingCharIndex + 1;
+	ELSE
+		currentMatchingCharIndex := 0;
+	END_IF
+	
+	// When index = str lenght - 1, we have found the entire string, exit the loop.
+	IF currentMatchingCharIndex = (Tc2_Standard.LEN(stringToFind)) THEN
+		position := charIndex - currentMatchingCharIndex;
+		FindStringWithin := TRUE;
+		EXIT;
+	END_IF
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Join" Id="{99346997-fd62-0afc-1ca1-062e8359a9d5}">
+      <Declaration><![CDATA[// Joins the provided string with the string to add.
+// The refStr is altered in the process, this no additional assignments are required as oposed to CONCAT which returns the resulting string.
+METHOD Join
+VAR_INPUT
+	refStr		: REFERENCE TO Tc2_System.T_MaxString;
+	strToJoin	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[refStr := Tc2_Standard.CONCAT(refStr, strToJoin);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Split" Id="{b1d8d28d-cd99-072e-272d-5198c12d1482}">
+      <Declaration><![CDATA[// Splits the STRING `str` based on the character `splitChar`.
+// listOfSplitStrings eturns a collection of strings, or an empty list if no items were found
+// If an empty string is provided, an empty stirng is the result
+// If splitChar is an empty string, the string is split at every white space.
+METHOD Split
+VAR_INPUT
+	str					: Tc2_System.T_MaxString;	// String that will be iterated
+	splitChar			: T_Char;	// Character based on which the string is split up. These characters are removed
+	listOfSplitStrings	: TcDynCollections.I_List;	// Resulting split strings.
+END_VAR
+VAR
+	currentSplitString	: STRING;
+	charPosition		: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF listOfSplitStrings = 0 THEN
+	RETURN;
+END_IF
+
+listOfSplitStrings.Clear();
+IF str = '' THEN
+	RETURN;
+END_IF
+
+IF splitChar = '' THEN
+	splitChar := ' ';
+END_IF
+
+WHILE Tc2_Standard.FIND(STR1 := str, STR2 := splitChar) <> 0 DO
+	charPosition := Tc2_Standard.FIND(str, splitChar);
+	currentSplitString := Tc2_Standard.LEFT(str, charPosition - 1);
+	listOfSplitStrings.Append(currentSplitString);	
+	str := Tc2_Standard.DELETE(str, charPosition, 1);
+END_WHILE
+
+listOfSplitStrings.Append(str);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="StartsWith" Id="{5c75a7b6-3cc1-0540-0cd5-16739591bdb3}">
+      <Declaration><![CDATA[// Checks if STRING `str` starts with the `char`
+// Returs TRUE if first character in the provided string is `char` provided
+METHOD StartsWith : BOOL
+VAR_INPUT
+	str		: Tc2_System.T_MaxString;	// String to be checked
+	char	: T_Char;	// Character that the string will be checked, if it starts with it.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[StartsWith := Tc2_System.F_ToCHR(str[0]) = char;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToLowerCase" Id="{04af86ff-c3c4-0ee5-29da-879b8d09b6b9}">
       <Declaration><![CDATA[// Converts the provided string to all lower case and returns the converted value.
 METHOD ToLowerCase : T_MaxString
@@ -19,6 +207,16 @@ END_VAR
         <ST><![CDATA[ToLowerCase := Tc2_Utilities.F_ToLCase(in := str);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="ToLowerCase_UnlimitedSize" Id="{f4114202-5b66-0efa-14bc-fe041d3f54b7}">
+      <Declaration><![CDATA[// Converts the input string to all lower case. Size of the string is irrelevant
+METHOD ToLowerCase_UnlimitedSize
+VAR_INPUT
+	str	: ANY;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ConvertToUpperOrLower(TRUE, FALSE, str);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToUpperCase" Id="{a9f90e08-f042-0b48-3d37-79d4dbe88971}">
       <Declaration><![CDATA[// Converts the provided string to all upper case and returns the converted value.
 METHOD ToUpperCase : Tc2_System.T_MaxString
@@ -28,6 +226,15 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ToUpperCase := Tc2_Utilities.F_ToUCase(in := str);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToUpperCase_UnlimitedSize" Id="{3ed9e680-0d6f-0cbd-294a-745be70d999d}">
+      <Declaration><![CDATA[METHOD ToUpperCase_UnlimitedSize
+VAR_INPUT
+	str	: ANY;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ConvertToUpperOrLower(FALSE, TRUE, str);]]></ST>
       </Implementation>
     </Method>
     <Method Name="TrimLeftSide" Id="{aaf318c8-56f7-0f39-3b6b-023f532313ad}">

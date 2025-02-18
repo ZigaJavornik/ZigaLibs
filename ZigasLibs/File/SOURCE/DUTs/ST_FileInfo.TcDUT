@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_FileInfo" Id="{8385cb0c-cfb3-07dc-299f-1e738586c81b}">
+    <Declaration><![CDATA[// Structure with all the information for working with file handling..
+TYPE ST_FileInfo :
+STRUCT
+	Handle 		: T_FileHandle;				// File handle
+	NetId		: Tc2_System.T_AmsNetID;	// NetId where the file is located
+	Name		: Tc2_System.T_MaxString;	// Name of the file
+	Path		: Tc2_System.T_MaxString;	// Locaiton of the file
+	IsOpened	: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

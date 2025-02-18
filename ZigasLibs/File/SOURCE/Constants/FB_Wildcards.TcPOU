@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_Wildcards" Id="{77d495e7-1020-0e62-286d-5845201f3faa}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+FUNCTION_BLOCK INTERNAL FB_Wildcards]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Asterisk" Id="{a731c642-d997-00cc-3f9a-139dca7bb981}">
+      <Declaration><![CDATA[// Matches any number of characters. You can use the asterisk (*) anywhere in a character string.
+// Example: wh* finds what, white, and why, but not awhile or watch.
+PROPERTY Asterisk : ZigaLibs_Core.T_Char]]></Declaration>
+      <Get Name="Get" Id="{4eb674a2-9788-0d26-0543-fbcf2a29ec9e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Asterisk := '*';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="QuestionMark" Id="{f79dd64b-cf89-0e1e-0705-63c0f68a78a5}">
+      <Declaration><![CDATA[// Matches a single alphabet in a specific position.
+// Example: b?ll finds ball, bell, and bill.
+PROPERTY QuestionMark : ZigaLibs_Core.T_Char]]></Declaration>
+      <Get Name="Get" Id="{88a4cb75-9979-0e08-2a04-cf775f91b985}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[QuestionMark := '?';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

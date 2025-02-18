@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_LoggerConfiguration" Id="{b3e9d74a-edd4-0fc2-057f-19d7e7f70c3b}">
+    <Declaration><![CDATA[TYPE ST_LoggerConfiguration :
+STRUCT
+	NetId				: Tc2_System.T_AmsNetID;	// Logger net-id, where the file will be generated
+	FileName			: Tc2_System.T_MaxString;	// Name of the file
+	FilePath			: Tc2_System.T_MaxString;	// Path to the file location
+	FileExtension		: Tc2_System.T_MaxString := '.txt';	// File extension, with or without the preceding dot, will be checked when logging
+	LogLevelHeaders		: ST_LogLevelHeaders;	// Log level headers for each log severity
+	DeleteAfterDays		: UINT;	// Deletes files after X-many days, or never if set to 0
+	DeleteCheckInterval	: TIME := T#6H;	// Defines how offten the logger will check the folder to delete old logs
+	RollingInterval		: UINT := 6; // Sets the rolling interval (in hours) - how offten new log file is created. If set to 0, a single file is created. Beware of DeleteCheckInterval, which will delete this file and you will lose these files in that case.
+	IsValid				: BOOL;	// Will be true as soon as configuration is applied
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

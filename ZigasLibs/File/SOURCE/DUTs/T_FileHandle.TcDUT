@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="T_FileHandle" Id="{d9ca5c13-ff3d-0072-2db5-d09b0d465035}">
+    <Declaration><![CDATA[TYPE T_FileHandle : UINT; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

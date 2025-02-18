@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="MAIN" Id="{4bd9374b-c3da-4bf5-a9d4-1ac785962d75}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	// Instantiating the function block with logger via dependency injection.
+	fbPositionObserver_WithLogger : 
+		FB_PositionObserver_LoggerWithDependencyInjection(logger := GVL.Logger);
+		
+	// Instantiating the function block with provided optional logger via dependency injection.
+	// For this to work, we need to provide the interface (pointer), instead of the instantiating function block.	
+	fbPositionObserver_OptionalLogger_WithLogger : 
+		FB_PositionObserver_OptionalLoggerWithDependencyInjection(logger := GVL.ILogger);
+		
+	// Instantiating the function block without logger via dependency injection.	
+	fbPositionObserver_OptionalLogger_WithoutLogger : 
+		FB_PositionObserver_OptionalLoggerWithDependencyInjection(logger := 0);
+	
+		
+	eSimulationState			: E_SimulationState := E_SimulationState.IDLE;
+	tonPositionTimer			: Tc2_Standard.TON();
+	
+	
+	// Run the simulation
+	SIMULATION_RUN				: BOOL;
+	observer_simulationState	: ZigaLibs_Core.BoolEx := (variable := SIMULATION_RUN);
+	sb							: ZigaLibs_Core.FB_StringBuilder;
+	
+	firstExecutionAndLoggerValid	: BOOL := TRUE;
+END_VAR
+
+VAR CONSTANT
+	MY_TARGET_DEVICE_NET_ID 		: Tc2_System.T_AmsNetIdArr := [192,168,56,1,1,1]; // Empty = local
+	MY_LOGGER_EXAMPLE_FILE_LOCATION	: Tc2_System.T_MaxString := 'C:\';
+	MY_LOGGER_EXAMPLE_FILE_NAME		: Tc2_System.T_MaxString := 'ExampleLog';
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Configure logger
+GVL.Logger.AmsAddress.netId := MY_TARGET_DEVICE_NET_ID; 
+GVL.Logger.FileProperties.FileLocation := MY_LOGGER_EXAMPLE_FILE_LOCATION;
+GVL.Logger.FileProperties.FileName := MY_LOGGER_EXAMPLE_FILE_NAME;
+
+// Logger body still needs to be called
+GVL.Logger();
+
+IF GVL.Logger.Ready THEN
+	IF firstExecutionAndLoggerValid THEN
+		GVL.Logger.LogDefault('====================== FIRST PLC CYCLE EXECUTED ======================');
+	END_IF
+	firstExecutionAndLoggerValid := FALSE;
+	
+	// Start/stop simulation logging
+	observer_simulationState();
+	IF observer_simulationState.HasRisingEdge THEN
+		GVL.Logger.LogDefault('====================== STARTING SIMULATION =============================');
+		eSimulationState := E_SimulationState.IDLE;
+	ELSIF observer_simulationState.HasFallingEdge THEN
+		GVL.Logger.LogDefault('====================== STOPPING SIMULATION =============================');
+	END_IF
+END_IF
+
+// Lets wait for logger to be ready, otherwise date time will be 1970
+IF GVL.Logger.Ready AND SIMULATION_RUN THEN		
+	// INFO: Check the "Set" implementation for the SimulationState property in MAIN. 
+	// You can see state changes being logged in there as well.
+	
+	// Simulating the positions to generate logs
+	CASE SimulationState OF
+		E_SimulationState.IDLE:	
+			fbPositionObserver_WithLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_WithLogger.BottomPositionSensor := FALSE;
+			
+			fbPositionObserver_OptionalLogger_WithLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_OptionalLogger_WithLogger.BottomPositionSensor := FALSE;
+			
+			fbPositionObserver_OptionalLogger_WithoutLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_OptionalLogger_WithoutLogger.BottomPositionSensor := FALSE;
+			
+			tonPositionTimer(IN := FALSE);
+			SimulationState := E_SimulationState.BOTTOM;
+			
+		E_SimulationState.BOTTOM:
+			fbPositionObserver_WithLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_WithLogger.BottomPositionSensor := TRUE;
+			
+			fbPositionObserver_OptionalLogger_WithLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_OptionalLogger_WithLogger.BottomPositionSensor := TRUE;
+			
+			fbPositionObserver_OptionalLogger_WithoutLogger.TopPositionSensor := FALSE;
+			fbPositionObserver_OptionalLogger_WithoutLogger.BottomPositionSensor := TRUE;
+	
+			SimulationState := E_SimulationState.BOTTOM_FOR_10_SECONDS;
+			
+		E_SimulationState.BOTTOM_FOR_10_SECONDS:
+		
+			tonPositionTimer(IN := TRUE, PT := T#10S);
+			IF tonPositionTimer.Q THEN
+				tonPositionTimer(IN := FALSE);
+				SimulationState := E_SimulationState.TOP;
+			END_IF
+			
+		E_SimulationState.TOP:
+			fbPositionObserver_WithLogger.TopPositionSensor := TRUE;
+			fbPositionObserver_WithLogger.BottomPositionSensor := FALSE;
+			
+			fbPositionObserver_OptionalLogger_WithLogger.TopPositionSensor := TRUE;
+			fbPositionObserver_OptionalLogger_WithLogger.BottomPositionSensor := FALSE;
+			
+			fbPositionObserver_OptionalLogger_WithoutLogger.TopPositionSensor := TRUE;
+			fbPositionObserver_OptionalLogger_WithoutLogger.BottomPositionSensor := FALSE;
+			
+			SimulationState := E_SimulationState.TOP_FOR_10_SECONDS;
+			
+		E_SimulationState.TOP_FOR_10_SECONDS:
+			tonPositionTimer(IN := TRUE, PT := T#10S);
+			IF tonPositionTimer.Q THEN
+				SimulationState := E_SimulationState.IDLE;
+			END_IF
+	END_CASE
+END_IF
+
+
+// Call the function blocks here, after simulation
+fbPositionObserver_WithLogger();
+fbPositionObserver_OptionalLogger_WithLogger();
+fbPositionObserver_OptionalLogger_WithoutLogger();]]></ST>
+    </Implementation>
+    <Property Name="SimulationState" Id="{9e943b52-b57f-4656-944b-a309ee88b66b}">
+      <Declaration><![CDATA[// Gets or sets the simulation state
+PROPERTY SimulationState : E_SimulationState]]></Declaration>
+      <Get Name="Get" Id="{e74ef490-bd46-488b-a942-dcbf7691fccb}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SimulationState := eSimulationState;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{bba2bf42-3c1c-4eb6-9820-164eb266ef6c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// Check if value has changed, log the change as well.
+IF SimulationState <> eSimulationState THEN
+	GVL.Logger.LogDefault(sb.Reset()
+		.AddString('========== SIMULATION STATE CHANGED FROM ')
+		.AddWithDblQuotationMarks(TO_STRING(eSimulationState))
+		.AddString(' TO ')
+		.AddWithDblQuotationMarks(TO_STRING(eSimulationState))
+		.AddString(' ========== ')
+		.Create());
+END_IF
+
+eSimulationState := SimulationState;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

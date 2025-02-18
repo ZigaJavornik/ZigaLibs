@@ -17,7 +17,10 @@ Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero();
 Test07_SetAtFirstEmptySlot();
 Test08_AllMethods_provideNonArrayVar_ExpectNothing();
 Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();
-Test10_CheckIfArrayContainsItem();]]></ST>
+Test10_CheckIfArrayContainsItem();
+Test11_ClearArray_ExpectEmptyArray();
+Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults();
+Test13_FindLastOccupiedItem();]]></ST>
     </Implementation>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
@@ -144,15 +147,15 @@ TcUnit.TEST_FINISHED();]]></ST>
 
 VAR
 	i		: INT;
-	value	: ST_FileProperties := (FileLocation := '99',FileName := '99');
-	arr		: ARRAY [0..10] OF ST_FileProperties;
+	value	: ST_GenericError;
+	arr		: ARRAY [0..10] OF ST_GenericError;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test05_InsertStruct');
 
 FOR i := 0 TO 10 BY 1 DO
-	arr[i].FileLocation := INT_TO_STRING(i);
-	arr[i].FileName := INT_TO_STRING(i);
+	arr[i].Code := i;
+	arr[i].Message := INT_TO_STRING(i);
 END_FOR
 
 ArrayHelper.InsertAtStart(
@@ -166,12 +169,12 @@ AssertEquals(
 	
 AssertEquals_STRING(
 	Expected := '9',
-	Actual := arr[10].FileLocation,
+	Actual := arr[10].Message,
 	Message := 'Last item was not removed from the array!');
 	
 AssertEquals_STRING(
 	Expected := '9',
-	Actual := arr[10].FileName,
+	Actual := arr[10].Message,
 	Message := 'Last item was not removed from the array!');
 	
 TcUnit.TEST_FINISHED();]]></ST>
@@ -308,6 +311,7 @@ AssertEquals_DINT(
 AssertTrue(
 	Condition := notAnArray, 
 	Message := 'When non-array is provided to any method, the method should not execute anything!');
+
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
@@ -318,9 +322,9 @@ VAR_INPUT
 END_VAR
 
 VAR_INST
-	arr			: ARRAY[0..20] OF ST_FileProperties;
-	item		: ST_FileProperties := (FileLocation := 'test', FileName := 'test2');
-	emptyItem	: ST_FileProperties;
+	arr			: ARRAY[0..20] OF ST_GenericError;
+	item		: ST_GenericError := (Code := 0, Message := '0');
+	emptyItem	: ST_GenericError;
 	i 			: T_ArrayIndexer;
 END_VAR]]></Declaration>
       <Implementation>
@@ -338,10 +342,10 @@ AssertEquals(
 	Message := 'InsertAtStart should have first item in array the same as item being inserted!');
 	
 FOR i := 1 TO 20 BY 1 DO
-	AssertEquals(
-		Actual := arr[i],
-		Expected := emptyItem, 
-		Message := Tc2_Standard.CONCAT(STR1 := 'InsertAtStart should have left other elements unchanged! Changed element at index ', STR2 := TO_STRING(i) ));
+	AssertEquals(Actual := arr[i], Expected := emptyItem, 
+		Message := Tc2_Standard.CONCAT(
+			STR1 := 'InsertAtStart should have left other elements unchanged! Changed element at index ', 
+			STR2 := TO_STRING(i) ));
 END_FOR
 
 ArrayHelper.InsertAtStart(arr := arr, item := item);
@@ -401,6 +405,146 @@ arr[2] := item;
 AssertTrue(
 	Condition := ArrayHelper.DoesArrayContainItem(arr, item),
 	Message := 'Array does contain the item on 2nd index, but also includes non empty elements before and after, method should return TRUE.');	
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test11_ClearArray_ExpectEmptyArray" Id="{cc53d4a8-f18c-0f01-352b-998b267791ec}">
+      <Declaration><![CDATA[METHOD Test11_ClearArray_ExpectEmptyArray
+VAR_INPUT
+END_VAR
+VAR_INST
+	arrUnmodified	: ARRAY[0..20] OF BOOL;
+	arrModified		: ARRAY[0..20] OF BOOL;
+	idx				: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test11_ClearArray_ExpectEmptyArray');
+
+FOR idx := 0 TO 20 BY 1 DO
+	arrModified[idx] := TRUE;
+END_FOR
+
+AssertTrue(
+	Condition := ArrayHelper.Clear(arrModified),
+	Message := 'Clearing array returned FALSE when it should have been TRUE.');
+
+AssertArrayEquals_BOOL(
+	Actuals := arrModified,
+	Expecteds := arrUnmodified,
+	Message := 'Array contents were not cleared.');
+
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults" Id="{347793f1-d4c3-04a6-364e-b7ee092ed247}">
+      <Declaration><![CDATA[METHOD Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults
+VAR_INST
+	arr			: ARRAY[0..10] OF REAL;
+	refArr		: REFERENCE TO ARRAY[0..10] OF REAL;
+	arrEmpty	: ARRAY[0..10] OF REAL;
+	findResult	: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults');
+refarr REF= arr;
+arr[5] := 22.2;
+
+ArrayHelper.Clear(refArr);
+AssertArrayEquals_REAL(
+	Actuals := arr,
+	Expecteds := arrEmpty,
+	Delta := 0,
+	Message := 'Clear array failed.');
+	
+arr[6] := 5.3;
+AssertTrue(
+	Condition := ArrayHelper.DoesArrayContainItem(arr := refArr, item := arr[6]),
+	Message := 'DoesArrayContainItem failed.');
+
+AssertTrue(
+	Condition := ArrayHelper.FindLastOccupiedItem(refArr, refArr[0], findResult),
+	Message := 'FindLastOccupiedItem failed (returned FALSE).');
+
+AssertEquals_REAL(
+	Actual := findResult,
+	Expected := 5.3,
+	Delta := 0,
+	Message := 'FindLastOccupiedItem output value was incorrect.');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetElementCount(refArr, refArr[0]),
+	Expected := 11,
+	Message := 'GetEleeentCount failed.');
+	
+AssertEquals_DINT(
+	Actual := ArrayHelper.GetMaxIndex(refArr, refArr[0], 0),
+	Expected := 10,
+	Message := 'GetMaxIndex failed.');
+	
+ArrayHelper.InsertAtStart(refArr, findResult);
+AssertEquals_REAL(
+	Actual := refArr[0],
+	Expected := 5.3,
+	Delta := 0.0,
+	Message := 'InsertAtStart failed');
+
+arr[0] := 0;	
+ArrayHelper.SetAtFirstEmptySlot(refArr, findResult);	
+AssertEquals(
+	Expected := findResult,
+	Actual := refArr[0],
+	Message := 'SetAtFirstEmptySlot failed.');
+	
+arr[1] := 5.5;
+ArrayHelper.ShiftDown(refArr, refArr[0]);
+AssertEquals_REAL(
+	Actual := refArr[0],
+	Expected := 5.5,
+	Delta := 0.0,
+	Message := 'ShiftDown failed.');
+
+ArrayHelper.ShiftUp(refARr, refArr[0]);
+AssertEquals_REAL(
+	Actual := refArr[1],
+	Expected := 5.5,
+	Delta := 0.0,
+	Message := 'ShiftUp failed.');
+
+TcUnit.TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test13_FindLastOccupiedItem" Id="{2fe3197e-d9e2-07ac-3526-3dff66a0a860}">
+      <Declaration><![CDATA[METHOD Test13_FindLastOccupiedItem
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	arr	: ARRAY[0..10] OF INT;
+	result	: int;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test13_FindLastOccupiedItem');
+
+AssertFalse(
+	Condition := ArrayHelper.FindLastOccupiedItem(arr, arr[0], result),
+	Message := 'Empty array should return FALSE.');
+	
+arr[5] := 5;
+
+AssertTrue(	
+	Condition := ArrayHelper.FindLastOccupiedItem(arr, arr[0], result),
+	Message := 'Expected TRUE, 5th element is not empty.');
+	
+AssertEquals_INT(
+	Actual := result,
+	Expected := 5,
+	Message := 'Incorrect result when finding last occupied element.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>

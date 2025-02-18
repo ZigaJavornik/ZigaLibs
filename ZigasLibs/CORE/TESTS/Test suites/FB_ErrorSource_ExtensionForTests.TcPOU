@@ -1,18 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_ErrorSource_ExtensionForTests" Id="{355c57f6-e53e-0e78-2d76-4f4befeabef0}" SpecialFunc="None">
     <Declaration><![CDATA[// Since FB_ErrorSource is an ABSTRACT class, the functionality needs to be implemented by extending the base class
 FUNCTION_BLOCK INTERNAL FB_ErrorSource_ExtensionForTests EXTENDS FB_ErrorSource
 VAR_INPUT
-	eAdsErrorCodeToTest : E_AdsErrorCode;
+	eAdsErrorCodeToTest 	: TcError.AdsErrorCodes;
+	sGenericErrorMessage	: Tc2_System.T_MaxString;
+	nGenericErrorCode		: DINT;
+	bError					: BOOL;		
 END_VAR
-VAR_OUTPUT
-END_VAR
-VAR
-END_VAR
+
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_errorSource.ErrorInfo.Code := eAdsErrorCodeToTest;]]></ST>
+      <ST><![CDATA[THIS^.AdsError.Code := eAdsErrorCodeToTest;
+THIS^.GenericError.Message := sGenericErrorMessage;
+THIS^.GenericError.Code := nGenericErrorCode;
+THIS^.Error := bError;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

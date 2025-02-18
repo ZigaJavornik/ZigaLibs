@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_DirectoryUtilities_Tests" Id="{ed7d6ffd-1136-0ce4-3b13-cdf20f3d89ea}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_DirectoryUtilities_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_directoryUtilities	: FB_DirectoryUtilities;
+END_VAR
+VAR CONSTANT
+	FILE_PATH	: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod();]]></ST>
+    </Implementation>
+    <Method Name="Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod" Id="{52a00fe1-3600-0e91-2c94-bc06e7c79de6}">
+      <Declaration><![CDATA[METHOD Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod
+VAR_INPUT
+END_VAR
+VAR_INST
+	fileCreated			: BOOL;
+	delayForDelete		: Tc2_Standard.TON;
+	currentSystemTime	: DT;
+	getSystemTime		: Tc2_System.GETSYSTEMTIME;
+	fileTime			: Tc2_Utilities.T_FILETIME;
+	dateTime			: DT;
+	error				: BOOL;
+	errorInfo			: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod') THEN
+	IF NOT fileCreated THEN
+		IF Utilities.File.Create(FILE_PATH, 'FileToDeleteViaDeleteBeforeMethod.txt', '', FALSE, 
+			error => error ,errorInfo => errorInfo)
+		THEN
+			fileCreated := TRUE;
+			AssertFalse(error, Tc2_Standard.CONCAT('Unexpected error when creating the file: ', errorInfo.Message));
+		END_IF
+	ELSE
+		delayForDelete(IN := TRUE, PT := T#3S);
+		IF delayForDelete.Q THEN
+			getSystemTime(timeHiDW => fileTime.dwHighDateTime, timeLoDW => fileTime.dwLowDateTime);
+			dateTime := Tc2_Utilities.FILETIME_TO_DT(fileTime);
+			IF _directoryUtilities.DeleteFilesCreatedBefore(FILE_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dateTime, 
+				error=> error, errorInfo => errorInfo)
+			THEN
+				AssertFalse(error, Tc2_Standard.CONCAT('Deleting files encountered an undexpected error: ', errorInfo.Message));
+				TcUnit.TEST_FINISHED();
+			END_IF
+		END_IF
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

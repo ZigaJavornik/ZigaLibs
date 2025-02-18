@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_FlowController_Tests" Id="{e70ec58a-3ae3-443c-a831-ea583923c705}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_FlowController_Tests EXTENDS TcUnit.FB_TestSuite
@@ -7,11 +7,10 @@ FUNCTION_BLOCK INTERNAL FB_FlowController_Tests EXTENDS TcUnit.FB_TestSuite
 // Create instance variables that will be accesible for all tests
 VAR
 	_mfc : FB_FlowController(	
-		bWriteLogs				:= TRUE,	// If flow capacity or gas type is incorrect, the error will be logged. On initialization, paramateres are also logged.
 		fPredictedFlowCapacity	:= 0.0,	// Predicted flow capacity. If bLogInvalidParams is set to TRUE and the read capacity differs, the error will be reported by the logger.
 		sPredictedGasType		:= 'Cl2',// Predicted gas type. If bLogInvalidParams is set to TRUE and the read gas type differs, the error will be reported by the logger.
 		sPredictedFlowUnit		:= 'sccm', // Predicted flow unit. If bLogInvalidParams is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-		iLogger					:= GVL_Bronkhorst.Logger,	// Logger implementation provided
+		iLogger					:= 0,	// Logger implementation provided
 		mode					:= E_ControllerMode.Controlling);
 END_VAR
 ]]></Declaration>

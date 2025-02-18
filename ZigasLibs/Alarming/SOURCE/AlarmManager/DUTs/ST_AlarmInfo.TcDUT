@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_AlarmInfo" Id="{463a7f24-175c-0f47-0a80-135f9f8b1f98}">
+    <Declaration><![CDATA[TYPE ST_AlarmInfo :
+STRUCT
+	Name			: Tc2_System.T_MaxString;
+	Id				: T_ArrayIndexer;
+	Message			: Tc2_System.T_MaxString;
+	IsActive		: BOOL;
+	IsAcknowledged	: BOOL;
+	Level			: E_AlarmLevel;
+	TimeInfos		: ST_AlarmTimeInfos;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

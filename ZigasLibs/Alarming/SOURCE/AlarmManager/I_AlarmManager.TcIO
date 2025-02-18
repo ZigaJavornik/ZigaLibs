@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_AlarmManager" Id="{08ed33cf-534a-0dd0-0916-694bc76d6975}">
+    <Declaration><![CDATA[INTERFACE I_AlarmManager
+]]></Declaration>
+    <Method Name="AcknowledgeAllAlarms" Id="{1e530507-ece4-0bf2-30ca-7dc1ee9b6502}">
+      <Declaration><![CDATA[// Acknowledges all uacknowledged alarms.
+METHOD AcknowledgeAllAlarms]]></Declaration>
+    </Method>
+    <Method Name="Actions" Id="{7fd5adb5-f699-0d3c-28ab-9bbe59531087}">
+      <Declaration><![CDATA[// Provides access to action builder with fluent approach.
+METHOD PUBLIC Actions : I_AlarmActions
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="ActiveAlarmsCount" Id="{2d6bf4ab-360d-092e-201b-11f8e5f47030}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the total count of currently active alarms
+PROPERTY ActiveAlarmsCount : UINT]]></Declaration>
+      <Get Name="Get" Id="{ed5d2186-6859-0c04-1ea3-b4f44ecf585c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="DeleteAlarm" Id="{a7a177eb-524a-0c9a-1c86-c39a7191d952}">
+      <Declaration><![CDATA[// Deletes the alarm with the provided id.
+METHOD DeleteAlarm
+VAR_INPUT
+	id	: DINT;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="DeleteAll" Id="{4c68625a-8348-0ede-3967-a08de81c0997}">
+      <Declaration><![CDATA[// Deletes all existing alarms from the memory
+METHOD DeleteAll]]></Declaration>
+    </Method>
+    <Property Name="Enable" Id="{0ae510b3-be57-0ba1-3645-7ca74f263283}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or sets if alarm manager is enabled or not. When disabled, all active alarms will become inactive!
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{d641b5cb-4afe-06fc-37fc-e223f0c5a6b9}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{767625c3-1355-05c7-1af5-5dda3ede591a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="GetAlarmById" Id="{6794a080-844b-0a8a-010d-0b8faf92f607}">
+      <Declaration><![CDATA[(* Gets the alarm with the provided id. 
+ If no mathching alarm exists, an invalid reference will be returned - check by using __ISVALIDREF() for any further operations!.*)
+METHOD GetAlarmById : REFERENCE TO ST_AlarmInfo
+VAR_INPUT
+	nID		: T_ArrayIndexer;	// Id of the alarm.
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="GetAlarmByName" Id="{b6a13b3a-4fe4-05b4-03de-e547fbc7db95}">
+      <Declaration><![CDATA[// Gets the alarm with the provided name. 
+// IF no mathching alarm exists, an invalid REFERENCE will be returned - check BY using __ISVALIDREF() FOR ANY further operations!.*)
+METHOD GetAlarmByName : REFERENCE TO ST_AlarmInfo
+VAR_INPUT
+	sName	: Tc2_System.T_MaxString;	// Name of the alarm
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="RegisterAlarm" Id="{7b9e25e7-d788-0c73-0fbd-360da521ec34}">
+      <Declaration><![CDATA[// Registers a new alarm with the provided information. 
+// Returns TRUE if new alarm was registered or false if not
+// Possible reasons for fail:
+// - alarm buffer is full
+// - the id already exists)
+METHOD RegisterAlarm : BOOL
+VAR_INPUT
+	Id		: T_ArrayIndexer;			// Alarm ID
+	Name	: Tc2_System.T_MaxString;	// Alarm name
+	Message	: Tc2_System.T_MaxString;	// Message when the alarm occurrs
+	Level	: E_AlarmLevel;				// Alarm level
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="RegisteredAlarmsCount" Id="{b79b6ee5-f1af-0dc0-1ef4-907a3b0ef213}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the total number of alarms registered
+PROPERTY RegisteredAlarmsCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{175362fc-405e-0254-3605-0a7d81ea3e6b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="UnacknowledgedAlarmsCount" Id="{565ebd05-d113-0bc4-354e-0d80b658fc2f}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the current count of alarms that have not yet been acknowledged
+PROPERTY UnacknowledgedAlarmsCount : UINT]]></Declaration>
+      <Get Name="Get" Id="{44ad48c8-561a-014b-1364-bd809079d93f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="ST_FileInfo" Id="{ca9d1963-2c70-09ab-0051-39e1f086ee81}">
+    <Declaration><![CDATA[TYPE ST_FileInfo :
+STRUCT
+	Location	: Tc2_System.T_MaxString;
+	Path		: Tc2_System.T_MaxString;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

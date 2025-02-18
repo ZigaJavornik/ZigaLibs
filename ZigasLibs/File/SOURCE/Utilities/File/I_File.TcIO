@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_File" Id="{33af994c-21df-0f4a-1e96-e33b7bb57207}">
+    <Declaration><![CDATA[INTERFACE I_File
+]]></Declaration>
+    <Method Name="Create" Id="{146ef649-a389-0f37-246a-716490eddfc1}">
+      <Declaration><![CDATA[METHOD Create : BOOL
+VAR_INPUT
+	path		: Tc2_System.T_MaxString;	// Path to where the file will be created
+	name		: Tc2_System.T_MaxString;	// Name of the file to create.
+	netId		: Tc2_System.T_AmsNetID;	// NetId of the device where the file will be created
+	overwrite	: BOOL;						// If set to TRUE, if the file with the provided name already exists, it will be overwritten
+END_VAR
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Delete" Id="{4395932f-e788-03a9-2800-06515f238a60}">
+      <Declaration><![CDATA[// Deletes the file. Returns TRUE when done.
+METHOD Delete : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Location of the file
+	name	: Tc2_System.T_MaxString;	// File to be deleted
+	netId	: Tc2_System.T_AmsNetID;
+END_VAR
+VAR_OUTPUT
+	error			: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Exists" Id="{028582fb-e707-0246-3a99-de4ed3a1ab5d}">
+      <Declaration><![CDATA[// Checks the content at `path` and looks for the file with `name`. Returns TRUE when done. 
+// If file exissts, the result ˛`result` will be TRUE, else it will be fALSE.
+METHOD Exists : BOOL
+VAR_INPUT
+	path	: Tc2_System.T_MaxString;	// Path to the file location
+	name	: Tc2_System.T_MaxString;	// Name of the file
+	netId	: Tc2_System.T_AmsNetID;	// NetId where the file is located
+END_VAR
+
+VAR_OUTPUT
+	result		: BOOL; // Result, if the file exists or not - check when method returns TRUE
+	error		: BOOL;	// Will be true if an error occurs while executing the file query
+	errorInfo	: ZigaLibs_Core.ST_AdsError; // Error information will be provided here
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="E_AddAnyBitOptions" Id="{73f241a7-d742-0aad-14ed-f2c28aacd827}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+// Provides various options of how ANY_BIT data type can be converted.
+TYPE E_AddAnyBitOptions :
+(
+	BINARY,			// Will be converted to a binary string (base 2)
+	DECIMAL,		// Will be converted to a decial string (base 10)
+	HEXADECIMAL,	// Will be converted to hexadecimal string (base 16)
+	OCTAL			// Will be converted to octal string (base 8)
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

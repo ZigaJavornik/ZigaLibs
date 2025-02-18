@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="MemoryHelper" Id="{dc418c4f-3dca-051d-0fe1-6f22bd37ffd9}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+PROGRAM MemoryHelper
+
+VAR
+	_getRouterStatusInfo : Tc2_Utilities.FB_GetRouterStatusInfo;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetRouterStatusInfo" Id="{58fb8010-c8db-0de9-2fe2-0cde06c29617}">
+      <Declaration><![CDATA[// Gets the router info and copies it to the refRouterInfo. Returns TRUE when done.
+METHOD GetRouterStatusInfo : BOOL
+VAR_INPUT
+	netId			: Tc2_System.T_AmsNetID;
+	refRouterInfo	: REFERENCE TO Tc2_Utilities.ST_TcRouterStatusInfo;
+END_VAR
+
+VAR_INST
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_getRouterStatusInfo(
+	bExecute := NOT _getRouterStatusInfo.bBusy,
+	sNetId := netId);
+	
+refRouterInfo := _getRouterStatusInfo.info;
+GetRouterStatusInfo := NOT _getRouterStatusInfo.bBusy;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

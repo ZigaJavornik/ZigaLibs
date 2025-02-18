@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="GasTypes" Id="{29a0b4bc-11ec-0b5c-1f68-73f742326369}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+{attribute 'hide_all_locals'}
+
+// A class containing possible gas types for Bronkhorst devices stored as a string.
+PROGRAM GasTypes
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="BBr3" Id="{328611a6-b1b7-0214-0e93-e90a6fdd79ea}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY BBr3 : STRING]]></Declaration>
+      <Get Name="Get" Id="{1eee6602-765c-0afb-073e-c7c38414ff74}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BBr3 := 'BBr3';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="BCl3" Id="{5d338191-fefc-0be6-0c03-23da561f9d85}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY BCl3 : STRING]]></Declaration>
+      <Get Name="Get" Id="{b8fce984-c912-0f9f-1de5-0b1762e5087c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[BCl3 := 'BCl3';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Cl2" Id="{445322bc-5b50-0dfc-0d6c-0de2399852f8}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY Cl2 : STRING]]></Declaration>
+      <Get Name="Get" Id="{4bd06be8-29c9-0cac-2b53-bdebe893828b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Cl2 := 'Cl2';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="H2" Id="{c8691a1c-8cc5-0f8d-0df4-a2109971f2e9}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY H2 : STRING]]></Declaration>
+      <Get Name="Get" Id="{bd00b772-2e9d-0c9a-01f7-45b5753a6c00}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[H2 := 'H2';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="He" Id="{8f74035e-bac9-001e-3659-f3c7c9f08775}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY He : STRING]]></Declaration>
+      <Get Name="Get" Id="{7a09f7e9-86b5-0678-1d6c-abae167f6df1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[He := 'He';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="N2" Id="{edad31b3-91ea-09c3-1975-a51b0bf7e2b2}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY N2 : STRING]]></Declaration>
+      <Get Name="Get" Id="{a8e1d404-9646-0d6b-3281-df4fba58c4ac}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[N2 := 'N2';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="O2" Id="{4bcb2d58-a78a-0681-1b48-64ac277d1283}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY O2 : STRING]]></Declaration>
+      <Get Name="Get" Id="{a2fe2990-e8ca-086f-24cc-66245106486e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[O2 := 'O2';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SF6" Id="{1bcafec4-6590-0cd1-0934-41699cf18ec5}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY SF6 : STRING]]></Declaration>
+      <Get Name="Get" Id="{b8fd5d71-6f1a-061f-1824-a4240c6b5ca6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SF6 := 'SF6';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SiF4" Id="{faa5f6df-73ba-0629-2622-92d1b18aaba3}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY SiF4 : STRING]]></Declaration>
+      <Get Name="Get" Id="{de523e24-f157-0efb-29cb-1bebed9b6d71}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SiF4 := 'SiF4';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -3,13 +3,9 @@
   <POU Name="FB_EthercatDiagnosis" Id="{d33d9930-1765-079a-0b49-5f9960a4f2c8}" SpecialFunc="None">
     <Declaration><![CDATA[// Function block for EtherCAT diagnosis, looking at the live slave status and reporting back any missing slaves
 FUNCTION_BLOCK FB_EthercatDiagnosis IMPLEMENTS I_EthercatDiagnosis
-VAR_INPUT
-END_VAR
-VAR_OUTPUT
-END_VAR
 VAR
-	_ignoredSlaves	: ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString;
-	_missingSlaves	: ARRAY[0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo;
+	_ignoredSlaves	: ARRAY[0..255] OF Tc2_System.T_MaxString;
+	_missingSlaves	: ARRAY[0..255] OF ST_EthercatSlaveInfo;
 	_status			: E_EthercatDiagnosisStatus;
 	_diagState		: E_EthercatDiagnosisState;
 	_error			: BOOL;
@@ -33,7 +29,7 @@ END_VAR
     </Property>
     <Property Name="IgnoredSlaves" Id="{7608aaf4-3882-00d8-3f05-e8979b4d9600}">
       <Declaration><![CDATA[(* Gets an array of slaves that have been added to ignore list*)
-PROPERTY IgnoredSlaves : REFERENCE TO ARRAY [0..Tc2_EtherCAT.EC_MAX_SLAVES] OF Tc2_System.T_MaxString
+PROPERTY IgnoredSlaves : REFERENCE TO ARRAY [0..255] OF Tc2_System.T_MaxString
 ]]></Declaration>
       <Get Name="Get" Id="{d9f798d0-70ea-0ed9-1bdf-e9314e35a335}">
         <Declaration><![CDATA[VAR
@@ -45,8 +41,7 @@ END_VAR
       </Get>
     </Property>
     <Method Name="IgnoreSlave" Id="{42e52eac-60a4-0644-0bec-21bc97b0aa37}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-(* Adds the provided slave to a collection of slaves that will not trigger an error
+      <Declaration><![CDATA[(* Adds the provided slave to a collection of slaves that will not trigger an error
  Example is slaves that are used on hot connect groups, and when connected should not cause an error. *)
 METHOD IgnoreSlave
 VAR_INPUT
@@ -62,7 +57,7 @@ END_IF]]></ST>
     </Method>
     <Property Name="MissingSlaves" Id="{b9124aca-eb02-0db3-3a56-63cbcceec356}">
       <Declaration><![CDATA[(* Returns an array of misisng slave names*)
-PROPERTY MissingSlaves : REFERENCE TO ARRAY [0..Tc2_EtherCAT.EC_MAX_SLAVES] OF ST_EthercatSlaveInfo
+PROPERTY MissingSlaves : REFERENCE TO ARRAY [0..255] OF ST_EthercatSlaveInfo
 ]]></Declaration>
       <Get Name="Get" Id="{db0dc646-f425-0868-2335-14eb7fab3a9f}">
         <Declaration><![CDATA[VAR
@@ -86,7 +81,9 @@ METHOD Reset
       <Declaration><![CDATA[{warning 'add method implementation '}
 (* Performs a scan on the EtherCAT master, returns TRUE when done.*)
 METHOD Scan : BOOL
-]]></Declaration>
+VAR_INPUT
+	EcMasterNetId	: AMSNETID;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[]]></ST>
       </Implementation>

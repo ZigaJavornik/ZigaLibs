@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="I_AlarmActionBy" Id="{1bdf0514-5e3c-01ed-0fa4-01e579a6736b}">
+    <Declaration><![CDATA[INTERFACE I_AlarmActionBy
+]]></Declaration>
+    <Method Name="ById" Id="{4f271eb0-1f2d-0be5-24b2-cb757c34f8dc}">
+      <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided ID
+METHOD ById
+VAR_INPUT
+	Id	: T_ArrayIndexer;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ByName" Id="{aff66f81-733d-0247-127b-64fe41825268}">
+      <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided name
+METHOD ByName
+VAR_INPUT
+	name	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

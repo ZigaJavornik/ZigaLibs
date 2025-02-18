@@ -9,8 +9,8 @@ PROGRAM ArrayHelper
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Method Name="Clear" Id="{be15889c-c0e1-09a6-20bb-cafe31f0b982}">
-      <Declaration><![CDATA[// Clears the entire array
-METHOD PUBLIC Clear
+      <Declaration><![CDATA[// Clears the entire array. Returns TRUE if operation was sucessfull.
+METHOD PUBLIC Clear : BOOL
 VAR_INPUT
 	arr			: ANY;	// Array to be cleared
 END_VAR
@@ -20,10 +20,12 @@ END_VAR
 	RETURN;
 END_IF
 
-MEMSET(
+Tc2_System.MEMSET(
 	destAddr := arr.pValue,
 	fillByte := 0,
-	n := DINT_TO_UDINT(arr.diSize));]]></ST>
+	n := DINT_TO_UDINT(arr.diSize));
+	
+Clear := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="DoesArrayContainItem" Id="{4bfa90e6-378d-00b9-19dc-21db7c691e2f}">
@@ -112,14 +114,14 @@ END_IF
 
 FOR i := maxIndex TO 0 BY -1 DO
 	compareResult := Tc2_System.MEMCMP(
-		pBuf1 := arr.pValue + (arr.diSize * SIZEOF(BYTE)) - (i * dataType.diSize),
+		pBuf1 := arr.pValue +  DINT_TO_DWORD(i * dataType.diSize),
 		pBuf2 := ptrAllocatedBytes_emptyElement,
 		n := DINT_TO_UDINT(dataType.diSize));
 		
 	// If element is not empty, return
 	IF compareResult <> E_MemCmpResults.IDENTICAL THEN
 		Tc2_System.MEMCPY(
-			srcAddr := arr.pValue,
+			srcAddr := arr.pValue +  DINT_TO_DWORD(i * dataType.diSize),
 			destAddr := result.pValue,
 			n := DINT_TO_UDINT(dataType.diSize));
 		FindLastOccupiedItem := TRUE;
@@ -240,20 +242,6 @@ __DELETE(ptrAllocatedBytes);
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SetAtIndex" Id="{4e90c91b-dce8-0a78-1e55-30ac0855858c}">
-      <Declaration><![CDATA[METHOD SetAtIndex
-VAR_INPUT
-	arr		: ANY;
-	value	: ANY;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
-	RETURN;
-END_IF
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="ShiftDown" Id="{bf9c2e03-6302-0e64-05d0-eb3dbb49d451}">
       <Declaration><![CDATA[// Shifts the array down, losing first element and clearing last element in the process.
 METHOD ShiftDown
@@ -314,15 +302,13 @@ END_VAR
 VAR
 	isArray		: BOOL;
 	isReference	: BOOL;
-	isPointer	: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[isArray := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_ARRAY);
-isReference := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_REFERENCE);
-isPointer := F_CompareTypeClassWithBaseLib(arr.TypeClass, IBaseLibrary.TYPE_POINTER);
+        <ST><![CDATA[isArray := F_DoesVarTypeEqual(arr, IBaseLibrary.TYPE_ARRAY);
+isReference := F_DoesVarTypeEqual(arr, IBaseLibrary.TYPE_REFERENCE);
 
-ValidateArrayVar := isArray OR isPointer OR isReference;
+ValidateArrayVar := isArray OR isReference;
 ]]></ST>
       </Implementation>
     </Method>

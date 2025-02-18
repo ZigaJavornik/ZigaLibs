@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_LocalSystemTimeProvider" Id="{739de1b2-7958-07bc-150b-17ae5e4fc476}">
+    <Declaration><![CDATA[INTERFACE I_LocalSystemTimeProvider
+]]></Declaration>
+    <Method Name="ConvertToString" Id="{44adc15c-19ac-0a67-2299-2e503992cd1d}">
+      <Declaration><![CDATA[METHOD PUBLIC ConvertToString : I_DateTimeToStringConverter
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="CurrentTime" Id="{dc69b815-82ab-011b-2f1d-6f6ae8497b56}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets current system timo info as a <ST_CurrentSystemTimeInfo>
+PROPERTY CurrentTime : REFERENCE TO ST_CurrentSystemTimeInfo]]></Declaration>
+      <Get Name="Get" Id="{e71af7c8-9bcc-0614-14bc-beaaca577c88}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

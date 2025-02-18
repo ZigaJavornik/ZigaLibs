@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="FB_FileUtilities_Tests" Id="{249d0fb5-f041-0a6f-1c25-5f16c2e2c0d5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_FileUtilities_Tests EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_fileUtilities	: FB_FileUtilities;
+END_VAR
+VAR CONSTANT
+	FILE_PATH	: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
+	FILE_NAME	: Tc2_System.T_MaxString := 'FileUtilitiesCreateTestFile.txt';
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_CreateFile_ExpectNoError();
+Test02_Exists_ValidateCreatedFileExists();
+Test03_DeleteFile_ExpectFileNoLongerExists();]]></ST>
+    </Implementation>
+    <Method Name="Test01_CreateFile_ExpectNoError" Id="{7d6c935b-36f5-0f31-204e-120909620175}">
+      <Declaration><![CDATA[METHOD Test01_CreateFile_ExpectNoError
+VAR_INPUT
+END_VAR
+VAR
+	error		: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_CreateFile_ExpectNoError') THEN
+	IF _fileUtilities.Create(FILE_PATH, FILE_NAME, '', FALSE, error => error, errorInfo => errorInfo) THEN
+		AssertFalse(error, Tc2_Standard.CONCAT('Unexpected error occured while creating file.', errorInfo.Message));
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_Exists_ValidateCreatedFileExists" Id="{149f8107-6f3d-03ac-0b7b-a96e8bc77518}">
+      <Declaration><![CDATA[METHOD Test02_Exists_ValidateCreatedFileExists
+VAR_INPUT
+END_VAR
+
+VAR
+	exists		: BOOL;
+	error		: BOOL;
+	errorInfo	: ZigaLibs_Core.ST_AdsError;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_Exists_ValidateCreatedFileExists') THEN
+	IF _fileUtilities.Exists(FILE_PATH, FILE_NAME, '', result => exists,error => error, errorInfo => errorInfo) THEN
+		AssertTrue(exists, 'Created file should exist.');
+		AssertFalse(error, Tc2_Standard.CONCAT('Unexpected error occurred while checking file existion: ', errorInfo.Message));
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_DeleteFile_ExpectFileNoLongerExists" Id="{3472f5d0-73d3-0eab-3aa3-3959baf6930c}">
+      <Declaration><![CDATA[METHOD Test03_DeleteFile_ExpectFileNoLongerExists
+VAR_INPUT
+END_VAR
+VAR_INST
+	error			: BOOL;
+	errorInfo		: ZigaLibs_Core.ST_AdsError;
+	fileDeleteDone	: BOOL;
+	fileExists		: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_DeleteFile_ExpectFileNoLongerExists') THEN
+	IF NOT fileDeleteDone AND_THEN 
+		_fileUtilities.Delete(FILE_PATH, FILE_NAME, '', error => error, errorInfo => errorInfo) 
+	THEN
+		AssertFalse(error, Tc2_Standard.CONCAT('Unexpected error occurred while deleting file: ', errorInfo.Message));
+		fileDeleteDone := TRUE;
+	ELSIF fileDeleteDone THEN
+		IF _fileUtilities.Exists(FILE_PATH, FILE_NAME, '', result => fileExists) THEN
+			AssertFalse(fileExists, 'File still exists, deletion failed.');
+			TcUnit.TEST_FINISHED();
+		END_IF
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

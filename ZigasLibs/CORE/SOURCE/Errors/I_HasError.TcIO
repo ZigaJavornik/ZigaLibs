@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <Itf Name="I_HasError" Id="{38fbeb26-2e17-01ba-1b07-91aadc9f4503}">
+    <Declaration><![CDATA[INTERFACE I_HasError
+]]></Declaration>
+    <Property Name="Error" Id="{2153587d-7715-0761-2820-f511a3974beb}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Returns TRUE if an error has occurred
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{db763451-fa61-009a-2ce3-90f31fd10e97}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

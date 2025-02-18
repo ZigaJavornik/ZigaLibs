@@ -1,115 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_Logger_Tests" Id="{56576e73-0b8d-04b4-2a1d-ddaf5d4df6a5}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Logger_Tests EXTENDS FB_TestSuite
 VAR
-	fbLogger			: FB_Logger;
-	fbFileHandler		: FB_FileHandler;
-	fbLocalSystemTime	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
+	_logger				: FB_Logger;
+	_fileHandler		: ZigaLibs_File.FB_FileHandler;
+	_localSystemTime	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
+	_loggerConfigured	: BOOL;
 END_VAR
 
 VAR CONSTANT
-	FOLDER_PATH	: Tc2_System.T_MaxString := 'Hard Disk\Tests\Logger';
-	FILE_NAME	: Tc2_System.T_MaxString := 'FileName';
+	FOLDER_PATH	: Tc2_System.T_MaxString := 'C:/';
+	NET_ID		: Tc2_System.T_AmsNetID := '192.168.56.1.1.1';
+	LOG_NAME	: Tc2_System.T_MaxString := 'MyLog';
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbLogger.FileProperties.FileLocation := FOLDER_PATH;
-fbLogger.FileProperties.FileName := FILE_NAME;
-fbLogger();
-fbLocalSystemTime();
+      <ST><![CDATA[// Configure logger...
+IF NOT _loggerConfigured THEN
+	_logger.Configure()
+		.SetLogFilePath(FOLDER_PATH)
+		.SetLogFileName(LOG_NAME)
+		.SetLogExtension('log')
+		.SetRollingInterval(6)
+		.SetNetId(NET_ID)
+		.DeleteLogsAfter(1, T#1H)
+		.Apply(FALSE); 
+	_loggerConfigured := TRUE;
+END_IF
+
+
+_logger();
+_localSystemTime();
 
 	
 Test01_LogError();
 Test02_LogWarning();
 Test03_LogInfo();
-Test04_LogGeneric();]]></ST>
+Test04_LogGeneric();
+Test05_LogConfiguration_RollingIntervalSetTo0_ExpectOnlyFileName();
+Test06_FileExtension_DotAddedAutomaticallyIfNotProvided();
+Test07_ConfigurationDoesNotChangeUntilApplyIsCalled();]]></ST>
     </Implementation>
     <Method Name="Test01_LogError" Id="{d8907491-afae-0e50-10f7-6c16a49476f3}">
       <Declaration><![CDATA[METHOD Test01_LogError
-VAR_INPUT
-END_VAR
-
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: Tc2_System.T_MaxString;
+	sReadContent				: STRING(1000);
 	nLogErrorTestState			: UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test01_LogError');
-
-CASE nLogErrorTestState OF
-	0:
-		IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
-			fbLogger.LogError('Error text....');
-			fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
-				
-			sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-				timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
-				timeOfDaySeperator := '',
-				dateSeperator := '',
-				fillWithZeros := TRUE,
-				IncludeMilliseconds := FALSE);
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_LogError')THEN
+	CASE nLogErrorTestState OF
+		0: 
+			_logger.LogError('Error text....');
+			nLogErrorTestState := nLogErrorTestState + 1;
 		
-			sDateForLogName := fbStringBuilder.Reset()
-				.AddString(str := sDateForLogName)
-				.AddString(str := '_')
-				.AddString(str := fbLocalSystemTime.ConvertToString().Hour(fillWithZeros := TRUE))
-				.Create();
-				
-			fbFileHandler.FileProperties.FileName := fbStringBuilder.Reset()
-				.AddString(str := FILE_NAME)
-				.AddString(str := '_')
-				.AddString(str := sDateForLogName)
-				.AddString(str := '.txt')
-				.Create();
-				nLogErrorTestState := nLogErrorTestState + 1;
+		1:	
+			IF _logger.Error THEN
+				AssertTrue(
+					Condition := FALSE, 
+					Message := 'Unexpected error occurred when creating the log.');
+					TcUnit.TEST_FINISHED();
+					RETURN;
 			END_IF
 			
-		1:
-			TonMaxDelayForFileToAppear(IN := fbLogger.Ready);
-			IF TonMaxDelayForFileToAppear.Q AND_THEN fbFileHandler.Exists(refFileExists := bExists) THEN
-				AssertTrue( 
-					Condition := bExists,
+			TonMaxDelayForFileToAppear(IN := TRUE);
+			IF TonMaxDelayForFileToAppear.Q AND_THEN 
+				ZigaLibs_File.Utilities.File.Exists(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					Exists => bExists) 
+			THEN
+				AssertTrue(Condition := bExists,
 					Message := 'Log file was not created!');
 				nLogErrorTestState := nLogErrorTestState + 1;
 			END_IF
-			
+				
 		2:
-			IF fbFileHandler.Error THEN
-				AssertTrue(
-					Condition := FALSE, 
-					Message := 'Unexpected error occurred while reading content from log file!');
-					TcUnit.TEST_FINISHED();
+			IF NOT _fileHandler.File.IsOpened THEN
+				_fileHandler.Open(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					mode := ZigaLibs_File.E_FileOpenMode.TEXT_READ_MUST_EXIST);
+				RETURN;
 			END_IF
 			
-			IF fbFileHandler.Read(sReadContent) THEN
+			IF _fileHandler.Read(sReadContent) THEN
 				AssertTrue(
-					Condition := Tc2_Standard.FIND(
-						STR1 := sReadContent, 
-						STR2 := fbLogger.LogLevelHeaders.Error) <> 0,
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(
+						sReadContent,_logger.Configuration.LogLevelHeaders.Error),
 					Message := 'Error header not found in the read content of the log file!');
-
+	
 				AssertTrue(
-					Condition := Tc2_Standard.FIND(
-						STR1 := sReadContent, 
-						STR2 := 'Error text....') <> 0,
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Error text....'),
 					Message := 'Message provided to the log method was not found in the contents of the file!');
 					
 				nLogErrorTestState := nLogErrorTestState + 1;
 			END_IF
 			
 		3:
-			IF fbFileHandler.Delete() THEN
+			IF _fileHandler.Close() THEN
 				nLogErrorTestState := nLogErrorTestState + 1;
-				TcUnit.TEST_FINISHED();
 			END_IF	
 			
 		4:	
-			;
-END_CASE]]></ST>
+			IF ZigaLibs_File.Utilities.File.Delete(
+				name := _logger._fileHandler.File.Name,
+				path := _logger._fileHandler.File.Path,
+				NetId := _logger._fileHandler.File.NetId,) 
+			THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
+	END_CASE
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test02_LogWarning" Id="{4fe293bd-ef31-0f9e-0f9c-a610eddd16dc}">
@@ -120,84 +128,75 @@ END_VAR
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: Tc2_System.T_MaxString;
-	nLogWarningTestState			: UINT := 0;
+	sReadContent				: STRING(1000);
+	nLogWarningTestState		: UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test02_LogWarning');
-
-IF TcUnit.IS_TEST_FINISHED('Test01_LogError') THEN	
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_LogWarning') THEN
 	CASE nLogWarningTestState OF
-		0:
-			IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
-				fbLogger.LogWarning('Warning text....');
-				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
-					
-				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
-					timeOfDaySeperator := '',
-					dateSeperator := '',
-					fillWithZeros := TRUE,
-					IncludeMilliseconds := FALSE);
-			
-				sDateForLogName := fbStringBuilder.Reset()
-					.AddString(str := sDateForLogName)
-					.AddString(str := '_')
-					.AddString(str := fbLocalSystemTime.ConvertToString().Hour(fillWithZeros := TRUE))
-					.Create();
-					
-				fbFileHandler.FileProperties.FileName := fbStringBuilder.Reset()
-					.AddString(str := FILE_NAME)
-					.AddString(str := '_')
-					.AddString(str := sDateForLogName)
-					.AddString(str := '.txt')
-					.Create();
-					nLogWarningTestState := nLogWarningTestState + 1;
-				END_IF
-				
-			1:
-				TonMaxDelayForFileToAppear(IN := fbLogger.Ready);
-				IF TonMaxDelayForFileToAppear.Q AND_THEN fbFileHandler.Exists(refFileExists := bExists) THEN
-					AssertTrue( 
-						Condition := bExists,
-						Message := 'Log file was not created!');
-					nLogWarningTestState := nLogWarningTestState + 1;
-				END_IF
-				
-			2:
-				IF fbFileHandler.Error THEN
-					AssertTrue(
-						Condition := FALSE, 
-						Message := 'Unexpected error occurred while reading content from log file!');
-						TcUnit.TEST_FINISHED();
-				END_IF
-				
-				IF fbFileHandler.Read(sReadContent) THEN
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := fbLogger.LogLevelHeaders.Warning) <> 0,
-						Message := 'Warning header not found in the read content of the log file!');
-	
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := 'Warning text....') <> 0,
-						Message := 'Message provided to the log method was not found in the contents of the file!');
-						
-					nLogWarningTestState := nLogWarningTestState + 1;
-				END_IF
-				
-			3:
-				IF fbFileHandler.Delete() THEN
+		0: 
+			_logger.LogWarning('Warning text....');
+			nLogWarningTestState := nLogWarningTestState + 1;
+		1:	
+			IF _logger.Error THEN
+				AssertTrue(
+					Condition := FALSE, 
+					Message := 'Unexpected error occurred when creating the log.');
 					TcUnit.TEST_FINISHED();
-					nLogWarningTestState := nLogWarningTestState + 1;
-				END_IF	
+					RETURN;
+			END_IF
+			
+			TonMaxDelayForFileToAppear(IN := TRUE);
+			IF TonMaxDelayForFileToAppear.Q AND_THEN 
+				ZigaLibs_File.Utilities.File.Exists(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					Exists => bExists) 
+			THEN
+				AssertTrue( 
+					Condition := bExists,
+					Message := 'Log file was not created!');
+				nLogWarningTestState := nLogWarningTestState + 1;
+			END_IF
 				
-			4:	
-				;
+		2:
+			IF NOT _fileHandler.File.IsOpened THEN
+				_fileHandler.Open(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					mode := ZigaLibs_File.E_FileOpenMode.TEXT_READ_MUST_EXIST);
+				RETURN;
+			END_IF
+			
+			IF _fileHandler.Read(sReadContent) THEN
+				AssertTrue(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Warning),
+					Message := 'Warning header not found in the read content of the log file!');
+	
+				AssertTrue(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Warning text....'),
+					Message := 'Message provided to the log method was not found in the contents of the file!');
+					
+				nLogWarningTestState := nLogWarningTestState + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Close() THEN
+				nLogWarningTestState := nLogWarningTestState + 1;
+			END_IF	
+			
+		4:	
+			IF ZigaLibs_File.Utilities.File.Delete(
+				name := _logger._fileHandler.File.Name,
+				path := _logger._fileHandler.File.Path,
+				NetId := _logger._fileHandler.File.NetId,) 
+			THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
 	END_CASE
 END_IF]]></ST>
       </Implementation>
@@ -209,85 +208,77 @@ END_VAR
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: Tc2_System.T_MaxString;
-	nLogInfoTestState			: UINT := 0;
+	sReadContent				: STRING(1000);
+	nLogInfoState				: UINT := 0;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test03_LogInfo');
-
-IF TcUnit.IS_TEST_FINISHED('Test02_LogWarning') THEN	
-	CASE nLogInfoTestState OF
-		0:
-			IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
-				fbLogger.LogInfo('Info text....');
-				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
-					
-				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
-					timeOfDaySeperator := '',
-					dateSeperator := '',
-					fillWithZeros := TRUE,
-					IncludeMilliseconds := FALSE);
-			
-				sDateForLogName := fbStringBuilder.Reset()
-					.AddString(str := sDateForLogName)
-					.AddString(str := '_')
-					.AddString(str := fbLocalSystemTime.ConvertToString().Hour(fillWithZeros := TRUE))
-					.Create();
-					
-				fbFileHandler.FileProperties.FileName := fbStringBuilder.Reset()
-					.AddString(str := FILE_NAME)
-					.AddString(str := '_')
-					.AddString(str := sDateForLogName)
-					.AddString(str := '.txt')
-					.Create();
-					nLogInfoTestState := nLogInfoTestState + 1;
-				END_IF
-				
-			1:
-				TonMaxDelayForFileToAppear(IN := fbLogger.Ready);
-				IF TonMaxDelayForFileToAppear.Q AND_THEN fbFileHandler.Exists(refFileExists := bExists) THEN
-					AssertTrue( 
-						Condition := bExists,
-						Message := 'Log file was not created!');
-					nLogInfoTestState := nLogInfoTestState + 1;
-				END_IF
-				
-			2:
-				IF fbFileHandler.Error THEN
-					AssertTrue(
-						Condition := FALSE, 
-						Message := 'Unexpected error occurred while reading content from log file!');
-						TcUnit.TEST_FINISHED();
-				END_IF
-				
-				IF fbFileHandler.Read(sReadContent) THEN
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := fbLogger.LogLevelHeaders.Info) <> 0,
-						Message := 'Info header not found in the read content of the log file!');
-	
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := 'Info text....') <> 0,
-						Message := 'Message provided to the log method was not found in the contents of the file!');
-						
-					nLogInfoTestState := nLogInfoTestState + 1;
-				END_IF
-				
-			3:
-				IF fbFileHandler.Delete() THEN
-					nLogInfoTestState := nLogInfoTestState + 1;
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_LogInfo') THEN
+	CASE nLogInfoState OF
+		0: 
+			_logger.LogInfo('Info text....');
+			nLogInfoState := nLogInfoState + 1;
+		1:	
+			IF _logger.Error THEN
+				AssertTrue(
+					Condition := FALSE, 
+					Message := 'Unexpected error occurred when creating the log.');
 					TcUnit.TEST_FINISHED();
-				END_IF	
+					RETURN;
+			END_IF
+			
+			
+			TonMaxDelayForFileToAppear(IN := TRUE);
+			IF TonMaxDelayForFileToAppear.Q AND_THEN 
+				ZigaLibs_File.Utilities.File.Exists(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					Exists => bExists) 
+			THEN
+				AssertTrue( 
+					Condition := bExists,
+					Message := 'Log file was not created!');
+				nLogInfoState := nLogInfoState + 1;
+			END_IF
 				
-			4:
-				;
+		2:
+			IF NOT _fileHandler.File.IsOpened THEN
+				_fileHandler.Open(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					mode := ZigaLibs_File.E_FileOpenMode.TEXT_READ_MUST_EXIST);
+				RETURN;
+			END_IF
+			
+			IF _fileHandler.Read(sReadContent) THEN
+				AssertTrue(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Info),
+					Message := 'Info header not found in the read content of the log file!');
+	
+				AssertTrue(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Info text....'),
+					Message := 'Message provided to the log method was not found in the contents of the file!');
+					
+				nLogInfoState := nLogInfoState + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Close() THEN
+				nLogInfoState := nLogInfoState + 1;
+			END_IF	
+			
+		4:	
+			IF ZigaLibs_File.Utilities.File.Delete(
+				name := _logger._fileHandler.File.Name,
+				path := _logger._fileHandler.File.Path,
+				NetId := _logger._fileHandler.File.NetId,) 
+			THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
 	END_CASE
 END_IF]]></ST>
       </Implementation>
@@ -297,98 +288,177 @@ END_IF]]></ST>
 VAR_INST
 	bExists						: BOOL;
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
-	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilderBase;
+	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: Tc2_System.T_MaxString;
-	nGenericTestState			: UINT := 0;
+	sReadContent				: STRING(1000);
+	nLogGenericState			: UINT := 0;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test04_LogGeneric');
-
-IF TcUnit.IS_TEST_FINISHED('Test03_LogInfo') THEN	
-	CASE nGenericTestState OF
-		0:
-			IF fbLogger.Ready AND fbLocalSystemTime.CurrentTime.IsValid THEN
-				fbLogger.LogDefault('Generic text....');
-				fbFileHandler.FileProperties.FileLocation := FOLDER_PATH;
-					
-				sDateForLogName := fbLocalSystemTime.ConvertToString().DateTime(
-					timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD,
-					timeOfDaySeperator := '',
-					dateSeperator := '',
-					fillWithZeros := TRUE,
-					IncludeMilliseconds := FALSE);
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_LogGeneric') THEN
+	CASE nLogGenericState OF
+		0: 
+			_logger.LogDefault('Default text....');
+			nLogGenericState := nLogGenericState + 1;
 			
-				sDateForLogName := fbStringBuilder.Reset()
-					.AddString(str := sDateForLogName)
-					.AddString(str := '_')
-					.AddString(str := fbLocalSystemTime.ConvertToString().Hour(fillWithZeros := TRUE))
-					.Create();
-					
-				fbFileHandler.FileProperties.FileName := fbStringBuilder.Reset()
-					.AddString(str := FILE_NAME)
-					.AddString(str := '_')
-					.AddString(str := sDateForLogName)
-					.AddString(str := '.txt')
-					.Create();
-					nGenericTestState := nGenericTestState + 1;
-				END_IF
-				
-			1:
-				TonMaxDelayForFileToAppear(IN := fbLogger.Ready);
-				IF TonMaxDelayForFileToAppear.Q AND_THEN fbFileHandler.Exists(refFileExists := bExists) THEN
-					AssertTrue( 
-						Condition := bExists,
-						Message := 'Log file was not created!');
-					nGenericTestState := nGenericTestState + 1;
-				END_IF
-				
-			2:
-				IF fbFileHandler.Error THEN
-					AssertTrue(
-						Condition := FALSE, 
-						Message := 'Unexpected error occurred while reading content from log file!');
-						TcUnit.TEST_FINISHED();
-				END_IF
-				
-				IF fbFileHandler.Read(sReadContent) THEN
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := fbLogger.LogLevelHeaders.Error) = 0,
-						Message := 'Error header was found in the read content of the generic log file!');
-	
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := fbLogger.LogLevelHeaders.Warning) = 0,
-						Message := 'Warning header was found in the read content of the generic log file!');
-					
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := fbLogger.LogLevelHeaders.Info) = 0,
-						Message := 'Info header was found in the read content of the generic log file!');
-	
-					AssertTrue(
-						Condition := Tc2_Standard.FIND(
-							STR1 := sReadContent, 
-							STR2 := 'Generic text....') <> 0,
-						Message := 'Message provided to the log method was not found in the contents of the file!');
-						
-					nGenericTestState := nGenericTestState + 1;
-				END_IF
-				
-			3:
-				IF fbFileHandler.Delete() THEN
+		1:	
+			IF _logger.Error THEN
+				AssertTrue(
+					Condition := FALSE, 
+					Message := 'Unexpected error occurred when creating the log.');
 					TcUnit.TEST_FINISHED();
-					nGenericTestState := nGenericTestState + 1;
-				END_IF	
+					RETURN;
+			END_IF
+			
+			TonMaxDelayForFileToAppear(IN := TRUE);
+			IF TonMaxDelayForFileToAppear.Q AND_THEN 
+				ZigaLibs_File.Utilities.File.Exists(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					Exists => bExists) 
+			THEN
+				AssertTrue( 
+					Condition := bExists,
+					Message := 'Log file was not created!');
+				nLogGenericState := nLogGenericState + 1;
+			END_IF
 				
-			4:
-				;
+		2:
+			IF NOT _fileHandler.File.IsOpened THEN
+				_fileHandler.Open(
+					name := _logger._fileHandler.File.Name,
+					path := _logger._fileHandler.File.Path,
+					NetId := _logger._fileHandler.File.NetId,
+					mode := ZigaLibs_File.E_FileOpenMode.TEXT_READ_MUST_EXIST);
+				RETURN;
+			END_IF
+			
+			IF _fileHandler.Read(sReadContent) THEN
+				AssertFalse(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Info),
+					Message := 'Info header was found in the read content of the log file!');
+					
+				AssertFalse(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Warning),
+					Message := 'Warning header was found in the read content of the log file!');
+				
+				AssertFalse(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Error),
+					Message := 'Error header was found in the read content of the log file!');
+					
+				AssertTrue(
+					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Default text....'),
+					Message := 'Default log message not found.');
+					
+				nLogGenericState := nLogGenericState + 1;
+			END_IF
+			
+		3:
+			IF _fileHandler.Close() THEN
+				nLogGenericState := nLogGenericState + 1;
+			END_IF	
+			
+		4:	
+			IF ZigaLibs_File.Utilities.File.Delete(
+				name := _logger._fileHandler.File.Name,
+				path := _logger._fileHandler.File.Path,
+				NetId := _logger._fileHandler.File.NetId,) 
+			THEN
+				TcUnit.TEST_FINISHED();
+			END_IF
 	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_LogConfiguration_RollingIntervalSetTo0_ExpectOnlyFileName" Id="{97e3200b-eb50-0b82-3ea2-35d78bb226d7}">
+      <Declaration><![CDATA[METHOD Test05_LogConfiguration_RollingIntervalSetTo0_ExpectOnlyFileName
+VAR_INPUT
+END_VAR
+VAR_INST
+	step	: INT;
+	fileExists	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test05_LogConfiguration_RollingIntervalSetTo0_ExpectOnlyFileName') THEN
+	CASE step OF
+		0:	
+			_logger.Configure()
+				.SetRollingInterval(0)
+				.Apply(FALSE);
+			step := step + 1;
+			
+		1:
+			_logger.LogInfo('test..');	
+			step := step + 1;
+			
+		2:
+			IF ZigaLibs_File.Utilities.File.Exists(
+				FOLDER_PATH, 
+				TC2_Standard.CONCAT(LOG_NAME, _logger.Configuration.FileExtension), 
+				NET_ID, 
+				result => fileExists) 
+			THEN
+				AssertTrue(fileExists, 'Setting rolling interval to 0, the expected file was not craeted.');
+				step := step + 1;
+			END_IF
+			
+		3:
+			IF fileExists THEN
+				IF ZigaLibs_File.Utilities.File.Delete(
+					FOLDER_PATH, 
+					TC2_Standard.CONCAT(LOG_NAME, _logger.Configuration.FileExtension), 
+					NET_ID) 
+				THEN
+					TcUnit.TEST_FINISHED();	
+				END_IF
+			END_IF
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_FileExtension_DotAddedAutomaticallyIfNotProvided" Id="{26977ca3-c63b-036e-1559-0c611fd677ef}">
+      <Declaration><![CDATA[METHOD Test06_FileExtension_DotAddedAutomaticallyIfNotProvided
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test06_FileExtension_DotAddedAutomaticallyIfNotProvided') THEN
+	_logger.Configure().SetLogExtension('NoDotAdded').Apply(FALSE);
+	AssertEquals_STRING(
+		'.NoDotAdded',
+		_logger.Configuration.FileExtension,
+		'If no dot is prepended to the file extension, it should be added automatically.');
+		
+	_logger.Configure().SetLogExtension('.DotAdded').Apply(FALSE);
+	AssertEquals_STRING(
+		'.DotAdded',
+		_logger.Configuration.FileExtension,
+		'If dot is prepended to the file extension, it should not be added automatically as it already exists.');
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_ConfigurationDoesNotChangeUntilApplyIsCalled" Id="{31e4a934-6db9-09cd-0814-a3cb13f21905}">
+      <Declaration><![CDATA[METHOD Test07_ConfigurationDoesNotChangeUntilApplyIsCalled
+VAR_INPUT
+END_VAR
+VAR
+	originalConfiguration	: ST_LoggerConfiguration;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test07_ConfigurationDoesNotChangeUntilApplyIsCalled') THEN
+	originalConfiguration := _logger.Configuration;
+	
+	_logger.Configure().SetLogFileName('lalal');
+	AssertEquals_STRING(originalConfiguration.FileName, _logger.Configuration.FileName,
+		'Until apply is called, the configuration should not be applied.');
+		
+	_logger.Configure().SetLogFileName('test123').Apply(FALSE);
+	AssertEquals_STRING('test123', _logger.Configuration.FileName,
+		'When apply is called, the configuration should be applied.');
+		
+	TcUnit.TEST_FINISHED();
 END_IF]]></ST>
       </Implementation>
     </Method>

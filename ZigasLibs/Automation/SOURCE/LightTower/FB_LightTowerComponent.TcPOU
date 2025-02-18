@@ -62,5 +62,19 @@ END_IF
 _component.PulseWithInterval(DurationOn,DurationOff);]]></ST>
       </Implementation>
     </Method>
+    <Property Name="Value" Id="{8552b7bb-5e13-0828-24b4-1980ad6d5e83}">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+(* Gets the current state of the component*)
+PROPERTY Value : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{ae9e4849-b1e7-0d41-2158-59ecdab7c37d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value := _component.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
   </POU>
 </TcPlcObject>

@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_AlarmActionBuilder" Id="{cf92893f-c46c-0cad-3a1f-3e982e8ce72f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_AlarmActionBuilder IMPLEMENTS I_AlarmActionBy, I_AlarmActions
+VAR
+	_alarmAction 	: (ACTION_ACKNOWLEDGE, ACTTION_RAISE, ACTION_DEACTIVATE);
+	_selectedAlarm	: REFERENCE TO ST_AlarmInfo;
+	_alarmManager	: REFERENCE TO FB_AlarmManager;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Acknowledge" Id="{ec3b6a2d-f8f4-080c-39cc-793e7b4fefaf}">
+      <Declaration><![CDATA[METHOD Acknowledge : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_alarmAction := ACTION_ACKNOWLEDGE;
+Acknowledge := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ById" Id="{15bccc9e-311d-07d8-07f9-0b551d64ab1f}">
+      <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided ID
+METHOD ById
+VAR_INPUT
+	Id	: T_ArrayIndexer;
+END_VAR
+VAR
+	i	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(_alarmManager.GetAlarmById(Id)) THEN
+	RETURN;
+END_IF
+
+_selectedAlarm REF= _alarmManager.GetAlarmById(Id);
+DoAction();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ByName" Id="{6c000c08-a5b9-0289-097f-bd36cbfd51af}">
+      <Declaration><![CDATA[// Executes the action by looking for the alarm with the provided name
+METHOD ByName
+VAR_INPUT
+	name	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR_INST
+	i	: T_ArrayIndexer;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(_alarmManager.GetAlarmByName(name)) THEN
+	RETURN;
+END_IF
+_selectedAlarm REF= _alarmManager.GetAlarmByName(name);
+DoAction();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Deactivate" Id="{bed0843b-36b5-034a-232f-b416d6d0b76a}">
+      <Declaration><![CDATA[METHOD Deactivate : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_alarmAction := ACTION_DEACTIVATE;
+Deactivate := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DoAction" Id="{74be2ef5-dc73-017b-0666-72826976b57c}">
+      <Declaration><![CDATA[METHOD PRIVATE DoAction
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _alarmAction OF
+	ACTION_ACKNOWLEDGE:
+		_alarmManager.AcknowledgeAlarm(_selectedAlarm);
+	ACTTION_RAISE:
+		_alarmManager.RaiseAlarm(_selectedAlarm);
+	ACTION_DEACTIVATE:
+		_alarmManager.DeactivateAlarm(_selectedAlarm);
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{4e5f7e03-115f-04e9-1e03-129289791e84}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	alarmManager	: REFERENCE TO FB_AlarmManager;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_alarmManager REF= alarmManager;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Raise" Id="{3af8436e-f397-0704-2860-c8f26cdb4adb}">
+      <Declaration><![CDATA[METHOD Raise : I_AlarmActionBy
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_alarmAction := ACTTION_RAISE;
+Raise := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="SelectedAlarm" Id="{1a689882-c53b-047d-1338-4cd1c5ea1074}">
+      <Declaration><![CDATA[PROPERTY SelectedAlarm : REFERENCE TO ST_AlarmInfo]]></Declaration>
+      <Get Name="Get" Id="{9ab70128-2027-0ed8-2720-fcca32b6fab7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

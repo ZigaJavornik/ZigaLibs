@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="LaudaHelper" Id="{5acd5e62-03b6-479d-9df5-3168db57c12d}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'hide_all_locals'}
-
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+{attribute 'hide_all_locals'}
 // Provides various helper methods for easier communication with Lauda Pro device. 
 // Program does not require being called, a simple access to methods is enough.
 PROGRAM LaudaHelper
