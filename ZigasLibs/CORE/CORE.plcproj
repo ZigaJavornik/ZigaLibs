@@ -117,6 +117,9 @@
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_DINT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_UDINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_INT.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -133,6 +136,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_USINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\T_CoEIndex.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\T_CoESubIndex.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\FB_CoeReadWrite.TcPOU">

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="T_CoESubIndex" Id="{40c1e43a-7669-0383-2633-e7c3eab7ff62}">
+    <Declaration><![CDATA[TYPE T_CoESubIndex : BYTE; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

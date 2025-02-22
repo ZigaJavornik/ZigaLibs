@@ -5,8 +5,8 @@
 // CoE entry in the dictionary, includes index and the subindex
 TYPE ST_CoeEntry :
 STRUCT
-	Index		: WORD;
-	Subindex	: BYTE;
+	Index		: T_CoEIndex;
+	Subindex	: T_CoESubIndex;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

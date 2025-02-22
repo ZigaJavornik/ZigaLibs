@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <DUT Name="T_CoEIndex" Id="{45e8fab0-1a6e-0024-0243-27b13133f2be}">
+    <Declaration><![CDATA[TYPE T_CoEIndex : WORD; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
