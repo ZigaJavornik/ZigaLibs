@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.64">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.66">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{18071995-0000-0000-0000-000000000041}" TcBaseType="true" HideSubItems="true" CName="AmsNetId">AMSNETID</Name>
@@ -196,7 +196,7 @@
 			</SubItem>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" Target64Bit="true" ShowHideConfigurations="#x3c7">
+	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" ShowHideConfigurations="#x3c7">
 		<System>
 			<Settings RouterMemory="209715200"/>
 			<Tasks>
@@ -457,6 +457,18 @@
 					<TaskPouOids>
 						<TaskPouOid Prio="20" OTCID="#x08502241"/>
 					</TaskPouOids>
+				</Instance>
+			</Project>
+			<Project GUID="{61B82A27-FEC3-44F3-8314-47D7E44F7476}" Name="SMC" PrjFilePath="SMC\SMC.plcproj" TmcFilePath="SMC\SMC.tmc" ReloadTmc="true" AmsPort="861" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502280" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+					<Name>SMC Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
 				</Instance>
 			</Project>
 		</Plc>

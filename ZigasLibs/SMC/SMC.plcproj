@@ -16,6 +16,27 @@
     <LibraryReferences>{a93305cb-387b-46d3-bc1f-41bf65e7b7ff}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\JXCE1\DUTs\E_JXCE1_MovementMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\E_JXCE1_State.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\ST_JXCE1_Status.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\ST_JXCE_Commands.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\ST_NumbericalData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\POUs\I_JXCE1_StepperMotorControl.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\POUs\JXCE1_Helper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -26,6 +47,9 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
+    <Folder Include="SOURCE\JXCE1" />
+    <Folder Include="SOURCE\JXCE1\DUTs" />
+    <Folder Include="SOURCE\JXCE1\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
