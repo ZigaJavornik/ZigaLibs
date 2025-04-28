@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_SUT_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK FB_SUT_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+TestXX_Template();]]></ST>
+    </Implementation>
+    <Method Name="TestXX_Template" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+      <Declaration><![CDATA[METHOD PRIVATE TestXX_Template
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('TestXX_Template') THEN
+	// Do your assertions here...
+	AssertTrue(
+		Condition := FALSE, 
+		Message := 'Implement tests!');
+
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_SUT_Tests">
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUT_Tests.TestXX_Template">
+      <LineId Id="32" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

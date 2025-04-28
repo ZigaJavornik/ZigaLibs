@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <Itf Name="I_JXCE1_StepperMotorControl" Id="{591e69f7-27c7-490e-b21c-1f8f935df247}">
+    <Declaration><![CDATA[INTERFACE I_JXCE1_StepperMotorControl
+]]></Declaration>
+    <Property Name="Status" Id="{8a4ec173-3839-435d-9612-cc721b7c7729}">
+      <Declaration><![CDATA[PROPERTY Status : REFERENCE TO ST_JXCE1_Status]]></Declaration>
+      <Get Name="Get" Id="{99f94590-e258-4d90-bc59-eb5d73aa4a14}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>
