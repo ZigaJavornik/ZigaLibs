@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Malloc" Id="{26e49174-5c2a-04ab-1df7-bf2b62d134d9}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
 // Function block for memory allocation. It only handles a single memory instance.
@@ -31,7 +31,7 @@ END_VAR
 END_IF
 
 Free();
-_allocated := __NEW(BYTE, (elementSize * UDINT_TO_DINT(numberOfElements)));
+_allocated := __NEW(BYTE, (elementSize * (numberOfElements)));
 
 _properties.BaseTypeSize := elementSize;
 _properties.NumberOfElements := numberOfElements;
@@ -71,7 +71,7 @@ END_IF
 
 // Copy current contents
 originalProperties := _properties;
-oldAllocatedMemory := __NEW(BYTE, _properties.Size);
+oldAllocatedMemory := __NEW(BYTE, DINT_TO_UDINT(_properties.Size));
 
 Tc2_System.MEMCPY(
 	srcAddr := _allocated, 
@@ -106,7 +106,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Free();]]></ST>
+        <ST><![CDATA[{warning disable C0394}
+Free();
+{warning enable C0394}]]></ST>
       </Implementation>
     </Method>
     <Method Name="FB_init" Id="{8d088fbe-9977-02b5-2121-e1764139a585}" FolderPath="Constructor/Destructor\">
@@ -236,7 +238,7 @@ END_IF
 
 originalProperties := _properties;
 byteCountLowerPart := _properties.BaseTypeSize * index;
-lowerPart := __NEW(BYTE, byteCountLowerPart);
+lowerPart := __NEW(BYTE, DINT_TO_UDINT(byteCountLowerPart));
 Tc2_System.MEMCPY(
 	srcAddr := _allocated,
 	destAddr := lowerPart,
@@ -244,7 +246,7 @@ Tc2_System.MEMCPY(
 	
 byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - 1 - index );
 IF byteCountUpperPart <> 0 THEN
-	upperPart := __NEW(BYTE, byteCountUpperPart);
+	upperPart := __NEW(BYTE, DINT_TO_UDINT(byteCountUpperPart));
 	Tc2_System.MEMCPY(
 		srcAddr := _allocated + DINT_TO_DWORD(_properties.Size) -  DINT_TO_DWORD(byteCountUpperPart),
 		destAddr := upperPart,

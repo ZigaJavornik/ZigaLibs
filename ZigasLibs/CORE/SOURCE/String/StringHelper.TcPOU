@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="StringHelper" Id="{6038c506-8015-0cf2-2085-30a677155028}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM StringHelper
 VAR
@@ -23,7 +23,7 @@ VAR
 	ptrByte		: POINTER TO BYTE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF DINT_TO_INT(str.TypeClass) <> IBaseLibrary.TYPE_STRING THEN
+        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(str.TypeClass, IBaseLibrary.TYPE_STRING) THEN
 	RETURN;
 END_IF
 
@@ -96,7 +96,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF DINT_TO_INT(sourceString.TypeClass) <> IBaseLibrary.TYPE_STRING THEN
+        <ST><![CDATA[IF NOT NOT F_DoesVarTypeEqual(sourceString.TypeClass, IBaseLibrary.TYPE_STRING) THEN
 	RETURN;
 END_IF
 
