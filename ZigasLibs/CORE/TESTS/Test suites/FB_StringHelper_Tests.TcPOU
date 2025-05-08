@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_StringHelper_Tests" Id="{37e03e3a-145c-0efe-00fc-1f5db969facc}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringHelper_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -92,7 +92,7 @@ END_VAR]]></Declaration>
 
 // Split on "."
 StringHelper.Split(testStringWithDots, '.', listOfStrings);
-AssertEquals_DINT(5, listOfStrings._Count, 
+AssertEquals_UDINT(5, listOfStrings._Count, 
 	'Number of split strings is incorrect.');
 	
 listOfStrings.Get(0,foundStrings[0]);
@@ -109,7 +109,7 @@ AssertEquals_STRING(expectedStrings[4], foundStrings[4], 'Splitting on "." - 5th
 
 // Provide no split char - should be treated as white space
 StringHelper.Split(testStringWithDots, '', listOfStrings);
-AssertEquals_DINT(1, listOfStrings._Count, 
+AssertEquals_UDINT(1, listOfStrings._Count, 
 	'Empty split char should be treated as white space. Provided string with only dots should return a single string.');
 	
 listOfStrings.Get(0, foundStrings[0]);
@@ -118,7 +118,7 @@ AssertEquals_STRING(testStringWithDots, foundStrings[0],
 	
 // String with whitespaces and empty split char.
 StringHelper.Split(testStringWithWhiteSpaces,'', listOfStrings);
-AssertEquals_DINT(5, listOfStrings._Count, 
+AssertEquals_UDINT(5, listOfStrings._Count, 
 	'Empty split char should be treated as white space. Provided string with white spaces should return a 5 strings.');
 
 listOfStrings.Get(0,foundStrings[0]);
@@ -135,7 +135,7 @@ AssertEquals_STRING(expectedStrings[4], foundStrings[4], 'Splitting on white spa
 
 // Provide empty string
 StringHelper.Split('','A',listOfStrings);
-AssertEquals_DINT(0, listOfStrings._Count, 'Providing empty string should result in an empty list');
+AssertEquals_udint(0, listOfStrings._Count, 'Providing empty string should result in an empty list');
 
 
 listOfStrings.Clear();
