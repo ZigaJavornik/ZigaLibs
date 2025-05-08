@@ -368,7 +368,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{CB8D9479-73E6-45F1-BB78-9D89906DEE55}" Name="Logging" PrjFilePath="Logging\Logging.plcproj" TmcFilePath="Logging\Logging.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{B0E8B8BF-65D7-51A5-787C-267D678371B2}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Logging\Logging.tmc" TmcHash="{DDC537C0-8427-1213-4D5D-4F392B39A320}">
 					<Name>Logging Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -598,7 +598,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{B7E0A5B5-6CAC-4A3C-8AD0-F0E16C99C5C7}" Name="File" PrjFilePath="File\File.plcproj" TmcFilePath="File\File.tmc" ReloadTmc="true" AmsPort="860" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502240" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="File\File.tmc" TmcHash="{2E91EABA-4B60-BEA0-B847-F4FDE218FE7F}">
+				<Instance Id="#x08502240" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="File\File.tmc" TmcHash="{E5E7FAF3-F55A-1918-8BD4-E38CC804B4FC}">
 					<Name>File Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
