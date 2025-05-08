@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Controller_P" Id="{c6c15539-81c8-08db-25d4-c0803794dae6}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Controller_P EXTENDS ZigaLibs_Core.FB_HasTaskInfo
 VAR_INPUT
@@ -22,7 +22,7 @@ END_VAR
     <Property Name="ControllerOutput" Id="{b5ef98bb-b0a9-0f85-157c-fc83e276e986}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets the controller output value
-PROPERTY ControllerOutput : REAL]]></Declaration>
+PROPERTY ControllerOutput : T_ControllerValue]]></Declaration>
       <Get Name="Get" Id="{23f0cc99-f171-0f4b-14a2-f895b361dfc0}">
         <Declaration><![CDATA[VAR
 END_VAR

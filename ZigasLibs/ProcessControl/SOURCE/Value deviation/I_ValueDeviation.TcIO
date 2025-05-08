@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <Itf Name="I_ValueDeviation" Id="{b4df7329-02cd-0b69-19ad-e71089d2fcde}">
     <Declaration><![CDATA[INTERFACE I_ValueDeviation
 ]]></Declaration>
@@ -26,7 +26,7 @@ PROPERTY Enable : BOOL]]></Declaration>
     </Property>
     <Property Name="MaxDeviation" Id="{4e6219e7-67be-024a-065d-b8b690572dd1}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
-PROPERTY MaxDeviation : REAL]]></Declaration>
+PROPERTY MaxDeviation : T_ControllerValue]]></Declaration>
       <Get Name="Get" Id="{a4cfda26-8bb6-0ec8-0e56-738b03eae52a}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>

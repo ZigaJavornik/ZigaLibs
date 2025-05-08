@@ -482,7 +482,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{20439FEF-4BFC-45C9-9578-971683F69814}" Name="ProcessControl" PrjFilePath="ProcessControl\ProcessControl.plcproj" TmcFilePath="ProcessControl\ProcessControl.tmc" ReloadTmc="true" AmsPort="856" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{C37D1957-834A-37F9-B9B3-6B04F37EF6AA}">
+				<Instance Id="#x08502140" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="ProcessControl\ProcessControl.tmc" TmcHash="{507E1E54-9B0E-74DE-1718-C76A4FCCF537}">
 					<Name>ProcessControl Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -544,7 +544,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{AC9B46A7-3A36-406C-BD71-1933E401CC75}" Name="Automation" PrjFilePath="Automation\Automation.plcproj" TmcFilePath="Automation\Automation.tmc" ReloadTmc="true" AmsPort="858" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x085021c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Automation\Automation.tmc" TmcHash="{274D128A-48E9-282D-DC4F-FA74BE171547}">
+				<Instance Id="#x085021c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Automation\Automation.tmc" TmcHash="{4B774699-A6E9-AE74-232B-9EBA1C401542}">
 					<Name>Automation Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -578,7 +578,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{040EBB8C-20A1-4DDD-9D6C-204C4EF197FF}" Name="Alarming" PrjFilePath="Alarming\Alarming.plcproj" TmcFilePath="Alarming\Alarming.tmc" ReloadTmc="true" AmsPort="859" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{96671AF7-C627-9F5A-06C2-5A85B915811A}">
+				<Instance Id="#x08502200" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Alarming\Alarming.tmc" TmcHash="{EA9C8668-E778-8F4A-8A7B-3D124AA81795}">
 					<Name>Alarming Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

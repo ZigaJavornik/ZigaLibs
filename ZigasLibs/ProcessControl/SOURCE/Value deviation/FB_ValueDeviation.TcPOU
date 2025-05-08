@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_ValueDeviation" Id="{c5ff19cb-11c2-0f72-212a-d933426c76a3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ValueDeviation IMPLEMENTS I_ValueDeviation, I_ValueDeviationLimited
 
@@ -69,11 +69,11 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <Property Name="MaxDeviation" Id="{d1002e23-4697-0a96-0366-6fecf8049e2c}">
-      <Declaration><![CDATA[{attribute 'monitoring':='call'}
-PROPERTY MaxDeviation : REAL
+    <Property Name="MaxDeviation" Id="{28903748-d6c9-05d5-0459-a9274472ef4a}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY MaxDeviation : T_ControllerValue
 ]]></Declaration>
-      <Get Name="Get" Id="{9c431166-f7de-07f8-1d09-3b35f84faaf4}">
+      <Get Name="Get" Id="{a19e0be2-656a-02c6-2af4-e0e3748d07c7}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -81,7 +81,7 @@ END_VAR
           <ST><![CDATA[MaxDeviation := _maxDeviation;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{bbe83b6a-05c5-0c9b-2a14-95fe7c29f4ff}">
+      <Set Name="Set" Id="{b8347833-2105-0fe9-11ed-8554cd8312f2}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
