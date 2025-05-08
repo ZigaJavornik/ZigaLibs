@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
-  <POU Name="PRG_TESTS" Id="{6e34c45a-3ca6-4d60-98ec-a84888e107c1}" SpecialFunc="None">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="PRG_TESTS" Id="{790b3d87-1f3e-4de4-8a79-c75a061780d3}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM PRG_TESTS
 
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
@@ -34,5 +34,9 @@ TcUnit.RUN_IN_SEQUENCE();]]></ST>
         </TypeList>
       </XmlArchive>
     </ObjectProperties>
+    <LineIds Name="PRG_TESTS">
+      <LineId Id="3" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

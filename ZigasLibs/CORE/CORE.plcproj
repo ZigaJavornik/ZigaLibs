@@ -445,10 +445,6 @@
           <Key>XUNITBUFFERSIZE</Key>
           <Value>1</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
       </Parameters>
       <Optional>true</Optional>
     </PlaceholderReference>
@@ -475,7 +471,7 @@
       <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TwinCat Dynamic Collections">
-      <Resolution>TwinCat Dynamic Collections, * (FisoThemes)</Resolution>
+      <Resolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

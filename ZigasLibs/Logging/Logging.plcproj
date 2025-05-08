@@ -156,9 +156,8 @@
       <Namespace>TcError</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, 1.3.1 (www.tcunit.org)</DefaultResolution>
+      <DefaultResolution>TcUnit, 1.2.0.0 (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="TwinCat Dynamic Collections">
       <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
@@ -195,7 +194,10 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, 1.2.0.0 (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TwinCat Dynamic Collections">
+      <Resolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Core">
       <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
