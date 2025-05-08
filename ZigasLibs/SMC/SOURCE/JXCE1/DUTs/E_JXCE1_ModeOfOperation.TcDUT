@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_JXCE1_ModeOfOperation" Id="{22a4d49a-f54d-050d-091d-3eda6f6144f0}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_JXCE1_ModeOfOperation :
+(
+	NUMERICAL,
+	STEP_DATA
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

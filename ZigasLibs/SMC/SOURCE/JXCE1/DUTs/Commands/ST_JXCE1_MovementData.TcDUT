@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE1_MovementData" Id="{1a2da2fc-32fd-0f70-2a72-4c475a66b815}">
+    <Declaration><![CDATA[TYPE ST_JXCE1_MovementData :
+STRUCT
+	MovementMode	: E_JXCE1_MovementMode := E_JXCE1_MovementMode.ABSOLUTE;
+	Speed			: T_JXCE1_Speed;
+	TargetPosition	: T_JXCE1_Position;
+	Acceleration	: T_JXCE1_AccDec;
+	Deceleration	: T_JXCE1_AccDec;
+	PushingForce	: T_JXCE1_Force;
+	TriggerLV		: UINT;
+	PushingSpeed	: T_JXCE1_Speed;
+	MovingForce		: T_JXCE1_Force;
+	AREA1			: T_JXCE1_Position;
+	AREA2			: T_JXCE1_Position;
+	InPosition		: T_JXCE1_Position;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

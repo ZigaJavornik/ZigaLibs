@@ -20,7 +20,7 @@ STRUCT
 	(* SVRE:
 	When the servo motor is OFF, SVRE is OFF. Turns on when
 	the servo motor is ON.*)
-	MotorOn			: BOOL;
+	Enabled			: BOOL;
 	
 	(* SETON:
 	When the actuator is in the SETON status (the position
@@ -64,6 +64,13 @@ STRUCT
 	
 	(* READY turns ON when no alarm is generated with Servo ON*)
 	Ready	: BOOL;
+	
+	MovementFeedback	: ST_JXE1_MovementFeedback;
+	
+	Alarm_1	: E_JXCE1_AlarmCode;
+	Alarm_2	: E_JXCE1_AlarmCode;
+	Alarm_3	: E_JXCE1_AlarmCode;
+	Alarm_4	: E_JXCE1_AlarmCode;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

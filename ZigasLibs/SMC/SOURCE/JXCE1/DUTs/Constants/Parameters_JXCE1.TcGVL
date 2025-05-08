@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <GVL Name="Parameters_JXCE1" Id="{64b5dd12-b7ff-05db-2e31-0e9b348cb7cd}" ParameterList="True">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	PUSHING_FORCE_MAX	: UINT := 100; // Maximum pushing force
+	PUSHING_FORCE_MIN	: UINT := 0;	// Minimum pushing force
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

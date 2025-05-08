@@ -19,7 +19,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	NOT controller.Status.MotorOn AND
+	NOT controller.Status.Enabled AND
 	NOT controller.Status.SETON AND
 	controller.Status.StepData = 0 
 THEN
@@ -29,7 +29,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	NOT controller.Status.SETON AND
 	controller.Status.StepData = 0 
 THEN
@@ -39,7 +39,7 @@ END_IF
 
 IF  controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	NOT controller.Status.SETON AND
 	controller.Status.StepData = 0 
 THEN
@@ -49,7 +49,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData = 0 
 THEN
@@ -59,7 +59,7 @@ END_IF
 
 IF  controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
 THEN
@@ -69,7 +69,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
 THEN
@@ -79,7 +79,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
 THEN
@@ -89,7 +89,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
 THEN
@@ -99,7 +99,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	controller.Status.MotorOn AND
+	controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData = 0
 THEN
@@ -109,7 +109,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	NOT controller.Status.MotorOn AND
+	NOT controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
 THEN
@@ -119,7 +119,7 @@ END_IF
 
 IF  NOT controller.Status.Busy AND
 	NOT controller.Status.Done AND
-	NOT controller.Status.MotorOn AND
+	NOT controller.Status.Enabled AND
 	controller.Status.SETON AND
 	controller.Status.StepData = 0
 THEN

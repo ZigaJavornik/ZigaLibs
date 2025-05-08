@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE1_RxPDO" Id="{ccdbac40-c2c0-0561-201d-dcfa7df96a40}">
+    <Declaration><![CDATA[TYPE ST_JXCE1_RxPDO :
+STRUCT
+	OutputPortSignalsAreAllocated	: WORD;
+	NumericalDataFlag				: WORD;
+	StartFlag                       : BYTE;
+	MovementMode                    : BYTE;
+	Speed                           : WORD;
+	TargetPosition                  : DINT;
+	Acceleration                    : WORD;
+	Deceleration                    : WORD;
+	PushingForce                    : WORD;
+	TriggerLV                       : WORD;
+	PushingSpeed                    : WORD;
+	MovingForce                     : WORD;
+	Area1                           : DINT;
+	Area2                           : DINT;
+	InPosition                      : DINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

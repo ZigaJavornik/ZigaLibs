@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_JXCE1_AccDec" Id="{991537b8-fe56-0d3e-05dc-4f0129b0f89e}">
+    <Declaration><![CDATA[TYPE T_JXCE1_AccDec : REAL; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

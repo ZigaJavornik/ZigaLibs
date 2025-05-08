@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_SUT_Tests" Id="{721a73b4-ede3-4457-bf15-76d4fb0899fa}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
-FUNCTION_BLOCK FB_SUT_Tests EXTENDS FB_TestSuite
+FUNCTION_BLOCK INTERNAL FB_SUT_Tests EXTENDS FB_TestSuite
 
 // Create instance variables that will be accesible for all tests
 VAR
+	fbLinearMotor	: FB_JXCE1_StepperMotorControl(
+		strokeLength := 50.0,
+ 		positionUnit := 0.01);
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -53,6 +56,9 @@ END_IF]]></ST>
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="1" />
       <LineId Id="8" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="11" Count="3" />
+      <LineId Id="2" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -195,6 +195,164 @@
 				<BitOffs>24</BitOffs>
 			</SubItem>
 		</DataType>
+		<DataType>
+			<Name GUID="{CB893EB8-B1E0-9558-3C75-543127378FED}" AutoDeleteType="true">ST_JXCE_TxPDO</Name>
+			<BitSize>160</BitSize>
+			<SubItem>
+				<Name>SignalAllocatedToInputPort</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ControllerInformationFlag</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>CurrentPosition</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>CurrentSpeed</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>CurrentPushingForce</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>80</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TargetPosition</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>96</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Alarm_1</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Alarm_2</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>136</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Alarm_3</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>144</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Alarm_4</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>152</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{11807D06-E2B5-F990-CC81-DAB38B7BE08A}" AutoDeleteType="true">ST_JXCE1_RxPDO</Name>
+			<BitSize>288</BitSize>
+			<SubItem>
+				<Name>OutputPortSignalsAreAllocated</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NumericalDataFlag</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>StartFlag</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>MovementMode</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Speed</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TargetPosition</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Acceleration</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>96</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Deceleration</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>112</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>PushingForce</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TriggerLV</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>144</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>PushingSpeed</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>160</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>MovingForce</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>176</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Area1</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>192</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Area2</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>224</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>InPosition</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>256</BitOffs>
+			</SubItem>
+		</DataType>
 	</DataTypes>
 	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" ShowHideConfigurations="#x3c7">
 		<System>
@@ -230,7 +388,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{DDC40858-3B6A-431F-A6CB-72103658CBB8}" Name="CORE" PrjFilePath="CORE\CORE.plcproj" TmcFilePath="CORE\CORE.tmc" ReloadTmc="true" AmsPort="853" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{569C74E6-2FD6-5BD1-23AB-673784480E26}">
+				<Instance Id="#x08502080" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="CORE\CORE.tmc" TmcHash="{921835C3-4456-083C-D112-259C090A8467}">
 					<Name>CORE Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -460,15 +618,37 @@
 				</Instance>
 			</Project>
 			<Project GUID="{61B82A27-FEC3-44F3-8314-47D7E44F7476}" Name="SMC" PrjFilePath="SMC\SMC.plcproj" TmcFilePath="SMC\SMC.tmc" ReloadTmc="true" AmsPort="861" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502280" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+				<Instance Id="#x08502280" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{CF666042-06D3-83FF-12B9-FA5B5EE69DC0}">
 					<Name>SMC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>TestsTask Inputs</Name>
+						<Var>
+							<Name>PRG_TESTS.fbSUT_Tests.fbLinearMotor.ReceiveData</Name>
+							<Type GUID="{CB893EB8-B1E0-9558-3C75-543127378FED}">ST_JXCE_TxPDO</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>TestsTask Outputs</Name>
+						<Var>
+							<Name>PRG_TESTS.fbSUT_Tests.fbLinearMotor.SendData</Name>
+							<Type GUID="{11807D06-E2B5-F990-CC81-DAB38B7BE08A}">ST_JXCE1_RxPDO</Type>
+						</Var>
+					</Vars>
 					<Contexts>
 						<Context>
-							<Id>1</Id>
-							<Name>Default</Name>
+							<Id>0</Id>
+							<Name>TestsTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010030</OTCID>
+							</ManualConfig>
+							<Priority>20</Priority>
+							<CycleTime>10000000</CycleTime>
 						</Context>
 					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="20" OTCID="#x08502281"/>
+					</TaskPouOids>
 				</Instance>
 			</Project>
 		</Plc>

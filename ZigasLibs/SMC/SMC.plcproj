@@ -14,27 +14,148 @@
     <Implicit_KindOfTask>{55884ef3-e593-4f31-b5e6-a46689cb1a8f}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{9886cab5-b79f-4d91-b6b8-260c983e5546}</Implicit_Jitter_Distribution>
     <LibraryReferences>{a93305cb-387b-46d3-bc1f-41bf65e7b7ff}</LibraryReferences>
+    <Company>Ziga</Company>
+    <Title>ZigaLibs.SMC</Title>
+    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <LibraryCategories>
+      <LibraryCategory xmlns="">
+        <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        <Version>1.0.0.0</Version>
+        <DefaultName>ZigaLibs</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{219002c7-a1e4-456d-af60-86bcf1385365}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Core</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Utilities</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{7700afa9-3688-4b10-b0ff-2254a02219d8}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{503439b7-d75f-4f44-9f16-d7c811226cbd}</Id>
+        </ParentCategory>
+        <DefaultName>Reporting</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Comm</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Automation</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{f5684ae4-96d7-4e8a-b902-f1a8abbb21da}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
+        </ParentCategory>
+        <DefaultName>ProcessControl</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{705dce42-c122-4e5b-bb05-3765cab42425}</Id>
+        </ParentCategory>
+        <DefaultName>Vendors</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{70f80d6e-a573-4e2a-a021-f0c2c49a5924}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Motion control</DefaultName>
+      </LibraryCategory>
+    </LibraryCategories>
+    <SelectedLibraryCategories>
+      <Id xmlns="">{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
+    </SelectedLibraryCategories>
+    <DefaultNamespace>ZigaLibs.SMC</DefaultNamespace>
+    <Placeholder>ZigaLibs.SMC</Placeholder>
+    <Author>ZigaLibs.SMC</Author>
+    <Description>SMC library collection</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\JXCE1\DUTs\E_JXCE1_MovementMode.TcDUT">
+    <Compile Include="SOURCE\JXCE1\DUTs\Aliases\T_JXCE1_AccDec.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Aliases\T_JXCE1_Force.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Aliases\T_JXCE1_Position.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Aliases\T_JXCE1_Speed.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Commands\E_JXCE1_MovementMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Commands\ST_JXCE1_Commands.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Commands\ST_JXCE1_MovementData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Commands\ST_JXCE1_NumericalData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Constants\Parameters_JXCE1.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\E_JXCE1_ModeOfOperation.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\JXCE1\DUTs\E_JXCE1_State.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\JXCE1\DUTs\ST_JXCE1_Status.TcDUT">
+    <Compile Include="SOURCE\JXCE1\DUTs\PDO mapping\ST_JXCE1_RxPDO.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\JXCE1\DUTs\ST_JXCE_Commands.TcDUT">
+    <Compile Include="SOURCE\JXCE1\DUTs\PDO mapping\ST_JXCE_TxPDO.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\JXCE1\DUTs\ST_NumbericalData.TcDUT">
+    <Compile Include="SOURCE\JXCE1\DUTs\Status\E_JXCE1_AlarmCode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Status\ST_JXCE1_Status.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\DUTs\Status\ST_JXE1_MovementFeedback.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\JXCE1\POUs\FB_JXCE1_StepperMotorControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\JXCE1\POUs\I_JXCE1_StepperMotorControl.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\JXCE1\POUs\JXCE1_Helper.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
@@ -49,6 +170,11 @@
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\JXCE1" />
     <Folder Include="SOURCE\JXCE1\DUTs" />
+    <Folder Include="SOURCE\JXCE1\DUTs\Aliases" />
+    <Folder Include="SOURCE\JXCE1\DUTs\Constants" />
+    <Folder Include="SOURCE\JXCE1\DUTs\PDO mapping" />
+    <Folder Include="SOURCE\JXCE1\DUTs\Commands" />
+    <Folder Include="SOURCE\JXCE1\DUTs\Status" />
     <Folder Include="SOURCE\JXCE1\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
@@ -68,13 +194,23 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Condition>
+      </Condition>
+      <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SMC.tmc">
+      <SubType>Content</SubType>
+    </None>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-  <Data>
-    <o xml:space="preserve" t="OptionKey">
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
@@ -108,13 +244,13 @@
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-  </Data>
-  <TypeList>
-    <Type n="Hashtable">System.Collections.Hashtable</Type>
-    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-    <Type n="String">System.String</Type>
-  </TypeList>
-</XmlArchive>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

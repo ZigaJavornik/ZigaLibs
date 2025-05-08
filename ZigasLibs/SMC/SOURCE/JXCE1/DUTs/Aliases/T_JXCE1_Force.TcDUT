@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_JXCE1_Force" Id="{3ff1b918-32b6-0b21-1ccf-8ca16e698486}">
+    <Declaration><![CDATA[TYPE T_JXCE1_Force : UINT(Parameters_JXCE1.PUSHING_FORCE_MIN..Parameters_JXCE1.PUSHING_FORCE_MAX); END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

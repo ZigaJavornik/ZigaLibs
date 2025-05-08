@@ -3,6 +3,7 @@
   <DUT Name="E_JXCE1_State" Id="{02567400-d6b7-4896-b9b9-174ef740afa3}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
+{attribute 'to_string'}
 (*
 The enum shows the changes in the output signal with respect to the state of the controller. 
 *)
