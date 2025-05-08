@@ -478,7 +478,7 @@
       <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TwinCat Dynamic Collections">
-      <Resolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</Resolution>
+      <Resolution>TwinCat Dynamic Collections, * (FisoThemes)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
