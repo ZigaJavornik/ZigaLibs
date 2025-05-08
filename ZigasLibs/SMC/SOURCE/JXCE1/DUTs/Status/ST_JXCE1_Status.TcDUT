@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE1_Status" Id="{ed3ed118-4866-4eaf-8cf7-ee658f971d4a}">
+    <Declaration><![CDATA[TYPE ST_JXCE1_Status :
+STRUCT
+	(* When the operation is started and DRIVE input is turned
+	OFF, the step No. executed by the DRIVE signal will be
+	refreshed/updated by the combination of OUT0 to OUT5
+	(binary digit).*)
+	StepData		: BYTE;
+	
+	(* This terminal is ON during the movement of the actuator
+	(during the positioning operation, etc.). 
+	WARNING:
+	During the pushing operation without movement (no
+	movement but the actuator generating the pushing force),
+	BUSY is OFF.*)
+	Busy			: BOOL;
+	
+	(* SVRE:
+	When the servo motor is OFF, SVRE is OFF. Turns on when
+	the servo motor is ON.*)
+	Enabled			: BOOL;
+	
+	(* SETON:
+	When the actuator is in the SETON status (the position
+	information is established) after returning to origin, this
+	terminal is turned ON.
+	When the actuator has not returned to origin, this terminal is
+	turned OFF.*)
+	SETON	: BOOL;
+	
+	(* INP:
+	The condition when the INP output is ON depends on the actuator action:
+	- Return to origin
+		After stopping the actuator operation (BUSY output is turned
+		OFF), the INP is turned ON when the actuator is within the
+		range defined in the origin +/-“Default In position” in the
+		basic parameter.
+	- During positioning operation
+		Turns ON when the current position is within "Step data position +/- positioning range".
+	- During pushing operation
+		Turns ON when the pushing force exceeds the value set in the step data “Trigger LV”. *)
+	Done	: BOOL;
+	
+	(* When the actuator is within the output range between Area1
+	and Area2 in the step data, this terminal will turned ON.
+	The area output setting range changes depending on the
+	active step data.*)
+	InRange_AREA	: BOOL;
+	
+	(* When the actuator is within the output range between "W area
+	1 and W area 2" of basic parameter, this terminal will turn ON.*)
+	InRange_WAREA	: BOOL;
+	
+	(* During activation of Teaching Box stop switch, this terminal is
+	ON. During the normal operation, this is OFF. This is synchronized to the EMG stop signal input.*)
+	ESTOP	: BOOL;
+	
+	(* Alarm generated when abnormal conditions occur to the
+	actuator or its controlling status. OFF when there are no
+	alarms. ON in alarm condition.*)
+	Alarm	: BOOL;
+	
+	(* READY turns ON when no alarm is generated with Servo ON*)
+	Ready	: BOOL;
+	
+	MovementFeedback	: ST_JXE1_MovementFeedback;
+	
+	Alarm_1	: E_JXCE1_AlarmCode;
+	Alarm_2	: E_JXCE1_AlarmCode;
+	Alarm_3	: E_JXCE1_AlarmCode;
+	Alarm_4	: E_JXCE1_AlarmCode;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

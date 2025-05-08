@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE_Commands" Id="{e0d99925-2176-4f98-a7d8-79d20139d127}">
+    <Declaration><![CDATA[TYPE ST_JXCE_Commands :
+STRUCT
+	StepData		: BYTE;
+	Hold			: BOOL;
+	MotorOn			: BOOL;
+	SendStepData	: BOOL;
+	Reset			: BOOL;
+	ReturnToOrigin	: BOOL;
+	JogBackward		: BOOL;
+	JogForward		: BOOL;
+	FLGHT			: BOOL;
+	NumericalData	: ST_NumbericalData;
+	StartFlag		: BOOL;
+	MovementMode	: E_JXCE1_MovementMode;
+	Speed			: UINT;
+	TargetPosition	: UINT;
+	Acceleration	: UINT;
+	Deceleration	: UINT;
+	PushingForce	: UINT;
+	TriggerLV		: UINT;
+	PushingSpeed	: UINT;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

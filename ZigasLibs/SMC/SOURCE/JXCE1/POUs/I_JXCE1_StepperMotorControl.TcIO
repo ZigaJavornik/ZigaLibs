@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <Itf Name="I_JXCE1_StepperMotorControl" Id="{591e69f7-27c7-490e-b21c-1f8f935df247}">
+    <Declaration><![CDATA[INTERFACE I_JXCE1_StepperMotorControl
+]]></Declaration>
+    <Property Name="ControllerState" Id="{07112efa-ef21-0a40-35f4-e849001240cb}">
+      <Declaration><![CDATA[// Gets the controller state
+PROPERTY ControllerState : E_JXCE1_State]]></Declaration>
+      <Get Name="Get" Id="{925e60bf-b482-0e00-1abb-5ef840831728}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Enable" Id="{c2e974ad-cf18-0125-2c21-5c488c8e84b9}">
+      <Declaration><![CDATA[// Enables or disables the controller
+PROPERTY Enable : BOOL]]></Declaration>
+      <Get Name="Get" Id="{da31aa66-e92f-078d-3ca9-e54450171d81}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{5ad5f2dc-0e73-0427-1498-86622c287d29}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Hold" Id="{d2e29514-bc5d-0805-28a6-349a7e0bf289}">
+      <Declaration><![CDATA[// Gets or sets whether the axis is haleted
+PROPERTY Hold : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c52f095c-304d-01d5-1030-b3285a4cd1fa}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{14317072-6e80-01b0-1a0e-89cbfdce38c6}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="JogBwd" Id="{f7b5f294-a10c-0e82-1569-5614cbaf881f}">
+      <Declaration><![CDATA[// Jogs backward with the defined speed
+METHOD JogBwd
+]]></Declaration>
+    </Method>
+    <Method Name="JogFwd" Id="{688fd239-1930-028c-193b-bfb2c38229f8}">
+      <Declaration><![CDATA[// Jogs forward with the defined speed
+METHOD JogFwd]]></Declaration>
+    </Method>
+    <Property Name="ModeOfOperation" Id="{da43743b-7869-0ceb-28b7-ee56c1e66df2}">
+      <Declaration><![CDATA[// Gets or sets the mode of operation for the unit
+PROPERTY ModeOfOperation : E_JXCE1_ModeOfOperation]]></Declaration>
+      <Get Name="Get" Id="{6aa3018d-bd07-0c84-2df3-f5885ee77c5c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{32d16ece-5fdd-02dc-160a-531c5d109abb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MovementData" Id="{e28ba497-29e0-0417-1ce4-0d1bde95843b}">
+      <Declaration><![CDATA[// Gets or sets various movement data properties
+PROPERTY MovementData : REFERENCE TO ST_JXCE1_MovementData]]></Declaration>
+      <Get Name="Get" Id="{75a67e7f-88f2-0db9-0e3e-89b94534fb19}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{ee3ef076-2113-0a07-0daf-ff9613ffe5d0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="MoveToPosition" Id="{45e76dcc-c138-03b3-2b0e-2957adcac937}">
+      <Declaration><![CDATA[// Moves to the target position with the defined speed. Returns TRUE when done
+METHOD MoveToPosition : BOOL
+VAR_INPUT
+	speed		: REAL;
+	position	: REAL;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{9c29d6ae-36c1-0063-09b5-564afb349eb0}">
+      <Declaration><![CDATA[// Resets the controller when called
+METHOD Reset
+]]></Declaration>
+    </Method>
+    <Method Name="ReturnToOrigin" Id="{3c9a5d29-c715-0cd6-2033-7d87c07c8f16}">
+      <Declaration><![CDATA[// Returns axis to origin
+METHOD ReturnToOrigin
+]]></Declaration>
+    </Method>
+    <Property Name="Status" Id="{8a4ec173-3839-435d-9612-cc721b7c7729}">
+      <Declaration><![CDATA[// Gets the controller status structure
+PROPERTY Status : REFERENCE TO ST_JXCE1_Status]]></Declaration>
+      <Get Name="Get" Id="{99f94590-e258-4d90-bc59-eb5d73aa4a14}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="StrokeLength" Id="{dd227f50-5e77-0a7d-3324-ebbc4306a3e5}">
+      <Declaration><![CDATA[// Gets the stroke length (mm) of the actuator
+PROPERTY StrokeLength : REAL]]></Declaration>
+      <Get Name="Get" Id="{cf8c7915-8da2-051b-3743-58645a89bb10}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

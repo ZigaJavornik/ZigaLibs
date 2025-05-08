@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE_TxPDO" Id="{c9a291fd-4d61-0a0a-367a-02a46016ec0c}">
+    <Declaration><![CDATA[TYPE ST_JXCE_TxPDO :
+STRUCT
+	SignalAllocatedToInputPort	: WORD;
+	ControllerInformationFlag	: WORD;
+	CurrentPosition				: DINT;
+	CurrentSpeed				: WORD;
+	CurrentPushingForce			: WORD;
+	TargetPosition				: DINT;
+	Alarm_1						: BYTE;
+	Alarm_2						: BYTE;
+	Alarm_3						: BYTE;
+	Alarm_4						: BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

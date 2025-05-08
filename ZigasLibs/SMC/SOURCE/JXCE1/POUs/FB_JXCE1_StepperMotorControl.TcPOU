@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_JXCE1_StepperMotorControl" Id="{95406796-122c-0cc4-049e-56220ab31859}" SpecialFunc="None">
+    <Declaration><![CDATA[(* Function block for SMC JXCE1 stepper motor control.
+Constructor:
+(strokeLength := ,
+ positionUnit := );
+*)
+FUNCTION_BLOCK FB_JXCE1_StepperMotorControl IMPLEMENTS I_JXCE1_StepperMotorControl
+VAR
+	_status				: ST_JXCE1_Status;
+	_commands			: ST_JXCE1_Commands;
+	_state				: E_JXCE1_State;
+	_resetTimer			: Tc2_Standard.TON := (PT := T#100MS);
+	_strokeLength		: REAL;
+	_valueFor1mm		: REAL;
+	_startFlagDelay		: Tc2_Standard.TOF;
+	_modeOfOperation	: E_JXCE1_ModeOfOperation := E_JXCE1_ModeOfOperation.NUMERICAL;
+	_minSpeed			: T_JXCE1_Speed;
+END_VAR
+
+VAR
+	SendData	AT %Q* 	: ST_JXCE1_RxPDO;
+	ReceiveData	AT %I*	: ST_JXCE_TxPDO;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_state := JXCE1_Helper.GetControllerState(controller := THIS^);
+_status.StepData.0 := ReceiveData.SignalAllocatedToInputPort.0;
+_status.StepData.1 := ReceiveData.SignalAllocatedToInputPort.1;
+_status.StepData.2 := ReceiveData.SignalAllocatedToInputPort.2;
+_status.StepData.3 := ReceiveData.SignalAllocatedToInputPort.3;
+_status.StepData.4 := ReceiveData.SignalAllocatedToInputPort.4;
+_status.StepData.5 := ReceiveData.SignalAllocatedToInputPort.5;
+
+_status.Busy := ReceiveData.SignalAllocatedToInputPort.8;
+_status.Enabled := ReceiveData.SignalAllocatedToInputPort.9;
+_status.SETON := ReceiveData.SignalAllocatedToInputPort.10;
+_status.Done := ReceiveData.SignalAllocatedToInputPort.11;
+_status.InRange_AREA := ReceiveData.SignalAllocatedToInputPort.12;
+_status.InRange_WAREA := ReceiveData.SignalAllocatedToInputPort.13;
+_status.ESTOP := ReceiveData.SignalAllocatedToInputPort.14;
+_status.Alarm := ReceiveData.SignalAllocatedToInputPort.15;
+
+_status.Ready := ReceiveData.ControllerInformationFlag.4;
+IF _valueFor1mm <> 0 THEN
+	_status.MovementFeedback.CurrentPosition := DINT_TO_REAL(ReceiveData.CurrentPosition) * _valueFor1mm;
+END_IF
+_status.MovementFeedback.CurrentSpeed := WORD_TO_REAL(ReceiveData.CurrentSpeed);
+_status.MovementFeedback.CurrentPushingForce := WORD_TO_UINT(ReceiveData.CurrentPushingForce);
+IF _valueFor1mm <> 0 THEN
+	_status.MovementFeedback.TargetPosition := DINT_TO_REAL(ReceiveData.TargetPosition) * _valueFor1mm;	
+END_IF
+
+_status.Alarm_1 := ReceiveData.Alarm_1;
+_status.Alarm_2 := ReceiveData.Alarm_2;
+_status.Alarm_3 := ReceiveData.Alarm_3;
+_status.Alarm_4 := ReceiveData.Alarm_4;
+
+IF NOT _commands.Enable THEN
+	_commands.SendStepData := FALSE;
+	_commands.ReturnToOrigin := FALSE;
+END_IF
+
+_resetTimer(IN := _commands.Reset);
+IF _resetTimer.Q THEN
+	_commands.Reset := FALSE;
+END_IF
+
+IF (_status.SETON AND _status.Done) OR _state = E_JXCE1_State.SERVO_OFF_AFTER_RETURNING_TO_ORIGIN THEN
+	_commands.ReturnToOrigin := FALSE;
+END_IF
+
+// Step data
+SendData.OutputPortSignalsAreAllocated.0 := _commands.StepData[0] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.1 := _commands.StepData[1] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.2 := _commands.StepData[2] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.3 := _commands.StepData[3] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.4 := _commands.StepData[4] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.5 := _commands.StepData[5] AND _modeOfOperation = E_JXCE1_ModeOfOperation.STEP_DATA;
+SendData.OutputPortSignalsAreAllocated.6 := FALSE;
+SendData.OutputPortSignalsAreAllocated.7 := FALSE;
+
+// Commands
+SendData.OutputPortSignalsAreAllocated.8 := _commands.Hold;
+SendData.OutputPortSignalsAreAllocated.9 := _commands.Enable;
+SendData.OutputPortSignalsAreAllocated.10 := _commands.SendStepData;
+SendData.OutputPortSignalsAreAllocated.11 := _commands.Reset;
+SendData.OutputPortSignalsAreAllocated.12 := _commands.ReturnToOrigin;
+SendData.OutputPortSignalsAreAllocated.13 := _commands.JogBackward;
+SendData.OutputPortSignalsAreAllocated.14 := _commands.JogForward;
+
+// Method calling to jog - reset every body call
+_commands.JogBackward := FALSE;
+_commands.JogForward := FALSE;
+
+SendData.OutputPortSignalsAreAllocated.15 := _commands.FLGHT;
+
+// Numerical mode - enable sending of all parameters when in this mode
+SendData.NumericalDataFlag.0 := FALSE;
+SendData.NumericalDataFlag.1 := FALSE;//_modeOfOperation = E_JXCE1_ModeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.2 := FALSE;
+SendData.NumericalDataFlag.3 := FALSE;
+SendData.NumericalDataFlag.4 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.5 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.6 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.7 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.8 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.9 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.10 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.11 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.12 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.13 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.14 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+SendData.NumericalDataFlag.15 := _modeOfOperation = E_jxce1_modeOfOperation.NUMERICAL AND NOT _commands.ReturnToOrigin;
+
+
+SendData.StartFlag.0 := _commands.StartFlag;
+SendData.MovementMode := TO_BYTE(_commands.MovementData.MovementMode);
+SendData.Speed := REAL_TO_UINT(_commands.MovementData.Speed);
+IF _valueFor1mm <> 0 THEN
+	SendData.TargetPosition := REAL_TO_DINT(_commands.MovementData.TargetPosition / _valueFor1mm);
+END_IF
+SendData.Acceleration := REAL_TO_UINT(_commands.MovementData.Acceleration);
+SendData.Deceleration := REAL_TO_UINT(_commands.MovementData.Deceleration);
+SendData.PushingForce := _commands.MovementData.PushingForce;
+SendData.TriggerLV := _commands.MovementData.TriggerLV;
+SendData.PushingSpeed := REAL_TO_UINT(_commands.MovementData.PushingSpeed);
+SendData.MovingForce := _commands.MovementData.MovingForce;
+IF _valueFor1mm <> 0 THEN
+	SendData.Area1 := REAL_TO_DINT(_commands.MovementData.AREA1 / _valueFor1mm);
+	SendData.Area2 := REAL_TO_DINT(_commands.MovementData.AREA2 / _valueFor1mm);
+	SendData.InPosition := REAL_TO_DINT(_commands.MovementData.InPosition / _valueFor1mm);	
+END_IF
+
+// Start flag in method calling, reset every call in case the method is not called any more
+_commands.StartFlag := FALSE;]]></ST>
+    </Implementation>
+    <Property Name="ControllerState" Id="{05408cf5-77df-0fb4-39ff-bba37c587251}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets the controller state*)
+PROPERTY ControllerState : E_JXCE1_State
+]]></Declaration>
+      <Get Name="Get" Id="{a35b520c-6abb-037c-183d-092bc9c3d75a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ControllerState := _state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Enable" Id="{39d98a1f-b3b6-0461-0d36-34f9ab3faf2c}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Enables or disables the controller*)
+PROPERTY Enable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{4c0e94da-2378-087c-31fa-75e4550d5686}">
+        <Declaration><![CDATA[
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Enable := _commands.Enable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{d8ca2b05-cfed-07f7-3194-ce315094537a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_commands.Enable := Enable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{0e6d7dae-f244-00cb-1536-4001c143f329}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	strokeLength	: T_JXCE1_Position;	// Stroke length in mm
+	valueFor1mm		: T_JXCE1_Position;	// Defines how many units are required for a mm. Example : 10 = provided position of 1 is equal to 0.1mm
+	minSpeed		: T_JXCE1_Speed;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_strokeLength := strokeLength;
+_valueFor1mm := valueFor1mm;
+_minSpeed := minSpeed;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Hold" Id="{e906a6f0-4055-0b9d-2a4f-2d64d05bfe47}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* If set to TRUE, axis is halted with maximum deceleration*)
+PROPERTY Hold : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{282c2761-4752-0dd1-1f91-4335d8a2a9f9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Hold := _commands.Hold;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{65dc34f3-6902-0fc1-0d31-028d63c238fc}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_commands.Hold := Hold;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="JogBwd" Id="{6e701ab8-4886-08e1-12f4-2d4ea51382b6}">
+      <Declaration><![CDATA[(* Jogs backward with the defined speed*)
+METHOD JogBwd
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_commands.JogBackward := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="JogFwd" Id="{689a21b8-59b8-0e85-2d2d-4e7d9622d84d}">
+      <Declaration><![CDATA[(* Jogs forward with the defined speed*)
+METHOD JogFwd
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_commands.JogForward := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ModeOfOperation" Id="{3ea7ef4b-10ce-0a24-379f-73530eef3e53}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets the mode of operation for the unit*)
+PROPERTY ModeOfOperation : E_JXCE1_ModeOfOperation
+]]></Declaration>
+      <Get Name="Get" Id="{56606ce8-c00e-0e65-36ae-f9894a64bb08}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ModeOfOperation := _modeOfOperation;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{d7873a23-695f-0c71-18e3-32564f7a77d5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_modeOfOperation := ModeOfOperation;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="MovementData" Id="{34974c80-6760-0862-2973-0c2f3705d183}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets or sets various movement data properties*)
+PROPERTY MovementData : REFERENCE TO ST_JXCE1_MovementData
+]]></Declaration>
+      <Get Name="Get" Id="{6ba02155-bc14-0110-2c42-9a07803c3a53}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MovementData REF= _commands.MovementData;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{735f728b-a767-04fa-2b61-56859b978c92}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_commands.MovementData := MovementData;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="MoveToPosition" Id="{1d94fc3c-40a2-07df-0899-f742b538f36d}">
+      <Declaration><![CDATA[(* Moves to the target position with the defined speed. Returns TRUE when done*)
+METHOD MoveToPosition : BOOL
+VAR_INPUT
+	speed		: T_JXCE1_Speed;	// Speed in mm/s
+	position	: T_JXCE1_Position;	// Position in mm
+END_VAR
+
+VAR_INST
+	Rtrig_Done			: Tc2_Standard.R_TRIG;
+END_VAR
+VAR
+	targetSpeed	: T_JXCE1_Speed;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Rtrig_Done(CLK := _status.Done AND _status.SETON AND _status.Ready AND NOT _status.Busy);
+// If done, start flag will not be sent - new method call starts new positioning command
+IF Rtrig_Done.Q THEN
+	MoveToPosition := TRUE;
+	RETURN;
+END_IF
+targetSpeed := speed;
+_commands.StartFlag := TRUE;
+_commands.MovementData.PushingForce := 0;
+_commands.MovementData.TargetPosition := position;
+_commands.MovementData.Speed := speed;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{6ece1d7d-0abd-0146-3703-a988ecbf60be}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+(* Resets the controller when called*)
+METHOD Reset]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_commands.Reset := TRUE;
+_commands.ReturnToOrigin := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ReturnToOrigin" Id="{c67f0689-57c9-029b-1497-b8593a4b0e8d}">
+      <Declaration><![CDATA[(* Returns axis to origin*)
+METHOD ReturnToOrigin
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_commands.ReturnToOrigin := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Status" Id="{18d4ebf7-5f4e-0ac5-0305-c21af53db89b}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+(* Gets the controller status structure*)
+PROPERTY Status : REFERENCE TO ST_JXCE1_Status
+]]></Declaration>
+      <Get Name="Get" Id="{e5d23b8d-52d9-0482-3a5a-526672c4507f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Status REF= _status;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="StrokeLength" Id="{2bd8245a-9854-0aa1-0581-eca0d5114749}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+// Gets the stroke length (mm) of the actuator
+PROPERTY StrokeLength : REAL]]></Declaration>
+      <Get Name="Get" Id="{a932fcf0-d2ac-0154-2826-4f923590dd90}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[StrokeLength := _strokeLength;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_JXCE1_StepperMotorControl">
+      <LineId Id="340" Count="44" />
+      <LineId Id="454" Count="0" />
+      <LineId Id="385" Count="8" />
+      <LineId Id="457" Count="0" />
+      <LineId Id="456" Count="0" />
+      <LineId Id="394" Count="6" />
+      <LineId Id="458" Count="0" />
+      <LineId Id="402" Count="4" />
+      <LineId Id="451" Count="0" />
+      <LineId Id="407" Count="19" />
+      <LineId Id="430" Count="15" />
+      <LineId Id="459" Count="0" />
+      <LineId Id="447" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.ControllerState.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Enable.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Enable.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.FB_init">
+      <LineId Id="38" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="40" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Hold.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Hold.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.JogBwd">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.JogFwd">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.ModeOfOperation.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.ModeOfOperation.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.MovementData.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.MovementData.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.MoveToPosition">
+      <LineId Id="104" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="65" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="41" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Reset">
+      <LineId Id="7" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.ReturnToOrigin">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.Status.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_JXCE1_StepperMotorControl.StrokeLength.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_JXCE1_State" Id="{02567400-d6b7-4896-b9b9-174ef740afa3}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+(*
+The enum shows the changes in the output signal with respect to the state of the controller. 
+*)
+TYPE E_JXCE1_State :
+(
+	POWER_OFF,	// Controller powered down [SVOFF] with no motion
+	POWER_ON_NO_MOTION,	// Controller powered down [SVON] with no motion
+	RETURNING_TO_ORIGIN, //During returning to origin 
+	AT_ORIGIN_POSITION, // The actuator is at the origin. On completion of [SETUP]
+	POSITIONING_OR_PUSHING_ACTIVE, // During movement BY positioning/pushing operation
+	HOLD, // The actuator is paused by [HOLD]
+	POSITIONING_COMPLETE, // On completion of the positioning operation. 
+	PUSHING_COMPLETED, // Stopped due to pushing a workload in pushing operation. 
+	PUSHING_STOPPED_NO_WORKLOAD_DETECTED, // Stopped due to no detection of workload during a pushing operation. 
+	SERVO_OFF_AFTER_RETURNING_TO_ORIGIN, // Servo is OFF after returning to Origin. 
+	EMERGENCY, // EMG signal stop from the CN1 connector after the actuator is at the origin
+	STATE_UNKNOWN
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

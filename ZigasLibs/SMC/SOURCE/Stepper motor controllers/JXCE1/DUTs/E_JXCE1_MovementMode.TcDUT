@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_JXCE1_MovementMode" Id="{38dfc45a-1daa-4656-9442-97c746252c60}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_JXCE1_MovementMode :
+(
+	ABSOLUTE := 1,
+	INCREMENTAL := 2
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="JXCE1_Helper" Id="{7943e6f3-dd33-436c-a4de-3f4a51de3c7b}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+PROGRAM JXCE1_Helper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetControllerState" Id="{b0528bb9-d3a1-4c2b-a4fa-fbe6d6ccfde8}">
+      <Declaration><![CDATA[// Returns the controller state based on various signals of the controller
+METHOD GetControllerState	: E_JXCE1_State
+VAR_INPUT
+	controller	: I_JXCE1_StepperMotorControl;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	NOT controller.Status.Enabled AND
+	NOT controller.Status.SETON AND
+	controller.Status.StepData = 0 
+THEN
+	GetControllerState := E_JXCE1_State.POWER_OFF;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	controller.Status.Enabled AND
+	NOT controller.Status.SETON AND
+	controller.Status.StepData = 0 
+THEN
+	GetControllerState := E_JXCE1_State.POWER_ON_NO_MOTION;
+	RETURN;
+END_IF
+
+IF  controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	controller.Status.Enabled AND
+	NOT controller.Status.SETON AND
+	controller.Status.StepData = 0 
+THEN
+	GetControllerState := E_JXCE1_State.RETURNING_TO_ORIGIN;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData = 0 
+THEN
+	GetControllerState := E_JXCE1_State.AT_ORIGIN_POSITION;
+	RETURN;
+END_IF
+
+IF  controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
+THEN
+	GetControllerState := E_JXCE1_State.POSITIONING_OR_PUSHING_ACTIVE;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
+THEN
+	GetControllerState := E_JXCE1_State.HOLD;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
+THEN
+	GetControllerState := E_JXCE1_State.POSITIONING_COMPLETE;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
+THEN
+	GetControllerState := E_JXCE1_State.PUSHING_COMPLETED;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData = 0
+THEN
+	GetControllerState := E_JXCE1_State.PUSHING_STOPPED_NO_WORKLOAD_DETECTED;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	NOT controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData <> 0 {warning 'preveri, ne vem vrednosti...'}
+THEN
+	GetControllerState := E_JXCE1_State.SERVO_OFF_AFTER_RETURNING_TO_ORIGIN;
+	RETURN;
+END_IF
+
+IF  NOT controller.Status.Busy AND
+	NOT controller.Status.Done AND
+	NOT controller.Status.Enabled AND
+	controller.Status.SETON AND
+	controller.Status.StepData = 0
+THEN
+	GetControllerState := E_JXCE1_State.EMERGENCY;
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="JXCE1_Helper">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="JXCE1_Helper.GetControllerState">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="2" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="17" Count="8" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="27" Count="8" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="37" Count="8" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="47" Count="8" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="58" Count="8" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="68" Count="8" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="78" Count="8" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="88" Count="8" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="98" Count="18" />
+      <LineId Id="97" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

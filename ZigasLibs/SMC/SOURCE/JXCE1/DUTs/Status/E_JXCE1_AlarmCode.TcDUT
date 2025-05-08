@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_JXCE1_AlarmCode" Id="{b27e96b5-eadf-0143-219d-acef1507e44e}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+//{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_JXCE1_AlarmCode :
+(
+	STEP_DATA_ALM1	:= 48,
+	PARAMETER_ALM := 49,
+	STEP_DATA_ALM2 := 51,
+	STROKE_LIMIT := 52,
+	ALM_3A := 58,
+	ALM_3D := 61,
+	ALM_3E := 62,
+	PUSHING_ALM := 96,
+	ORIG_ALM := 97,
+	SERVO_OFF_ALM := 98,
+	DRIVE_ALM := 99,
+	ORIG_SENS_ALM := 103,
+	OVER_SPEED := 144,
+	OVER_MOTOR_VOLTAGE := 145,
+	OVER_TEMP := 146,
+	OVER_CONTROL_VOLTAGE_147,
+	OVER_LOAD := 148,
+	POSITION_FAILED_ALM := 149,
+	CTRL_COMM_ALM := 150,
+	ENOCDER_ALM := 192,
+	POLARITY_NOT_FOUND := 103,
+	OVER_CURRENT := 194,
+	I_SENS_ALM := 195,
+	ERR_OVERFLOW := 196,
+	MEMORY_ALM := 197,
+	CPU_ERROR := 198
+)BYTE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

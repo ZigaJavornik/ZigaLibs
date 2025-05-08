@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_JXCE1_Commands" Id="{e0d99925-2176-4f98-a7d8-79d20139d127}">
+    <Declaration><![CDATA[TYPE ST_JXCE1_Commands :
+STRUCT
+	StepData		: ARRAY[0..5] OF BOOL;
+	Hold			: BOOL;
+	Enable			: BOOL;	// SVON
+	SendStepData	: BOOL;	// DRIVE
+	Reset			: BOOL;
+	ReturnToOrigin	: BOOL;	// SETUP
+	JogBackward		: BOOL;
+	JogForward		: BOOL;
+	FLGHT			: BOOL;
+	NumericalData	: ST_JXCE1_NumericalData;
+	StartFlag		: BOOL;
+	MovementData	: ST_JXCE1_MovementData;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
