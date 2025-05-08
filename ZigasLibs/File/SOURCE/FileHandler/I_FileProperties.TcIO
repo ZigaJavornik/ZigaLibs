@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <Itf Name="I_FileProperties" Id="{43aa2010-3609-05d0-1056-3d643eef0756}">
     <Declaration><![CDATA[// Provies interface to properties required for file access
 INTERFACE I_FileProperties
 ]]></Declaration>
     <Property Name="File" Id="{824aac20-18df-01b9-0ec6-ca8d100bf84d}">
-      <Declaration><![CDATA[// Gets or set file properties.
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets or set file properties.
 PROPERTY File : REFERENCE TO ST_FileInfo]]></Declaration>
       <Get Name="Get" Id="{c78d7bcc-1184-0016-387d-e1a0ed61f88e}">
         <Declaration><![CDATA[]]></Declaration>

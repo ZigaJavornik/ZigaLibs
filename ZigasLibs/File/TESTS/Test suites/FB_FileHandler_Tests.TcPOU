@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_FileHandler_Tests" Id="{6702c01e-3d93-0b4b-2596-38856e9fe5ca}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_FileHandler_Tests EXTENDS FB_TestSuite
@@ -494,7 +494,7 @@ END_VAR]]></Declaration>
 			END_IF
 		
 		3:
-			IF _fileHandler.Close THEN
+			IF _fileHandler.Close() THEN
 				state := state + 1;
 			END_IF
 			

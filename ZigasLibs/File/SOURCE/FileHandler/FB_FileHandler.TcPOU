@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_FileHandler" Id="{ced76f9f-82d7-00ef-2259-233acd438959}" SpecialFunc="None">
     <Declaration><![CDATA[// A function block containing multiple file handling methods. 
 // Note that the body of this FB does NOT need to be called as it holds no logic.
@@ -228,8 +228,7 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="OpenLast" Id="{0c6b0235-98a2-022f-3c40-666e2aa6d625}">
-      <Declaration><![CDATA[{warning 'add method implementation '}
-(* Opens the last file with the provided open parameters. 
+      <Declaration><![CDATA[(* Opens the last file with the provided open parameters. 
  If file can't be opened or no file has been opened so far, an error is gnerated.*)
 METHOD OpenLast : BOOL
 ]]></Declaration>
