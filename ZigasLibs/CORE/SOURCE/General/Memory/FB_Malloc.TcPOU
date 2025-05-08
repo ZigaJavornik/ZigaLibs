@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Malloc" Id="{26e49174-5c2a-04ab-1df7-bf2b62d134d9}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
 // Function block for memory allocation. It only handles a single memory instance.
@@ -31,7 +31,7 @@ END_VAR
 END_IF
 
 Free();
-_allocated := __NEW(BYTE, (elementSize * UDINT_TO_DINT(numberOfElements)));
+_allocated := __NEW(BYTE, (elementSize * numberOfElements));
 
 _properties.BaseTypeSize := elementSize;
 _properties.NumberOfElements := numberOfElements;
