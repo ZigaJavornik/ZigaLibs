@@ -205,6 +205,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
