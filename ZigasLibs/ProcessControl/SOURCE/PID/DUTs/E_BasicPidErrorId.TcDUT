@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_BasicPidErrorId" Id="{91096f74-41d9-0053-01b3-dba22fc95942}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_BasicPidErrorId :
+(
+	NO_ERROR := 0,
+	INVALID_PARAMETERS := 1,
+	INVALID_CYCLE_TIME := 2,
+	UNKNOWN_ERROR
+)UINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

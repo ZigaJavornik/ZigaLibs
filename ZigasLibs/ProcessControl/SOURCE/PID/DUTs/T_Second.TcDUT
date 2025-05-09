@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
-  <DUT Name="T_ControllerValue" Id="{d62ed199-f9c3-0652-3311-e2ec5065d824}">
-    <Declaration><![CDATA[TYPE T_ControllerValue : LREAL; END_TYPE
+  <DUT Name="T_Second" Id="{7101d999-e8a3-0210-3ae5-ad4bb8f43ba6}">
+    <Declaration><![CDATA[TYPE T_Second : LREAL; END_TYPE
 ]]></Declaration>
   </DUT>
 </TcPlcObject>

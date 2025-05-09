@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_BasicPid_Tests" Id="{6b77686f-22e5-0c53-1e5c-99b39378ad69}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_BasicPid_Tests EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_pid	: FB_BasicPid;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_pid.Parameters.Kp := 100.0;
+_pid.Parameters.MinValue := 0.0;
+_pid.Parameters.MaxValue := 1000.0;
+_pid.Parameters.CycleTime := 0.01;
+
+Test01_ManualMode_ExpectNoPidResponse();
+Test02_SwitchToActive_ExpectNoChangeUntilPidInRange();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ManualMode_ExpectNoPidResponse" Id="{be6a94b6-d053-0c65-06ec-470ec762ab15}">
+      <Declaration><![CDATA[METHOD Test01_ManualMode_ExpectNoPidResponse
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_ManualMode_ExpectNoPidResponse') THEN
+	_pid.Mode := E_ControllerMode.MANUAL;
+	_pid.enable := TRUE;
+	_pid(manualSetpoint := 50);
+	AssertEquals_LREAL(
+		Actual := _pid.output,
+		Expected := 50.0,
+		Delta := 0.01,
+		Message := 'When in manual mode, only manual setpoint should be passed to output');
+		
+	_pid(manualSetpoint := _pid.Parameters.MaxValue + 100.0);
+	AssertEquals_LREAL(
+		Actual := _pid.output,
+		Expected := _pid.Parameters.MaxValue,
+		Delta := 0.01,
+		Message := 'When in manual mode, only manual setpoint should be passed to output. Output value should be limited to maximum value!');
+
+	_pid(manualSetpoint := 200);
+	AssertEquals_LREAL(
+		Actual := _pid.output,
+		Expected := 200.0,
+		Delta := 0.01,
+		Message := 'When in manual mode, only manual setpoint should be passed to output');
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_SwitchToActive_ExpectNoChangeUntilPidInRange" Id="{8a28fb77-b0bb-0fd8-1ca5-89e27a2dfe9f}">
+      <Declaration><![CDATA[METHOD Test02_SwitchToActive_ExpectNoChangeUntilPidInRange
+VAR_INST
+	iter			: UINT;
+	inRangeCycles	: INT;
+	valueReached	: BOOL;
+END_VAR
+VAR
+	currentControllerOutput	: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_SwitchToActive_ExpectNoChangeUntilPidInRange') THEN
+	_pid(manualSetpoint := 50);
+	_pid.Parameters.Kp := 1;
+	_pid.Parameters.ManualSwitchInRange := 3.0;
+	_pid.Mode := E_ControllerMode.ACTIVE;
+	_pid(setpoint := 800, feedback := 500 - MIN((iter * 30),500));
+	
+	currentControllerOutput := 100.0 * (_pid._basicPid.fCtrlOutput/_pid.Parameters.MaxValue);
+	IF ABS(currentControllerOutput - _pid.manualSetpoint) > _pid.Parameters.ManualSwitchInRange AND NOT valueReached THEN
+		AssertEquals_LREAL(
+			Actual := _pid.output,
+			Expected := _pid.manualSetpoint,
+			Delta := 0.01,
+			Message := 'When switching to active mode, output should not change until internal PID reached the threshold!');
+	ELSE
+		inRangeCycles := inRangeCycles + 1;
+		valueReached := TRUE;
+		AssertEquals_LREAL(
+			Actual := _pid.output,
+			Expected := currentControllerOutput,
+			Delta := 0.01,
+			Message := 'After controller reached the threshold, output should ALWAYS follow the PID output value.');
+			
+		IF inRangeCycles >=5 THEN
+			TcUnit.TEST_FINISHED();				
+		END_IF
+	END_IF
+	iter := iter + 1;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_BasicPid_Tests">
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid_Tests.Test01_ManualMode_ExpectNoPidResponse">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="3" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="20" Count="4" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="28" Count="5" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid_Tests.Test02_SwitchToActive_ExpectNoChangeUntilPidInRange">
+      <LineId Id="6" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="47" Count="3" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

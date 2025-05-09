@@ -16,7 +16,7 @@
     <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.ProcessControl</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <ProjectVersion>0.0.2.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -73,7 +73,22 @@
     <Description>A library containing objects for process control.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\PID\DUTs\E_BasicPidErrorId.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\E_ControllerMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\ST_PID_Parameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\PID\DUTs\T_ControllerValue.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\DUTs\T_Second.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\PID\POUs\FB_BasicPid.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\PID\POUs\FB_Controller_P.TcPOU">
@@ -104,6 +119,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\Test suites\FB_BasicPid_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_Controller_PI_Tests.TcPOU">
@@ -146,13 +164,21 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
       <Parameters>
         <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>100</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
+          <Value>10</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>100</Value>
         </Parameter>
       </Parameters>
+      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>

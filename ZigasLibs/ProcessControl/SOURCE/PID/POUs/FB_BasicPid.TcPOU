@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_BasicPid" Id="{87a6a646-2e3c-0f51-25fc-4ebf8547d0b6}" SpecialFunc="None">
+    <Declaration><![CDATA[// A discretized PID element. Transfer function:
+// G(s) = Kp*(1+ (1/(Tn)) + (Tv/(1+Td)) )
+FUNCTION_BLOCK FB_BasicPid EXTENDS ZigaLibs_Core.FB_HasTaskInfo
+VAR_INPUT
+	enable			: BOOL;		// Enables PID
+	setpoint		: LREAL;	// Setpoint for PID controller when in ACTIVE moed
+	manualSetpoint	: LREAL;	// Setpoint passed to output when MANUAL mode is active
+	feedback		: LREAL;	// Feedback value for PID
+END_VAR
+VAR_OUTPUT
+	output	: LREAL;	// Output for the control variable, spanning from 0-100 (%)
+	error	: BOOL;		// TRUE if error (incorrect parameters)
+	errorId	: E_BasicPidErrorId;
+END_VAR
+VAR
+	_parameters				: ST_PID_Parameters;
+	_basicPid					: Tc2_Utilities.FB_BasicPID;
+	_mode						: E_ControllerMode := E_ControllerMode.ACTIVE;
+	_taskTimeAsSeconds			: LREAL;
+	_modeChanged				: BOOL;
+	_waitForControllerInRange	: BOOL;
+	_setpointFromManualMode		: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[error := FALSE;
+IF THIS^.TaskInfo.CycleTime <> 0 THEN
+	_taskTimeAsSeconds := 1000.0/DINT_TO_LREAL(THIS^.TaskInfo.CycleTime);	
+END_IF
+
+
+_basicPid.fKp := _parameters.Kp;
+_basicPid.fTn := _parameters.Tn;
+_basicPid.fTd := _parameters.Td;
+_basicPid.fTv := _parameters.Tv;
+
+IF _basicPid.fCtrlCycleTime = 0 OR (_parameters.CycleTime < _taskTimeAsSeconds) THEN
+	IF _taskTimeAsSeconds <> 0 THEN
+		// Set control time to a minimum of task cycle time
+		_basicPid.fCtrlCycleTime := _taskTimeAsSeconds;
+	ELSE
+		// Cycle time invalid and can't be determined - exit
+		errorId := E_BasicPidErrorId.INVALID_CYCLE_TIME;
+		error := TRUE;
+		output := 0;
+		RETURN;
+	END_IF
+END_IF
+
+
+IF NOT enable THEN
+	_basicPid(
+		bReset := NOT _basicPid.bReset, 
+		fSetpointValue := 0, 
+		fActualValue := 0);
+	output := 0;
+	_waitForControllerInRange := FALSE;
+	RETURN;
+END_IF
+
+CASE _mode OF
+	E_ControllerMode.MANUAL:
+		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue ,manualSetpoint));
+		_setpointFromManualMode := output;
+		_basicPid(
+			bReset := NOT _basicPid.bReset, 
+			fSetpointValue := 0, 
+			fActualValue := 0);
+	
+	E_ControllerMode.ACTIVE:
+		IF _modeChanged THEN
+			_waitForControllerInRange := manualSetpoint <> 0;
+		END_IF
+		
+		_basicPid(
+			fActualValue := feedback,
+			fSetpointValue := setpoint);
+			
+		// Wait for controller to reach the manual setpoint before activating it
+		IF _waitForControllerInRange AND _parameters.ManualSwitchInRange <> 0.0 THEN
+			IF ABS(THIS^.ValueToPercentage(_basicPid.fCtrlOutput) - manualSetpoint) < _parameters.ManualSwitchInRange THEN
+				// Controller has reached the manual setpoint. Reset flag and instantly pass the value to output.
+				_waitForControllerInRange := FALSE;
+				output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
+			ELSE
+				// Wait for controller to reach the manual setpoint. Pass the last manual value until then.
+				output := _setpointFromManualMode;
+			END_IF
+		ELSE
+			// Controller has reached the setpoint or the threshold is 0 - output is controlled by the PID
+			output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
+		END_IF
+END_CASE
+
+error := error OR _basicPid.nErrorStatus <> E_BasicPidErrorId.NO_ERROR;
+
+CASE _basicPid.nErrorStatus OF
+	0:
+		errorId := E_BasicPidErrorId.NO_ERROR;
+	1:
+		errorId := E_BasicPidErrorId.INVALID_PARAMETERS;
+	2:
+		errorId := E_BasicPidErrorId.INVALID_CYCLE_TIME;
+	ELSE
+		errorId := E_BasicPidErrorId.UNKNOWN_ERROR;
+END_CASE
+
+
+_modeChanged := FALSE;]]></ST>
+    </Implementation>
+    <Property Name="Mode" Id="{24964d76-0a70-017a-24fb-9b10e8cb23f7}">
+      <Declaration><![CDATA[PROPERTY Mode : E_ControllerMode]]></Declaration>
+      <Get Name="Get" Id="{1ae06da7-e4ee-039c-3b46-a4a35e441a56}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Mode := _mode;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f60bc4e9-596f-034f-26f5-28519fee7ec3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF _mode <> Mode THEN
+	_modeChanged := TRUE;
+END_IF
+
+_mode := Mode;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Parameters" Id="{0caa46e7-f001-0916-0661-46965b0779f7}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
+PROPERTY Parameters : REFERENCE TO ST_PID_Parameters]]></Declaration>
+      <Get Name="Get" Id="{3d8d41e2-5643-09d5-26a1-5f61fc10e8b2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Parameters REF= _parameters;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{db7b6114-738d-0461-2d46-9e3a564bc534}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_parameters := Parameters;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="ValueToPercentage" Id="{b5bfe616-6fa1-04ce-071b-5d542c68b494}">
+      <Declaration><![CDATA[// Calculates the percentage. Negative values are ommited and 0 is returned.
+METHOD PRIVATE ValueToPercentage : LREAL
+VAR_INPUT
+	value	: LREAL;
+END_VAR
+
+VAR
+	rangeSpan	: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[rangeSpan := (_parameters.MaxValue - _parameters.MinValue);
+IF value <= _parameters.MinValue OR rangeSpan <= 0THEN
+	ValueToPercentage := 0.0;
+	RETURN;
+END_IF
+
+ValueToPercentage := 100.0 * (value / rangeSpan);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_BasicPid">
+      <LineId Id="55" Count="0" />
+      <LineId Id="120" Count="2" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="2" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="26" Count="2" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="114" Count="2" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="79" Count="1" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="102" Count="3" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="65" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid.Mode.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid.Mode.Set">
+      <LineId Id="5" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid.Parameters.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid.Parameters.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BasicPid.ValueToPercentage">
+      <LineId Id="19" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

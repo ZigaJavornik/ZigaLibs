@@ -13,7 +13,6 @@ VAR
 	_enabled			: BOOL;
 	_basicPid			: Tc2_Utilities.FB_BasicPID;
 	_controllerOutput	: T_ControllerValue;
-
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -209,5 +208,50 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <LineIds Name="FB_Controller_P">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.ControllerOutput.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.CycleTime.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.CycleTime.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Enable.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Enable.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Execute">
+      <LineId Id="3" Count="34" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Kp.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Kp.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.PID.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.TaskCycleTimeToSeconds">
+      <LineId Id="3" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.TimeToSeconds">
+      <LineId Id="3" Count="4" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Value.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Controller_P.Value.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>
