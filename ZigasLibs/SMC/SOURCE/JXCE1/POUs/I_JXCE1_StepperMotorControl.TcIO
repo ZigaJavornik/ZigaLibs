@@ -70,6 +70,9 @@ VAR_INPUT
 	speed		: REAL;
 	position	: REAL;
 END_VAR
+VAR_OUTPUT
+	error	: BOOL;	// If incorrect parameters are used, an error will be provided here
+END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="Reset" Id="{9c29d6ae-36c1-0063-09b5-564afb349eb0}">

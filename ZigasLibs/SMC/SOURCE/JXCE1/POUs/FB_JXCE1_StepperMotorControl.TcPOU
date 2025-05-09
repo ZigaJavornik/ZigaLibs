@@ -6,7 +6,7 @@ Constructor:
 (strokeLength := ,
  positionUnit := );
 *)
-FUNCTION_BLOCK FB_JXCE1_StepperMotorControl IMPLEMENTS I_JXCE1_StepperMotorControl
+FUNCTION_BLOCK FB_JXCE1_StepperMotorControl EXTENDS FB_ErrorSource IMPLEMENTS I_JXCE1_StepperMotorControl 
 VAR
 	_status				: ST_JXCE1_Status;
 	_commands			: ST_JXCE1_Commands;
@@ -17,6 +17,7 @@ VAR
 	_startFlagDelay		: Tc2_Standard.TOF;
 	_modeOfOperation	: E_JXCE1_ModeOfOperation := E_JXCE1_ModeOfOperation.NUMERICAL;
 	_minSpeed			: T_JXCE1_Speed;
+	_sb					: ZigaLibs_Core.FB_StringBuilder;
 END_VAR
 
 VAR
@@ -42,10 +43,20 @@ _status.InRange_WAREA := ReceiveData.SignalAllocatedToInputPort.13;
 _status.ESTOP := ReceiveData.SignalAllocatedToInputPort.14;
 _status.Alarm := ReceiveData.SignalAllocatedToInputPort.15;
 
+IF _status.Alarm THEN
+	THIS^.Error := TRUE;
+	THIS^.GenericError.Code := TO_DINT(_status.Alarm_1);
+	THIS^.GenericError.Message := _sb.Reset()
+		.AddString('Driver alarm active: ')
+		.AddWithDblQuotationMarks(TO_STRING(_status.Alarm_1))
+		.Create();
+END_IF
+
 _status.Ready := ReceiveData.ControllerInformationFlag.4;
 IF _valueFor1mm <> 0 THEN
 	_status.MovementFeedback.CurrentPosition := DINT_TO_REAL(ReceiveData.CurrentPosition) * _valueFor1mm;
 END_IF
+
 _status.MovementFeedback.CurrentSpeed := WORD_TO_REAL(ReceiveData.CurrentSpeed);
 _status.MovementFeedback.CurrentPushingForce := WORD_TO_UINT(ReceiveData.CurrentPushingForce);
 IF _valueFor1mm <> 0 THEN
@@ -284,14 +295,57 @@ VAR_INST
 END_VAR
 VAR
 	targetSpeed	: T_JXCE1_Speed;
+	sb			: ZigaLibs_Core.FB_StringBuilder;
+	stErrorInfo	: ZigaLibs_Core.ST_GenericError;
+END_VAR
+
+VAR_OUTPUT
+	error		: BOOL; // If incorrect parameters are used error will be TRUE
+	errorInfo	: ZigaLibs_Core.ST_GenericError;	// Error information can be found in this struct
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[Rtrig_Done(CLK := _status.Done AND _status.SETON AND _status.Ready AND NOT _status.Busy);
+error := FALSE;
+
+IF speed < _minSpeed THEN
+	stErrorInfo.Code := E_JXCE1_GenericErrors.SPEED_SET_TOO_LOW;
+	stErrorInfo.Message := sb.AddString('Speed setpoint too low!')
+		.AddString('Set speed: ').AddAnyReal(speed, 2, FALSE).AddString('mm/s. ')
+		.AddString('Minimum allowed speed is ').AddAnyReal(_minSpeed, 2 , FALSE).AddString('mm/s.')
+		.Create();
+	error := TRUE;
+	errorInfo := stErrorInfo;
+	RETURN;
+END_IF
+
+IF speed < 0 THEN
+	stErrorInfo.Code := E_JXCE1_GenericErrors.NEGATIVE_SPEED_USED;
+	stErrorInfo.Message := sb.AddString('Negative speed not allowed!').Create();
+	error := TRUE;
+	errorInfo := stErrorInfo;
+	RETURN;
+END_IF
+
+IF (_commands.MovementData.MovementMode = E_JXCE1_MovementMode.ABSOLUTE AND (position > _strokeLength)) OR
+   (_commands.MovementData.MovementMode = E_JXCE1_MovementMode.INCREMENTAL AND ((position + _status.MovementFeedback.CurrentPosition) > _strokeLength))
+THEN
+	stErrorInfo.Code := E_JXCE1_GenericErrors.SET_POSITION_OUT_OF_STROKE_RANGE;
+	stErrorInfo.Message := sb.AddString('Target position would result in out of stroke range movement!')
+		.AddString('Position setpoint: ').AddAnyReal(position, 2, FALSE).AddString('mm')
+		.AddString(', movement mode used: ').AddWithDblQuotationMarks(TO_STRING(_commands.MovementData.MovementMode))
+		.Create();
+		
+	error := TRUE;
+	errorInfo := stErrorInfo;
+	RETURN;
+END_IF
+
 // If done, start flag will not be sent - new method call starts new positioning command
 IF Rtrig_Done.Q THEN
 	MoveToPosition := TRUE;
 	RETURN;
 END_IF
+
 targetSpeed := speed;
 _commands.StartFlag := TRUE;
 _commands.MovementData.PushingForce := 0;
@@ -306,7 +360,8 @@ _commands.MovementData.Speed := speed;
 METHOD Reset]]></Declaration>
       <Implementation>
         <ST><![CDATA[_commands.Reset := TRUE;
-_commands.ReturnToOrigin := FALSE;]]></ST>
+_commands.ReturnToOrigin := FALSE;
+THIS^.ResetError();]]></ST>
       </Implementation>
     </Method>
     <Method Name="ReturnToOrigin" Id="{c67f0689-57c9-029b-1497-b8593a4b0e8d}">
@@ -345,85 +400,5 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <LineIds Name="FB_JXCE1_StepperMotorControl">
-      <LineId Id="340" Count="44" />
-      <LineId Id="454" Count="0" />
-      <LineId Id="385" Count="8" />
-      <LineId Id="457" Count="0" />
-      <LineId Id="456" Count="0" />
-      <LineId Id="394" Count="6" />
-      <LineId Id="458" Count="0" />
-      <LineId Id="402" Count="4" />
-      <LineId Id="451" Count="0" />
-      <LineId Id="407" Count="19" />
-      <LineId Id="430" Count="15" />
-      <LineId Id="459" Count="0" />
-      <LineId Id="447" Count="1" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.ControllerState.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Enable.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Enable.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.FB_init">
-      <LineId Id="38" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="40" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Hold.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Hold.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.JogBwd">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.JogFwd">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.ModeOfOperation.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.ModeOfOperation.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.MovementData.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.MovementData.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.MoveToPosition">
-      <LineId Id="104" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="87" Count="0" />
-      <LineId Id="106" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="107" Count="0" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="65" Count="1" />
-      <LineId Id="58" Count="0" />
-      <LineId Id="41" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Reset">
-      <LineId Id="7" Count="0" />
-      <LineId Id="10" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.ReturnToOrigin">
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.Status.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_JXCE1_StepperMotorControl.StrokeLength.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

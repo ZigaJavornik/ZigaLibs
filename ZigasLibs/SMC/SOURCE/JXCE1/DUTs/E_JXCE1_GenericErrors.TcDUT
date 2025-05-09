@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_JXCE1_GenericErrors" Id="{a03135b5-fb1b-052a-2ced-ba7c55cf4e4f}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_JXCE1_GenericErrors :
+(
+	SPEED_SET_TOO_LOW := 1000,
+	NEGATIVE_SPEED_USED := 1010,
+	SET_POSITION_OUT_OF_STROKE_RANGE := 1100
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
