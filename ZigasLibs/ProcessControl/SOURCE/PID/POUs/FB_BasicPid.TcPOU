@@ -63,7 +63,7 @@ END_IF
 
 CASE _mode OF
 	E_ControllerMode.MANUAL:
-		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue ,manualSetpoint)),parameters.MaxOutput;
+		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue, manualSetpoint));
 		_setpointFromManualMode := output;
 		_basicPid(
 			bReset := NOT _basicPid.bReset, 
@@ -77,11 +77,12 @@ CASE _mode OF
 		
 		_basicPid(
 			fActualValue := feedback,
-			fSetpointValue := setpoint);
+			fSetpointValue := setpoint,
+			bReset := FALSE);
 			
 		// Wait for controller to reach the manual setpoint before activating it
 		IF _waitForControllerInRange AND _parameters.ManualSwitchInRange <> 0.0 THEN
-			IF ABS(THIS^.ValueToPercentage(_basicPid.fCtrlOutput) - manualSetpoint) < _parameters.ManualSwitchInRange THEN
+			IF (THIS^.ValueToPercentage(_basicPid.fCtrlOutput) + _parameters.ManualSwitchInRange) >= manualSetpoint  THEN
 				// Controller has reached the manual setpoint. Reset flag and instantly pass the value to output.
 				_waitForControllerInRange := FALSE;
 				output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
@@ -110,7 +111,7 @@ END_CASE
 
 
 _modeChanged := FALSE;
-output := MIN(output, parameters.MaxOutput);]]></ST>
+output := MIN(output, _parameters.MaxOutput);]]></ST>
     </Implementation>
     <Property Name="Mode" Id="{24964d76-0a70-017a-24fb-9b10e8cb23f7}">
       <Declaration><![CDATA[PROPERTY Mode : E_ControllerMode]]></Declaration>
