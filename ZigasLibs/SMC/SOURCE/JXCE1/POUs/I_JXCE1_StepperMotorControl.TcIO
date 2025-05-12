@@ -67,13 +67,14 @@ PROPERTY MovementData : REFERENCE TO ST_JXCE1_MovementData]]></Declaration>
       <Declaration><![CDATA[// Moves to the target position with the defined speed. Returns TRUE when done
 METHOD MoveToPosition : BOOL
 VAR_INPUT
-	speed		: REAL;
-	position	: REAL;
+	speed		: T_JXCE1_Speed;	// Speed in mm/s
+	position	: T_JXCE1_Position;	// Position in mm
 END_VAR
+
 VAR_OUTPUT
-	error	: BOOL;	// If incorrect parameters are used, an error will be provided here
-END_VAR
-]]></Declaration>
+	error		: BOOL; // If incorrect parameters are used error will be TRUE
+	errorInfo	: ZigaLibs_Core.ST_GenericError;	// Error information can be found in this struct
+END_VAR]]></Declaration>
     </Method>
     <Method Name="Reset" Id="{9c29d6ae-36c1-0063-09b5-564afb349eb0}">
       <Declaration><![CDATA[// Resets the controller when called
