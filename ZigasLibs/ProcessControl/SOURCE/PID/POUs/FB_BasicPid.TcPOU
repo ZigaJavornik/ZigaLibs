@@ -63,7 +63,7 @@ END_IF
 
 CASE _mode OF
 	E_ControllerMode.MANUAL:
-		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue ,manualSetpoint));
+		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue ,manualSetpoint)),parameters.MaxOutput;
 		_setpointFromManualMode := output;
 		_basicPid(
 			bReset := NOT _basicPid.bReset, 
@@ -109,7 +109,8 @@ CASE _basicPid.nErrorStatus OF
 END_CASE
 
 
-_modeChanged := FALSE;]]></ST>
+_modeChanged := FALSE;
+output := MIN(output, parameters.MaxOutput);]]></ST>
     </Implementation>
     <Property Name="Mode" Id="{24964d76-0a70-017a-24fb-9b10e8cb23f7}">
       <Declaration><![CDATA[PROPERTY Mode : E_ControllerMode]]></Declaration>
@@ -174,93 +175,5 @@ END_IF
 ValueToPercentage := 100.0 * (value / rangeSpan);]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_BasicPid">
-      <LineId Id="55" Count="0" />
-      <LineId Id="120" Count="2" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="32" Count="2" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="58" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="49" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="60" Count="2" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="84" Count="0" />
-      <LineId Id="26" Count="2" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="92" Count="0" />
-      <LineId Id="114" Count="2" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="68" Count="2" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="71" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="78" Count="0" />
-      <LineId Id="88" Count="0" />
-      <LineId Id="79" Count="1" />
-      <LineId Id="93" Count="0" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="87" Count="0" />
-      <LineId Id="89" Count="0" />
-      <LineId Id="94" Count="0" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="85" Count="0" />
-      <LineId Id="95" Count="0" />
-      <LineId Id="86" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="107" Count="0" />
-      <LineId Id="96" Count="0" />
-      <LineId Id="106" Count="0" />
-      <LineId Id="99" Count="1" />
-      <LineId Id="102" Count="3" />
-      <LineId Id="108" Count="1" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="65" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_BasicPid.Mode.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_BasicPid.Mode.Set">
-      <LineId Id="5" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_BasicPid.Parameters.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_BasicPid.Parameters.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_BasicPid.ValueToPercentage">
-      <LineId Id="19" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

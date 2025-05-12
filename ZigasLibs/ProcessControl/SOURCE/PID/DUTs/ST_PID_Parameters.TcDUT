@@ -10,6 +10,7 @@ STRUCT
 	CycleTime	: T_Second;	// Controller cycle time (s)
 	MinValue	: LREAL;
 	MaxValue	: LREAL;
+	MaxOutput	: LREAL := 100;	// Maximum output value to the controller
 	(* 0-100%, when switching from manual to automatic mode controller output will only be passed 
 	once it is in range of the manual setpoint. Range is defined by this parameter. 
 	Setting this parameter to 0 will ommit the check and instantly activate controller (control value will most likely drop to 0!)*)
