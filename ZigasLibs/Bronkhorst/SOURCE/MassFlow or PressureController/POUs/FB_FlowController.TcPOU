@@ -140,7 +140,9 @@ END_VAR
       </Implementation>
     </Method>
     <Property Name="Capacity" Id="{151e0e68-21c0-0cd2-1fbe-f6ddb4155f36}">
-      <Declaration><![CDATA[PROPERTY Capacity : REAL]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets capacity of the device
+PROPERTY Capacity : REAL]]></Declaration>
       <Get Name="Get" Id="{e4917337-5c75-0576-1f6e-fc4f12ed5d88}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -151,7 +153,9 @@ END_VAR
       </Get>
     </Property>
     <Property Name="CapacityUnit" Id="{2b8d7175-dc8f-0228-2ee3-e0fa3fc3423f}">
-      <Declaration><![CDATA[PROPERTY CapacityUnit : STRING(30)]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the capacity unit of the device
+PROPERTY CapacityUnit : STRING(30)]]></Declaration>
       <Get Name="Get" Id="{d53e5f36-16a4-0e81-13ff-1ee900c38d84}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -184,7 +188,9 @@ _writeLogs := __ISVALIDREF(iLogger);]]></ST>
       </Implementation>
     </Method>
     <Property Name="FluidName" Id="{72233265-6bff-0f7e-33e9-3452c3568c33}">
-      <Declaration><![CDATA[PROPERTY FluidName : STRING(30)]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the fluid name of the device
+PROPERTY FluidName : STRING(30)]]></Declaration>
       <Get Name="Get" Id="{392a6e59-09a9-0957-1857-02c2bbd67f77}">
         <Declaration><![CDATA[VAR
 END_VAR
