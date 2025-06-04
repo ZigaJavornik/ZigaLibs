@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_FlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
     <Declaration><![CDATA[(* Bronkhorst mass flow/pressure controller device implementation.
 ============================================================================================================================================================================================
@@ -139,6 +139,28 @@ END_VAR
         <ST><![CDATA[CalculateSetpointValue := REAL_TO_INT(fSetpoint * EXPT(10, _CoeList.DecimalDigits.Value));]]></ST>
       </Implementation>
     </Method>
+    <Property Name="Capacity" Id="{151e0e68-21c0-0cd2-1fbe-f6ddb4155f36}">
+      <Declaration><![CDATA[PROPERTY Capacity : REAL]]></Declaration>
+      <Get Name="Get" Id="{e4917337-5c75-0576-1f6e-fc4f12ed5d88}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Capacity := _CoeList.Capacity.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CapacityUnit" Id="{2b8d7175-dc8f-0228-2ee3-e0fa3fc3423f}">
+      <Declaration><![CDATA[PROPERTY CapacityUnit : STRING(30)]]></Declaration>
+      <Get Name="Get" Id="{d53e5f36-16a4-0e81-13ff-1ee900c38d84}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CapacityUnit := _CoeList.CapacityUnit.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="FB_init" Id="{452560b1-3dd5-07ef-1f9c-d7749fdaa339}" FolderPath="Constructor\">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
@@ -161,6 +183,17 @@ _mode := mode;
 _writeLogs := __ISVALIDREF(iLogger);]]></ST>
       </Implementation>
     </Method>
+    <Property Name="FluidName" Id="{72233265-6bff-0f7e-33e9-3452c3568c33}">
+      <Declaration><![CDATA[PROPERTY FluidName : STRING(30)]]></Declaration>
+      <Get Name="Get" Id="{392a6e59-09a9-0957-1857-02c2bbd67f77}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FluidName := _CoeList.FluidName.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="Mode" Id="{4c7e1d0e-6e00-01e7-36c0-8b3b117df91e}">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets or sets the controller mode
@@ -174,22 +207,13 @@ END_VAR
 ]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{3f89f4f7-cd6d-0b62-07e0-275dc9ab74b5}">
-        <Declaration><![CDATA[VAR
+      <Set Name="Set" Id="{0d462039-cf9e-0ae0-2cbb-56e6bc7375e2}">
+        <Declaration><![CDATA[
+VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[IF _mode <> Mode THEN
-	_logger.LogInfo(_stringBuilder.Reset()
-		.AddString(str := _logPrefix)
-		.AddString('Switching controller mode from ')
-		.AddWithDblQuotationMarks(TO_STRING(_mode))
-		.AddString(' to ')
-		.AddWithDblQuotationMarks(TO_STRING(Mode))
-		.Create());
-END_IF
-
-_mode := Mode;]]></ST>
+          <ST><![CDATA[_mode := Mode;]]></ST>
         </Implementation>
       </Set>
     </Property>
