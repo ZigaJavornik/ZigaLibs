@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <Itf Name="I_LoggerConfig" Id="{2ba2c81e-fc2d-0294-2104-7f3b7e99342f}">
     <Declaration><![CDATA[INTERFACE I_LoggerConfig
 ]]></Declaration>
     <Property Name="Configuration" Id="{edcd145b-ef6d-0d72-1fa0-8765e3596706}">
       <Declaration><![CDATA[// Gets the logger configuration - should not be edited, use .Configure() method to apply configuration.
+{attribute 'monitoring':='call'}
 PROPERTY Configuration : REFERENCE TO ST_LoggerConfiguration]]></Declaration>
       <Get Name="Get" Id="{45e35ee2-16ef-0bcc-29de-9617a79dbbb8}">
         <Declaration><![CDATA[]]></Declaration>
