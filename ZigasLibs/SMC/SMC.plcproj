@@ -158,6 +158,9 @@
     <Compile Include="SOURCE\JXCE1\POUs\JXCE1_Helper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Valve blocks\MEC1\T_EX260MEC1_ValveList.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -179,6 +182,8 @@
     <Folder Include="SOURCE\JXCE1\DUTs\Commands" />
     <Folder Include="SOURCE\JXCE1\DUTs\Status" />
     <Folder Include="SOURCE\JXCE1\POUs" />
+    <Folder Include="SOURCE\Valve blocks" />
+    <Folder Include="SOURCE\Valve blocks\MEC1" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
@@ -212,6 +217,11 @@
     <None Include="SMC.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="ZigaLibs.Core">
+      <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

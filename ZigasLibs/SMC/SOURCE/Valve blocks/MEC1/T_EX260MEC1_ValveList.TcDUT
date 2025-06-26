@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_EX260MEC1_ValveList" Id="{3a8b2d86-7c7a-07c6-159f-0d84bd6aa22c}">
+    <Declaration><![CDATA[TYPE T_EX260MEC1_ValveList : USINT; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

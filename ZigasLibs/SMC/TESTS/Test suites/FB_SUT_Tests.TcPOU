@@ -15,7 +15,7 @@ END_VAR
       <ST><![CDATA[// Call your test methods here
 TestXX_Template();]]></ST>
     </Implementation>
-    <Method Name="TestXX_Template" Id="{e7081d5a-2e8f-4541-92c6-bfda2d464935}">
+    <Method Name="TestXX_Template" Id="{5ca79626-b5c3-41e1-94be-fdb4be6dedc3}">
       <Declaration><![CDATA[METHOD PRIVATE TestXX_Template
 
 (* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
@@ -45,20 +45,5 @@ IF TcUnit.TEST_ORDERED('TestXX_Template') THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_SUT_Tests">
-      <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_SUT_Tests.TestXX_Template">
-      <LineId Id="32" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="11" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
