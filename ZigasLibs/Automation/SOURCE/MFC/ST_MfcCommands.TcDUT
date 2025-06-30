@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_MfcCommands" Id="{215269a9-1511-0238-0bd8-17b3a19dc6a7}">
+    <Declaration><![CDATA[TYPE ST_MfcCommands :
+STRUCT
+	FlowSetpoint	: REAL;
+	Enable			: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -16,7 +16,7 @@
     <LibraryReferences>{7d2a04ae-a878-43b7-8d86-76790d26e24c}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Automation</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <ProjectVersion>0.0.1.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -103,6 +103,12 @@
     <Compile Include="SOURCE\LightTower\I_LightTowerComponent.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\MFC\ST_MfcCommands.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\MFC\ST_MfcFeedback.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -121,6 +127,7 @@
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\LightTower" />
     <Folder Include="SOURCE\FrequencyInverter" />
+    <Folder Include="SOURCE\MFC" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>

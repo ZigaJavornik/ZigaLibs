@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_MfcFeedback" Id="{bf8f1ff4-1273-03b2-2b8a-c3f7a7107f92}">
+    <Declaration><![CDATA[TYPE ST_MfcFeedback :
+STRUCT
+	ValvePosition	: REAL;
+	ActualFlow		: REAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
