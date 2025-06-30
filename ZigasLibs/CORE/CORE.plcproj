@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Core</Title>
-    <ProjectVersion>0.0.3.2</ProjectVersion>
+    <ProjectVersion>0.0.3.3</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
     <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -118,6 +118,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_SINT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_String128.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Beckhoff\EtherCAT\CoE\DUTs\ST_CoeEntry_UDINT.TcDUT">
