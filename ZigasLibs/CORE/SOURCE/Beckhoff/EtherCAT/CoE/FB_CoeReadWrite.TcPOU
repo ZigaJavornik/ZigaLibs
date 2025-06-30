@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_CoeReadWrite" Id="{ce2c41e1-ef6c-0e2a-1397-146748892c85}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CoeReadWrite
 VAR
@@ -27,7 +27,7 @@ END_VAR
 	sNetId:= AdsHelper.NetIdToString(SlaveAddr.netId), 
 	nSlaveAddr:= SlaveAddr.port, 
 	nSubIndex:= CoeEntry^.Subindex, 
-	nIndex:= CoeEntry^.Subindex, 
+	nIndex:= CoeEntry^.Index, 
 	pDstBuf:= Value.pValue, 
 	cbBufLen:= DINT_TO_UDINT(Value.diSize), 
 	bExecute:= NOT fbCoeRead.bBusy, 

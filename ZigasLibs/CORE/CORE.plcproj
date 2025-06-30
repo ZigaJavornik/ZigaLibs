@@ -450,6 +450,7 @@
         </Parameter>
       </Parameters>
       <Optional>true</Optional>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="TwinCat Dynamic Collections">
       <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
