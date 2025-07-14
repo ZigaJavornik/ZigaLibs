@@ -59,7 +59,7 @@ END_VAR
 	sNetId:= AdsHelper.NetIdToString(SlaveAddr.netId), 
 	nSlaveAddr:= SlaveAddr.port, 
 	nSubIndex:= CoeEntry^.Subindex,
-	nIndex:= CoeEntry^.Subindex, 
+	nIndex:= CoeEntry^.Index, 
 	pSrcBuf:= Value.pValue, 
 	cbBufLen:= DINT_TO_UDINT(Value.diSize), 
 	bExecute:= NOT fbCoeWrite.bBusy, 
