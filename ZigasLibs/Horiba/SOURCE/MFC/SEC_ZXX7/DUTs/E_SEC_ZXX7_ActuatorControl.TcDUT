@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_SEC_ZXX7_ActuatorControl" Id="{b365a194-cd03-0dd7-342d-f2ab726bc34b}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_SEC_ZXX7_ActuatorControl :
+(
+	FEEDBACK := 0,
+	POSITION := 1,
+	FULLY_OPEN := 2,
+	FULLY_CLOSE := 3,
+	FREEZE_POSITION :=4
+)USINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

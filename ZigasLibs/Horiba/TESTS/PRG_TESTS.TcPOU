@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="PRG_TESTS" Id="{6e34c45a-3ca6-4d60-98ec-a84888e107c1}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PRG_TESTS
+
+(* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
+Good practice for creating test methods is to end them with _test as well. *)
+VAR
+	fbSUT_Tests	: FB_SUT_Tests;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Run tests in parallel
+//TcUnit.RUN();
+
+// Run tests in sequence, one after the other.
+TcUnit.RUN_IN_SEQUENCE();]]></ST>
+    </Implementation>
+    <ObjectProperties>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="POUImageProperty">
+            <a n="ImageData" cet="Byte">Qk02EAAAAAAAADYAAAAoAAAAIAAAACAAAAABACAAAAAAAAAAAAB0EgAAdBIAAAAAAAAAAAAA9vb2//f39//3+Pb/9/f3//j4+P/4+Pj/+Pj4//n5+f/5+fn/+vr6//r6+f/6+vr/+/v6//v7+//7+/v/+/v7//v7+//7+/r/+fr5//v7+//6+vr/+vr6//r6+v/6+vr/9/f3//Pz8//z8/P/8/Pz//T09P/08fH/8/Dw//Hs7P/29vb/9/f3//f39v/39/f/+Pj4//j4+P/5+fn/+fn5//r6+v/6+vr/+vr6//v7+//7+/v/+/v7//z8/P/8/Pz//Pz8//z7+//5+vr/+/v7//v7+//6+vr/+vr6//r6+v/4+Pj/+Pj4//f39//29vb/9fX1//Xy8v/z8PD/8u7u//b29v/3+Pb/9/f2//f39//4+ff/+Pj4//n5+f/5+fn/+vr5//r6+v/6+/r/+/v7//v7+//8/Pz//Pz8//z8/P/8/Pz//Pv7//n6+v/8/Pz/+/v7//v7+//6+vr/+vn5//j4+P/39/f/9vb2//X29v/29fT/9fT0//T09P/z8/P/9vb2//f39//39/f/+Pj4//j4+P/4+Pj/+fn5//n5+f/6+vn/+vr6//v7+//7+/v//Pz8//z8/P/8/Pz//Pz8//39/f/8/Pz/+vv7//z8/P/8/Pz//Pz8//v7+//5+Pj/+Pj4//b29v/19fX/9PX0//Xv7//19PT/9PT0//Pz8//39/f/9/f3//f39//4+Pj/+Pj4//n5+P/5+fn/+vr6//r6+v/6+/n/+/v7//z8/P/8/Pz//Pz8//39/f/9/f3//f39//z8/P/7/Pz//f39//z8/P/8/Pz/+/v7//r6+v/6+vr/+fn5//j4+P/4+Pj/9/f2//X19f/09PT/8/Pz//f39v/39/f/9/f3//j4+P/4+Pj/+fn5//n5+f/6+vn/+vr6//r6+v/7+/v//Pz8//z8/P/8/Pz//f39//39/f/9/f3//Pz8//v8/P/9/f3//Pz8//z8/P/8/Pz/+vr6//r6+v/6+vr/+fn5//j4+P/39/f/9fX1//T09P/09PT/9vf3//b39//39/f/9/j4//j4+P/4+fn/+fr5//n6+v/6+vr/+vv7//v7+//8/Pz//Pz8//39/f/9/f3//f39//39/f/9/f3//Pz8//39/f/9/f3//Pz8//z8/P/7+/v/+vr6//r6+v/5+fn/+Pj4//f39//29vb/9PT0//T09P/29/b/9ff3//b39//2+Pj/9/j4//f5+f/5+vr/+Pr6//n6+v/6+/v/+/v7//v8/P/8/Pz//f39//39/f/9/f3//f39//39/f/9/f3//f39//39/f/9/f3//Pz8//v6+//6+fn/+vr6//n5+f/4+Pj/9/f3//b29v/19fX/9PT0//f39//19/f/9vf3//b4+P/3+Pj/+Pn5//j6+v/5+vr/+vv7//v7+//7/Pz/+vr6/+fn5//9/f3//f39//7+/v/+/v7//v7+//39/f/9/f3//f39//39/f/8/Pz/+/n5//r4+P/6+vr/+fn5//j4+P/39/f/9vb2//X19f/09PT/9vf3//f39//29/f/9/f3//n5+f/5+fn/+vr5/9fX1//4+Pj/1NTU/+Hi4v+ysrL/vb29//39/f/9/f3//v7+//7+/v/+/v7//v7+//7+/v/9/f3//f39//z8/P/8/Pz/+/v7//r6+v/5+fn/+Pj4//f39//29vb/9fX1//T09P/y8fH/9PT0//Tz8v/39vX/+Pj4//n5+f/6+vr/mpqa/7u7u//Hx8f/29vb/4WFhf/j4+P//f39//7+/v/+/v7//v7+//7+/v/+/v7//v7+//39/f/9/f3//Pz8//z8/P/6+vr/+Pj4//f39//29vb/9PT0//Ly8v/x8fH/8fHx//Pz8//09PT/9vb1//f39//5+fn/+fn5//r6+v+dnZ3/hoWH//r6+v/29vb/ZGJn/+3s7//9/f3/+Pb7/+Ta8//o3/X/7+r3/9fX1//h4eH/0dHR/87Ozv/Z2dn/1NTU/8fHx//V1dX/5+fn//f39//29vb/9fX1//T09P/z8/P/9vb2//f39//4+Pf/+Pj4//j4+P/4+Pj/+fn5/6Wdr/9RR17/3Nrf//r5+v+BYq7/7OX1//39/f/t5/b/7OT1/+nh9P/n3vP/5ubm/9vb2//h4eH/3Nzc/9vb2//f39//4eHh/9ra2v/r6+v/9/f3//b29f/19fX/9PT0//Pz8//18/P/9/X1//Py8v/09PT/9fX0//X19f/39/f/qp67/15Egv9zYI//eF+d/3dWpv+wldv//f39//7+/v/+/v7/7uf4//7+/v/k2fT/9vb2/8rKyv/v7+//3d3d/9PT0//k5OT/6urq//b29v/29vb/9PT0//Pz8//y8vL/8vLy//b19f/39vb/9fX1//f39//4+Pj/+Pj4//r6+f+cirb/ZEiL/2NKiP9uT5r/eFmm/5Ro1//e1O3//v7+//7+/v/Oue3/5Nn1/8+77P+cnJz/fHx8/6mpqf+goKD/goKC/6CgoP/u7u7/+fn5//j4+P/39/f/9vb2//X19f/09PT/9vb2//f39//39/f/+Pj4//n5+f/5+fn/+vr5/41zsv9sSpz/akqY/3BOov99WLX/l2nc/72l4f/+/v7//v7+/8657v/j1/T/0r/t/6CgoP/m5ub/kJCQ/3Z2dv+Hhob/lJSU//T09P/29vb/9fX1//T09P/28PH/9PP0//T09P/28vH/9/f3//f39//4+Pf/+Pj4//n5+f/6+vn/eFOs/3JNqP9zT6f/g1q//4ldx/+revT/u5zq//39/f/8+/3/zLbt//v6/f/g1PL/oaGh/+fn5/+rq6v/v7+//8DAwP+Li4v/8vLy//j4+P/29vb/9/f3//bz8//19fX/9PT0//bz8//39/f/9/f3//j4+P/4+Pj/+fn5//n5+f99V7L/ck2m/3hUrf+abN3/nGzj/6Jx7f+vhe3//f39/9fG8P+zk+T/283x//7+/v+8vLz/7e3t/8zMzP/8/Pz/3t7e/+/v7//6+vr/+fn5//j4+P/39/f/9vb2//T09P/09PT/9vb2//f39//39/f/9/f3//j4+P/5+fn/zb7i/3JIrP9sSKH/eVKz/6Fy5v+4lun/lWTd/5ho4P/9/fz//f39//7+/v/9/f3//f39//39/f/9/f3//f39//z8/P/7+/v/+vr6//r6+v/5+fn/+Pj4//f39//29vX/9PT0//T09P/29vb/9/f3//f39//39/f/+Pj4/+7r9P+HY7v/4tns/8q+3P+/rtj/7OX2//z8/P+YctL/i13Q//r5/P/9/f3//f39//39/f/9/f3//f39//39/f/9/f3//Pz8//v7+//6+vr/+vr6//n5+f/4+Pj/9/f3//X19f/09PT/8/Pz//b29v/29vb/9/f3//f39//4+Pj/qo/S/9DC4//6+vr/+vr6//v7+//7+/v//Pz8/8e24P/f0+//9fL5//39/f/9/f3//Pz8//39/f/9/f3//Pz8//z8/P/7+/v/+/v7//r6+v/6+vr/+fn5//f39//39/f/9fX1//Ly8v/u7u7/9vb2//b29v/39/f/9/f3//X09v+pjtL/+fn5//n5+f/6+vr/+vr6//v7+//8/Pz//Pz8//z8/P/9/f3//f39//39/f/8/Pz//f39//39/f/8/Pz//Pz8//v7+//6+vr/+vr6//n5+f/4+Pj/9/f3//b29v/19fX/8/Pz//Lz8v/19fX/9vb2//f39//39/f/6eXw/9DB5f/5+fn/+fn5//r6+v/6+vr/+/v7//v7+//8/Pz//Pz8//z8/P/9/f3//f38//v7+//9/f3//Pz8//z8/P/7+/v/+/v7//r6+v/6+vr/+fn5//j4+P/39/f/9vb2//T09P/y8vL/7/Dw//X19f/29vb/9vb2//f39v/19fb/9/b3//n5+f/5+fn/+vr6//r6+v/6+vr/+/v7//v7+//8/Pz//Pz8//z8/P/8/Pz/+/v7//v7+//8/Pz/+/v7//v7+//6+vr/+vr6//r6+v/4+Pj/+Pj4//f39//29vb/9PT0//Ly8v/w8PD/9fX1//b29v/29vb/9/f3//f39//4+Pj/+Pj4//n5+f/5+fn/+vr6//r6+v/6+vr/+/v7//v7+//8/Pz//Pz8//z8/P/6+vn/+vv7//v7+//7+/v/+/v7//r6+v/6+vr/+fn5//j4+P/39/f/9/f3//X19f/09PT/8vLy//Hx8f/09PT/9fX1//b29v/29vb/9/f3//f39//4+Pj/+Pj4//n5+f/5+fn/+vr6//r6+v/6+vr/+/v7//v7+//7+/v/+/v7//r5+P/6+/v/+/v7//r6+v/6+vr/+vr6//r6+v/5+fn/+Pj4//f39//29vb/9fX1//T09P/w8PD/7e7u//T09P/19fX/9vb2//b29v/39/f/9/f3//j4+P/4+Pj/+fn5//n5+f/6+vr/+vr6//r6+v/6+vr/+/v7//v7+//7+/v/+fn5//r7+//7+vv/+vr6//r6+v/6+vr/+fn5//j4+P/39/f/9/f3//b29v/19fX/9PT0//Ly8v/x8fH/9PT0//X19f/19fX/9vb2//f39//39/b/9/f3//j4+P/4+Pj/+fn5//n5+f/6+vr/+vr6//r6+v/6+vr/+vr6//v7+//5+Pf/+fr6//r6+v/6+vn/+fn5//n5+f/5+fn/+Pj4//f39//39/f/9fX1//T09P/09PT/7+/v/+vs7P/09PT/9fX1//X19f/29vb/9vb2//f39//39/f/9/f3//j4+P/4+Pj/+fn5//n5+f/6+vr/+vr5//r6+v/6+vr/+vr6//j49v/5+vr/+vr6//n5+f/5+fn/+fn5//j4+P/39/f/9/f3//b29v/19fX/9PT0//Pz8//w8PD/7+/v//T09P/09PT/9fX1//X19f/29vb/9/f3//f39//39/f/+Pj3//j4+P/5+fn/+fn5//n5+f/6+vr/+vr6//r6+v/6+vr/+Pf2//n5+v/6+fj/+fn5//n5+f/4+Pj/9/f3//f39//39/f/9fX1//T09P/09PT/8vLy//Dw8P/t7e3/9PT0//T09P/19fX/9fX1//b29v/29vb/9/f3//f39//39/f/+Pj4//j4+P/5+fj/+fn5//n5+f/5+fn/+fn5//n5+f/39vb/+Pn5//n5+f/4+Pj/+Pj4//j4+P/39/f/9/f3//b29v/19fX/9PT0//Pz8//y8vL/7Ozs/+rq6v/z8/P/9PT0//T09P/19fX/9vb2//b29v/29vb/9/f3//f39//39/f/+Pf3//j4+P/4+Pj/+Pj4//j4+P/5+fj/+fn5//b19f/4+Pj/+Pj4//f39//39/f/9/f3//f39//29vb/9fX1//T09P/z8/P/8vLy//Hx8f/v7+//7u7u/w==</a>
+            <v n="TransparencyColor">"65, 57, 46"</v>
+            <v n="MakeTransparent">true</v>
+          </o>
+        </Data>
+        <TypeList>
+          <Type n="Boolean">System.Boolean</Type>
+          <Type n="Byte">System.Byte</Type>
+          <Type n="POUImageProperty">{bb741845-1ec5-4be9-bb0d-2cf7058af574}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </ObjectProperties>
+    <LineIds Name="PRG_TESTS">
+      <LineId Id="23" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

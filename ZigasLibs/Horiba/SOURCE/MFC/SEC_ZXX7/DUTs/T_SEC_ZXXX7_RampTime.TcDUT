@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_SEC_ZXXX7_RampTime" Id="{c619705f-f64a-0350-21f9-51c5d8c2734c}">
+    <Declaration><![CDATA[TYPE T_SEC_ZXXX7_RampTime : UDINT; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

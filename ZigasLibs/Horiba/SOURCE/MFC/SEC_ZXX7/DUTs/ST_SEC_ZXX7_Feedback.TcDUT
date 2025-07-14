@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_SEC_ZXX7_Feedback" Id="{3dadcd18-ba66-0a85-1383-d00a11105e59}">
+    <Declaration><![CDATA[TYPE ST_SEC_ZXX7_Feedback EXTENDS ST_MfcFeedback :
+STRUCT
+	ActiveExceptions	: ST_SEC_ZXX7_ActiveExceptions;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_SEC_ZXX7_ReadingStep" Id="{9f3cbed4-4ce6-0aa7-3fc8-fe8279a41f68}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_SEC_ZXX7_ReadingStep :
+(
+	IDLE,
+	GAS_TYPE,
+	RATED_FLOW
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

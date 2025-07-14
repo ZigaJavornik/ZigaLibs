@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_SEC_ZXX7_Outputs" Id="{d2ed70a5-849f-0a6f-0c79-6770f38cdbc0}">
+    <Declaration><![CDATA[TYPE ST_SEC_ZXX7_Outputs :
+STRUCT
+	FlowSetpoint	: REAL;
+	RampTime		: T_SEC_ZXXX7_RampTime;
+	ActuatorControl	: E_SEC_ZXX7_ActuatorControl;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

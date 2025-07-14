@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_MFC_SEC_ZXX7" Id="{cf7d5836-a9b2-0f0a-01cc-f31af8fc0050}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MFC_SEC_ZXX7 EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
+VAR_INPUT
+	commands	: ST_SEC_ZXX7_Commands;	// Commands
+	updateCoe	: BOOL;	// Reads COE parameters on rising edge
+END_VAR
+
+VAR_OUTPUT
+	feedback	: ST_SEC_ZXX7_Feedback;	// Feedback
+END_VAR
+
+VAR
+	_logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
+	_coeList		: ST_SEC_ZXX7_CoeList;
+	_exceptionsPrev	: ST_SEC_ZXX7_ActiveExceptions;
+	_sb				: ZigaLibs_Core.FB_StringBuilder;
+	_init			: BOOL;
+	_readRequest	: Tc2_Standard.R_TRIG;
+	_ethercatBoxName		: Tc2_System.T_MaxString;
+END_VAR
+
+// IO
+VAR
+	Inputs	AT %I*	: ST_SEC_ZXX7_Inputs;
+	Outputs	AT %Q* 	: ST_SEC_ZXX7_Outputs;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT commands.Enable THEN
+	Outputs.ActuatorControl := E_SEC_ZXX7_ActuatorControl.FULLY_CLOSE;
+	Outputs.FlowSetpoint := 0;
+ELSE
+	Outputs.ActuatorControl := commands.Mode;
+	Outputs.FlowSetpoint := commands.FlowSetpoint;
+	Outputs.RampTime := commands.RampTime;
+END_IF
+
+_readRequest(CLK := updateCoe);
+IF _readRequest.Q THEN
+	_init := FALSE;
+END_IF
+
+IF NOT _init THEN
+	THIS^.ReadCoe();
+END_IF
+
+feedback.ActiveExceptions.DeviceWarning := Inputs.ExceptionStatus.0;
+feedback.ActiveExceptions.DeviceError := Inputs.ExceptionStatus.1;
+feedback.ActiveExceptions.ManufacturerWarning := Inputs.ExceptionStatus.2;
+feedback.ActiveExceptions.ManufacturerError := Inputs.ExceptionStatus.3;
+feedback.ValvePosition := Inputs.ValvePosition;
+feedback.ActualFlow := inputs.ActualFlow;
+
+// Error logging
+IF __ISVALIDREF(_logger) THEN
+	IF feedback.ActiveExceptions.DeviceWarning <> _exceptionsPrev.DeviceWarning THEN
+		IF feedback.ActiveExceptions.DeviceWarning THEN
+			_logger.LogError(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Device warning active!')
+				.Create());
+		ELSE
+			_logger.LogInfo(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Device warning no longer active!')
+				.Create());			
+		END_IF
+	END_IF
+	
+	IF feedback.ActiveExceptions.DeviceError <> _exceptionsPrev.DeviceError THEN
+		IF feedback.ActiveExceptions.DeviceError THEN
+			_logger.LogError(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Device error active!')
+				.Create());
+		ELSE
+			_logger.LogInfo(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Device error no longer active!')
+				.Create());			
+		END_IF
+	END_IF
+	
+	IF feedback.ActiveExceptions.ManufacturerWarning <> _exceptionsPrev.ManufacturerWarning THEN
+		IF feedback.ActiveExceptions.ManufacturerWarning THEN
+			_logger.LogError(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Manufacturer warning active!')
+				.Create());
+		ELSE
+			_logger.LogInfo(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Manufacturer warning no longer active!')
+				.Create());			
+		END_IF
+	END_IF
+	
+	IF feedback.ActiveExceptions.ManufacturerError <> _exceptionsPrev.ManufacturerError THEN
+		IF feedback.ActiveExceptions.ManufacturerError THEN
+			_logger.LogError(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Manufacturer error active!')
+				.Create());
+		ELSE
+			_logger.LogInfo(_sb.Reset()
+				.AddString(THIS^.GetLogPrefix())
+				.AddString('Manufacturer error no longer active!')
+				.Create());			
+		END_IF
+	END_IF
+	
+END_IF
+
+_exceptionsPrev := feedback.ActiveExceptions;]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{23baa2e4-7756-00e5-207f-919890f64761}">
+      <Declaration><![CDATA[{attribute 'hide'}
+METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger		: REFERENCE TO ZigaLibs_Logging.I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger REF= logger;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="GasType" Id="{90f20285-e9b7-06da-1c04-512f983779de}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+// Gets the gas type of the MFC
+PROPERTY PUBLIC GasType : STRING(128)]]></Declaration>
+      <Get Name="Get" Id="{2f2151ed-1dc3-0459-2724-c18a2ba21db1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[GasType := _coeList.FluidName.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="GetLogPrefix" Id="{86bdf871-8deb-0fc8-07fb-e5493db84cba}">
+      <Declaration><![CDATA[METHOD PRIVATE GetLogPrefix : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLogPrefix := Tc2_Standard.CONCAT(THIS^.InstancePath, ' - ');]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="RatedFlow" Id="{4b6e7b9b-59fb-01c8-0874-594c17c07652}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+// Gets the rated flow of the MFC
+PROPERTY RatedFlow : REAL]]></Declaration>
+      <Get Name="Get" Id="{5772dd58-d2e6-0e0a-3fbf-e10726a22194}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RatedFlow := _coeList.Capacity.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ReadCoe" Id="{9f2ae8be-54d5-0e16-125b-3a6fe3de70a1}">
+      <Declaration><![CDATA[METHOD PRIVATE ReadCoe
+VAR_INPUT
+END_VAR
+VAR_INST
+	fbCoeReadWrite	: ZigaLibs_Core.FB_CoeReadWrite;
+	eCoeReadStep	: E_SEC_ZXX7_ReadingStep;
+	bError			: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eCoeReadStep OF
+	E_SEC_ZXX7_ReadingStep.IDLE:
+	IF NOT _init THEN
+		IF _ethercatBoxName = '' THEN
+				_ethercatBoxName := ZigaLibs_Core.EthercatHelper.GetBoxNameByAddress(
+					outError := bError,
+					PlcRuntimeNetId := '',
+					AmsNetId := Inputs.AmsAddr);
+			ELSIF _ethercatBoxName <> '' OR bError THEN
+				eCoeReadStep := E_SEC_ZXX7_ReadingStep.GAS_TYPE;
+				IF __ISVALIDREF(_logger) THEN
+					IF NOT bError THEN
+						_logger.LogInfo(message := _sb.Reset()	
+							.AddString(str := THIS^.GetLogPrefix())
+							.AddString(str := 'Reading CoE parameters for Horiba device ')
+							.AddWithDblQuotationMarks(str := _ethercatBoxName)
+							.AddString(str := '...')
+							.Create());
+					ELSE
+						_logger.LogInfo(message := _sb.Reset()	
+							.AddString(str := THIS^.GetLogPrefix())
+							.AddString(str := 'Reading CoE parameters for Horiba device ')
+							.AddWithDblQuotationMarks(str := '<Error reading EC box name>')
+							.AddString(str := '...')
+							.Create());
+					END_IF
+	
+				END_IF
+			END_IF
+		END_IF
+		
+	E_SEC_ZXX7_ReadingStep.GAS_TYPE:
+		IF fbCoeReadWrite.ReadAny(
+				CoeEntry := ADR(_CoeList.FluidName),
+				Value := _CoeList.FluidName.Value,
+				SlaveAddr := Inputs.AmsAddr)
+		THEN
+			IF __ISVALIDREF(_logger) THEN
+				_logger.LogInfo(_sb.Reset()
+					.AddString(THIS^.GetLogPrefix())
+					.AddString(' - MFC fluid type is ')
+					.AddWithDblQuotationMarks(_coeList.FluidName.Value)
+					.Create());
+			END_IF
+			
+			eCoeReadStep := E_SEC_ZXX7_ReadingStep.RATED_FLOW;
+		END_IF
+		
+	E_SEC_ZXX7_ReadingStep.RATED_FLOW:
+		IF fbCoeReadWrite.ReadAny(
+				CoeEntry := ADR(_CoeList.Capacity),
+				Value := _CoeList.Capacity.Value,
+				SlaveAddr := Inputs.AmsAddr)
+		THEN
+			IF __ISVALIDREF(_logger) THEN
+				_logger.LogInfo(_sb.Reset()
+					.AddString(THIS^.GetLogPrefix())
+					.AddString(' - MFC rated flow is ')
+					.AddAnyReal(_coeList.Capacity.Value, 3, TRUE)
+					.AddString(' sccm.')
+					.Create());
+			END_IF
+			
+			eCoeReadStep := E_SEC_ZXX7_ReadingStep.IDLE;
+			_init := TRUE;
+		END_IF
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

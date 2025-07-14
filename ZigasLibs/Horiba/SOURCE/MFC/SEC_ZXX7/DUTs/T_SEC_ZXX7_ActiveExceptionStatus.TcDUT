@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_SEC_ZXX7_ActiveExceptionStatus" Id="{da1c0cd7-cf39-0909-36f2-8b7c6e1ee254}">
+    <Declaration><![CDATA[TYPE T_SEC_ZXX7_ActiveExceptionStatus : USINT; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

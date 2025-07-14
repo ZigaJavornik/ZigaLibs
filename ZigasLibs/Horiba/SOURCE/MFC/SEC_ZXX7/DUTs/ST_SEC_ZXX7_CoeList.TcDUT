@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_SEC_ZXX7_CoeList" Id="{e22be913-9836-0316-34b5-ff02bc00e808}">
+    <Declaration><![CDATA[TYPE ST_SEC_ZXX7_CoeList :
+STRUCT
+	FluidName	: ZigaLibs_Core.ST_CoeEntry_String128 := (Index := 16#900A, Subindex := 16#04);
+	Capacity	: ZigaLibs_Core.ST_CoeEntry_REAL := (Index := 16#900A, SubIndex := 16#06);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
