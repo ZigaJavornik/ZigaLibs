@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_Watchdog" Id="{110d80c9-88e3-070c-2af5-b43c21617595}" SpecialFunc="None">
+    <Declaration><![CDATA[// A watchdog function block. Observer "variable" input - if the value does not change within the "timeout" parameter, status will return "FALSE"
+FUNCTION_BLOCK FB_Watchdog
+VAR_INPUT
+	variable	: BOOL;	// Variable to observe
+	timeout		: TIME;	// Time within the variable needs to change it's state before status is reported as FALSE
+END_VAR
+
+VAR_OUTPUT
+	status	: BOOL;	// TRUE = OK, FALSE = timeout
+END_VAR
+
+VAR
+	Ton_TrueTimer	: Tc2_Standard.TON;
+	Ton_Falsetimer	: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Ton_TrueTimer(IN := variable, PT := timeout);
+Ton_Falsetimer(IN := NOT variable, PT := timeout);
+
+
+status := Ton_TrueTimer.Q = FALSE AND  Ton_Falsetimer.Q = FALSE;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
