@@ -254,6 +254,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.IoLink">
       <DefaultResolution>ZigaLibs.IoLink, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_IoLink</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
