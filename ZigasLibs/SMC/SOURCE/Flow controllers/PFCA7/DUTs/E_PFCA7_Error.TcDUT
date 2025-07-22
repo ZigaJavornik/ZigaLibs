@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_Error" Id="{65ef64ef-f01c-00f2-175e-b65e956bfae8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_Error :
+(
+	ErrorNotGenerated := 0,
+	ErrorGenerated := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

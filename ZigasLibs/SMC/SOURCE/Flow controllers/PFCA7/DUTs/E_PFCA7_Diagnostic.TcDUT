@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_Diagnostic" Id="{02d719ef-1e44-0f7a-2ca0-c5aeccb8d0ad}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_Diagnostic :
+(
+	WithinRange := 0,
+	OutOfRange	:= 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

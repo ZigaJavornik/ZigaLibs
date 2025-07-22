@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <Itf Name="I_PFCA7" Id="{396f4a75-8fcc-0db8-06f6-59ce901593cb}">
+    <Declaration><![CDATA[INTERFACE I_PFCA7
+]]></Declaration>
+    <Method Name="Execute" Id="{dab0018b-c00e-003b-1035-d1dbd7665f4b}">
+      <Declaration><![CDATA[(* Should be called cyclically to execute necesary calls
+ This is used instead of FBXXX() -> FBXXX.Execute() and makes the programming more consistent.*)
+METHOD Execute
+VAR_INPUT
+	bEnable			: BOOL;	// Enable flow setting
+	fFlowSetpoint	: REAL;	// Flow setpoint
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="Feedback" Id="{085f309c-ee9d-0419-1d58-ce35045c9694}">
+      <Declaration><![CDATA[// Gets device feedback structure
+PROPERTY PUBLIC Feedback : REFERENCE TO ST_PFCA7_InputProcessData]]></Declaration>
+      <Get Name="Get" Id="{04307147-d1b3-0c12-38cb-cf72c9ef85c3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IoLinkMaxFlowValue" Id="{63081684-c05e-0c99-1995-8c8de9e714a8}">
+      <Declaration><![CDATA[// Gets or sets the IO link max flow value, this is used for value scaling and should be read from the datasheet.
+PROPERTY IoLinkMaxFlowValue : INT]]></Declaration>
+      <Get Name="Get" Id="{7ee00c26-6278-039a-0221-e077a415631c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{70996df6-5b39-0b73-25fe-882914319eff}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MaxFlow" Id="{dc4eaa1c-ad7f-075a-0334-26ed1933406d}">
+      <Declaration><![CDATA[// Gets or sets the max flow
+PROPERTY PUBLIC MaxFlow : REAL]]></Declaration>
+      <Get Name="Get" Id="{3bd1c4b9-5a0b-0653-1319-8ea90f9e4de3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{95dbade5-f233-0269-2e58-597e020449a8}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="MeasuredFlow" Id="{52b08305-0521-079a-00b6-98b9109db470}">
+      <Declaration><![CDATA[// Gets the measured flow
+PROPERTY MeasuredFlow : REAL]]></Declaration>
+      <Get Name="Get" Id="{130df854-01c8-027c-1227-a22e9f5d9c50}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

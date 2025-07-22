@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_LocalInput" Id="{bdf58b47-8770-0d43-25d8-fdf55b0df24c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_LocalInput :
+(
+	Remote := 0,
+	Local := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -16,7 +16,7 @@
     <LibraryReferences>{a93305cb-387b-46d3-bc1f-41bf65e7b7ff}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.SMC</Title>
-    <ProjectVersion>0.0.1.2</ProjectVersion>
+    <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -97,6 +97,39 @@
     <Description>SMC library collection</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_AcuumulationShutOff.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_Diagnostic.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_Error.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_FixedOutput.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_FlowRateUnit.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_LocalInput.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\E_PFCA7_ReferenceCondition.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\ST_PFCA7_InputProcessData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\DUTs\ST_PFCA7_OutputProcessData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\POUs\FB_PFCA7.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Flow controllers\PFCA7\POUs\I_PFCA7.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\JXCE1\DUTs\Aliases\T_JXCE1_AccDec.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -167,6 +200,9 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\FB_SMC_AirFlowController_PFCA7_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TESTS\Test suites\FB_SUT_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -174,6 +210,9 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
+    <Folder Include="SOURCE\Flow controllers\PFCA7" />
+    <Folder Include="SOURCE\Flow controllers\PFCA7\DUTs" />
+    <Folder Include="SOURCE\Flow controllers\PFCA7\POUs" />
     <Folder Include="SOURCE\JXCE1" />
     <Folder Include="SOURCE\JXCE1\DUTs" />
     <Folder Include="SOURCE\JXCE1\DUTs\Aliases" />
@@ -182,6 +221,7 @@
     <Folder Include="SOURCE\JXCE1\DUTs\Commands" />
     <Folder Include="SOURCE\JXCE1\DUTs\Status" />
     <Folder Include="SOURCE\JXCE1\POUs" />
+    <Folder Include="SOURCE\Flow controllers" />
     <Folder Include="SOURCE\Valve blocks" />
     <Folder Include="SOURCE\Valve blocks\MEC1" />
     <Folder Include="TESTS\Test suites" />
@@ -211,6 +251,9 @@
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.IoLink">
+      <DefaultResolution>ZigaLibs.IoLink, * (Ziga)</DefaultResolution>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

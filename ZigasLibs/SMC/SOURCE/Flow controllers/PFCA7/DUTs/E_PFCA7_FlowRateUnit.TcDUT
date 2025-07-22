@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_FlowRateUnit" Id="{57f16ef7-172b-0dcb-0674-2fa631cad592}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_FlowRateUnit :
+(
+	Liters := 0,
+	CubicFeet := 1
+)SINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

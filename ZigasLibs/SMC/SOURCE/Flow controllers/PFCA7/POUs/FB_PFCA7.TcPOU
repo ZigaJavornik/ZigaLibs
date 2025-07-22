@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_PFCA7" Id="{8dc9b630-9794-007d-3de2-519416ea1546}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PFCA7 EXTENDS FB_IoLinkState IMPLEMENTS I_PFCA7
+VAR
+	InputProcessData	AT %I* : ST_PFCA7_InputProcessData;
+	OutputProcessData	AT %Q* : ST_PFCA7_OutputProcessData;
+	_inputProcessData	: ST_PFCA7_InputProcessData;
+	_maxFlow			: REAL;
+	_measuredFlow		: REAL;
+	_IoLinkMaxFlowValue	: INT := 4_000;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{64f0e145-4ac8-0d45-1410-db2549bf3417}" />
+    <Folder Name="Methods - public" Id="{cfb36886-264c-0650-3711-598c6c8980c1}" />
+    <Folder Name="Properties - public" Id="{bb41fb88-9325-041c-310e-5aeac7d846df}" />
+    <Method Name="Execute" Id="{98911978-17e7-0fac-36eb-c126d3cbf294}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[(* Should be called cyclically to execute necesary calls
+ This is used instead of FBXXX() -> FBXXX.Execute() and makes the programming more consistent.*)
+METHOD Execute
+VAR_INPUT
+	bEnable			: BOOL;	// Enable flow setting
+	fFlowSetpoint	: REAL;	// Flow setpoint
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_inputProcessData := InputProcessData;
+
+// Flow measurement
+_measuredFlow := _maxFlow * (1.0 * InputProcessData.MeasuredFlow)/INT_TO_REAL(_IoLinkMaxFlowValue);
+
+// Output section
+IF bEnable = FALSE OR _maxFlow = 0 THEN
+	OutputProcessData.CommandedFlowRate := 0;
+ELSE
+	OutputProcessData.CommandedFlowRate := REAL_TO_UINT((INT_TO_REAL(_IoLinkMaxFlowValue) * MIN(fFlowSetpoint, _maxFlow)/_maxFlow));
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{8e7bf8cf-dc2c-0203-2302-a00d8b13199a}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	fMaxFlow	: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_maxFlow := fMaxFlow;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Feedback" Id="{44cd6220-fbd9-01a3-185d-6873e34156c6}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[ {attribute 'monitoring' := 'variable'}
+// Gets device feedback structure
+PROPERTY PUBLIC Feedback : REFERENCE TO ST_PFCA7_InputProcessData]]></Declaration>
+      <Get Name="Get" Id="{41876fe9-303e-0fe5-1172-a8667fd47740}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Feedback REF= _inputProcessData;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IoLinkMaxFlowValue" Id="{e06e514d-6363-0830-0dbd-7ce5f9e8db10}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[(* Gets or sets the IO link max flow value, this is used for value scaling and should be read from the datasheet.*)
+PROPERTY IoLinkMaxFlowValue : INT
+]]></Declaration>
+      <Get Name="Get" Id="{86aeeebb-97e6-0af8-2f0d-de85513df84e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IoLinkMaxFlowValue := _IoLinkMaxFlowValue;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{34a96f17-1f32-03d5-3f85-0a65efdde3d9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_IoLinkMaxFlowValue := IoLinkMaxFlowValue;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="MaxFlow" Id="{4cbd69d9-19ff-052a-3942-88e3c71e2a38}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[(* Gets or sets the max flow*)
+PROPERTY MaxFlow : REAL
+]]></Declaration>
+      <Get Name="Get" Id="{99a67f22-17bd-0d21-35dd-68d22110ac80}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MaxFlow := _maxFlow;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{c134333e-b11f-009d-164c-6bdbdd6230af}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_maxFlow := MaxFlow;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="MeasuredFlow" Id="{acee1752-1f59-0501-089a-494f62884bde}" FolderPath="Properties - public\">
+      <Declaration><![CDATA[(* Gets the measured flow*)
+PROPERTY MeasuredFlow : REAL
+]]></Declaration>
+      <Get Name="Get" Id="{a2ff2a66-19f9-0f3a-3610-05afb6f4bf41}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[MeasuredFlow := _measuredFlow;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

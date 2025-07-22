@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_SMC_AirFlowController_PFCA7_Tests" Id="{8b8e6cfa-06e5-042c-02e9-9d23b33ad663}" SpecialFunc="None">
+    <Declaration><![CDATA[// A collection of tests for PFCA7 SMC series
+FUNCTION_BLOCK FB_SMC_AirFlowController_PFCA7_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+		_maxProcessDataFlowSetpoint : UINT := 4000;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_FlowScaling();
+Test02_FlowLimiting();]]></ST>
+    </Implementation>
+    <Method Name="Test01_FlowScaling" Id="{27688cb3-bf24-0865-203c-521d7461593d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_FlowScaling
+VAR_INST
+	fbFlowController_100slm	: FB_SMC_AirFlowController_PFCA7(100.0);
+	fbFlowController_50slm	: FB_SMC_AirFlowController_PFCA7(50.0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_FlowScaling');
+
+fbFlowController_100slm.Execute(bEnable := TRUE, fFlowSetpoint := 0);
+fbFlowController_50slm.Execute(bEnable := TRUE, fFlowSetpoint := 0);
+AssertEquals_REAL(
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Expected := 0.0,
+	Delta := 0,
+	Message := 'Incorrect commanded flow setpoint when setting flow to 0!');
+AssertEquals(
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Expected := fbFlowController_50slm.OutputProcessData.CommandedFlowRate,
+	Message := 'Flow setpoint for 100 and 50 slm flow controller differs!');
+	
+
+fbFlowController_100slm.Execute(bEnable := TRUE, fFlowSetpoint := 50.0);
+AssertEquals_REAL(
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Expected := 2000.0,
+	Delta := 0.1,
+	Message := 'Incorrect commanded flow setpoint when setting flow to 50!');
+
+fbFlowController_100slm.Execute(bEnable := TRUE, fFlowSetpoint := 100.0);
+fbFlowController_50slm.Execute(bEnable := TRUE, fFlowSetpoint := 50.0);
+AssertEquals(
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Expected := _maxProcessDataFlowSetpoint,
+	Message := 'Incorrect commanded flow setpoint when setting flow to 100!');
+
+AssertEquals(
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Expected := fbFlowController_50slm.OutputProcessData.CommandedFlowRate,
+	Message := 'Flow setpoint for 100 and 50 slm flow controller differs!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_FlowLimiting" Id="{1868dbc3-7cde-0358-2507-c3c10efcaa59}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_FlowLimiting
+VAR_INST
+
+	fbFlowController_100slm	: FB_SMC_AirFlowController_PFCA7(100.0);
+	fbFlowController_50slm	: FB_SMC_AirFlowController_PFCA7(50.0);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_FlowLimiting');
+
+fbFlowController_100slm.Execute(bEnable := TRUE, fFlowSetpoint := 200.0);
+
+AssertEquals(
+	Expected := _maxProcessDataFlowSetpoint,
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Message := 'Flow should not exceed the maximum set value!');
+
+fbFlowController_100slm.MaxFlow := 30.0;
+AssertEquals(
+	Expected := _maxProcessDataFlowSetpoint,
+	Actual := fbFlowController_100slm.OutputProcessData.CommandedFlowRate,
+	Message := 'Max flow setting should not be exceeded after changing the value of the upper limit!!');	
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

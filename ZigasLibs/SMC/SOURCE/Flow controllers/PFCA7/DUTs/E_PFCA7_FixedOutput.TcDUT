@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_FixedOutput" Id="{2356cbc3-187a-0c0b-1c56-cf2cb64feecf}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_FixedOutput :
+(
+	NormalOutput := 0,
+	FixedOutput := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

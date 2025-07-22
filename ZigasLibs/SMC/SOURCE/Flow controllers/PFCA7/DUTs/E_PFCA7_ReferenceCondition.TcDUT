@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_PFCA7_ReferenceCondition" Id="{57fd4836-5311-055b-18b9-fd439adbecb8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+TYPE E_PFCA7_ReferenceCondition :
+(
+	STD := 0,
+	NOR := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

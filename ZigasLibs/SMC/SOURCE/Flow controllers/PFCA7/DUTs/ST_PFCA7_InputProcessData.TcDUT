@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_PFCA7_InputProcessData" Id="{655de472-df0c-0c64-1f01-427e54b2cc59}">
+    <Declaration><![CDATA[TYPE ST_PFCA7_InputProcessData :
+STRUCT
+	AccumulatedFlow		: UDINT;
+	MeasuredFlow		: INT;
+	AC_Error			: BIT;
+	FlowError			: BIT;
+	PD_OutputError		: BIT;
+	AutoShift			: BIT;
+	ControlSelect		: BIT;
+	FixedOutput			: BIT;
+	Error				: BIT;
+	SystemError			: BIT;
+	OUT_AC				: BIT;
+	OUT_Tolerance		: BIT;
+	FlowUnit			: E_PFCA7_FlowRateUnit;
+	STD_NOT				: BIT;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
