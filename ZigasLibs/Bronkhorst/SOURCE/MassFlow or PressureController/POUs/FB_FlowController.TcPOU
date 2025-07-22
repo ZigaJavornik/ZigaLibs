@@ -174,7 +174,7 @@ VAR_INPUT
 	fPredictedFlowCapacity	: REAL;	// Predicted flow capacity. If bWriteLogs is set to TRUE and the read capacity differs, the error will be reported by the logger.
 	sPredictedGasType		: STRING;// Predicted gas type. If bWriteLogs is set to TRUE and the read gas type differs, the error will be reported by the logger.
 	sPredictedFlowUnit		: STRING; // Predicted flow unit. If bWriteLogs is set to TRUE and the read flow unit differs, the error will be reported by the logger.
-	iLogger					: REFERENCE TO ZigaLibs_Logging.I_Logger;	// Logger implementation provided, set to 0 if not required.
+	logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;	// Logger implementation provided, set to 0 if not required.
 	mode					: E_ControllerMode;	// Controller initial mode
 END_VAR
 ]]></Declaration>
@@ -182,9 +182,9 @@ END_VAR
         <ST><![CDATA[_predictedFlowCapacity := fPredictedFlowCapacity;
 _predictedGasType := sPredictedGasType;
 _predictedFlowUnit := sPredictedFlowUnit;
-_logger REF= iLogger;
+_logger REF= logger;
 _mode := mode;
-_writeLogs := __ISVALIDREF(iLogger);]]></ST>
+_writeLogs := __ISVALIDREF(logger);]]></ST>
       </Implementation>
     </Method>
     <Property Name="FluidName" Id="{72233265-6bff-0f7e-33e9-3452c3568c33}">
