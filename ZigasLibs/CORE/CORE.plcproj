@@ -226,6 +226,9 @@
     <Compile Include="SOURCE\General\FB_HasTaskInfo.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\General\FB_Watchdog.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\General\InstanceNameHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
