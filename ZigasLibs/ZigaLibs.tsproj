@@ -663,6 +663,18 @@
 					</Contexts>
 				</Instance>
 			</Project>
+			<Project GUID="{9A9EF37D-0ED9-4C85-857D-A1AE39EB7795}" Name="IO Link" PrjFilePath="IO Link\IO Link.plcproj" TmcFilePath="IO Link\IO Link.tmc" ReloadTmc="true" AmsPort="863" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502300" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+					<Name>IO Link Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
+				</Instance>
+			</Project>
 		</Plc>
 	</Project>
 </TcSmProject>

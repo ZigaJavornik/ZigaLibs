@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="T_IoLink64ByteData" Id="{1edf497a-597c-05f7-1315-a3e3d2b318be}">
+    <Declaration><![CDATA[TYPE 
+	T_IoLink64ByteData : ARRAY[0..7] OF BYTE; 
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_IoLinkState" Id="{90bcf7f8-b296-032e-3c73-6f9d27a31a0f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_IoLinkState
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	State	 AT%I*	: USINT;
+	_channelState : ST_IoLink_ChannelState;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ChannelState" Id="{b04961ec-7d02-0537-29bd-a5ac02a1c56a}">
+      <Declaration><![CDATA[ {attribute 'monitoring' := 'variable'}
+// Gets the IO link channel state info
+PROPERTY PUBLIC ChannelState : REFERENCE TO ST_IoLink_ChannelState]]></Declaration>
+      <Get Name="Get" Id="{ccdbd98e-1d07-0d4e-3391-1545c9a1bbcc}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^.GetChannelState();
+ChannelState REF= _channelState;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="GetChannelState" Id="{97f35f56-ce7e-08d9-119d-140fdebcaf7d}">
+      <Declaration><![CDATA[// Gets the channel state based on the State value transfered from the hardware device
+METHOD PUBLIC GetChannelState : ST_IoLink_ChannelState
+
+VAR
+	nMaskedState	: USINT;
+	result			: ST_IoLink_ChannelState;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[nMaskedState := 16#0F AND THIS^.State;
+result.PortDisabled := nMaskedState = 16#00;
+result.PortInStdDigIn := nMaskedState = 16#01;
+result.PortInStdDigOut := nMaskedState = 16#02;
+result.PortInCommunicationOP := nMaskedState = 16#03;
+result.PortInCommunicationCOMSTOP := nMaskedState = 16#04;
+
+nMaskedState := 16#F0 AND THIS^.State;
+result.WatchdogDetected := nMaskedState = 16#10;
+result.InternalError := nMaskedState = 16#20;
+result.InvalidDeviceId := nMaskedState = 16#30;
+result.InvalidVendorId := nMaskedState = 16#40;
+result.InvalidIoLinkVersion := nMaskedState = 16#50;
+result.InvalidFrameCapability := nMaskedState = 16#60;
+result.InvalidCycleTime := nMaskedState = 16#70;
+result.InvalidPD_InLength := nMaskedState = 16#80;
+result.InvalidPD_OutLength := nMaskedState = 16#90;
+result.NoDeviceDetected := nMaskedState = 16#A0;
+result.ErrorPreoperate := nMaskedState = 16#B0;
+
+GetChannelState := result;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
