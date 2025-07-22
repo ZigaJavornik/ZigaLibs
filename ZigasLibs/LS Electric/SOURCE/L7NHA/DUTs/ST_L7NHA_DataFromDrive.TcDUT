@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_DataFromDrive" Id="{a28cbca9-6339-4e5b-9851-f4902461699f}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_DataFromDrive :
+STRUCT
+	StatusWord			: WORD;		// Status word
+	ModeOfOperation		: SINT;		// Actual mode of operation
+	ErrorCode			: E_L7NHA_ErrorId;		// Most recent error code
+	DigitalInputs		: UDINT;	// Info on various digital inputs
+	MotionFeedback		: ST_L7NHA_MotionFeedback;	// Motion feedback from the drive
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

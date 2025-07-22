@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_L7NHA" Id="{eb8da92c-d07d-4e07-b97c-65d4e28a779c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_L7NHA EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
+
+VAR_INPUT
+	bEnable					: BOOL;	// Enable axis
+	bReset					: BOOL;	// Reset if an eror is present
+	bHalt					: BOOL; // Halts current operation - after setting this to FALSE previous operation is continuoued
+	bQuickStop				: BOOL;	// Drive will execute a quick stop
+	
+	nAcceleration			: UDINT;	// Axis acceleration in UU/s^2
+	nDeceleration			: UDINT;	// Axis deceleration in UU/s^
+	
+	eModeOfOperation		: E_L7NHA_ModeOfOperation;	// Mode of operation
+	
+	stVelocityCommands		: ST_L7NHA_VelocityCommands;		// Velocity commands when in profile velocity mode
+	stPositioningCommands	: ST_L7NHA_PositioningCommands;	// Positioning commands when in profile position mode
+	stHomingCommands		: ST_L7NHA_HomingCommands;			// Homing commands when in homing sequence
+	
+	fRatedTorque			: REAL; // Rated torque in mNm - required for torque calculation
+
+	stUserUnitParameters	: ST_L7NHA_UserUnitParams;
+END_VAR
+
+VAR_OUTPUT
+	eAxisState			: E_L7NHA_DriveState;	// Axis state, actual state reported back from drive
+	
+	eErrorCode			: E_L7NHA_ErrorId;	// Error code, if drive is in fault state
+	
+	bHomingRequired		: BOOL;	// If homing is required, this flag will be set to true (usually after a power reset)
+	
+	bMovingPositive		: BOOL;	// Indicating axis is rotating in positive direction
+	bMovingNegative		: BOOL;	// Indicating axis is rotating in negative direction
+	
+	stPositioningStatus	: ST_L7NHA_PositioningStatus;	// Status of the positioning procedure - only valid when in positioning mode
+	stHomingStatus		: ST_L7NHA_HomingStatus;		// Status of the homing procedure - only valid when in homing mode
+	
+	fCalculatedActualTorque	: REAL;
+	fCalculatedTargetTorque	: REAL;
+	
+	eActualModeOfOperation	: E_L7NHA_ModeOfOperation;
+	stMotionFeedback		: ST_L7NHA_MotionFeedback;	// Motion feedback from the drive
+
+	stDigitalInputs	:		 ST_L7NHA_DigitalInputs;
+END_VAR
+
+// Local variables
+VAR
+	eAxisStateInternal		: E_L7NHA_DriveState;
+	stDataToDriveInternal	: ST_L7NHA_DataToDrive;
+	TonCommandTimeout		: Tc2_Standard.TON := (PT := T#1S);
+	RtrigMoveToPosition		: Tc2_Standard.R_TRIG;
+	RtrigStartHoming		: Tc2_Standard.R_TRIG;
+	nPreviousPosition		: DINT;
+	RtrigResetTrigger		: Tc2_Standard.R_TRIG;
+	RtrigHomingFinished		: Tc2_Standard.R_TRIG;
+	TonMotorMovingStatusValid	: Tc2_Standard.TON;
+	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
+	_sb						: ZigaLibs_Core.FB_StringBuilder;
+END_VAR
+
+// IO
+VAR
+	stDataFromDrive	AT %I* : ST_L7NHA_DataFromDrive;
+	stDataToDrive	AT %Q* : ST_L7NHA_DataToDrive;
+	stEthercatInfo	AT %I* : ST_L7NHA_EthercatData;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Sometimes axis wont go to enabled - in that case a timeout should be triggered
+TonCommandTimeout(in := eAxisStateInternal = E_L7NHA_DriveState.OPERATION_ENABLED);
+// Reset triggering
+RtrigResetTrigger(CLK := bReset);
+
+
+// Abs encoder value is not valid if bit 14 is FALSE (homing has not been completed yet after a power reset/encoder error)
+bHomingRequired := stDataFromDrive.StatusWord.14 = FALSE;
+
+// Calling halt will overwrite this - to enable automatic clearing, setting it to false by default
+stDataToDriveInternal.ControlWord.8 := FALSE;
+
+// State machine based on the drive's feedback
+eAxisStateInternal := THIS^.GetDriveState();
+
+// State machine based on actual state reported back from the drive
+CASE eAxisStateInternal OF
+	E_L7NHA_DriveState.SWITCH_ON_DISABLED:	
+		IF bEnable THEN
+			Shutdown();
+		ELSE
+			DisableVoltage();
+		END_IF
+	
+	E_L7NHA_DriveState.READY_TO_SWITCH_ON:
+		IF NOT TonCommandTimeout.Q THEN
+			SwitchOnEnableOperation();
+		END_IF
+		
+	E_L7NHA_DriveState.OPERATION_ENABLED:
+		TonCommandTimeout.IN := FALSE;
+		SwitchOnEnableOperation();
+		
+		// Execute different mode based on mode of operation setting
+		CASE eModeOfOperation OF
+			E_L7NHA_ModeOfOperation.PROFILE_POSITION:
+				ProfilePosition();
+				
+			E_L7NHA_ModeOfOperation.PROFILE_VELOCITY:
+				ProfileVelocity();
+				
+			E_L7NHA_ModeOfOperation.HOMING:
+				Homing();
+		END_CASE
+		
+	E_L7NHA_DriveState.FAULT:
+		IF RtrigResetTrigger.Q THEN
+			FaultReset();
+		ELSE
+			stDataToDriveInternal.ControlWord.7 := FALSE;
+		END_IF
+	
+END_CASE
+
+// Override any command if enable is false (transitioning states) - exception is fault, where reset needs to be sent
+IF NOT bEnable AND eAxisStateInternal <> E_L7NHA_DriveState.FAULT THEN
+	DisableVoltage();
+END_IF
+
+// Halt - has a different meaning in PP,PV or homing 
+// Usally it "pauses" the current procedure and after halt is set to FALSE drive will proceed where it left off
+IF bHalt THEN
+	Halt();
+END_IF
+
+// Quick stop
+IF bQuickStop THEN
+	stDataToDriveInternal.ControlWord.1 := bQuickStop;
+	stDataToDriveInternal.ControlWord.2 := NOT bQuickStop;
+END_IF
+
+// Setting acceleration/deceleration always
+stDataToDriveInternal.ProfileAcceleration := nAcceleration;
+stDataToDriveInternal.ProfileDeceleration := nDeceleration;
+
+// Mode of operation
+stDataToDriveInternal.ModeOfOperation := eModeOfOperation;
+
+
+// =======================================================================
+// ==================== SETTING FB OUTPUTS ===============================
+// =======================================================================
+
+// Axis state
+eAxisState := eAxisStateInternal;
+
+// Overwriting status for positioning/homing if not in that mode
+// Clear homing status if not in that mode
+IF eModeOfOperation <> E_L7NHA_ModeOfOperation.HOMING THEN
+	MEMSET(
+		destAddr := ADR(stHomingStatus),
+		n := SIZEOF(stHomingStatus),
+		fillByte := 0);
+END_IF
+ 
+// Clear positioning status if not in that mode
+IF eModeOfOperation <> E_L7NHA_ModeOfOperation.PROFILE_POSITION THEN
+	MEMSET(
+		destAddr := ADR(stPositioningStatus),
+		n := SIZEOF(stPositioningStatus),
+		fillByte := 0);
+END_IF
+
+// Motion status
+TonMotorMovingStatusValid(
+	IN := nPreviousPosition <> stDataFromDrive.MotionFeedback.ActualPosition,
+	PT := T#30MS);
+
+bMovingPositive := (nPreviousPosition < stDataFromDrive.MotionFeedback.ActualPosition) AND TonMotorMovingStatusValid.Q;
+bMovingNegative := (nPreviousPosition > stDataFromDrive.MotionFeedback.ActualPosition) AND TonMotorMovingStatusValid.Q;
+nPreviousPosition := stDataFromDrive.MotionFeedback.ActualPosition;
+
+// Digital inputs mapping
+stDigitalInputs.NOT_SW := stDataFromDrive.DigitalInputs.0;
+stDigitalInputs.POT_SW := stDataFromDrive.DigitalInputs.1;
+stDigitalInputs.DI1_OPEN := stDataFromDrive.DigitalInputs.16;
+stDigitalInputs.DI2_OPEN := stDataFromDrive.DigitalInputs.17;
+stDigitalInputs.DI3_OPEN := stDataFromDrive.DigitalInputs.18;
+stDigitalInputs.DI4_OPEN := stDataFromDrive.DigitalInputs.19;
+stDigitalInputs.DI5_OPEN := stDataFromDrive.DigitalInputs.20;
+stDigitalInputs.DI6_OPEN := stDataFromDrive.DigitalInputs.21;
+stDigitalInputs.DI7_OPEN := stDataFromDrive.DigitalInputs.22;
+stDigitalInputs.DI8_OPEN := stDataFromDrive.DigitalInputs.23;
+stDigitalInputs.STO_OPEN := stDataFromDrive.DigitalInputs.31;
+
+// Error code
+IF eErrorCode <> stDataFromDrive.ErrorCode THEN
+	IF __ISVALIDREF(_logger) THEN
+		IF stDataFromDrive.ErrorCode = E_L7NHA_ErrorId.NO_ERROR THEN
+			_logger.LogInfo(_sb.Reset()
+				.AddString('L7NHA axis ')
+				.AddWithDblQuotationMarks(THIS^.InstanceName)
+				.AddString(' error no longer active.')
+				.Create());
+		ELSE
+			_logger.LogError(_sb.Reset()
+				.AddString('L7NHA axis ')
+				.AddWithDblQuotationMarks(THIS^.InstanceName)
+				.AddString(' error active! Error code: ')
+				.AddString(TO_STRING(stDataFromDrive.ErrorCode))
+				.AddString(' !')
+				.Create());
+		END_IF
+	END_IF
+END_IF
+
+eErrorCode := stDataFromDrive.ErrorCode;
+
+// Motion feedback from drive
+stMotionFeedback := stDataFromDrive.MotionFeedback;
+// Convert position/velocity to custom units
+
+stMotionFeedback := stDataFromDrive.MotionFeedback;
+
+fCalculatedActualTorque := CalculateTorque(fRatedTorque := fRatedTorque, nDriveTorqueFeedback := stDataFromDrive.MotionFeedback.ActualTorque);
+fCalculatedTargetTorque := CalculateTorque(fRatedTorque := fRatedTorque, nDriveTorqueFeedback := stDataFromDrive.MotionFeedback.TargetTorque);
+
+// Actual mode of operation, read from the drive
+eActualModeOfOperation := stDataFromDrive.ModeOfOperation;
+
+// =======================================================================
+// ==================== SETTING OUTPUT STRUCTURE TO DRIVE ================
+// =======================================================================
+stDataToDrive := stDataToDriveInternal;]]></ST>
+    </Implementation>
+    <Folder Name="Commands" Id="{467138cf-83df-4b25-81eb-d9f74aa509c2}" />
+    <Folder Name="Modes of operation" Id="{d85e02d1-cf3b-4d2d-8776-69be560bc17b}" />
+    <Method Name="CalculateTorque" Id="{d7606ade-1dc1-4560-9428-c0c8f7068a54}">
+      <Declaration><![CDATA[METHOD PRIVATE CalculateTorque : REAL
+VAR_INPUT
+	fRatedTorque 			: REAL; // Rated torque in mNm
+	nDriveTorqueFeedback 	: INT;	// Drives feedback (0.1% increments, -100%...+100%)
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CalculateTorque := fRatedTorque * TO_REAL(nDriveTorqueFeedback);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DisableVoltage" Id="{eceaee80-559a-4970-8177-40812eb33d5c}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE DisableVoltage
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.controlWord := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="EnableOperation" Id="{90edd31e-d8ca-43a5-bf52-1210d9b5fe6d}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE EnableOperation
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.controlWord.0 := 0;
+stDataToDriveInternal.controlWord.1 := 1;
+stDataToDriveInternal.controlWord.2 := 1;
+stDataToDriveInternal.controlWord.3 := 0;
+stDataToDriveInternal.controlWord.4 := 0;
+stDataToDriveInternal.controlWord.5 := 0;
+stDataToDriveInternal.controlWord.6 := 0;
+stDataToDriveInternal.controlWord.7 := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FaultReset" Id="{6305dea6-2e84-49e8-8aa5-8326e4ba6a8d}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE FaultReset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stDataToDriveInternal.controlWord.7 = 0 THEN
+	stDataToDriveInternal.controlWord.7 := 1;
+	stDataToDriveInternal.controlWord.0 := 0;
+	stDataToDriveInternal.controlWord.1 := 0;
+	stDataToDriveInternal.controlWord.2 := 0;
+	stDataToDriveInternal.controlWord.3 := 0;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{b81cf2d5-c33a-0036-37f3-b25fb7853eb3}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger		: REFERENCE TO ZigaLibs_Logging.I_Logger; // If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.		
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger REF= logger;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetDriveState" Id="{00293757-5568-4439-9381-8a12fdd5238b}">
+      <Declaration><![CDATA[// Converts status word to a readable drive state enum
+METHOD PRIVATE GetDriveState : E_L7NHA_DriveState
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//================ SWITCH_ON_DISABLED =====================
+IF stDataFromDrive.StatusWord.0 = FALSE AND
+    stDataFromDrive.StatusWord.1 = FALSE AND
+    stDataFromDrive.StatusWord.2 = FALSE AND
+    stDataFromDrive.StatusWord.3 = FALSE AND
+    stDataFromDrive.StatusWord.5 = TRUE AND 
+    stDataFromDrive.StatusWord.6 = TRUE
+THEN
+	GetDriveState := E_L7NHA_DriveState.SWITCH_ON_DISABLED;
+
+//================ READY_TO_SWITCH_ON =====================	
+ELSIF stDataFromDrive.StatusWord.0 = TRUE AND
+   	   stDataFromDrive.StatusWord.1 = FALSE AND
+       stDataFromDrive.StatusWord.2 = FALSE AND
+       stDataFromDrive.StatusWord.3 = FALSE AND
+       stDataFromDrive.StatusWord.5 = TRUE AND 
+       stDataFromDrive.StatusWord.6 = FALSE
+THEN
+	GetDriveState := E_L7NHA_DriveState.READY_TO_SWITCH_ON;	
+
+//================ SWITCHED_ON ==========================	
+ELSIF stDataFromDrive.StatusWord.0 = TRUE AND
+   	   stDataFromDrive.StatusWord.1 = TRUE AND
+       stDataFromDrive.StatusWord.2 = FALSE AND
+       stDataFromDrive.StatusWord.3 = FALSE AND
+       stDataFromDrive.StatusWord.5 = TRUE AND 
+       stDataFromDrive.StatusWord.6 = FALSE
+THEN
+	GetDriveState := E_L7NHA_DriveState.SWITCHED_ON;
+
+//================ OPERATION_ENABLED =====================	
+ELSIF stDataFromDrive.StatusWord.0 = TRUE AND
+   	   stDataFromDrive.StatusWord.1 = TRUE AND
+       stDataFromDrive.StatusWord.2 = TRUE AND
+       stDataFromDrive.StatusWord.3 = FALSE AND
+       stDataFromDrive.StatusWord.5 = TRUE AND 
+       stDataFromDrive.StatusWord.6 = FALSE
+THEN
+	GetDriveState := E_L7NHA_DriveState.OPERATION_ENABLED;
+
+//================ FAULT_REACTION_ACTIVE =====================		
+ELSIF stDataFromDrive.StatusWord.0 = TRUE AND
+   	   stDataFromDrive.StatusWord.1 = TRUE AND
+       stDataFromDrive.StatusWord.2 = TRUE AND
+       stDataFromDrive.StatusWord.3 = TRUE AND
+       stDataFromDrive.StatusWord.5 = TRUE AND 
+       stDataFromDrive.StatusWord.6 = FALSE
+THEN
+	GetDriveState := E_L7NHA_DriveState.FAULT_REACTION_ACTIVE;
+
+//================ FAULT =====================	
+ELSIF  stDataFromDrive.StatusWord.0 = FALSE AND
+   	   stDataFromDrive.StatusWord.1 = FALSE AND
+       stDataFromDrive.StatusWord.2 = FALSE AND
+       stDataFromDrive.StatusWord.3 = TRUE AND 
+       stDataFromDrive.StatusWord.6 = FALSE
+THEN
+	GetDriveState := E_L7NHA_DriveState.FAULT;				
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Halt" Id="{989bc803-d6d9-4e40-9538-4cf8a6da3fd4}" FolderPath="Commands\">
+      <Declaration><![CDATA[// Halts the axis for as long as called
+METHOD PRIVATE Halt : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.ControlWord.8 := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Action Name="Homing" Id="{204e4768-faa4-4836-ad0f-0a11eb054788}" FolderPath="Modes of operation\">
+      <Implementation>
+        <ST><![CDATA[// Set the status of homing
+
+// Hooming is in progress
+stHomingStatus.InProgress := 
+stDataFromDrive.StatusWord.10 = FALSE AND
+stDataFromDrive.StatusWord.12 = FALSE AND
+stDataFromDrive.StatusWord.13 = FALSE;
+
+// Homing is not started
+stHomingStatus.NotStarted := 
+stDataFromDrive.StatusWord.10 = TRUE AND
+stDataFromDrive.StatusWord.12 = FALSE AND
+stDataFromDrive.StatusWord.13 = FALSE;	
+
+// Target not reached	
+stHomingStatus.TargetNotReached := 
+stDataFromDrive.StatusWord.10 = FALSE AND
+stDataFromDrive.StatusWord.12 = TRUE AND
+stDataFromDrive.StatusWord.13 = FALSE;
+
+// Homing completed
+stHomingStatus.Completed := 
+stDataFromDrive.StatusWord.10 = TRUE AND
+stDataFromDrive.StatusWord.12 = TRUE AND
+stDataFromDrive.StatusWord.13 = FALSE;
+
+// Error - speed is not zero ????
+stHomingStatus.ErrorSpeedNotZero := 
+stDataFromDrive.StatusWord.10 = FALSE AND
+stDataFromDrive.StatusWord.12 = FALSE AND
+stDataFromDrive.StatusWord.13 = TRUE;
+
+// Error - speed is zero ????
+stHomingStatus.ErrorSpeedIsZero := 
+stDataFromDrive.StatusWord.10 = TRUE AND
+stDataFromDrive.StatusWord.12 = FALSE AND
+stDataFromDrive.StatusWord.13 = TRUE;
+
+
+RtrigStartHoming(CLK := stHomingCommands.Start);	
+IF stHomingCommands.Enable = FALSE THEN
+	stDataToDriveInternal.ControlWord.4 := FALSE;
+ELSIF RtrigStartHoming.Q THEN
+	stDataToDriveInternal.ControlWord.4 := TRUE;
+END_IF
+
+RtrigHomingFinished(CLK := stHomingStatus.Completed);
+IF RtrigHomingFinished.Q THEN
+	stDataToDriveInternal.ControlWord.4 := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="ProfilePosition" Id="{8f7b2db0-3f6c-4ac6-bcc4-ce2161b443d1}" FolderPath="Modes of operation\">
+      <Implementation>
+        <ST><![CDATA[// Positioning is only allowed if homing has been executed
+IF NOT bHomingRequired THEN					
+	// Set maximum velocity
+	stDataToDriveInternal.MaximumProfileVelocity := stPositioningCommands.MaxVelocity;
+	
+	// Update target immediately - bit 5 is TRUE
+	stDataToDriveInternal.ControlWord.5 := TRUE;
+	
+	// Trigger immediate update of setpoint by toggling the bit
+	IF stPositioningCommands.EnablePositioning THEN
+		// Toggling of bit 4 will execute the changes as soon as they are written
+		IF stPositioningCommands.ImmediatePositioning THEN
+			stDataToDriveInternal.ControlWord.4 := NOT stDataToDriveInternal.ControlWord.4;
+			stDataToDriveInternal.ProfileVelocity := stPositioningCommands.VelocitySetpoint;
+			stDataToDriveInternal.TargetPosition := stPositioningCommands.TargetPosition;
+		ELSE
+			// Bit 4 is only set for 1 cycle when requested by the GoToPosition trigger
+			stDataToDriveInternal.ControlWord.4 := FALSE;
+			// Sending values only on triger of GoToPosition property
+			RtrigMoveToPosition(CLK := stPositioningCommands.GoToPosition);
+			IF RtrigMoveToPosition.Q THEN
+				stDataToDriveInternal.ControlWord.4 := TRUE;
+				stDataToDriveInternal.ProfileVelocity := stPositioningCommands.VelocitySetpoint;
+				stDataToDriveInternal.TargetPosition := stPositioningCommands.TargetPosition;
+			END_IF
+		END_IF
+	ELSE
+		Halt();
+	END_IF
+	
+	// Positioning status from drive
+	stPositioningStatus.TargetPositionReached := stDataFromDrive.StatusWord.10;
+	stPositioningStatus.SetpointAcknowledged := stDataFromDrive.StatusWord.12;
+	stPositioningStatus.PositionalError := stDataFromDrive.StatusWord.13;
+ELSE
+	// If homing has not been executed, halt axis
+	Halt();
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="ProfileVelocity" Id="{ca6e31c0-beef-44b0-8925-04e717abb05a}" FolderPath="Modes of operation\">
+      <Implementation>
+        <ST><![CDATA[// Velocity mode is very simple - just send out the speed setpoint
+stDataToDriveInternal.TargetVelocity := stVelocityCommands.VelocitySetpoint;]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="Shutdown" Id="{251a3e90-0e6d-48ef-bfa4-28d18e2d967a}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE Shutdown
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.controlWord.0 := 0;
+stDataToDriveInternal.controlWord.1 := 1;
+stDataToDriveInternal.controlWord.2 := 1;
+stDataToDriveInternal.controlWord.7 := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SwitchOn" Id="{5f069525-2bd5-4c50-86b6-9baad3ae4272}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE SwitchOn
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.controlWord.0 := 1;
+stDataToDriveInternal.controlWord.1 := 1;
+stDataToDriveInternal.controlWord.2 := 1;
+stDataToDriveInternal.controlWord.3 := 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SwitchOnEnableOperation" Id="{f58b2024-f506-4b25-9cd7-3c25ec539a9b}" FolderPath="Commands\">
+      <Declaration><![CDATA[METHOD PRIVATE SwitchOnEnableOperation
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.controlWord.0 := 1;
+stDataToDriveInternal.controlWord.1 := 1;
+stDataToDriveInternal.controlWord.2 := 1;
+stDataToDriveInternal.controlWord.3 := 1;
+]]></ST>
+      </Implementation>
+    </Method>
+    <ObjectProperties>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="POUImageProperty">
+            <a n="ImageData" cet="Byte">Qk02EAAAAAAAADYAAAAoAAAAIAAAACAAAAABACAAAAAAAAAAAADEDgAAxA4AAAAAAAAAAAAA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////n39//w7Or/xsTC//39/f//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////+fn5//bx7//b08//sqij/25oZv94bmn/sq6t//r6+v/////////////////////////////////////////////////////////////////////////////////////////////////////////////////9/fz/+fb1//Dr6f+mn53/fHNw/6WZlv/azMf/7+Hb/3pvav9FPjz/Qz8+/3t3d/+6uLj/9PT0/////////////////////////////////////////////////////////////////////////////////////////////////6Wkov/g2dX/Y11b/zs0Mv9LQD3/SkA8/6WYkv/56uT/e3Ft/zk0Mv84MzL/NjIw/z85OP87Nzb/bmtq/6impv/f3t7/////////////////////////////////////////////////////////////////////////////////4d3a/4B6eP8vKSf/UEVB/0tAPf88NDL/Y1hU//Lk3f98cm7/OTQy/ywpKP8uKyn/JyUj/zQwL/82MS//NzIw/25nZP///////////////////////////////////////////////////////////////////////v7+/97Y1/+imZT/OTMy/1NJRf9PR0X/Qzs5/z42M/8+NjT/2MrE/3xybv9GPz3/NjEw/zIuLf81MTD/LSoo/y8rKv8qJyX/Lisp/2ZfXf/k4uH////////////////////////////////////////////////////////////29PT/ioKA/8q7uP+0pqP/fG9r/1BIRf82MS//PTYz/yklI//DtK3/fnRw/1dOSv9QSEX/TERC/0A6N/87NTT/NjIx/zAsKv8wLCv/Qjo4/9HNzP////////////////////////////////////////////////////////////39/f/k3t3/uq+s/6mbmP+ik5D/XlRR/yQiIf8WFRT/GBYV/4x/ev96b2v/WU9L/1lQTf9bUE3/WlBN/1ZMSv9QR0X/R0A+/z45N/9HPz3/RT89/7Gvr/////////////////////////////////////////////////////////////////9raGb/PDQx/0I8Of9HPz3/Lign/x0bGf8nIyH/kYR//3drZv9ORkT/UUpI/1JJR/9WTUr/U0pH/1dNSv9YTkv/Wk9N/1hOS/8+NzX/XFVT//38/P///////////////////////////////////////////////////////////4N/ff82Lyz/UEZD/0M7N/9LQT7/JSEf/31wa/98dG3/dGtl/1RKSP9FPj3/Rj8+/0E7Of9EPj3/SUJB/0xEQf9RSEb/T0ZD/1pOSv9ZTkr/3NrZ////////////////////////////////////////////////////////////wr27/yolI/9LQT3/Rjw6/zw1Mv9XTkr/4dLK/97Tzf9/dXH/UUhF/05GRP9XTUv/V01L/1FJRv9EPTv/Qjw6/zs2Nf9COzj/T0VC/0tBP//Pzcz///////////////////////////////////////////////////////7+/v/79fH/cGhl/0E4Nf9QRUH/XVNP/9PKxP/98+z/ZWFe/310cP9LQj//PDYz/zcxL/85MzL/QTo4/0dAPv9NRUP/VEpI/0hAPf9FPTv/OjMy/+no6P///////////////////////////////////////////////////////////9HMyf/Sysb/p5yX/7Cjnv/v6eb/9vLv/9TOyv+noZz/YFZS/0tDQf9CPDv/QDk4/zs1M/82MS//Lysq/y0pKP8zLSz/RDs5/0Y9O/9wbGv/////////////////////////////////////////////////////////////////pKGg/7Grp/+/tK7/raOe/5mPif+Kf3r/kIR9/4yBe/+CeHP/SUI//zo1M/89ODb/RD48/0dBP/9BPDr/PDc1/0I7Of9BOTb/VUxJ/+vr6//////////////////////////////////////////////////////////////////t7Oz/1tLR/+jn5v/Qz87/sq+v/5yXlv+Yj4z/mY6I/6uelv+EdGv/VUtG/zEsKv8mIyL/KCQj/y0qKP83Mi//Rz87/1FHQ/+emZb////////////////////////////////////////////////////////////////////////////////////////////////////////////9/f3/5OPj/05JR/85Mi//OTIv/z42M/9EPDn/NzEu/x0dHP8zLy3/Pjg1/7aysf//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////WlJQ/z42M/86MzD/Qjk3/0tBPf9GPTn/EhEQ/yIdG/9NREL/7Ovq//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////+WkpD/Vk9M/zcxL/88ODX/Lioo/1FJRv88NjT/RDw6/3ZubP/+/v7//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////v9oYl//KiQi/yMeHf89NjT/sKyr/+Ph4f/k4+L/+fn4/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////2ZeW/9MREH/SkI//2hfXP/z8vL/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////5eTj//b19f/49/f//v7+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////w==</a>
+            <v n="TransparencyColor">"White"</v>
+            <v n="MakeTransparent">false</v>
+          </o>
+        </Data>
+        <TypeList>
+          <Type n="Boolean">System.Boolean</Type>
+          <Type n="Byte">System.Byte</Type>
+          <Type n="POUImageProperty">{bb741845-1ec5-4be9-bb0d-2cf7058af574}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </ObjectProperties>
+  </POU>
+</TcPlcObject>

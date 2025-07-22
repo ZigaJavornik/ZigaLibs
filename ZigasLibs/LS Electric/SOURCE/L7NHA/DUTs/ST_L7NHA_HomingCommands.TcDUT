@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_HomingCommands" Id="{03cee128-d972-4b77-9547-fd995c74ac2b}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_HomingCommands :
+STRUCT
+	Start							: BOOL;	// Starts homing procedure
+	Enable							: BOOL;	// Homing will only be execute if this flag is set to true
+	HomingMethod					: E_L7NHA_HomingMethod; // Defines homing method that will be used for the axis - bEnableCoeReadWrite needs to be set to TRUE for this parameter to be written
+	Acceleration					: UDINT; // Acceleration in UU/s^2 - bEnableCoeReadWrite needs to be set to TRUE for this parameter to be written
+	SpeedWhileSearchingForSwitch	: UDINT; // Speed at which homing will be moving axis when searching for the physical switch - bEnableCoeReadWrite needs to be set to TRUE for this parameter to be written
+	SpeedWhileSearchingForZero		: UDINT; // Speed at which homing will be moving axis after switch has been found and axis is looking for index pulse - bEnableCoeReadWrite needs to be set to TRUE for this parameter to be written
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

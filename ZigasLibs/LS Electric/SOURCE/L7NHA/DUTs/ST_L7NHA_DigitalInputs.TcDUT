@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_DigitalInputs" Id="{5d5dd585-bd09-0237-1912-36e8af9e8571}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_DigitalInputs :
+STRUCT
+	POT_SW		: BOOL;
+	NOT_SW		: BOOL;
+	HOME_SW		: BOOL;
+	DI1_OPEN	: BOOL;
+	DI2_OPEN	: BOOL;
+	DI3_OPEN	: BOOL;
+	DI4_OPEN	: BOOL;
+	DI5_OPEN	: BOOL;
+	DI6_OPEN	: BOOL;
+	DI7_OPEN	: BOOL;
+	DI8_OPEN	: BOOL;
+	STO_OPEN	: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

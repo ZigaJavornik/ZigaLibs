@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_DataToDrive" Id="{5ceaf63b-942c-4ba8-b0d5-582db26f5a12}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_DataToDrive :
+STRUCT
+	// Control
+	ControlWord					: WORD;	// Control word
+	ModeOfOperation				: SINT;	// Mode of operation
+	
+	// Positioning mode
+	ProfileVelocity				: DINT;	// Target velocity in PP mode
+	TargetPosition				: DINT;	// Target position in PP mode
+	MaximumProfileVelocity		: UDINT; // Maximum velocity in PP mode
+	ProfileAcceleration			: UDINT; // Deceleration UU/s^2 when using PP mode
+	ProfileDeceleration			: UDINT; // Acceleration UU/s^2 when using PP mode
+	
+	// Velocity mode
+	TargetVelocity				: DINT;	// Target velocity in PV mode
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

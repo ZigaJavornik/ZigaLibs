@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_PositioningCommands" Id="{0dfbfde1-8b5f-443a-aa03-ae8fcb82cfde}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_PositioningCommands :
+STRUCT
+	VelocitySetpoint		: DINT;		// Velocity setpoint when in positioning mode
+	MaxVelocity				: UDINT;	// Maximum allowed velocity when in positioning mode
+	TargetPosition			: DINT;		// Target position
+	GoToPosition			: BOOL;		// Positioning will be executed on rising edge
+	ImmediatePositioning	: BOOL;		// If set to TRUE target position will be sent to the drive immediately and executed - otherwise the target only updates on GoToPosition call	
+	EnablePositioning		: BOOL;		// Positioning will only be executed when this flag is set to true
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

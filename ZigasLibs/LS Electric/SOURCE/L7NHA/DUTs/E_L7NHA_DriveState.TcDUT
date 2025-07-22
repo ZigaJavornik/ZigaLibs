@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_L7NHA_DriveState" Id="{abfcfe37-791d-41ec-b716-3c934062ed26}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+// Drive states based on the CiA402 state machine
+TYPE E_L7NHA_DriveState :
+(
+	SWITCH_ON_DISABLED,
+	READY_TO_SWITCH_ON,
+	SWITCHED_ON,
+	OPERATION_ENABLED,
+	QUICK_STOP_ACTIVE,
+	FAULT_REACTION_ACTIVE,
+	FAULT
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

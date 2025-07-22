@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_L7NHA_ModeOfOperation" Id="{a76d7000-8b57-4ac0-9e59-4e66e8266980}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'to_string'}
+// All the possible drive modes
+TYPE E_L7NHA_ModeOfOperation :
+(
+	PROFILE_POSITION 		:= 1,
+	PROFILE_VELOCITY 		:= 3,
+	PROFILE_TORQUE 			:= 4,
+	HOMING					:= 6,
+	INTERPOLATED_POSITION	:= 7,
+	CYCLIC_SYNC_POSITION	:= 8,
+	CYCLIC_SYNC_VELOCITY	:= 9,
+	CYCLIC_SYNC_TORQUE		:= 10
+)SINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

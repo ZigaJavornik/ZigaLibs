@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_UserUnitParams" Id="{b0542353-cdcb-4db0-85da-4ebe29d112fe}">
+    <Declaration><![CDATA[// Specifies custom user unit data that can be used for further conversion from within the block
+TYPE ST_L7NHA_UserUnitParams :
+STRUCT
+	(* Use this to specify if you want to use custom user unit, different from the one set on the drive. 
+	This can be useful if you have low user unit and want to sue higher unit inside the program since 
+	scaling is done within the block for simplciyt sake. If you don't want to use actual units leave this at 1 (or 0 - internal check will ommit any calculation if set to 0).
+	Example:
+		- Gearbox ratio is set so that user unit is 1um.
+		- You want to use milimeters as your unit inside the program.
+		- Set the divisor to 1000 - UU outside the block is then 1mm = 1value, instead of 1000 = 1000um = 1mm..*)
+	GearboxRatioUnitDivisor	: DINT := 1;
+	
+	(*User unit for velocity is by deafult in UU/s. Use this to automatically convert velocity to UU/<CustomVelocityTimeUnitDivisor>*seconds
+	Example:
+		- You have set up the gearbox to be in milimeters per 1 unit.
+		- You want the speed to be in mm/minute instead of defautl mm/second.
+		- Set this parameter to 60, this way velocity feedback will be multiplied by 60, which will return velocity in mm/min 
+		  and velocity setpoint will be divided by 60 to specify the speed to the drive in UU/seconds, which is the only option.*)	
+	CustomVelocityTimeUnitDivisor		: REAL := 1;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

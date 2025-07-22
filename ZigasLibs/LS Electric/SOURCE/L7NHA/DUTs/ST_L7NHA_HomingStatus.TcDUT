@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_HomingStatus" Id="{ae7c6e9b-c757-4b3a-b4d4-4aa1c9ca7b7f}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_HomingStatus :
+STRUCT
+	InProgress			: BOOL; // Homing in progress
+	NotStarted			: BOOL; // Homing stopped or not started
+	TargetNotReached	: BOOL; // Performed homing operation, but the not reach the target
+	Completed			: BOOL; // Homing completed
+	ErrorSpeedNotZero	: BOOL; // Homing error; speed not equal to 0
+	ErrorSpeedIsZero	: BOOL; // Homing error; speed equal to 0
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

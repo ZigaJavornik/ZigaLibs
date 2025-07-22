@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_L7NHA_EthercatData" Id="{5b7c5fbb-bfc2-45d4-8a60-48e0a06cb78b}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_EthercatData :
+STRUCT
+	MasterNetID		: AMSNETID;
+	SlaveAddress	: UINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

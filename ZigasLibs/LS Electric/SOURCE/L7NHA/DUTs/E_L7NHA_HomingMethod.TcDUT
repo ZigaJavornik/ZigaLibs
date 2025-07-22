@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="E_L7NHA_HomingMethod" Id="{52895640-6b8c-41fb-ad45-c75807c1e5a6}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+// All the different homing methods
+TYPE E_L7NHA_HomingMethod :
+(
+	DISABLED 									:= 0,	// Homing is disabled
+	NEGATIVE_SWITCH_INDEX_REVERSE_DIRECTION 	:= 1, 	// The drive returns to the home position with the negative limit switch (NOT) and the Index (Z) pulse while driving in the reverse direction.
+	POSITIVE_SWITCH_INDEX_FORWARD_DIRECTION 	:= 2, 	// The drive returns to the home position with the positive limit switch (POT) and the Index (Z) pulse while driving in the forward direction.
+	HOME_SWITCH_INDEX_FORWARD_DIRECTION_7 		:= 7,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the forward direction. When the positive limit switch (POT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_FORWARD_DIRECTION_8 		:= 8,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the forward direction. When the positive limit switch (POT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_FORWARD_DIRECTION_9 		:= 9,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the forward direction. When the positive limit switch (POT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_FORWARD_DIRECTION_10 		:= 10,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the forward direction. When the positive limit switch (POT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_REVERSE_DIRECTION_11 		:= 11,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the reverse direction. When the negative limit switch (NOT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_REVERSE_DIRECTION_12 		:= 12,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the reverse direction. When the negative limit switch (NOT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_REVERSE_DIRECTION_13 		:= 13,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the reverse direction. When the negative limit switch (NOT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_INDEX_REVERSE_DIRECTION_14 		:= 14,	// The drive returns to the home position with the home switch (HOME) and the Index (Z) pulse while driving in the reverse direction. When the negative limit switch (NOT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_FORWARD_DIRECTION 				:= 24,	// The drive returns to the home position with the home switch (HOME) while driving in the forward direction. When the positive limit switch (POT) is input during homing, the drive will switch its driving direction.
+	HOME_SWITCH_REVERSE_DIRECTION 				:= 28,	// The drive returns to the home position with the home switch (HOME) while driving in the reverse direction. When the negative limit switch (NOT) is input during homing, the drive will switch its driving direction.
+	INDEX_REVERSE_DIRECTION 					:= 33,	// The drive returns to the home position with the Index (Z) pulse while driving in the reverse direction.
+	INDEX_FORWARD_DIRECTION 					:= 34,	// The drive returns to the home position with the Index (Z) pulse while driving in the forward direction.
+	TO_THE_CURRENT_POSITION 					:= 35,	// Sets the current position as the origin.
+	NEGATIVE_STOPPER_INDEX_REVERSE_DURECTION	:= -1,	// The drive returns to the home position with the negative stopper and the Index (Z) pulse while driving in the reverse direction.
+	POSITIVE_STOPPER_INDEX_FORWARD_DIRECTION 	:= -2,	// The drive returns to the home position with the positive stopper and the Index (Z) pulse while driving in the forward direction.
+	REVERSE_STOPPER_REVERSE_DIRECTION 			:= -3,	// The drive returns to the home position with the negative stopper while driving in the reverse direction.
+	POSITIVE_STOPPER_FORWARD_DIRECTION 			:= -4	// The drive returns to the home position with the positive stopper while driving in the forward direction.
+) SINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
