@@ -254,6 +254,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[CASE eReadCoeStep OF
 	E_ParameterReadingStep.IDLE:
+		ReadCoE := FALSE;
 		IF _ethercatBoxName = '' THEN
 			_ethercatBoxName := ZigaLibs_Core.EthercatHelper.GetBoxNameByAddress(
 				outError := bError,
