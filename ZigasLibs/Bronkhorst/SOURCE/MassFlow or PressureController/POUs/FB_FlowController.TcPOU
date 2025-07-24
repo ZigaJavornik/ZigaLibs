@@ -70,6 +70,7 @@ IF bFirstExecution THEN
 	END_IF
 END_IF
 
+_readParametersRequest(CLK := bReadParameters);
 // Parameters read request
 IF _readParametersRequest.Q THEN
 	_parametersReadingInProgress := TRUE;
