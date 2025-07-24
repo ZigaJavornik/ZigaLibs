@@ -17,6 +17,7 @@ FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
 VAR_INPUT
 	bEnable			: BOOL;	// Enables controller
 	fSetpoint		: REAL;	// Setpoint to the controller
+	bReadParameters	: BOOL; // Reads CoE parameters on rising edge trigger
 END_VAR
 
 VAR_OUTPUT
@@ -48,6 +49,8 @@ VAR
 	_validateModeWrite		: BOOL;
 	_controlModeTmp			: E_ControllerMode;
 	_coeReadWrite			: ZigaLibs_Core.FB_CoeReadWrite;
+	_readParametersRequest	: Tc2_Standard.R_TRIG;
+	_parametersReadingInProgress	: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -64,6 +67,17 @@ fMeassuredValue := CalculateMeasuredValue();
 IF bFirstExecution THEN
 	IF ReadCoE() THEN
 		bFirstExecution := FALSE;
+	END_IF
+END_IF
+
+// Parameters read request
+IF _readParametersRequest.Q THEN
+	_parametersReadingInProgress := TRUE;
+END_IF
+
+IF _parametersReadingInProgress THEN
+	IF ReadCoE() THEN
+		_parametersReadingInProgress := FALSE;
 	END_IF
 END_IF
 
