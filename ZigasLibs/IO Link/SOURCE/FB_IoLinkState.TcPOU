@@ -21,7 +21,7 @@ PROPERTY PUBLIC ChannelState : REFERENCE TO ST_IoLink_ChannelState]]></Declarati
       <Get Name="Get" Id="{ccdbd98e-1d07-0d4e-3391-1545c9a1bbcc}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[THIS^.GetChannelState();
+          <ST><![CDATA[_channelState := THIS^.GetChannelState();
 ChannelState REF= _channelState;]]></ST>
         </Implementation>
       </Get>
