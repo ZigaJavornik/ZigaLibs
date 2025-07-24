@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="GasTypes" Id="{29a0b4bc-11ec-0b5c-1f68-73f742326369}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
 {attribute 'hide_all_locals'}
@@ -33,6 +33,18 @@ END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[BCl3 := 'BCl3';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="C2F6" Id="{f2ef586f-0e5b-0659-29bb-1a25e927e282}">
+      <Declaration><![CDATA[{attribute 'monitoring':='variable'}
+PROPERTY C2F6 : STRING]]></Declaration>
+      <Get Name="Get" Id="{1a0dc294-c17d-09c8-1a8c-e71fa91d9654}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[C2F6 := 'C2F6';]]></ST>
         </Implementation>
       </Get>
     </Property>
