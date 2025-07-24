@@ -231,7 +231,12 @@ VAR_INST
 	bCoeReadError	: BOOL;
 	bError			: BOOL;
 	fbCoeReadWrite	: ZigaLibs_Core.FB_CoeReadWrite;
-END_VAR]]></Declaration>
+END_VAR
+
+VAR CONSTANT
+	MAX_REAL_VALUE_DEVIATION : REAL := 0.1;
+END_VAR
+]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReadCoeStep OF
 	E_ParameterReadingStep.IDLE:
@@ -318,7 +323,7 @@ END_VAR]]></Declaration>
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
 			IF _writeLogs THEN
-				IF _CoeList.Capacity.Value <> _predictedFlowCapacity THEN
+				IF ABS(_CoeList.Capacity.Value - _predictedFlowCapacity) >= MAX_REAL_VALUE_DEVIATION THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow capacity found! Predicted capacity is ')

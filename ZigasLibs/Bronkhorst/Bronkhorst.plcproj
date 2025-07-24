@@ -161,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Core, 0.0.3.3 (Ziga)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
