@@ -327,13 +327,14 @@ END_VAR
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow capacity found! Predicted capacity is ')
-						.AddWithDblQuotationMarks('')
+						.AddWithQuotationMark('')
 						.AddAnyReal(_predictedFlowCapacity, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
-						.AddWithDblQuotationMarks('')
+						.AddWithQuotationMark('')
 						.AddString(' and actual flow capacity found is ')
-						.AddWithDblQuotationMarks('')
+						.AddWithQuotationMark('')
 						.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
-						.AddWithDblQuotationMarks('')
+						.AddWithQuotationMark('')
+						.AddString('!')
 						.Create());
 					END_IF
 				END_IF
