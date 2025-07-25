@@ -10,7 +10,7 @@ END_VAR
 VAR_OUTPUT
 		error 	:  BOOL;	// If an error occurs while executing, method will provide the error flag here. This is a pointer to YOUR boolean error variable.
 		done		: BOOL;
-		name		: TcDynCollections.T_Map_Entry;
+		name		: Tc2_System.T_MaxString;
 END_VAR
 
 VAR
