@@ -51,6 +51,7 @@ VAR
 	_coeReadWrite			: ZigaLibs_Core.FB_CoeReadWrite;
 	_readParametersRequest	: Tc2_Standard.R_TRIG;
 	_parametersReadingInProgress	: BOOL;
+	_readBoxName			: ZigaLibs_Core.FB_ReadBoxName;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -63,6 +64,7 @@ ELSE
 END_IF
 
 fMeassuredValue := CalculateMeasuredValue();
+fValvePosition := UINT_TO_REAL(Inputs.ValvePosition)/6.17;
 
 IF bFirstExecution THEN
 	IF ReadCoE() THEN
@@ -257,10 +259,11 @@ END_VAR
 	E_ParameterReadingStep.IDLE:
 		ReadCoE := FALSE;
 		IF _ethercatBoxName = '' THEN
-			_ethercatBoxName := ZigaLibs_Core.EthercatHelper.GetBoxNameByAddress(
-				outError := bError,
+			_readBoxName(
+				AmsNetId := Inputs.AmsAddr,
 				PlcRuntimeNetId := '',
-				AmsNetId := Inputs.AmsAddr);
+				error => bError,
+				name => _ethercatBoxName);
 		ELSIF _ethercatBoxName <> '' OR bError THEN
 			eReadCoeStep := E_ParameterReadingStep.GAS_TYPE;
 			IF _writeLogs THEN
