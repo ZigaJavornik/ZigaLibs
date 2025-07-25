@@ -190,6 +190,9 @@
     <Compile Include="SOURCE\Beckhoff\EtherCAT\EthercatHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Beckhoff\EtherCAT\FB_ReadBoxName.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Errors\DUTs\ST_AdsError.TcDUT">
       <SubType>Code</SubType>
     </Compile>

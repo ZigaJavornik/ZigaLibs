@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_ReadBoxName" Id="{8c499fd9-fabc-0b88-2bd0-6663986a0e30}" SpecialFunc="None">
+    <Declaration><![CDATA[// Reads box name and return string
+FUNCTION_BLOCK FB_ReadBoxName
+VAR_INPUT
+	PlcRuntimeNetId		: Tc2_System.T_AmsNetID; // NetId of the PLC where the devuce is located
+	AmsNetId			: AMSADDR; // NetId of the box
+END_VAR
+VAR_OUTPUT
+		error 	:  BOOL;	// If an error occurs while executing, method will provide the error flag here. This is a pointer to YOUR boolean error variable.
+		done		: BOOL;
+		name		: TcDynCollections.T_Map_Entry;
+END_VAR
+
+VAR
+	fbReadDeviceName	: Tc2_IoFunctions.IOF_GetBoxNameByAddr;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbReadDeviceName(
+	NETID := PlcRuntimeNetId,
+	DEVICEID := AdsHelper.GetEthercatMasterIdFromNetIdString(AdsHelper.NetIdToString(AmsNetId.netId)),
+	BOXADDR := AmsNetId.port,
+	START := NOT fbReadDeviceName.BUSY);
+	
+error := fbReadDeviceName.ERR;
+name := fbReadDeviceName.BOXNAME;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
