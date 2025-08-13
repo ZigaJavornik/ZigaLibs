@@ -297,9 +297,9 @@ END_VAR
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid gas type found! Predicted gas type is ')
-						.AddString(_predictedGasType)
+						.AddWithDblQuotationMarks(_predictedGasType)
 						.AddString(' and actual gas type found is ')
-						.AddString(_coeList.FluidName.Value)
+						.AddWithDblQuotationMarks(_coeList.FluidName.Value)
 						.Create());
 				END_IF
 			END_IF
@@ -346,13 +346,13 @@ END_VAR
 					_logger.LogWarning(message := _stringBuilder.Reset()
 						.AddString(_logPrefix)
 						.AddString('Invalid flow capacity found! Predicted capacity is ')
-						.AddWithQuotationMark('')
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
 						.AddAnyReal(_predictedFlowCapacity, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
-						.AddWithQuotationMark('')
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
 						.AddString(' and actual flow capacity found is ')
-						.AddWithQuotationMark('')
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
 						.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
-						.AddWithQuotationMark('')
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
 						.AddString('!')
 						.Create());
 					END_IF
