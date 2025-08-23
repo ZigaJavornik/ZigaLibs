@@ -67,6 +67,9 @@
     <Compile Include="SOURCE\TcpIp\DUTs\E_SocketSendState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\TcpIp\DUTs\T_Port.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
