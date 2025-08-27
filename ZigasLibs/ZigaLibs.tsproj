@@ -354,7 +354,7 @@
 			</SubItem>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" ShowHideConfigurations="#x3c7">
+	<Project ProjectGUID="{08A744A3-69C0-4AF1-B646-83E4F6198A23}" TargetNetId="39.139.122.3.1.1" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
 			<Settings RouterMemory="209715200"/>
 			<Tasks>
@@ -678,6 +678,18 @@
 			<Project GUID="{CD758CA6-5449-4C70-B975-A8C9AD80DE1A}" Name="LS Electric" PrjFilePath="LS Electric\LS Electric.plcproj" TmcFilePath="LS Electric\LS Electric.tmc" ReloadTmc="true" AmsPort="864" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502340" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
 					<Name>LS Electric Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
+				</Instance>
+			</Project>
+			<Project GUID="{C4F58AB4-0346-4E5A-88E0-C50206FAABA0}" Name="Fluke" PrjFilePath="Fluke\Fluke.plcproj" TmcFilePath="Fluke\Fluke.tmc" ReloadTmc="true" AmsPort="865" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502380" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+					<Name>Fluke Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
 						<Context>
