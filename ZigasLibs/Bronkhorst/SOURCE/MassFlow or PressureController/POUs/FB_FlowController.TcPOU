@@ -153,7 +153,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CalculateSetpointValue := REAL_TO_INT(fSetpoint * EXPT(10, _CoeList.DecimalDigits.Value));]]></ST>
+        <ST><![CDATA[CalculateSetpointValue := REAL_TO_INT(fSetpoint * LREAL_TO_REAL(EXPT(10, _CoeList.DecimalDigits.Value)));]]></ST>
       </Implementation>
     </Method>
     <Property Name="Capacity" Id="{151e0e68-21c0-0cd2-1fbe-f6ddb4155f36}">
@@ -301,6 +301,12 @@ END_VAR
 						.AddString(' and actual gas type found is ')
 						.AddWithDblQuotationMarks(_coeList.FluidName.Value)
 						.Create());
+				ELSE
+					_logger.LogInfo(_stringBuilder.Reset()
+						.AddString(_logPrefix)
+						.AddString('Gas type: ')
+						.AddWithDblQuotationMarks(_coeList.FluidName.Value)
+						.Create());
 				END_IF
 			END_IF
 			eReadCoeStep := E_ParameterReadingStep.FLOW_UNIT;
@@ -319,6 +325,12 @@ END_VAR
 						.AddString('Invalid flow unit found! Predicted unit is ')
 						.AddWithDblQuotationMarks(_predictedFlowUnit)
 						.AddString(' and actual flow unit found is ')
+						.AddWithDblQuotationMarks(_coeList.CapacityUnit.Value)
+						.Create());				
+				ELSE
+					_logger.LogInfo(_stringBuilder.Reset()
+						.AddString(_logPrefix)
+						.AddString('Flow unit: ')
 						.AddWithDblQuotationMarks(_coeList.CapacityUnit.Value)
 						.Create());
 				END_IF
@@ -355,6 +367,14 @@ END_VAR
 						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
 						.AddString('!')
 						.Create());
+					ELSE
+						_logger.LogInfo(_stringBuilder.Reset()
+							.AddString(_logPrefix)
+							.AddString('Flow capacity: ')
+							.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
+							.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+							.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
+							.Create());
 					END_IF
 				END_IF
 			eReadCoeStep := E_ParameterReadingStep.IDLE;
