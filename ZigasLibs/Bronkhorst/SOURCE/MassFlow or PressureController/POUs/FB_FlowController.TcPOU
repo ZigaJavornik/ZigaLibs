@@ -35,7 +35,7 @@ VAR
 	bFirstExecution			: BOOL := TRUE;
 	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	_CoeList				: ST_ControllerCoeList;
-	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ' :');
+	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ': ');
 	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	_writeLogs				: BOOL;
 	_ethercatBoxName		: Tc2_System.T_MaxString;
@@ -292,6 +292,7 @@ END_VAR
 			Value := _CoeList.FluidName.Value,
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
+			_CoeList.FluidName.Value := ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.FluidName.Value);
 			IF _writeLogs THEN
 				IF ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.FluidName.Value) <> _predictedGasType THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
@@ -318,6 +319,7 @@ END_VAR
 			Value := _CoeList.CapacityUnit.Value,
 			SlaveAddr := Inputs.AmsAddr)
 		THEN
+			_CoeList.CapacityUnit.Value := ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.CapacityUnit.Value);
 			IF _writeLogs THEN
 				IF ZigaLibs_Core.StringHelper.TrimRightSide(_CoeList.CapacityUnit.Value) <> _predictedFlowUnit THEN
 					_logger.LogWarning(message := _stringBuilder.Reset()
