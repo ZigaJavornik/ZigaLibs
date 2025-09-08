@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_DirectoryUtilities_Tests" Id="{ed7d6ffd-1136-0ce4-3b13-cdf20f3d89ea}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_DirectoryUtilities_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -28,6 +28,7 @@ VAR_INST
 	dateTime			: DT;
 	error				: BOOL;
 	errorInfo			: ZigaLibs_Core.ST_AdsError;
+	deletedFiles		: ARRAY[0..20] OF Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod') THEN
@@ -44,8 +45,9 @@ END_VAR]]></Declaration>
 			getSystemTime(timeHiDW => fileTime.dwHighDateTime, timeLoDW => fileTime.dwLowDateTime);
 			dateTime := Tc2_Utilities.FILETIME_TO_DT(fileTime);
 			IF _directoryUtilities.DeleteFilesCreatedBefore(FILE_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dateTime, 
-				error=> error, errorInfo => errorInfo)
+				error=> error, errorInfo => errorInfo, deletedFiles => deletedFiles)
 			THEN
+				AssertTrue(deletedFiles[0] = 'FileToDeleteViaDeleteBeforeMethod.txt', 'Deleted files list contains no items!');
 				AssertFalse(error, Tc2_Standard.CONCAT('Deleting files encountered an undexpected error: ', errorInfo.Message));
 				TcUnit.TEST_FINISHED();
 			END_IF

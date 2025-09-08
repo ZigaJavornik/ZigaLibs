@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <Itf Name="I_Directory" Id="{cb7661a0-6c20-02b0-24ea-9f5626ca673d}">
     <Declaration><![CDATA[INTERFACE I_Directory
 ]]></Declaration>
@@ -16,7 +16,7 @@ END_VAR
 VAR_OUTPUT
 	error			: BOOL;
 	errorInfo		: ZigaLibs_Core.ST_AdsError;	
-	deletedFiles	: TcDynCollections.FB_List;	// A list of deleted items, as T_MaxString (file names).
+	deletedFiles	: ARRAY[0..20] OF Tc2_System.T_MaxString;	// A list of deleted items, as T_MaxString (file names).
 END_VAR
 
 ]]></Declaration>

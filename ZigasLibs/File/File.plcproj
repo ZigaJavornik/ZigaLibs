@@ -16,7 +16,7 @@
     <LibraryReferences>{a71ffb3f-1a1c-467b-9f97-f045e92e9308}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.File</Title>
-    <ProjectVersion>0.1.0.0</ProjectVersion>
+    <ProjectVersion>0.1.1.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.File</DefaultNamespace>
     <Placeholder>ZigaLibs.File</Placeholder>
     <Author>Žiga Javornik</Author>
@@ -216,6 +216,13 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, 1.3.0.0 (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#50ms</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>

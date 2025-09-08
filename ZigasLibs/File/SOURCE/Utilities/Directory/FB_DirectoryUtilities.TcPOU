@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_DirectoryUtilities" Id="{db17547a-e0e3-0247-1987-14342fc00f3f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_DirectoryUtilities IMPLEMENTS I_Directory
 VAR_INPUT
@@ -24,18 +24,20 @@ END_VAR
 VAR_OUTPUT
 	error			: BOOL;
 	errorInfo		: ZigaLibs_Core.ST_AdsError;	
-	deletedFiles	: TcDynCollections.FB_List;	// A list of deleted items, as T_MaxString (file names).
+	deletedFiles	: ARRAY[0..20] OF Tc2_System.T_MaxString;	// A list of deleted items, as T_MaxString (file names).
 END_VAR
 
 VAR_INST
-	files			: TcDynCollections.FB_List;
-	currentFile		: ST_FindFileEntry;
-	state			: E_DeleteFilesByDateState;
-	fileUtilities	: FB_FileUtilities;
+	files				: TcDynCollections.FB_List;
+	currentFile			: ST_FindFileEntry;
+	state				: E_DeleteFilesByDateState;
+	fileUtilities		: FB_FileUtilities;
+	deleteFilesLocal	: ARRAY[0..20] OF Tc2_System.T_MaxString;
 END_VAR
 VAR
-	fileIndex		: DINT;
-	timeOfCreation	: DT;
+	fileIndex			: DINT;
+	timeOfCreation		: DT;
+	deletedFileIndex	: ZigaLibs_Core.T_ArrayIndexer;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -71,7 +73,9 @@ END_VAR
 			END_IF 
 		END_FOR
 		
+		// Iterate found files and copy them to the output variable
 		IF files._Count = 0 THEN
+			deletedFiles := deleteFilesLocal;
 			state := E_DeleteFilesByDateState.START;
 			DeleteFilesCreatedBefore := TRUE;
 		END_IF
@@ -88,7 +92,8 @@ END_VAR
 				files.Clear();
 				RETURN;
 			END_IF
-			deletedFiles.Prepend(currentFile.sFileName);
+			ZigaLibs_Core.ArrayHelper.ShiftUp(deletedFiles, deleteFilesLocal[0]);
+			deleteFilesLocal[0] := currentFile.sFileName;
 			files.Remove(currentFile);
 			state := E_DeleteFilesByDateState.GET_FILE;
 		END_IF

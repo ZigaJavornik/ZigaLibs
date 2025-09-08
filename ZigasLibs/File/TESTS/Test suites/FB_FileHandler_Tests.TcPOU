@@ -35,6 +35,7 @@ Test08_WriteBinary_FileOpened_Overwrite_ExpectNoError_ExpectOnlyNewContent();
 Test09_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent();
 Test10_WriteBinary_FileOpened_Append_ExpectNoError_ExpectOldAndNewContent();
 Test11_CreateFile_WriteContent_Flush_ExpectFileContent();
+Test12_OpenFile_CloseFile_OpenLast_ExpectFileOpened();
 
 CleanupDirectory();]]></ST>
     </Implementation>
