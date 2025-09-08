@@ -16,7 +16,7 @@
     <LibraryReferences>{b4e87170-0c7a-4df3-9dc5-e3afe647b07b}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Logging</Title>
-    <ProjectVersion>0.0.3.1</ProjectVersion>
+    <ProjectVersion>0.0.3.2</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Logging</DefaultNamespace>
     <Placeholder>ZigaLibs.Logging</Placeholder>
     <Author>Žiga Javornik</Author>
@@ -204,7 +204,7 @@
       <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.File">
-      <Resolution>ZigaLibs.File, 0.1.0.0 (Ziga Javornik)</Resolution>
+      <Resolution>ZigaLibs.File, 0.1.1.0 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Logger" Id="{86b60fa4-cbc9-0995-00ad-63ce008210aa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger EXTENDS FB_ErrorSource IMPLEMENTS I_Logger, I_LoggerConfig
 VAR
@@ -166,7 +166,7 @@ VAR_INST
 END_VAR
 VAR
 	sb 					: ZigaLibs_Core.FB_StringBuilder;
-	deletedFiles		: TcDynCollections.FB_List;
+	deletedFiles		: ARRAY[0..20] of Tc2_System.T_MaxString;
 	deletedFileIndex	: DINT;
 	deletedFileName		: Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
@@ -209,17 +209,14 @@ IF _localSystemTimeProvider.CurrentTime.IsValid AND_THEN (TonDeleteLogsTimer.Q O
 		
 		sb.Reset().AddString('Cyclic files deletion finished. Deleted files created before ')
 			.AddAny(dateForDeletion)
-			.AddString('. Deleted ')
-			.AddString(DINT_TO_STRING(deletedFiles._Count))
-			.AddString(' files: ');
+			.AddString('. Deleted files: ');
 			
-		FOR deletedFileIndex := deletedFiles._Begin TO deletedFiles._End BY 1 DO
-			deletedFiles.Get(deletedFileIndex, deletedFileName);
-			IF deletedFileIndex = deletedFiles._End THEN
-				sb.AddString(deletedFileName);
+		FOR deletedFileIndex := 0 TO ZigaLibs_Core.ArrayHelper.GetMaxIndex(deletedFiles, deletedFiles[0], 0) BY 1 DO
+			IF deletedFileName = '' THEN
+				sb.AddString('No files were deleted.');
 				EXIT;
 			END_IF
-			
+			deletedFileName := deletedFiles[deletedFileIndex];
 			sb.AddString(deletedFileName).AddString(', ');
 		END_FOR
 		
