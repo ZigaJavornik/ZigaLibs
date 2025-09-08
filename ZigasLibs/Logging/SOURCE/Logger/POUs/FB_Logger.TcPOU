@@ -171,14 +171,17 @@ VAR
 	deletedFileName		: Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TonDeleteLogsTimer(IN := TRUE AND Configuration.DeleteAfterDays <> 0, PT := Configuration.DeleteCheckInterval);
+        <ST><![CDATA[TonDeleteLogsTimer(IN := Configuration.DeleteAfterDays <> 0, PT := Configuration.DeleteCheckInterval);
 
 RtrigConfigurationValid(CLK := Configuration.IsValid AND _localSystemTimeProvider.CurrentTime.IsValid);
 IF RtrigConfigurationValid.Q THEN
 	bCleanupDirectoryOnConfigurationApplied := TRUE;
 END_IF
 
-RtrigDelete(CLK := TonDeleteLogsTimer.Q OR bCleanupDirectoryOnConfigurationApplied);
+// Only delete if days is not 0
+RtrigDelete(
+	CLK := TonDeleteLogsTimer.Q OR 
+		(bCleanupDirectoryOnConfigurationApplied AND Configuration.DeleteAfterDays <> 0));
 
 IF _localSystemTimeProvider.CurrentTime.IsValid AND_THEN (TonDeleteLogsTimer.Q OR bCleanupDirectoryOnConfigurationApplied) THEN
 	
