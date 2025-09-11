@@ -26,9 +26,10 @@ VAR_INST
 	getSystemTime		: Tc2_System.GETSYSTEMTIME;
 	fileTime			: Tc2_Utilities.T_FILETIME;
 	dateTime			: DT;
+	dtUpperLimit  		: DT  := DATE_AND_TIME#2106-02-07-06:28:15;
 	error				: BOOL;
 	errorInfo			: ZigaLibs_Core.ST_AdsError;
-	deletedFiles		: ARRAY[0..20] OF Tc2_System.T_MaxString;
+	deletedFiles		: ARRAY[0..100] OF Tc2_System.T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod') THEN
@@ -43,8 +44,7 @@ END_VAR]]></Declaration>
 		delayForDelete(IN := TRUE, PT := T#3S);
 		IF delayForDelete.Q THEN
 			getSystemTime(timeHiDW => fileTime.dwHighDateTime, timeLoDW => fileTime.dwLowDateTime);
-			dateTime := Tc2_Utilities.FILETIME_TO_DT(fileTime);
-			IF _directoryUtilities.DeleteFilesCreatedBefore(FILE_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dateTime, 
+			IF _directoryUtilities.DeleteFilesCreatedBefore(FILE_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dtUpperLimit, 
 				error=> error, errorInfo => errorInfo, deletedFiles => deletedFiles)
 			THEN
 				AssertTrue(deletedFiles[0] = 'FileToDeleteViaDeleteBeforeMethod.txt', 'Deleted files list contains no items!');

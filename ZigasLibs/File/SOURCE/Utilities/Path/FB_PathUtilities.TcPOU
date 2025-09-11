@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_PathUtilities" Id="{aa4bc240-593b-0fc8-096f-eb4a070d9a09}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_PathUtilities IMPLEMENTS I_Path
 VAR_INPUT
@@ -28,29 +28,31 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	splitPath			: TcDynCollections.FB_List;
+	splitPath			: Tc2_System.T_MaxString;
 	lastPathPart		: Tc2_System.T_MaxString;
 	pathSeperatorLeft	: STRING := '\';
 	pathSeperatorRight	: STRING := '/';
+	charPosiiton		: INT;
 	currentFileEntry	: Tc2_Utilities.ST_FindFileEntry;
+	currentSplitString	: Tc2_System.T_MaxString;
 	index				: DINT;
 END_VAR
 
 VAR_INST
-	files				: TcDynCollections.FB_List;
+	files				: ARRAY[0..100] OF Tc2_Utilities.ST_FindFileEntry;
 	directoryUtilities	 : FB_DirectoryUtilities;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF directoryUtilities.ListAll(path, netId, files, error => error, errorInfo => errorInfo) THEN
-	StringHelper.Split(path, pathSeperatorLeft, splitPath);
-	WHILE splitPath.Contains(pathSeperatorRight) DO
-		splitPath.Remove(pathSeperatorRight);
+        <ST><![CDATA[IF directoryUtilities.ListAll(path := path, netId := netId, items :=files, error => error, errorInfo => errorInfo) THEN
+	lastPathPart := path;
+	WHILE Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorLeft) <> 0 DO
+		charPosiiton := Tc2_Standard.FIND(lastPathPart, pathSeperatorLeft);
+		lastPathPart := Tc2_Standard.DELETE(lastPathPart, charPosiiton, 1);
 	END_WHILE
-	splitPath.Get(splitPath._End, lastPathPart);
 	
-	FOR index := files._Begin TO files._End BY 1 DO
-		files.Get(index, currentFileEntry);
+	FOR index := 0 TO 100 BY 1 DO
+		currentFileEntry := files[index];
 		IF currentFileEntry.sFileName = lastPathPart THEN
 			result := TRUE;
 			EXIT;

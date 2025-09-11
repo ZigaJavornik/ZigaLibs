@@ -16,8 +16,8 @@ VAR
 END_VAR
 
 VAR CONSTANT
-	FILE_PATH				: Tc2_System.T_MaxString := 'C:\';
-	NET_ID					: Tc2_System.T_AmsNetID := '192.168.56.1.1.1';
+	FILE_PATH				: Tc2_System.T_MaxString := 'C:\ZigaLibsTestsFolder\';
+	NET_ID					: Tc2_System.T_AmsNetID := '192.168.53.126.1.1';
 	NEW_TEXT_FILE_NAME		: Tc2_System.T_MaxString := 'FileName.txt';
 	NEW_BINARY_FILE_NAME	: Tc2_System.T_MaxString := 'BinaryFileName.txt';
 	EXISTING_FILE_NAME		: Tc2_System.T_MaxString := 'ExistingFile.txt';
@@ -46,12 +46,9 @@ CleanupDirectory();]]></ST>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('CleanupDirectory') THEN
 	IF _fileHandler.File.IsOpened THEN
 		_fileHandler.Close();
-	ELSE
-		TcUnit.TEST_FINISHED();	
-	END_IF
-	(*ELSIF Utilities.Directory.DeleteFilesCreatedBefore(FILE_PATH, NEW_FILE_NAME, NET_ID, DT#2106-02-06-06:28:15) THEN
+	ELSIF Utilities.Directory.DeleteFilesCreatedBefore(FILE_PATH, 'FileName', NET_ID, DT#2106-02-06-06:28:15) THEN
 		TcUnit.TEST_FINISHED();
-	END_IF*)
+	END_IF
 END_IF
 ]]></ST>
       </Implementation>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_FileUtilities" Id="{eb045cde-089e-0474-01d4-a297f62f2021}" SpecialFunc="None">
     <Declaration><![CDATA[// Provides file functionalities.
 FUNCTION_BLOCK FB_FileUtilities IMPLEMENTS I_File
@@ -104,13 +104,21 @@ VAR_OUTPUT
 END_VAR
 	
 VAR_INST
-	foundFiles			: TcDynCollections.FB_List;
+	foundFiles			: ARRAY[0..100] OF Tc2_System.T_MaxString;
 END_VAR
-]]></Declaration>
+
+VAR
+	index	: ZigaLibs_Core.T_ArrayIndexer;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Utilities.Directory.ListFiles(path, netId, foundFiles) THEN
+        <ST><![CDATA[IF Utilities.Directory.ListFiles(path := path, netId := netId, files := foundFiles) THEN
 	Exists := TRUE;
-	result := foundFiles.Contains(name);
+	FOR index := 0 TO 100 BY 1 DO
+		IF foundFiles[index] = name THEN
+			result := TRUE;
+			RETURN;
+		END_IF
+	END_FOR
 END_IF]]></ST>
       </Implementation>
     </Method>

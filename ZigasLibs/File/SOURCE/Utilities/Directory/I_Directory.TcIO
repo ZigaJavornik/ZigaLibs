@@ -16,7 +16,7 @@ END_VAR
 VAR_OUTPUT
 	error			: BOOL;
 	errorInfo		: ZigaLibs_Core.ST_AdsError;	
-	deletedFiles	: ARRAY[0..20] OF Tc2_System.T_MaxString;	// A list of deleted items, as T_MaxString (file names).
+	deletedFiles	: ARRAY[0..100] OF Tc2_System.T_MaxString;	// A list of deleted items, as T_MaxString (file names).
 END_VAR
 
 ]]></Declaration>
@@ -43,7 +43,10 @@ METHOD ListAll : BOOL
 VAR_INPUT
 	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
 	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
-	items	: TcDynCollections.I_List;	// Collection of found files in the provided location. Items are of type Tc2_Utilities.ST_FindFileEntry!
+END_VAR
+
+VAR_IN_OUT
+	items	: ARRAY[*] OF Tc2_Utilities.ST_FindFileEntry;	// Collection of found files in the provided location	
 END_VAR
 
 VAR_OUTPUT
@@ -58,7 +61,10 @@ METHOD ListFiles : BOOL
 VAR_INPUT
 	path	: Tc2_System.T_MaxString;	// Path to the directory that will be searched.
 	netId	: Tc2_System.T_AmsNetID;	// NetId where to search.
-	files	: TcDynCollections.I_List;	// Collection of found files in the provided location. Items are of type T_MaxString!
+END_VAR
+
+VAR_IN_OUT
+	files	: ARRAY[*] OF Tc2_System.T_MaxString;	// Collection of found files in the provided location.
 END_VAR
 
 VAR_OUTPUT
