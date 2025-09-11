@@ -76,9 +76,7 @@ CASE _state OF
 		
 		_logEntriesMaxIndex := THIS^.GetLogEntriesArrayMaxIndex();
 		// Remove the last entry, which was removed.
-		FOR _logEntryIndex := 0 TO _logEntriesMaxIndex - 1 BY 1 DO
-			_logEntries[_logEntryIndex] := _logEntries[_logEntryIndex + 1];
-		END_FOR
+		ZigaLibs_Core.ArrayHelper.ShiftDown(arr := _logEntries, _logEntries[0]);
 		
 		_state := E_LoggerState.CLOSE_FILE;
 		
