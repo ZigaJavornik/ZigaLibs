@@ -16,7 +16,7 @@
     <LibraryReferences>{b4e87170-0c7a-4df3-9dc5-e3afe647b07b}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Logging</Title>
-    <ProjectVersion>0.0.3.2</ProjectVersion>
+    <ProjectVersion>0.0.4.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Logging</DefaultNamespace>
     <Placeholder>ZigaLibs.Logging</Placeholder>
     <Author>Žiga Javornik</Author>
@@ -155,15 +155,6 @@
       <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, 1.3.1 (www.tcunit.org)</DefaultResolution>
-      <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
-    </PlaceholderReference>
-    <PlaceholderReference Include="TwinCat Dynamic Collections">
-      <DefaultResolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</DefaultResolution>
-      <Namespace>TcDynCollections</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
@@ -201,10 +192,10 @@
       <Resolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Core, 0.0.3.3 (Ziga)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.File">
-      <Resolution>ZigaLibs.File, 0.1.1.0 (Ziga Javornik)</Resolution>
+      <Resolution>ZigaLibs.File, 0.2.0.0 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

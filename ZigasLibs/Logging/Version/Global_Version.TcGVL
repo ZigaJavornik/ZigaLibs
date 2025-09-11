@@ -7,7 +7,7 @@
 // This function has been automatically generated from the project information.
 VAR_GLOBAL CONSTANT
 	{attribute 'const_non_replaced'}
-	stLibVersion_ZigaLibs_Logging : ST_LibVersion := (iMajor := 0, iMinor := 0, iBuild := 3, iRevision := 2, nFlags := 0, sVersion := '0.0.3.2');
+	stLibVersion_ZigaLibs_Logging : ST_LibVersion := (iMajor := 0, iMinor := 0, iBuild := 4, iRevision := 0, nFlags := 0, sVersion := '0.0.4.0');
 END_VAR
 ]]></Declaration>
   </GVL>

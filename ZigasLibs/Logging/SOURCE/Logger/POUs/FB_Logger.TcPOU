@@ -4,15 +4,15 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Logger EXTENDS FB_ErrorSource IMPLEMENTS I_Logger, I_LoggerConfig
 VAR
 	_fileHandler				: ZigaLibs_File.FB_FileHandler;
-	_logEntries					: TcDynCollections.FB_Deque;
+	_logEntries					: ARRAY[0..100] OF Tc2_System.T_MaxString;
 	_lastLogEntry				: Tc2_System.T_MaxString;
-	_dequeueStatus				: TcDynCollections.T_Error;
+	_logEntryIndex				: ZigaLibs_Core.T_ArrayIndexer;
 	_state						: E_LoggerState;
 	_localSystemTimeProvider	: ZigaLibs_Core.FB_LocalSystemTimeProvider;
 	_localSystemTimeString		: Tc2_System.T_MaxString;
 	_stringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	_dateForLogName				: STRING;
-
+	_logEntriesMaxIndex			: ZigaLibs_Core.T_ArrayIndexer;
 	_currentFileName			: Tc2_System.T_MaxString;
 	_varInfo					: ZigaLibs_Core.T_VarInfo;
 END_VAR
@@ -23,20 +23,12 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[_localSystemTimeProvider();
 _localSystemTimeString := GetLocalSystemTimeAsString();
-_dequeueStatus := _logEntries._Error_Status;
-THIS^.DeleteLogsMonitoring();
 
 
 CASE _state OF 
 	E_LoggerState.IDLE:
-		IF _logEntries._Count <> 0 THEN
-			
-			_logEntries.Back(_lastLogEntry);
-			// Error when looking up the deque of log entries...
-			IF NOT THIS^.ValidateDequeue_IfFailedGoToErrorState() THEN
-				RETURN;
-			END_IF
-			
+		IF _logEntries[0] <> '' THEN
+			_lastLogEntry := _logEntries[0];
 			IF AddTimestampIfValidAndNewLine(_lastLogEntry) THEN
 				_state := E_LoggerState.PREPARE_LOG;
 			END_IF		
@@ -82,11 +74,11 @@ CASE _state OF
 			RETURN;
 		END_IF
 		
+		_logEntriesMaxIndex := THIS^.GetLogEntriesArrayMaxIndex();
 		// Remove the last entry, which was removed.
-		_logEntries.Dequeue_At_Back();
-		IF NOT THIS^.ValidateDequeue_IfFailedGoToErrorState() THEN
-			RETURN;
-		END_IF
+		FOR _logEntryIndex := 0 TO _logEntriesMaxIndex - 1 BY 1 DO
+			_logEntries[_logEntryIndex] := _logEntries[_logEntryIndex + 1];
+		END_FOR
 		
 		_state := E_LoggerState.CLOSE_FILE;
 		
@@ -152,91 +144,24 @@ END_VAR
 _configBuilder.Start();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="DeleteLogsMonitoring" Id="{df88bea8-83d1-0814-3cc7-90cf29c36696}">
-      <Declaration><![CDATA[METHOD PRIVATE DeleteLogsMonitoring
-VAR_INST
-	TonDeleteLogsTimer						: Tc2_Standard.TON;
-	RtrigDelete								: Tc2_Standard.R_TRIG;
-	bErrorDeletingFiles						: BOOL;
-	stErrorDeletingFilesAdsError			: ZigaLibs_Core.ST_AdsError;
-	dateForDeletion							: DT;
-	currentTime								: Tc2_Utilities.TIMESTRUCT;
-	RtrigConfigurationValid					: Tc2_Standard.R_TRIG;
-	bCleanupDirectoryOnConfigurationApplied	: BOOL;
-END_VAR
-VAR
-	sb 					: ZigaLibs_Core.FB_StringBuilder;
-	deletedFiles		: ARRAY[0..20] of Tc2_System.T_MaxString;
-	deletedFileIndex	: DINT;
-	deletedFileName		: Tc2_System.T_MaxString;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TonDeleteLogsTimer(IN := Configuration.DeleteAfterDays <> 0, PT := Configuration.DeleteCheckInterval);
-
-RtrigConfigurationValid(CLK := Configuration.IsValid AND _localSystemTimeProvider.CurrentTime.IsValid);
-IF RtrigConfigurationValid.Q THEN
-	bCleanupDirectoryOnConfigurationApplied := TRUE;
-END_IF
-
-// Only delete if days is not 0
-RtrigDelete(
-	CLK := TonDeleteLogsTimer.Q OR 
-		(bCleanupDirectoryOnConfigurationApplied AND Configuration.DeleteAfterDays <> 0));
-
-IF _localSystemTimeProvider.CurrentTime.IsValid AND_THEN (TonDeleteLogsTimer.Q OR bCleanupDirectoryOnConfigurationApplied) THEN
-	
-	IF RtrigDelete.Q THEN
-		dateForDeletion := Tc2_Utilities.SYSTEMTIME_TO_DT(_localSystemTimeProvider.CurrentTime.Value);
-		dateForDeletion := dateForDeletion - (T#1D * Configuration.DeleteAfterDays);
-	END_IF
-
-	IF ZigaLibs_File.Utilities.Directory.DeleteFilesCreatedBefore(
-		path := Configuration.FilePath,
-		fileNameContains := Configuration.FileName,
-		netId := Configuration.NetId,
-		thresholdDate := dateForDeletion,
-		error => bErrorDeletingFiles,
-		errorInfo => stErrorDeletingFilesAdsError,
-		deletedFiles => deletedFiles) 
-	THEN
-		bCleanupDirectoryOnConfigurationApplied := FALSE;
-		TonDeleteLogsTimer(IN := FALSE);
-		IF bErrorDeletingFiles THEN
-			THIS^.LogError(sb.AddString(THIS^.InstancePath)
-				.AddString('An error occurred while attempting to delete files!')
-				.AddString(' Error info:').AddString(stErrorDeletingFilesAdsError.Message)
-				.AddString('Source: ').AddString(stErrorDeletingFilesAdsError.Source)
-				.Create());
-			RETURN;
-		END_IF
-		
-		sb.Reset().AddString('Cyclic files deletion finished. Deleted files created before ')
-			.AddAny(dateForDeletion)
-			.AddString('. Deleted files: ');
-			
-		FOR deletedFileIndex := 0 TO ZigaLibs_Core.ArrayHelper.GetMaxIndex(deletedFiles, deletedFiles[0], 0) BY 1 DO
-			IF deletedFileName = '' THEN
-				sb.AddString('No files were deleted.');
-				EXIT;
-			END_IF
-			deletedFileName := deletedFiles[deletedFileIndex];
-			sb.AddString(deletedFileName).AddString(', ');
-		END_FOR
-		
-		THIS^.LogInfo(sb.Create());
-	END_IF
-END_IF]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="EnqueueLogEntry" Id="{fc10775a-92bd-02ee-3fe5-4ec81d8f63a9}">
       <Declaration><![CDATA[METHOD PROTECTED EnqueueLogEntry
 VAR_INPUT
 	entry	: Tc2_System.T_MaxString;
 END_VAR
-]]></Declaration>
+
+VAR
+	index	: ZigaLibs_Core.T_ArrayIndexer;
+	maxIndex	: ZigaLibs_Core.T_ArrayIndexer;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_logEntries.Enqueue_At_Front(entry);
-THIS^.ValidateDequeue_IfFailedGoToErrorState();]]></ST>
+        <ST><![CDATA[maxIndex := THIS^.GetLogEntriesArrayMaxIndex();
+FOR index := 0 TO maxIndex BY 1 DO
+	IF _logEntries[index] = '' THEN
+		_logEntries[index] := entry;
+		EXIT;
+	END_IF
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetLocalSystemTimeAsString" Id="{aa732986-4455-041b-3382-1693460889a6}">
@@ -253,6 +178,15 @@ END_VAR
 		IncludeMilliseconds := FALSE,
 		timeFormat := ZigaLibs_Core.E_TimeFormat.YYMMDD_HHMMSS,
 		timeOfDaySeperator := ':');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetLogEntriesArrayMaxIndex" Id="{39edb99c-f29d-0a64-28dd-edd4270d4d72}">
+      <Declaration><![CDATA[METHOD PRIVATE GetLogEntriesArrayMaxIndex : ZigaLibs_Core.T_ArrayIndexer
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLogEntriesArrayMaxIndex := ZigaLibs_Core.ArrayHelper.GetMaxIndex(_logEntries, _logEntries[0], 0);]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetLogName" Id="{4ed4b280-ac59-0165-191f-c1ee2a65a930}">
@@ -372,42 +306,6 @@ END_VAR
 	THIS^.ResetError();
 	_state := E_LoggerState.IDLE;
 END_IF]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ValidateDequeue_IfFailedGoToErrorState" Id="{cfd71935-cdd3-01a8-1c03-798665fa6211}">
-      <Declaration><![CDATA[// Looks at the dequeue status and sets the state to error, if osmething went wrong.
-// Sets all the error information.
-// If method returns FALSE, you should return from the current method step, upon next call the _state will be E_LoggerState.ERROR
-METHOD PROTECTED ValidateDequeue_IfFailedGoToErrorState : BOOL
-VAR
-	sb	: ZigaLibs_Core.FB_StringBuilder;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[// Error when doing dequeuing...
-IF NOT _dequeueStatus.bSTATUS THEN
-	ValidateDequeue_IfFailedGoToErrorState := TRUE;
-	RETURN;
-END_IF
-
-THIS^.Error := TRUE;
-_varInfo := __VARINFO(_logEntries);
-
-THIS^.GenericError.Message := sb.Reset()
-	.AddString('Error when working with dynamic object: ')
-	.AddString(_varInfo.TypeName)
-	.Addstring('. Error: ')
-	.AddString(_dequeueStatus.sSOURCE)
-	.Create();
-
-THIS^.GenericError.Code := _dequeueStatus.nCODE;
-THIS^.GenericError.Source := sb.Reset()
-	.AddString(THIS^.InstancePath)
-	.AddString('.')
-	.AddString(_varInfo.Symbol)
-	.Create();;
-	
-_state := E_LoggerState.ERROR;
-]]></ST>
       </Implementation>
     </Method>
   </POU>

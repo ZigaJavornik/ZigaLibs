@@ -10,8 +10,8 @@ VAR
 END_VAR
 
 VAR CONSTANT
-	FOLDER_PATH	: Tc2_System.T_MaxString := 'C:/';
-	NET_ID		: Tc2_System.T_AmsNetID := '192.168.56.1.1.1';
+	FOLDER_PATH	: Tc2_System.T_MaxString := 'C:\ZigaLibsTestsFolder\';
+	NET_ID		: Tc2_System.T_AmsNetID := '192.168.53.126.1.1';
 	LOG_NAME	: Tc2_System.T_MaxString := 'MyLog';
 END_VAR]]></Declaration>
     <Implementation>
@@ -47,7 +47,7 @@ VAR_INST
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
 	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: STRING(1000);
+	sReadContent				: Tc2_System.T_MaxString;
 	nLogErrorTestState			: UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
@@ -67,16 +67,17 @@ END_VAR]]></Declaration>
 			END_IF
 			
 			TonMaxDelayForFileToAppear(IN := TRUE);
-			IF TonMaxDelayForFileToAppear.Q AND_THEN 
-				ZigaLibs_File.Utilities.File.Exists(
-					name := _logger._fileHandler.File.Name,
-					path := _logger._fileHandler.File.Path,
-					NetId := _logger._fileHandler.File.NetId,
-					Exists => bExists) 
-			THEN
-				AssertTrue(Condition := bExists,
-					Message := 'Log file was not created!');
-				nLogErrorTestState := nLogErrorTestState + 1;
+			IF TonMaxDelayForFileToAppear.Q THEN
+				IF ZigaLibs_File.Utilities.File.Exists(
+						name := _logger._fileHandler.File.Name,
+						path := _logger._fileHandler.File.Path,
+						NetId := _logger._fileHandler.File.NetId,
+						Exists => bExists) 
+				THEN
+					AssertTrue(Condition := bExists,
+						Message := 'Log file was not created!');
+					nLogErrorTestState := nLogErrorTestState + 1;
+				END_IF
 			END_IF
 				
 		2:
@@ -91,12 +92,11 @@ END_VAR]]></Declaration>
 			
 			IF _fileHandler.Read(sReadContent) THEN
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(
-						sReadContent,_logger.Configuration.LogLevelHeaders.Error),
+					Condition := Tc2_Standard.FIND(sReadContent,_logger.Configuration.LogLevelHeaders.Error) <> 0,
 					Message := 'Error header not found in the read content of the log file!');
-	
+				
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Error text....'),
+					Condition := Tc2_Standard.FIND(sReadContent, 'Error text....') <> 0,
 					Message := 'Message provided to the log method was not found in the contents of the file!');
 					
 				nLogErrorTestState := nLogErrorTestState + 1;
@@ -129,7 +129,7 @@ VAR_INST
 	TonMaxDelayForFileToAppear	: TON := (PT :=T#2S);
 	fbStringBuilder				: ZigaLibs_Core.FB_StringBuilder;
 	sDateForLogName 			: Tc2_System.T_MaxString;
-	sReadContent				: STRING(1000);
+	sReadContent				: Tc2_System.T_MaxString;
 	nLogWarningTestState		: UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
@@ -173,11 +173,11 @@ END_VAR]]></Declaration>
 			
 			IF _fileHandler.Read(sReadContent) THEN
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Warning),
+					Condition := Tc2_Standard.FIND(sReadContent, _logger.Configuration.LogLevelHeaders.Warning) <> 0,
 					Message := 'Warning header not found in the read content of the log file!');
 	
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Warning text....'),
+					Condition := Tc2_Standard.FIND(sReadContent, 'Warning text....') <> 0,
 					Message := 'Message provided to the log method was not found in the contents of the file!');
 					
 				nLogWarningTestState := nLogWarningTestState + 1;
@@ -255,11 +255,11 @@ END_VAR
 			
 			IF _fileHandler.Read(sReadContent) THEN
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Info),
+					Condition := Tc2_Standard.FIND(sReadContent, _logger.Configuration.LogLevelHeaders.Info) <> 0,
 					Message := 'Info header not found in the read content of the log file!');
 	
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Info text....'),
+					Condition := Tc2_Standard.FIND(sReadContent, 'Info text....') <> 0,
 					Message := 'Message provided to the log method was not found in the contents of the file!');
 					
 				nLogInfoState := nLogInfoState + 1;
@@ -335,19 +335,19 @@ END_VAR
 			
 			IF _fileHandler.Read(sReadContent) THEN
 				AssertFalse(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Info),
+					Condition := Tc2_Standard.FIND(sReadContent, _logger.Configuration.LogLevelHeaders.Info) <> 0,
 					Message := 'Info header was found in the read content of the log file!');
 					
 				AssertFalse(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Warning),
+					Condition := Tc2_Standard.FIND(sReadContent, _logger.Configuration.LogLevelHeaders.Warning) <> 0,
 					Message := 'Warning header was found in the read content of the log file!');
 				
 				AssertFalse(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, _logger.Configuration.LogLevelHeaders.Error),
+					Condition := Tc2_Standard.FIND(sReadContent, _logger.Configuration.LogLevelHeaders.Error) <> 0,
 					Message := 'Error header was found in the read content of the log file!');
 					
 				AssertTrue(
-					Condition := ZigaLibs_Core.StringHelper.FindStringWithin(sReadContent, 'Default text....'),
+					Condition := Tc2_Standard.FIND(sReadContent, 'Default text....') <> 0,
 					Message := 'Default log message not found.');
 					
 				nLogGenericState := nLogGenericState + 1;
