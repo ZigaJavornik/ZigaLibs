@@ -18,7 +18,7 @@
     </CompilerDefines>
     <Company>Ziga</Company>
     <Title>Bronkhorst</Title>
-    <ProjectVersion>0.0.1.1</ProjectVersion>
+    <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -162,6 +162,9 @@
   <ItemGroup>
     <PlaceholderResolution Include="ZigaLibs.Core">
       <Resolution>ZigaLibs.Core, 0.0.3.3 (Ziga)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.Logging">
+      <Resolution>ZigaLibs.Logging, 0.0.4.0 (Ziga)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

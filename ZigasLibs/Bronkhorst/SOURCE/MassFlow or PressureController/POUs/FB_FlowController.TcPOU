@@ -35,7 +35,7 @@ VAR
 	bFirstExecution			: BOOL := TRUE;
 	_stringBuilder			: ZigaLibs_Core.FB_StringBuilder;
 	_CoeList				: ST_ControllerCoeList;
-	_logPrefix				: STRING := CONCAT(STR1 := InstanceName, STR2 := ': ');
+	_logPrefix				: STRING := Tc2_Standard.CONCAT(STR1 := _instancePath, STR2 := ': ');
 	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	_writeLogs				: BOOL;
 	_ethercatBoxName		: Tc2_System.T_MaxString;
@@ -253,11 +253,17 @@ END_VAR
 VAR CONSTANT
 	MAX_REAL_VALUE_DEVIATION : REAL := 0.1;
 END_VAR
+
+VAR_INST
+	message	: Tc2_System.T_MaxString;
+	mfcName	: Tc2_System.T_MaxString;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReadCoeStep OF
 	E_ParameterReadingStep.IDLE:
 		ReadCoE := FALSE;
+		message := '';
 		IF _ethercatBoxName = '' THEN
 			_readBoxName(
 				AmsNetId := Inputs.AmsAddr,
@@ -268,12 +274,12 @@ END_VAR
 			eReadCoeStep := E_ParameterReadingStep.GAS_TYPE;
 			IF _writeLogs THEN
 				IF NOT bError THEN
-					_logger.LogInfo(message := _stringBuilder.Reset()	
+					message := _stringBuilder.Reset()	
 						.AddString(str := _logPrefix)
-						.AddString(str := 'Reading CoE parameters for Bronkhorst device ')
+						.AddString(str := 'MFC parameters ')
 						.AddWithDblQuotationMarks(str := _ethercatBoxName)
-						.AddString(str := '...')
-						.Create());
+						.AddString(str := ':')
+						.Create();
 				ELSE
 					_logger.LogInfo(message := _stringBuilder.Reset()	
 						.AddString(str := _logPrefix)
@@ -303,11 +309,13 @@ END_VAR
 						.AddWithDblQuotationMarks(_coeList.FluidName.Value)
 						.Create());
 				ELSE
-					_logger.LogInfo(_stringBuilder.Reset()
-						.AddString(_logPrefix)
+					message :=_stringBuilder.Reset()
+						.AddString(message)
+						.AddString('[')
 						.AddString('Gas type: ')
 						.AddWithDblQuotationMarks(_coeList.FluidName.Value)
-						.Create());
+						.AddString(']')
+						.Create();
 				END_IF
 			END_IF
 			eReadCoeStep := E_ParameterReadingStep.FLOW_UNIT;
@@ -330,11 +338,13 @@ END_VAR
 						.AddWithDblQuotationMarks(_coeList.CapacityUnit.Value)
 						.Create());				
 				ELSE
-					_logger.LogInfo(_stringBuilder.Reset()
-						.AddString(_logPrefix)
+					message :=_stringBuilder.Reset()
+						.AddString(message)
+						.AddString('[')
 						.AddString('Flow unit: ')
 						.AddWithDblQuotationMarks(_coeList.CapacityUnit.Value)
-						.Create());
+						.AddString(']')
+						.Create();
 				END_IF
 			END_IF
 			eReadCoeStep := E_ParameterReadingStep.DECIMAL_DIGITS;
@@ -370,13 +380,18 @@ END_VAR
 						.AddString('!')
 						.Create());
 					ELSE
-						_logger.LogInfo(_stringBuilder.Reset()
-							.AddString(_logPrefix)
-							.AddString('Flow capacity: ')
-							.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
-							.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
-							.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
-							.Create());
+							
+					message :=_stringBuilder.Reset()
+						.AddString(message)
+						.AddString('[')
+						.AddString('Flow capacity: ')
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
+						.AddAnyReal(_CoeList.Capacity.Value, 3, TRUE).AddString(' ').AddString(_coeList.CapacityUnit.Value)
+						.AddString(ZigaLibs_Core.StringConstants.DoubleQuotationMark)
+						.AddString(']')
+						.Create();
+						
+					_logger.LogInfo(message);
 					END_IF
 				END_IF
 			eReadCoeStep := E_ParameterReadingStep.IDLE;
