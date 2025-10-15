@@ -14,8 +14,8 @@
     <Implicit_KindOfTask>{852f68de-2414-4e5f-84f7-4095d25d228b}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{74383b45-060a-462b-b2ef-532a2fb8e2d1}</Implicit_Jitter_Distribution>
     <LibraryReferences>{e027f640-2090-40c7-977b-e2dc88118b84}</LibraryReferences>
-    <Company>ZigaLibs.Alarming</Company>
-    <Title>Alarming</Title>
+    <Company>Ziga Javornik</Company>
+    <Title>ZigaLibs.Alarming</Title>
     <ProjectVersion>0.0.3.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
@@ -166,12 +166,6 @@
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderResolution Include="SysDir">
-      <Resolution>SysDir, 3.5.12.0 (System)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="SysFile">
-      <Resolution>SysFile, 3.5.9.0 (System)</Resolution>
-    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_ControllerToolbox">
       <Resolution>Tc2_ControllerToolbox, 3.6.1.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
@@ -203,7 +197,7 @@
       <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Logging">
-      <Resolution>ZigaLibs.Logging, 0.0.3.1 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Logging, 0.0.4.0 (Ziga)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ItemGroup>

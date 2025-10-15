@@ -8,7 +8,8 @@ VAR_OUTPUT
 END_VAR
 VAR
 	State	 AT%I*	: USINT;
-	_channelState : ST_IoLink_ChannelState;
+	_channelState 	: ST_IoLink_ChannelState;
+	_logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -26,6 +27,18 @@ ChannelState REF= _channelState;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FB_init" Id="{bccc318e-de0c-09d6-0816-c002f8c16391}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger REF= logger;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetChannelState" Id="{97f35f56-ce7e-08d9-119d-140fdebcaf7d}">
       <Declaration><![CDATA[// Gets the channel state based on the State value transfered from the hardware device
 METHOD PUBLIC GetChannelState : ST_IoLink_ChannelState

@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="Utilities" Id="{6ee3af3c-bb5a-0bbf-0e0a-dc339ace1c34}" SpecialFunc="None">
     <Declaration><![CDATA[// A class with helper methods when working with files.
-{attribute 'hide_all_locals'}
 {attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
 PROGRAM Utilities
 

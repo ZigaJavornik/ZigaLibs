@@ -19,8 +19,7 @@ END_VAR
 //TcUnit.RUN();
 
 // Run tests in sequence, one after the other.
-TcUnit.RUN_IN_SEQUENCE();
-]]></ST>
+TcUnit.RUN_IN_SEQUENCE();]]></ST>
     </Implementation>
     <ObjectProperties>
       <XmlArchive>

@@ -13,7 +13,8 @@ VAR CONSTANT
 	FILE_PATH	: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod();]]></ST>
+      <ST><![CDATA[Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod();
+Test02_TryDeletingButNoFilesMatchCriteria_ExpectNoErrors();]]></ST>
     </Implementation>
     <Method Name="Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod" Id="{52a00fe1-3600-0e91-2c94-bc06e7c79de6}">
       <Declaration><![CDATA[METHOD Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod
@@ -52,6 +53,31 @@ END_VAR]]></Declaration>
 				TcUnit.TEST_FINISHED();
 			END_IF
 		END_IF
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_TryDeletingButNoFilesMatchCriteria_ExpectNoErrors" Id="{a96f2f3c-9905-0d39-3a55-66f90cf0cc77}">
+      <Declaration><![CDATA[METHOD Test02_TryDeletingButNoFilesMatchCriteria_ExpectNoErrors
+VAR_INPUT
+END_VAR
+VAR_INST
+	fileTime			: Tc2_Utilities.T_FILETIME;
+	dateTime			: DT;
+	dtUpperLimit  		: DT  := DATE_AND_TIME#2106-02-07-06:28:15;
+	error				: BOOL;
+	errorInfo			: ZigaLibs_Core.ST_AdsError;
+	deletedFiles		: ARRAY[0..100] OF Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_TryDeletingButNoFilesMatchCriteria_ExpectNoErrors') THEN
+	IF Utilities.Directory.DeleteFilesCreatedBefore('C:\ZigaLibsTestsFolder\', 'MyLog', '192.168.53.126.1.1', dtUpperLimit, 
+				error=> error, errorInfo => errorInfo, deletedFiles => deletedFiles) THEN
+	AssertFalse(
+		error, 
+		'An error has happened attempting to call the DeleteFilesCreatedBefore with no matching content provided.');		
+		
+	TcUnit.TEST_FINISHED();
 	END_IF
 END_IF]]></ST>
       </Implementation>

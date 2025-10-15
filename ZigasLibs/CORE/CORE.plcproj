@@ -429,7 +429,6 @@
     <PlaceholderReference Include="TcError">
       <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
       <Condition>
       </Condition>
       <Optional>true</Optional>
@@ -437,30 +436,8 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>200</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>50</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>200</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITBUFFERSIZE</Key>
-          <Value>1</Value>
-        </Parameter>
-      </Parameters>
       <Optional>true</Optional>
       <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
-    </PlaceholderReference>
-    <PlaceholderReference Include="TwinCat Dynamic Collections">
-      <DefaultResolution>TwinCat Dynamic Collections, * (FisoThemes)</DefaultResolution>
-      <Namespace>TcDynCollections</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -484,10 +461,7 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="TwinCat Dynamic Collections">
-      <Resolution>TwinCat Dynamic Collections, 1.0.7 (FisoThemes)</Resolution>
+      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
