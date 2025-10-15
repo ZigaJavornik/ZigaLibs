@@ -152,38 +152,6 @@
           <Key>XUNITFILEPATH</Key>
           <Value>'C:\tcunit_xunit_testresults.xml'</Value>
         </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>100</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITBUFFERSIZE</Key>
-          <Value>65535</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>2000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
-          <Value>TIME#0ms</Value>
-        </Parameter>
       </Parameters>
       <Optional>true</Optional>
     </PlaceholderReference>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_EnduranceInfraredPyrometerCommParameters" Id="{f1c50d1f-9945-07ab-3d19-564501e83b12}">
+    <Declaration><![CDATA[TYPE ST_EnduranceInfraredPyrometerCommParameters :
+STRUCT
+	ReadCycle		: TIME := T#500MS;	// Cyclic reading of certain values is executed within the interval defined by this parameter.
+	ReconnectPeriod	: TIME := T#45S;	// Reconnect period for TCP/IP. Don't set too low (30s should be the lowest)
+	Ipv4Address		: Tc2_System.T_IPv4Addr;	// IPV4 address of the device.
+	Port			: ZigaLibs_TcpIp.T_Port;	// Port of the device.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

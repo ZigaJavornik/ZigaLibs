@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_EnduranceInfraredPyrometer" Id="{6a4433dd-bb61-0fcc-078b-e154b0f6633d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EnduranceInfraredPyrometer
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_tcpIp	: ZigaLibs_TcpIp.FB_TcpIpCommControl;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

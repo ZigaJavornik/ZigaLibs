@@ -2,79 +2,29 @@
   <PropertyGroup>
     <FileVersion>1.0.0.0</FileVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{af58e887-5514-4cde-89b6-ca58f29477ce}</ProjectGuid>
+    <ProjectGuid>{c4f58ab4-0346-4e5a-88e0-c50206faaba0}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <Released>false</Released>
     <CombineIds>true</CombineIds>
-    <Name>TcpIp</Name>
+    <Name>Fluke</Name>
     <ProgramVersion>3.1.4024.0</ProgramVersion>
-    <Application>{aa0bc09d-bed0-4370-bfa9-19022431929d}</Application>
-    <TypeSystem>{7a770813-4cfd-4087-b1c9-27b9bb232ca4}</TypeSystem>
-    <Implicit_Task_Info>{cbba6d57-8eb6-4a3a-8db0-0c7c4e87bbda}</Implicit_Task_Info>
-    <Implicit_KindOfTask>{9e6222ee-c4c9-4a32-b197-5c9668d32f2d}</Implicit_KindOfTask>
-    <Implicit_Jitter_Distribution>{9b6c4fe7-d2be-4585-a684-d4f214dfce80}</Implicit_Jitter_Distribution>
-    <LibraryReferences>{c491a77c-4145-4306-8ed1-01557af11e68}</LibraryReferences>
-    <Company>Ziga</Company>
-    <Title>TcpIp</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
-    <LibraryCategories>
-      <LibraryCategory xmlns="">
-        <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
-        <Version>1.0.0.0</Version>
-        <DefaultName>ZigasLibs</DefaultName>
-      </LibraryCategory>
-      <LibraryCategory xmlns="">
-        <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
-        </ParentCategory>
-        <DefaultName>Core</DefaultName>
-      </LibraryCategory>
-      <LibraryCategory xmlns="">
-        <Id>{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
-        </ParentCategory>
-        <DefaultName>Comm</DefaultName>
-      </LibraryCategory>
-      <LibraryCategory xmlns="">
-        <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
-        <Version>1.0.0.0</Version>
-        <ParentCategory>
-          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
-        </ParentCategory>
-        <DefaultName>Vendors</DefaultName>
-      </LibraryCategory>
-    </LibraryCategories>
-    <SelectedLibraryCategories>
-      <Id xmlns="">{bab8a241-bfca-420b-abc5-b258010a6ba2}</Id>
-    </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_TcpIp</DefaultNamespace>
-    <Author>Žiga Javornik</Author>
-    <Placeholder>ZigaLibs_TcpIp</Placeholder>
-    <Description>TcpIp communication protocol implementation and various encapsulations of already existing system functions.</Description>
-    <DocFormat>
-    </DocFormat>
-    <CompilerDefines>
-    </CompilerDefines>
+    <Application>{47e545d8-ffd7-45ba-96e3-012b89c35d47}</Application>
+    <TypeSystem>{8541d724-966f-40b3-9613-3e445a6fcb8f}</TypeSystem>
+    <Implicit_Task_Info>{671c4b37-a3b5-4285-8074-5d9054c0b57c}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{6dce13d1-08d3-450e-a3d4-f1d1ee3161f0}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{f0180c36-e692-47ef-bc81-195de5fc510d}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{11674783-520b-4505-811c-beeb06193fb5}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SOURCE\TcpIp\DUTs\E_SocketReceiveState.TcDUT">
+    <Compile Include="SOURCE\Endurance IR Pyrometers\DUTs\ST_EnduranceInfraredPyrometerCommParameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\TcpIp\DUTs\E_SocketSendState.TcDUT">
+    <Compile Include="SOURCE\Endurance IR Pyrometers\FB_EnduranceInfraredPyrometer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\TcpIp\DUTs\T_Port.TcDUT">
+    <Compile Include="SOURCE\Endurance IR Pyrometers\GVL_EnduranceInfraredPyrometer.TcGVL">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestsTask.TcTTO">
-      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
@@ -86,9 +36,8 @@
   <ItemGroup>
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
-    <Folder Include="SOURCE\TcpIp" />
-    <Folder Include="SOURCE\TcpIp\DUTs" />
-    <Folder Include="SOURCE\TcpIp\POUs" />
+    <Folder Include="SOURCE\Endurance IR Pyrometers" />
+    <Folder Include="SOURCE\Endurance IR Pyrometers\DUTs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
@@ -101,30 +50,21 @@
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="Tc2_TcpIp">
-      <DefaultResolution>Tc2_TcpIp, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_TcpIp</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-      </Parameters>
       <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
     </PlaceholderReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TcpIp.tmc">
-      <SubType>Content</SubType>
-    </None>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs_TcpIp">
+      <DefaultResolution>TcpIp, * (Ziga)</DefaultResolution>
+    </PlaceholderReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
