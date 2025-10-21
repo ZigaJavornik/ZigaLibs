@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_FlowUnits_Tests" Id="{b11eb69e-a31b-039b-05fc-0308d414074b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_FlowUnits_Tests EXTENDS TcUnit.FB_TestSuite
 VAR_INPUT
@@ -22,6 +22,7 @@ END_VAR
 
 AssertEquals_STRING('slm', FlowUnits.Slm, 'Returned property value is incorrect.');
 AssertEquals_STRING('sccm', FlowUnits.Sccm, 'Returned property value is incorrect.');
+AssertEquals_STRING('bar(g)', FlowUnits.Bar, 'Returned property value is incorrect.');
 
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>

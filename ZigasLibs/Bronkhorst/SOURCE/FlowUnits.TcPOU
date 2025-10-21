@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FlowUnits" Id="{e60bf494-1e97-08f8-3614-cad4ba620baa}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM FlowUnits
 VAR
@@ -8,6 +8,17 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Property Name="Bar" Id="{055a85b4-d70f-09b0-028a-77151b32974b}">
+      <Declaration><![CDATA[PROPERTY Bar : string]]></Declaration>
+      <Get Name="Get" Id="{4be92b17-c16c-061c-001e-2cf2baab53dd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Bar := 'bar(g)';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="Sccm" Id="{84400b5d-276f-0652-2fa2-da989247d2ba}">
       <Declaration><![CDATA[PROPERTY Sccm : STRING]]></Declaration>
       <Get Name="Get" Id="{7770c86f-d1e9-0036-3e37-ced778762d58}">
