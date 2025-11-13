@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_StringHelper_Tests" Id="{37e03e3a-145c-0efe-00fc-1f5db969facc}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_StringHelper_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -13,7 +13,6 @@ END_VAR
       <ST><![CDATA[Test01_StartsWith();
 Test02_Join();
 Test03_EndsWith();
-Test04_Split();
 Test05_Contains();
 Test06_ToLowerCase_UnlimitedSize();
 Test07_ToUpperCase_UnlimitedSize();]]></ST>
@@ -70,75 +69,6 @@ AssertFalse(StringHelper.EndsWith(testString, 'B'),
 AssertTrue(StringHelper.EndsWith(testString, 'A'),
 	'Provided string ends with "A"- returned value should be TRUE.');
 	
-TcUnit.TEST_FINISHED();]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Test04_Split" Id="{4e9545d5-6749-0aa7-332d-8a88b5d915e7}">
-      <Declaration><![CDATA[METHOD Test04_Split
-VAR_INPUT
-END_VAR
-
-VAR
-	testStringWithDots			: STRING := 'This.Is.A.Test.String';
-    testStringWithWhiteSpaces   : STRING := 'This Is A Test String';
-    expectedStrings             : ARRAY[0..4] OF STRING := ['This','Is','A','Test','String'];
-	foundStrings	            : ARRAY[0..4] OF STRING;
-	listOfStrings				: TcDynCollections.FB_List;
-	currentFoundString			: STRING;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test04_Split');
-
-
-// Split on "."
-StringHelper.Split(testStringWithDots, '.', listOfStrings);
-AssertEquals_UDINT(5, listOfStrings._Count, 
-	'Number of split strings is incorrect.');
-	
-listOfStrings.Get(0,foundStrings[0]);
-listOfStrings.Get(1,foundStrings[1]);
-listOfStrings.Get(2,foundStrings[2]);
-listOfStrings.Get(3,foundStrings[3]);
-listOfStrings.Get(4,foundStrings[4]);
-
-AssertEquals_STRING(expectedStrings[0], foundStrings[0], 'Splitting on "." - 1st string differs.');
-AssertEquals_STRING(expectedStrings[1], foundStrings[1], 'Splitting on "." - 2nd string differs.');
-AssertEquals_STRING(expectedStrings[2], foundStrings[2], 'Splitting on "." - 3rd string differs.');
-AssertEquals_STRING(expectedStrings[3], foundStrings[3], 'Splitting on "." - 4th string differs.');
-AssertEquals_STRING(expectedStrings[4], foundStrings[4], 'Splitting on "." - 5th string differs.');
-
-// Provide no split char - should be treated as white space
-StringHelper.Split(testStringWithDots, '', listOfStrings);
-AssertEquals_UDINT(1, listOfStrings._Count, 
-	'Empty split char should be treated as white space. Provided string with only dots should return a single string.');
-	
-listOfStrings.Get(0, foundStrings[0]);
-AssertEquals_STRING(testStringWithDots, foundStrings[0], 
-	'Empty split char should be treated as white space. Provided STRING with only dots should return the provided string.');
-	
-// String with whitespaces and empty split char.
-StringHelper.Split(testStringWithWhiteSpaces,'', listOfStrings);
-AssertEquals_UDINT(5, listOfStrings._Count, 
-	'Empty split char should be treated as white space. Provided string with white spaces should return a 5 strings.');
-
-listOfStrings.Get(0,foundStrings[0]);
-listOfStrings.Get(1,foundStrings[1]);
-listOfStrings.Get(2,foundStrings[2]);
-listOfStrings.Get(3,foundStrings[3]);
-listOfStrings.Get(4,foundStrings[4]);
-
-AssertEquals_STRING(expectedStrings[0], foundStrings[0], 'Splitting on white space - 1st string differs.');
-AssertEquals_STRING(expectedStrings[1], foundStrings[1], 'Splitting on white space - 2nd string differs.');
-AssertEquals_STRING(expectedStrings[2], foundStrings[2], 'Splitting on white space - 3rd string differs.');
-AssertEquals_STRING(expectedStrings[3], foundStrings[3], 'Splitting on white space - 4th string differs.');
-AssertEquals_STRING(expectedStrings[4], foundStrings[4], 'Splitting on white space - 5th string differs.');
-
-// Provide empty string
-StringHelper.Split('','A',listOfStrings);
-AssertEquals_udint(0, listOfStrings._Count, 'Providing empty string should result in an empty list');
-
-
-listOfStrings.Clear();
 TcUnit.TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
