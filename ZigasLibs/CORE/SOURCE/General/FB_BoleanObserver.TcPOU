@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_BoleanObserver" Id="{4a5f5543-5b41-0b22-0d31-8d573eef0324}" SpecialFunc="None">
+    <Declaration><![CDATA[// Boolean condition observer. Body requires calling every cycle in order to execute the triggers!
+// Checkes the "bCondition" and returns a 1 cycle pulse output on bRisingEdge when value changes form 0 to 1
+// Checkes the "bCondition" and returns a 1 cycle pulse output on bFallingEdge when value changes form 1 to 0
+
+FUNCTION_BLOCK FB_BooleanObserver
+VAR_INPUT
+	bCondition	: BOOL;
+END_VAR
+VAR_OUTPUT
+	bRisingEdge		: BOOL;
+	bFallingEdge	: BOOL;
+END_VAR
+VAR
+	_rtrig	: Tc2_Standard.R_TRIG;
+	_ftrig	: Tc2_Standard.F_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_rtrig(CLK := bCondition, Q => bRisingEdge);
+_ftrig(CLK := bCondition, Q => bFallingEdge);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

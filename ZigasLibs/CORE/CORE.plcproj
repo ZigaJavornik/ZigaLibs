@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Core</Title>
-    <ProjectVersion>0.0.3.3</ProjectVersion>
+    <ProjectVersion>0.0.3.4</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
     <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -221,6 +221,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\General\FB_BoleanObserver.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\FB_HasInstanceNameAndPath.TcPOU">
