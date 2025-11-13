@@ -223,7 +223,7 @@
     <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\FB_BoleanObserver.TcPOU">
+    <Compile Include="SOURCE\General\FB_BooleanObserver.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\General\FB_HasInstanceNameAndPath.TcPOU">
