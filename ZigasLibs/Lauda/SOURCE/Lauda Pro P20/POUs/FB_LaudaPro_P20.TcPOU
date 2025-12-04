@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_LaudaPro_P20" Id="{cecc2dfb-a781-4ff5-89b2-b84a5abfedf0}" SpecialFunc="None">
     <Declaration><![CDATA[(* LaudaPro P20 control via TCP/IP
 Includes constructor parameters:
@@ -74,7 +74,7 @@ fbTcpIpControl();
 
 IF bConnect THEN
 	// Connect/disconnect/error
-	IF fbTcpIpControl.Error AND NOT TonReconnectTimer.Q THEN
+	IF fbTcpIpControl.Error AND TonReconnectTimer.Q THEN
 		fbTcpIpControl.Disconnect();
 	ELSIF fbTcpIpControl.IsConnected = FALSE THEN
 		fbTcpIpControl.Connect(Ipv4Address := _commParameters.Ipv4Address, Port := _commParameters.Port);

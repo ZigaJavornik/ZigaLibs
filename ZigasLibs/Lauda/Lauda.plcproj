@@ -16,7 +16,7 @@
     <LibraryReferences>{0e7eab3b-a905-4040-8a55-2f7f853c1906}</LibraryReferences>
     <Company>Ziga</Company>
     <Title>ZigaLibs.Lauda</Title>
-    <ProjectVersion>0.0.2.0</ProjectVersion>
+    <ProjectVersion>0.0.2.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
