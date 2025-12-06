@@ -101,10 +101,14 @@ VAR_INST
 	eSocketReceiveState	: E_SocketReceiveState;
 	fbSocketReceive		: Tc2_TcpIp.FB_SocketReceive;
 	bReceiveError		: BOOL;
+END_VAR
+VAR_OUTPUT
+	receivedBytes	: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eSocketReceiveState OF
 	E_SocketReceiveState.READY:
+		receivedBytes := 0;
 		fbSocketReceive(bExecute := FALSE);
 		IF THIS^.IsConnected THEN
 			bReceiveError := FALSE;
@@ -126,6 +130,7 @@ END_VAR]]></Declaration>
 		END_IF
 	
 	E_SocketReceiveState.DONE:
+		receivedBytes := fbSocketReceive.nRecBytes;
 		Receive := TRUE;
 		eSocketReceiveState := E_SocketReceiveState.READY;
 	
