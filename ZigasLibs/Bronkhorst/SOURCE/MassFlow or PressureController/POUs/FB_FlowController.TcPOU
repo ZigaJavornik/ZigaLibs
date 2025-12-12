@@ -236,7 +236,11 @@ VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_mode := Mode;]]></ST>
+          <ST><![CDATA[IF _mode <> Mode THEN
+	_writeModeRequired := TRUE;
+END_IF
+
+_mode := Mode;]]></ST>
         </Implementation>
       </Set>
     </Property>
