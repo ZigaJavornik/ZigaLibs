@@ -19,6 +19,17 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Property Name="LsMin" Id="{950295d4-12c6-049e-3910-478a09487627}">
+      <Declaration><![CDATA[PROPERTY PUBLIC LsMin : STRING]]></Declaration>
+      <Get Name="Get" Id="{88032ad0-6141-0677-3988-0462e19c5af1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[LsMin := 'ls/min';]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="Sccm" Id="{84400b5d-276f-0652-2fa2-da989247d2ba}">
       <Declaration><![CDATA[PROPERTY Sccm : STRING]]></Declaration>
       <Get Name="Get" Id="{7770c86f-d1e9-0036-3e37-ced778762d58}">
