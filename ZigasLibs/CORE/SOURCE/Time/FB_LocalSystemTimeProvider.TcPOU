@@ -64,7 +64,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[setLocalTime.START := NOT setLocalTime.BUSY;
 setLocalTime(ERR => error);
-errorId := TcError.AdsErrorCodeDescription(TcError.ToAdsErrorCode(setLocalTime.ERRID));
+errorId := TcError.ToAdsErrorCode(TcError.ToAdsErrorCode(setLocalTime.ERRID));
 SetSystemTime := NOT setLocalTime.BUSY;
 
 ]]></ST>
