@@ -20,6 +20,7 @@ END_VAR
 
 VAR
 	fbTcpIpControl		: ZigaLibs_TcpIp.FB_TcpIpCommControl;
+	fbCloseAllTcpSocket	: Tc2_TcpIp.FB_SocketCloseAll;
 	TonReconnectTimer	: Tc2_Standard.TON;
 	bFirstExecution		: BOOL := TRUE;
 
@@ -73,15 +74,25 @@ fbTcpIpControl.ReconnectPeriod := _commParameters.ReconnectPeriod;
 fbTcpIpControl();
 
 IF bConnect THEN
-	// Connect/disconnect/error
+	// Connect/disconnect/error	
 	IF fbTcpIpControl.Error AND TonReconnectTimer.Q THEN
 		fbTcpIpControl.Disconnect();
+		fbCloseAllTcpSocket.bExecute := TRUE;
 	ELSIF fbTcpIpControl.IsConnected = FALSE THEN
+		fbCloseAllTcpSocket.bExecute := FALSE;
 		fbTcpIpControl.Connect(Ipv4Address := _commParameters.Ipv4Address, Port := _commParameters.Port);
 	END_IF
 ELSE
+	IF fbTcpIpControl.IsConnected THEN
+		fbCloseAllTcpSocket(bExecute := FALSE);
+		fbCloseAllTcpSocket(bExecute := TRUE);
+	END_IF
+	fbCloseAllTcpSocket.bExecute := FALSE;
 	fbTcpIpControl.Disconnect();
 END_IF
+
+
+fbCloseAllTcpSocket();
 
 IF fbTcpIpControl.Error THEN
 	_error := TRUE;
