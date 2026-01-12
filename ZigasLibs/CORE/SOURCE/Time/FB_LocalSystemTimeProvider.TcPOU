@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_LocalSystemTimeProvider" Id="{5429ddc3-78d0-058e-1e56-29d8805b55eb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LocalSystemTimeProvider IMPLEMENTS I_LocalSystemTimeProvider
 VAR
@@ -43,5 +43,32 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="SetSystemTime" Id="{2f058135-c7bf-0153-2332-c6df018c6368}">
+      <Declaration><![CDATA[// Sets the system time. Returns TRUE when done.
+METHOD SetSystemTime : BOOL
+VAR_INPUT
+	timeToSet	: Tc2_Utilities.TIMESTRUCT;
+END_VAR
+
+VAR_OUTPUT
+	error	: BOOL;	// Will be TRUE if an error occurs
+	errorId	: TcError.AdsErrorCodes;	// Error code is reported here
+END_VAR
+
+VAR_INST
+	setLocalTime	: Tc2_Utilities.NT_SetLocalTime :=(
+		NETID := '',
+		TMOUT := Tc2_System.DEFAULT_ADS_TIMEOUT);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[setLocalTime.START := NOT setLocalTime.BUSY;
+setLocalTime(ERR => error);
+errorId := TcError.AdsErrorCodeDescription(TcError.ToAdsErrorCode(setLocalTime.ERRID));
+SetSystemTime := NOT setLocalTime.BUSY;
+
+]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
