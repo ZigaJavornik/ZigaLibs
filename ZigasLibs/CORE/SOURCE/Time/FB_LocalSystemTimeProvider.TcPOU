@@ -59,13 +59,24 @@ VAR_INST
 	setLocalTime	: Tc2_Utilities.NT_SetLocalTime :=(
 		NETID := '',
 		TMOUT := Tc2_System.DEFAULT_ADS_TIMEOUT);
+	requestActive	: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[setLocalTime.START := NOT setLocalTime.BUSY;
-setLocalTime(ERR => error);
-errorId := TcError.AdsErrorCodeDescription(TcError.ToAdsErrorCode(setLocalTime.ERRID));
-SetSystemTime := NOT setLocalTime.BUSY;
+        <ST><![CDATA[IF NOT requestActive THEN
+	requestActive := TRUE;
+	setLocalTime(START := FALSE);
+ELSE
+	setLocalTime(START := TRUE, NETID := '', TIMESTR := timeToSet);
+	IF setLocalTime.BUSY = FALSE THEN
+		setLocalTime(START := FALSE);
+		requestActive := FALSE;
+		SetSystemTime := TRUE;
+	END_IF
+END_IF
+
+errorId := TcError.ToAdsErrorCode(TcError.ToAdsErrorCode(setLocalTime.ERRID));
+error := setLocalTime.ERR;
 
 ]]></ST>
       </Implementation>

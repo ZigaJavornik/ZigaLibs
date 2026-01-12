@@ -31,7 +31,7 @@ END_VAR
 END_IF
 
 Free();
-_allocated := __NEW(BYTE, (elementSize * numberOfElements));
+_allocated := __NEW(BYTE, DINT_TO_UDINT((elementSize * numberOfElements)));
 
 _properties.BaseTypeSize := elementSize;
 _properties.NumberOfElements := numberOfElements;
@@ -71,7 +71,7 @@ END_IF
 
 // Copy current contents
 originalProperties := _properties;
-oldAllocatedMemory := __NEW(BYTE, _properties.Size);
+oldAllocatedMemory := __NEW(BYTE, (DINT_TO_UDINT(_properties.Size)));
 
 Tc2_System.MEMCPY(
 	srcAddr := _allocated, 
@@ -236,7 +236,7 @@ END_IF
 
 originalProperties := _properties;
 byteCountLowerPart := _properties.BaseTypeSize * index;
-lowerPart := __NEW(BYTE, byteCountLowerPart);
+lowerPart := __NEW(BYTE, DINT_TO_UDINT(byteCountLowerPart));
 Tc2_System.MEMCPY(
 	srcAddr := _allocated,
 	destAddr := lowerPart,
@@ -244,7 +244,7 @@ Tc2_System.MEMCPY(
 	
 byteCountUpperPart := _properties.BaseTypeSize * (_properties.NumberOfElements - 1 - index );
 IF byteCountUpperPart <> 0 THEN
-	upperPart := __NEW(BYTE, byteCountUpperPart);
+	upperPart := __NEW(BYTE, DINT_TO_UDINT(byteCountUpperPart));
 	Tc2_System.MEMCPY(
 		srcAddr := _allocated + DINT_TO_DWORD(_properties.Size) -  DINT_TO_DWORD(byteCountUpperPart),
 		destAddr := upperPart,
