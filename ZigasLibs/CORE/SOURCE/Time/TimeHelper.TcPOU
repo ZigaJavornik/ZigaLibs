@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="TimeHelper" Id="{2c3cbf53-1ca9-0cad-3537-8b6b96b10a6d}" SpecialFunc="None">
+    <Declaration><![CDATA[// A class containing helper methods with time
+PROGRAM TimeHelper
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="TimestructDayToString" Id="{ef9bf769-7a71-0b01-19d0-3d11b021f66b}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wDay to STRING.*)
+METHOD TimestructDayToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wDay);
+
+IF NOT fillWithZeros THEN
+	TimestructDayToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+TimestructDayToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructHourToString" Id="{f4b49b55-554d-0347-319d-8c92dc5effc0}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wHour to STRING.*)
+METHOD TimestructHourToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wHour);
+
+IF NOT fillWithZeros THEN
+	TimestructHourToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+TimestructHourToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructMillisecondToString" Id="{9e53ed01-a7b4-0c70-3f0d-c189651d2549}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMillisecond to STRING.*)
+METHOD TimestructMillisecondToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wMilliseconds);
+
+IF NOT fillWithZeros THEN
+	TimestructMillisecondToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 3 THEN
+	// _10 => 010
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+ELSIF Tc2_Standard.LEN(STR := result) < 2 THEN
+	// __5 => 005
+	result := Tc2_Standard.CONCAT(STR1 := '00', STR2 := result);
+END_IF
+
+TimestructMillisecondToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructMinuteToString" Id="{4457877d-4d77-05ae-0a78-0c3ec823054c}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMinute to STRING.*)
+METHOD TimestructMinuteToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wMinute);
+
+IF NOT fillWithZeros THEN
+	TimestructMinuteToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+TimestructMinuteToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructMonthToString" Id="{290ed698-9271-013d-0217-5945e1bcd17e}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wMonth to STRING.*)
+METHOD TimestructMonthToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wMonth);
+
+IF NOT fillWithZeros THEN
+	TimestructMonthToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+TimestructMonthToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructSecondToString" Id="{b09c5694-d2df-0678-08a3-ddd5ee47429c}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wSecond to STRING.*)
+METHOD TimestructSecondToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+	fillWithZeros	: BOOL;	// If set to true, result will have 0 added when only a single digit is present
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wSecond);
+
+IF NOT fillWithZeros THEN
+	TimestructSecondToString := result;
+	RETURN;
+END_IF
+
+IF Tc2_Standard.LEN(STR := result) < 2 THEN
+	result := Tc2_Standard.CONCAT(STR1 := '0', STR2 := result);
+END_IF
+
+TimestructSecondToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructToString" Id="{16c56c6e-c977-04ab-26b5-1266e14fd5ea}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT to STRING.*)
+METHOD TimestructToString : STRING
+VAR_INPUT
+	timeFormat			: E_TimeFormat;	// Time format to apply to the timestruct conversion
+	timeOfDaySeperator	: STRING(1);	// Specifies how time of day is split
+	dateSeperator		: STRING(1);	// Specifies how date is split
+	fillWithZeros		: BOOL;	// If set to true: month, day hour, minute and second will have 0 added when only a single digit is present
+	IncludeMilliseconds	: BOOL; // If set to true, milliseconds will also be displayed in the result, else they are ignored
+	in					: Tc2_Utilities.TIMESTRUCT;
+END_VAR
+
+VAR
+	result			: Tc2_System.T_MaxString;
+	stringBuilder	: FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE timeFormat OF
+	E_TimeFormat.DDMMYY:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructYearToString(in))
+			.Create();
+
+	E_TimeFormat.HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.Create();
+			
+		IF IncludeMilliseconds THEN
+			result := stringBuilder.AddString(timeOfDaySeperator)
+				.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+				.Create();
+		END_IF
+			
+	E_TimeFormat.MMDDYY:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructYearToString(in))
+			.Create();
+
+	E_TimeFormat.YYMMDD:	
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructYearToString(in))
+			.Create();
+		
+	E_TimeFormat.DDMMYY_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructYearToString(in))
+			.AddString('_')
+			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+					.Create();
+			END_IF
+
+	E_TimeFormat.MMDDYY_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructYearToString(in))
+			.AddString('_')
+			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+					.Create();
+			END_IF
+
+	E_TimeFormat.YYMMDD_HHMMSS:
+		result := stringBuilder.Reset()
+			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(dateSeperator)
+			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString('_')
+			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(timeOfDaySeperator)
+			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.Create();
+			
+			IF IncludeMilliseconds THEN
+				result := stringBuilder.AddString(timeOfDaySeperator)
+					.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+					.Create();
+			END_IF				
+END_CASE
+
+TimestructToString := result;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TimestructYearToString" Id="{890f374d-d2ae-0cda-1183-6f244b5f11e0}">
+      <Declaration><![CDATA[(* Converts TIMESTRUCT.wYear to STRING.*)
+METHOD TimestructYearToString : STRING
+VAR_INPUT
+	in	: Tc2_Utilities.TIMESTRUCT;
+END_VAR
+VAR
+	result	: STRING;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[result := WORD_TO_STRING(in.wYear);
+TimestructYearToString := result;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
