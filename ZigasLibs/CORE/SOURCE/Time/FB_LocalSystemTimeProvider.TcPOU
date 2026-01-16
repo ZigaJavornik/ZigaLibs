@@ -62,11 +62,15 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[setLocalTime.START := NOT setLocalTime.BUSY;
-setLocalTime(ERR => error);
+        <ST><![CDATA[setLocalTime(
+	START := NOT setLocalTime.BUSY, 
+	TIMESTR := timeToSet,
+	ERR => error);
+	
 errorId := TcError.ToAdsErrorCode(TcError.ToAdsErrorCode(setLocalTime.ERRID));
-SetSystemTime := NOT setLocalTime.BUSY;
+IF 
 
+SetSystemTime := NOT setLocalTime.BUSY;
 ]]></ST>
       </Implementation>
     </Method>
