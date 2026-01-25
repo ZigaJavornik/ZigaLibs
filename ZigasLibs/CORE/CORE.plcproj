@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{128fca6f-e694-4df5-b8c2-6bbfa2a2f7c9}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{c4f6ebc7-ab53-4cdb-9a8d-93089f0515ad}</Implicit_Jitter_Distribution>
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Žiga</Company>
     <Title>ZigaLibs.Core</Title>
     <ProjectVersion>0.0.3.5</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
@@ -368,6 +368,9 @@
     <Compile Include="TESTS\Test suites\FB_StringHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\Time\FB_LocalSystemTime_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
@@ -399,6 +402,7 @@
     <Folder Include="TESTS">
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Folder>
+    <Folder Include="TESTS\Test suites\Time" />
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="Tc2_ControllerToolbox">
@@ -432,15 +436,28 @@
     <PlaceholderReference Include="TcError">
       <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
-      <Condition>
-      </Condition>
-      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <DefaultResolution>TcUnit, 1.3.0.0 (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>200</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>200</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITBUFFERSIZE</Key>
+          <Value>1</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>1000</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -464,7 +481,7 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, 1.3.0.0 (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

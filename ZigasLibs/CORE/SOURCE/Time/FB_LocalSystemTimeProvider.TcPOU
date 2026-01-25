@@ -68,8 +68,6 @@ END_VAR
 	ERR => error);
 	
 errorId := TcError.ToAdsErrorCode(TcError.ToAdsErrorCode(setLocalTime.ERRID));
-IF 
-
 SetSystemTime := NOT setLocalTime.BUSY;
 ]]></ST>
       </Implementation>

@@ -80,9 +80,7 @@ VAR
 	mainStringAsTmaxString		: Tc2_System.T_MaxString := 'asdfasdfadfasdfadfigsjcan you find mgndfkghdfghgdg!can you find me?';
 	substringToFind_TmaxString	: STRING := 'can you find me';
 	mainStringAsString300		: STRING(300) := 
-		'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklm
-		This is the test sentence.nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789a
-		bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+		'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmThis is the test sentence.nopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
 	substringToFind_String300	: STRING := 'This is the test sentence';	
 	mainStringTmp				: STRING(300);
 	position 					: DINT;
@@ -104,12 +102,6 @@ AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, StringHelper.T
 	'String should not be found, provided string is in upper case.');
 AssertEquals_DINT(0, position,
 	'When string is not found (upper case) , position should be 0');
-
-// Lower case - fail
-AssertFalse(StringHelper.FindStringWithin(mainStringAsTmaxString, StringHelper.ToLowerCase(substringToFind_TmaxString), position => position),
-	'String should not be found, provided string is in lower case.');
-AssertEquals_DINT(0, position,
-	'When string is not found (lower case), position should be 0');
 
 // Contains	
 AssertTrue(StringHelper.FindStringWithin(mainStringAsTmaxString, substringToFind_TmaxString, position => position),

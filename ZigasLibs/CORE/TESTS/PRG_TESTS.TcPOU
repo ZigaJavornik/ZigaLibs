@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="PRG_TESTS" Id="{dcd11036-52e9-4f92-9371-f8c187305968}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
@@ -18,6 +18,7 @@ VAR
 	//EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
 	MallocTests						: FB_Malloc_Tests;
 	StringHelperTests				: FB_StringHelper_Tests;
+	LocalSystemTimeTests	: FB_LocalSystemTime_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_LocalSystemTime_Tests" Id="{727bf3a3-6625-0cd2-1b71-e1851f36bbd5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LocalSystemTime_Tests EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_localSystemTimeProvider	: FB_LocalSystemTimeProvider;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_localSystemTimeProvider();
+Test01_CheckSystemTime_ExpectValue();
+Test02_SetSystemTime_ExpectNoErrorAndCorrectTimeRead();]]></ST>
+    </Implementation>
+    <Method Name="Test01_CheckSystemTime_ExpectValue" Id="{b75cbff3-22e8-0137-0397-8b8d2e714505}">
+      <Declaration><![CDATA[METHOD Test01_CheckSystemTime_ExpectValue
+VAR_INPUT
+END_VAR
+
+VAR
+	emptyTimeStruct	: Tc2_Utilities.TIMESTRUCT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test01_CheckSystemTime_ExpectValue');
+
+AssertFalse(
+	Tc2_System.MEMCMP(ADR(emptyTimeStruct),
+		ADR(_localSystemTimeProvider.CurrentTime.Value), 
+		SIZEOF(Tc2_Utilities.TIMESTRUCT)) <> E_MemCmpResults.IDENTICAL,
+	'System time returned an empty property value!');
+	
+TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_SetSystemTime_ExpectNoErrorAndCorrectTimeRead" Id="{79f6a334-b0c8-02f5-367a-5855b015ef1d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_SetSystemTime_ExpectNoErrorAndCorrectTimeRead
+VAR_INPUT
+END_VAR
+VAR CONSTANT
+	timeToSet	: Tc2_Utilities.TIMESTRUCT := (
+		wYear := 2026, 
+		wMonth := 2, 
+		wDay := 3, 
+		wHour := 4,
+		wMinute := 5,
+		wSecond := 6,
+		wMilliseconds := 7,
+		wDayOfWeek := 8);
+END_VAR
+VAR
+	error	: BOOL;
+	errorId	: TcError.AdsErrorCodes;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test02_SetSystemTime_ExpectNoErrorAndCorrectTimeRead');
+
+IF _localSystemTimeProvider.CurrentTime.IsValid THEN
+	IF _localSystemTimeProvider.SetSystemTime(timeToSet, error => error, errorId => errorId ) THEN
+		AssertFalse(error, 
+			'Error occured attempting to set system time');
+		AssertTrue(errorId = TcError.AdsErrorCodes.ERR_NOERROR, 
+			CONCAT('Error has occured - ', TO_STRING(errorId)));
+			
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wYear, 2026, 'Year was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wMonth, 2, 'Month was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wDay, 3, 'Day was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wHour, 4, 'Hour was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wMinute, 5, 'Minute was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wSecond, 6, 'Second was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wMilliseconds, 7, 'Millisecond was not set correctly!');
+		AssertEquals_WORD(_localSystemTimeProvider.CurrentTime.Value.wDayOfWeek, 8, 'Day Of Week was not set correctly!');
+		
+		TcUnit.TEST_FINISHED();
+	END_IF	
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

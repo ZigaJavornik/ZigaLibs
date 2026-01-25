@@ -8,62 +8,6 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="ConvertToUpperOrLower" Id="{d49c54f8-245d-0b5e-100d-7ae49dadf65c}">
-      <Declaration><![CDATA[METHOD INTERNAL ConvertToUpperOrLower
-VAR_INPUT
-	lower	: BOOL;
-	upper	: BOOL;
-	str		: ANY;
-END_VAR
-VAR
-	charIndex	: DINT;
-	ptrChar		: POINTER TO T_Char;
-	char		: T_Char;
-	malloc		: FB_Malloc(0,0);
-	ptrByte		: POINTER TO BYTE;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(str.TypeClass, IBaseLibrary.TYPE_STRING) THEN
-	RETURN;
-END_IF
-
-IF lower THEN	
-	malloc.Allocate(1, str.diSize - 1);		
-	FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
-		ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
-		char := ToLowerCase(ptrChar^);
-		ptrByte := ADR(char);
-		malloc.Set(charIndex, ptrByte^);
-	END_FOR
-	
-	Tc2_System.MEMCPY(
-		destAddr := str.pValue, 
-		srcAddr := malloc.Properties.StartAddress, 
-		n := DINT_TO_UDINT(str.diSize - 1));
-		
-	malloc.Free();
-	RETURN;
-END_IF
-
-IF upper THEN
-	malloc.Allocate(1, str.diSize - 1);		
-	FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
-		ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
-		char := ToUpperCase(ptrChar^);
-		ptrByte := ADR(char);
-		malloc.Set(charIndex, ptrByte^);
-	END_FOR
-	
-	Tc2_System.MEMCPY(
-		destAddr := str.pValue, 
-		srcAddr := malloc.Properties.StartAddress, 
-		n := DINT_TO_UDINT(str.diSize - 1));
-		
-	malloc.Free();
-	RETURN;	
-END_IF]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="EndsWith" Id="{ae3c099d-30b2-0f82-0a20-ce3ad2e77fa0}">
       <Declaration><![CDATA[METHOD EndsWith : BOOL
 VAR_INPUT
@@ -93,10 +37,11 @@ VAR
 	charIndex					: DINT;
 	currentMatchingCharIndex	: DINT;
 	tmpByte						: POINTER TO BYTE;
+	firstCharPosition 			: dint;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(sourceString.TypeClass, IBaseLibrary.TYPE_STRING) THEN
+        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(sourceString, IBaseLibrary.TYPE_STRING) THEN
 	RETURN;
 END_IF
 
@@ -116,14 +61,18 @@ FOR charIndex := 0 TO sourceString.diSize BY 1 DO
 	// For debug purpose
 	tmpStr := tmpByte;
 	IF tmpbyte^ = stringToFind[currentMatchingCharIndex] THEN
+		IF firstCharPosition = 0 THEN
+			firstCharPosition := charIndex + 1;
+		END_IF
 		currentMatchingCharIndex := currentMatchingCharIndex + 1;
 	ELSE
 		currentMatchingCharIndex := 0;
+		firstCharPosition := 0;
 	END_IF
 	
 	// When index = str lenght - 1, we have found the entire string, exit the loop.
 	IF currentMatchingCharIndex = (Tc2_Standard.LEN(stringToFind)) THEN
-		position := charIndex - currentMatchingCharIndex;
+		position := firstCharPosition;
 		FindStringWithin := TRUE;
 		EXIT;
 	END_IF
@@ -173,9 +122,34 @@ END_VAR
 METHOD ToLowerCase_UnlimitedSize
 VAR_INPUT
 	str	: ANY;
+END_VAR
+
+VAR
+	charIndex	: DINT;
+	ptrChar		: POINTER TO T_Char;
+	char		: T_Char;
+	malloc		: FB_Malloc(0,0);
+	ptrByte		: POINTER TO BYTE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ConvertToUpperOrLower(TRUE, FALSE, str);]]></ST>
+        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(str, IBaseLibrary.TYPE_STRING) THEN
+	RETURN;
+END_IF
+
+malloc.Allocate(1, str.diSize - 1);		
+FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
+	ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
+	char := ToLowerCase(ptrChar^);
+	ptrByte := ADR(char);
+	malloc.Set(charIndex, ptrByte^);
+END_FOR
+
+Tc2_System.MEMCPY(
+	destAddr := str.pValue, 
+	srcAddr := malloc.Properties.StartAddress, 
+	n := DINT_TO_UDINT(str.diSize - 1));
+	
+malloc.Free();]]></ST>
       </Implementation>
     </Method>
     <Method Name="ToUpperCase" Id="{a9f90e08-f042-0b48-3d37-79d4dbe88971}">
@@ -193,9 +167,35 @@ END_VAR
       <Declaration><![CDATA[METHOD ToUpperCase_UnlimitedSize
 VAR_INPUT
 	str	: ANY;
-END_VAR]]></Declaration>
+END_VAR	
+
+VAR
+	charIndex	: DINT;
+	ptrChar		: POINTER TO T_Char;
+	char		: T_Char;
+	malloc		: FB_Malloc(0,0);
+	ptrByte		: POINTER TO BYTE;
+END_VAR
+]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ConvertToUpperOrLower(FALSE, TRUE, str);]]></ST>
+        <ST><![CDATA[IF NOT F_DoesVarTypeEqual(str, IBaseLibrary.TYPE_STRING) THEN
+	RETURN;
+END_IF
+
+malloc.Allocate(1, str.diSize - 1);		
+FOR charIndex := 0 TO str.diSize - 1 BY 1 DO
+	ptrChar := str.pValue + DINT_TO_DWORD(charIndex);
+	char := ToUpperCase(ptrChar^);
+	ptrByte := ADR(char);
+	malloc.Set(charIndex, ptrByte^);
+END_FOR
+
+Tc2_System.MEMCPY(
+	destAddr := str.pValue, 
+	srcAddr := malloc.Properties.StartAddress, 
+	n := DINT_TO_UDINT(str.diSize - 1));
+	
+malloc.Free();]]></ST>
       </Implementation>
     </Method>
     <Method Name="TrimLeftSide" Id="{aaf318c8-56f7-0f39-3b6b-023f532313ad}">
