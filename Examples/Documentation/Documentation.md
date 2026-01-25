@@ -103,7 +103,8 @@ VAR
 	idx : T_ArrayIndexer;
 END_VAR
 ```
-```iecst
+
+```st
 FOR idx := 0 TO 20 BY 1 DO
 	arrModified[idx] := TRUE;
 END_FOR
@@ -113,5 +114,3 @@ END_FOR
 ArrayHelper.Clear(arr);
 
 // Every element in the array is FALSE
-```
-
