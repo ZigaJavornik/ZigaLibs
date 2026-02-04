@@ -1,21 +1,24 @@
+**DOCUMENTATION**
+===
+
 `ZigaLibs` libraries overview, examples and overall documentation. This document servers as a user guide how to use these libraries, what references (other libraries) are required when using the libraries and any warnings that might be required when using certain functionalities.
+
+---
 
 The libraries and their underlying objects:
 
-test image should appear here ![](Program.png)
-
 * `ZigaLibs.Core` ![](Folder.png)
-  * *Array* ![](Folder.png)
+  * **Array** ![](Folder.png)
     * [`ArrayHelper`](#arrayhelper) - **Program** ![alt](Program.png)
     * `ST_ArrayProperties` - **Structure** ![](Structure.png)
     * `T_ArrayIndexer` - **Alias** ![](Enum.png)
-  * *Beckhoff*![](Folder.png)
-    * *Ads*![](Folder.png)
+  * **Beckhoff** ![](Folder.png)
+    * **Ads** ![](Folder.png)
       * `AdsHelper `- **Program** ![alt](Program.png)
       * `FB_HasAmsAddressFromProcessImage `- **Function Block** ![alt](Program.png)
       * `I_HasAmsAddress `- **Interface** ![alt](Interface.png)
-    * *EtherCAT*![](Folder.png)
-      * *CoE*![](Folder.png)
+    * **EtherCAT** ![](Folder.png)
+      * **CoE** ![](Folder.png)
         * `ST_CoeEntry `- **Structure** ![](Structure.png)
         * `ST_CoeEntry_DINT` - **Structure** ![](Structure.png)
         * `ST_CoeEntry_SINT` - **Structure** ![](Structure.png)
@@ -75,12 +78,15 @@ test image should appear here ![](Program.png)
     * 
 
 # ArrayHelper ![](Program.png)
+
 Provides array helper methods for easier work with arrays accross programming.
 
 ## Methods ![alt](MethodIcon.png)
+
 - [`Clear`](#clear)
 
 ---
+
 ### *`Clear()`*
 ```
 METHOD PUBLIC Clear : BOOL
@@ -96,17 +102,19 @@ END_VAR
 |**arr**|`ANY`|array to be cleared|
 
 **Returns** ![](MethodOutputs.png)  
-`TRUE` *if the operation was sucessfull.*
+|Type|Description|
+|---|---|
+|`BOOL`|Returns `TRUE` *if the operation was sucessfull.*|
 
 
 **Example**
+
 ```
 VAR
 	arr	: ARRAY[0..20] OF BOOL;
 	idx : T_ArrayIndexer;
 END_VAR
 ```
----
 ```
 FOR idx := 0 TO 20 BY 1 DO
 	arrModified[idx] := TRUE;
