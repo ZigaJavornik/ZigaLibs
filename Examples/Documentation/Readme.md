@@ -2,114 +2,112 @@
 
 The libraries and their underlying objects:
 
-* `ZigaLibs.Core`
-  * *Array*
-    * [`ArrayHelper`](#arrayhelper) `ArrayHelper` - **Program**
-    * `ST_ArrayProperties` - **Structure**
-    * `T_ArrayIndexer` - **Alias**
-  * *Beckhoff*
-    * *Ads*
-      * `AdsHelper `- **Program**
-      * `FB_HasAmsAddressFromProcessImage `- **Function Block**
-      * `I_HasAmsAddress `- **Interface**
-    * *EtherCAT*
-      * *CoE*
-        * `ST_CoeEntry `- **Structure**
-        * `ST_CoeEntry_DINT` - **Structure**
-        * `ST_CoeEntry_SINT` - **Structure**
-        * `ST_CoeEntry_String128` - **Structure**
-        * `ST_CoeEntry_UDINT` - **Structure**
-        * `ST_CoeEntry_INT` - **Structure**
-        * `ST_CoeEntry_REAL` - **Structure**
-        * `ST_CoeEntry_String255` - **Structure**
-        * `ST_CoeEntry_String30` - **Structure**
-        * `ST_CoeEntry_UINT` - **Structure**
-        * `ST_CoeEntry_USINT` - **Structure**
+test image should appear here ![](Program.png)
+
+* `ZigaLibs.Core` ![](Folder.png)
+  * *Array* ![](Folder.png)
+    * [`ArrayHelper`](#arrayhelper) - **Program** ![alt](Program.png)
+    * `ST_ArrayProperties` - **Structure** ![](Structure.png)
+    * `T_ArrayIndexer` - **Alias** ![](Enum.png)
+  * *Beckhoff*![](Folder.png)
+    * *Ads*![](Folder.png)
+      * `AdsHelper `- **Program** ![alt](Program.png)
+      * `FB_HasAmsAddressFromProcessImage `- **Function Block** ![alt](Program.png)
+      * `I_HasAmsAddress `- **Interface** ![alt](Interface.png)
+    * *EtherCAT*![](Folder.png)
+      * *CoE*![](Folder.png)
+        * `ST_CoeEntry `- **Structure** ![](Structure.png)
+        * `ST_CoeEntry_DINT` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_SINT` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_String128` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_UDINT` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_INT` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_REAL` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_String255` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_String30` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_UINT` - **Structure** ![](Structure.png)
+        * `ST_CoeEntry_USINT` - **Structure** ![](Structure.png)
         * `T_CoEIndex` - **Alias**
         * `T_CoESubIndex` - **Alias**
-        * `FB_CoeReadWrite` - **Function Block**
+        * `FB_CoeReadWrite` - **Function Block** ![alt](Program.png)
         * `I_ReadsCoE` - **Interface**
-        * `EthercatHelper` - **Program**
-        * `FB_ReadBoxName` - **Function Block**
-  * *Errors*
-    * `ST_AdsError` - **Structure**
-    * `ST_Error` - **Structure**
-    * `ST_GenericError ` - **Structure**
-    * `FB_ErrorSource` - **Function Block**
-    * `I_ErrorSource` - **Interface**
-    * `I_HasAdsError` - **Interface**
-    * `I_HasError` - **Interface**
-    * `I_HasGenericError` - **Interface**
-  * *General*
-    * `FB_Collection` - **Function Block**
-    * `I_Collection` - **Interface**
-  * *Memory*
-    * `E_MemCmpResults` - **Enum**
-    * `FB_Malloc` - **Function Block**
+        * `EthercatHelper` - **Program** ![alt](Program.png)
+        * `FB_ReadBoxName` - **Function Block** ![alt](Program.png)
+  * *Errors*![](Folder.png)
+    * `ST_AdsError` - **Structure** ![](Structure.png)
+    * `ST_Error` - **Structure** ![](Structure.png)
+    * `ST_GenericError ` - **Structure** ![](Structure.png)
+    * `FB_ErrorSource` - **Function Block** ![alt](Program.png)
+    * `I_ErrorSource` - **Interface** ![alt](Interface.png)
+    * `I_HasAdsError` - **Interface** ![alt](Interface.png)
+    * `I_HasError` - **Interface** ![alt](Interface.png)
+    * `I_HasGenericError` - **Interface** ![alt](Interface.png)
+  * *General*![](Folder.png)
+    * `FB_Collection` - **Function Block** ![alt](Program.png)
+    * `I_Collection` - **Interface** ![alt](Interface.png)
+  * *Memory*![](Folder.png)
+    * `E_MemCmpResults` - **Enum** ![](Enum.png)
+    * `FB_Malloc` - **Function Block** ![alt](Program.png)
     * `MemoryHelper` - **Program**
-    * `ST_AllocatedMemoryProperties` - **Structure**
-  * *Variable extensions*
-    * `BoolEx` - **Function Block**
-  * *Variable information*
-    * `FB_BooleanObserver` - **Function Block**
-    * `FB_HasInstanceNameAndPath` - **Function Block**
-    * `FB_HasTaskInfo` - **Function Block**
-    * `FB_Watchdog` - **Function Block**
-    * `InstanceNameHelper` - **Program**
-    * `ST_Value` - **Structure**
-  * *String*
-    * *String Builder*
-      * `FB_StringBuilder` - **Function Block**
-      * `I_StringBuilder` - **Interface**
-    * `StringConstants` - **Program**
+    * `ST_AllocatedMemoryProperties` - **Structure** ![](Structure.png)
+  * *Variable extensions*![](Folder.png)
+    * `BoolEx` - **Function Block** ![alt](Program.png)
+  * *Variable information*![](Folder.png)
+    * `FB_BooleanObserver` - **Function Block** ![alt](Program.png)
+    * `FB_HasInstanceNameAndPath` - **Function Block** ![alt](Program.png)
+    * `FB_HasTaskInfo` - **Function Block** ![alt](Program.png)
+    * `FB_Watchdog` - **Function Block** ![alt](Program.png)
+    * `InstanceNameHelper` - **Program** ![alt](Program.png)
+    * `ST_Value` - **Structure** ![](Structure.png)
+  * *String*![](Folder.png)
+    * *String Builder*![](Folder.png)
+      * `FB_StringBuilder` - **Function Block** ![alt](Program.png)
+      * `I_StringBuilder` - **Interface** ![alt](Interface.png)
+    * `StringConstants` - **Program** ![alt](Program.png)
     * `T_Char` - **Alias**
-  * *Time*
-    * `E_TimeFormat` - **Enum**
-    * `ST_CurrentSystemTimeInfo` - **Structure**
-    * `FB_DateTimeToStringConverter` - **Function Block**
-    * `FB_LocalSystemTimeProvider` - **Function Block**
-    * `I_DateTimeToStringConverter` - **Interface**
-    * `I_LocalSystemTimeProvider` - **Interface**
+  * *Time*![](Folder.png)
+    * `E_TimeFormat` - **Enum** ![](Enum.png)
+    * `ST_CurrentSystemTimeInfo` - **Structure** ![](Structure.png)
+    * `FB_DateTimeToStringConverter` - **Function Block** ![alt](Program.png)
+    * `FB_LocalSystemTimeProvider` - **Function Block** ![alt](Program.png)
+    * `I_DateTimeToStringConverter` - **Interface** ![alt](Interface.png)
+    * `I_LocalSystemTimeProvider` - **Interface** ![alt](Interface.png)
     * 
 
-# ArrayHelper
+# ArrayHelper ![](Program.png)
 Provides array helper methods for easier work with arrays accross programming.
 
-## Methods
+## Methods ![alt](MethodIcon.png)
+- [`Clear`](#clear)
 
-
-
-```console
+---
+### *`Clear()`*
+```
 METHOD PUBLIC Clear : BOOL
 VAR_INPUT
 	arr			: ANY;	// Array to be cleared
 END_VAR
 ```
+*Clears the entire array. Returns `TRUE` if operation was sucessfull.*
 
+**Inputs** ![](MethodInputs.png)  
+|Name|Type|Description|
+|---|---|---|
+|**arr**|`ANY`|array to be cleared|
 
-
-Clears the entire array. Returns TRUE if operation was sucessfull.
-
-|**Inputs**|
-|-|
-|**arr** `ANY`|
-|*Array to be cleared.*|
-
-|**Returns**|
-|-|
-|`BOOL`|
-|`TRUE` *if the operation was sucessfull.*|
+**Returns** ![](MethodOutputs.png)  
+`TRUE` *if the operation was sucessfull.*
 
 
 **Example**
-```iecst
+```
 VAR
 	arr	: ARRAY[0..20] OF BOOL;
 	idx : T_ArrayIndexer;
 END_VAR
 ```
-
-```st
+---
+```
 FOR idx := 0 TO 20 BY 1 DO
 	arrModified[idx] := TRUE;
 END_FOR
@@ -119,3 +117,4 @@ END_FOR
 ArrayHelper.Clear(arr);
 
 // Every element in the array is FALSE
+```
