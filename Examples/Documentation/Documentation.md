@@ -4,7 +4,7 @@ The libraries and their underlying objects:
 
 * `ZigaLibs.Core`
   * *Array*
-    * `ArrayHelper` - **Program**
+    * [`ArrayHelper`](#arrayhelper) `ArrayHelper` - **Program**
     * `ST_ArrayProperties` - **Structure**
     * `T_ArrayIndexer` - **Alias**
   * *Beckhoff*
@@ -77,12 +77,17 @@ Provides array helper methods for easier work with arrays accross programming.
 
 ## Methods
 
-```iecst
+
+
+```console
 METHOD PUBLIC Clear : BOOL
 VAR_INPUT
 	arr			: ANY;	// Array to be cleared
 END_VAR
 ```
+
+
+
 Clears the entire array. Returns TRUE if operation was sucessfull.
 
 |**Inputs**|
