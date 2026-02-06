@@ -1,13 +1,20 @@
-**DOCUMENTATION**
-===
+`ZigaLibs.Core` objects can be found in this part of the documentation. This library contains core functionalities without targeting anything specific. Other libraries have a high chance of referencing this library so make sure to install it in order to be able to use them.
 
-`ZigaLibs` libraries overview, examples and overall documentation. This document servers as a user guide how to use these libraries, what references (other libraries) are required when using the libraries and any warnings that might be required when using certain functionalities.
+**EXTERNAL REFERENCES**
+|Name|Effective/Newest|Namespace|Effective version|Required|
+|---|---|---|---|---|
+|BaseInterfaces|Newest|IBaseLibrary|3.5.2.0|YES|
+|Tc2_EtherCAT|Newest|Tc2_EtherCAT|3.5.1.0|YES|
+|Tc2_IoFunctions|Newest|Tc2_IoFunctions|3.4.5.0|YES|
+|Tc2_Standard|Newest|Tc2_Standard|3.4.5.0|YES|
+|Tc2_System|Newest|Tc2_System|3.6.4.0|YES|
+|Tc2_Utilities|Newest|Tc2_Utilities|3.9.2.0|YES|
+|Tc3_Module|Newest|Tc3_Module|3.4.5.0|YES|
+|[TcError](https://github.com/Roald87/TcError/releases/tag/v0.2.2)|Effective|TcError|0.2.2.0|YES|
+|[TcUnit](https://github.com/tcunit/TcUnit/releases/tag/1.3.0.0)|Effective|TcUnit|1.3.0.0|NO|
 
 ---
 
-The libraries and their underlying objects:
-
-* `ZigaLibs.Core` ![](Folder.png)
   * **Array** ![](Folder.png)
     * [`ArrayHelper`](#arrayhelper) - **Program** ![alt](Program.png)
     * `ST_ArrayProperties` - **Structure** ![](Structure.png)
@@ -46,13 +53,11 @@ The libraries and their underlying objects:
     * `I_HasError` - **Interface** ![alt](Interface.png)
     * `I_HasGenericError` - **Interface** ![alt](Interface.png)
   * *General*![](Folder.png)
-    * `FB_Collection` - **Function Block** ![alt](Program.png)
-    * `I_Collection` - **Interface** ![alt](Interface.png)
-  * *Memory*![](Folder.png)
-    * `E_MemCmpResults` - **Enum** ![](Enum.png)
-    * `FB_Malloc` - **Function Block** ![alt](Program.png)
-    * `MemoryHelper` - **Program**
-    * `ST_AllocatedMemoryProperties` - **Structure** ![](Structure.png)
+    * *Memory*![](Folder.png)
+      * `E_MemCmpResults` - **Enum** ![](Enum.png)
+      * `FB_Malloc` - **Function Block** ![alt](Program.png)
+      * `MemoryHelper` - **Program**
+      * `ST_AllocatedMemoryProperties` - **Structure** ![](Structure.png)
   * *Variable extensions*![](Folder.png)
     * `BoolEx` - **Function Block** ![alt](Program.png)
   * *Variable information*![](Folder.png)
@@ -82,6 +87,8 @@ The libraries and their underlying objects:
 
 A helper program (class) that provides array helper methods for easier work with arrays accross programming.
 
+[test](NewMarkdownFile.md)
+
 ## Methods ![alt](MethodIcon.png)
 
   - [*`Clear()`*](#clear)
@@ -100,7 +107,7 @@ A helper program (class) that provides array helper methods for easier work with
 ```
 METHOD PUBLIC Clear : BOOL
 VAR_INPUT
-	arr			: ANY;	// Array to be cleared
+    arr			: ANY;	// Array to be cleared
 END_VAR
 ```
 >*Clears the entire array. Returns `TRUE` if operation was sucessfull.*
@@ -120,13 +127,13 @@ END_VAR
 
 ```
 VAR
-	arr	: ARRAY[0..20] OF BOOL;
-	idx : T_ArrayIndexer;
+    arr	: ARRAY[0..20] OF BOOL;
+    idx : T_ArrayIndexer;
 END_VAR
 ```
 ```
 FOR idx := 0 TO 20 BY 1 DO
-	arrModified[idx] := TRUE;
+    arrModified[idx] := TRUE;
 END_FOR
 
 // At this point, all the array elements are TRUE
@@ -143,8 +150,8 @@ ArrayHelper.Clear(arr);
 ```
 METHOD DoesArrayContainItem : BOOL
 VAR_INPUT
-	arr		: ANY;	// Array to be checked
-	item	: ANY;	// Item to be found in the array
+    arr		: ANY;	// Array to be checked
+    item	: ANY;	// Item to be found in the array
 END_VAR
 ```
 *Looks trough the array and returns `TRUE` if any element equals to the one provided.*
@@ -167,8 +174,8 @@ END_VAR
 
 ```
 VAR
-	arr		: ARRAY[0..10] OF STRING;
-	item	: STRING := 'mwah';
+    arr		: ARRAY[0..10] OF STRING;
+    item	: STRING := 'mwah';
   item2 : STRING := 'I don't exist!'
   incorrectDataType : INT;
 END_VAR
@@ -194,9 +201,9 @@ ArrayHelper.DoesArrayContainItem(arr, incorrectDataType);
 ```
 METHOD PUBLIC FindLastOccupiedItem	: BOOL
 VAR_INPUT
-	arr			: ANY;	// Array to look for the last element value
-	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
-	result		: ANY;	// Result variable, result be written to this variable
+    arr			: ANY;	// Array to look for the last element value
+    dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
+    result		: ANY;	// Result variable, result be written to this variable
 END_VAR
 ```
   >*Looks trough the array and return the last non-zero element to the result variable. Returns `TRUE` if an element was found and `FALSE` if no empty elementsare found. Note that this method uses memmory allocation. All occupied memory is released after method finishes.*
@@ -220,8 +227,8 @@ END_VAR
 
 ```
 VAR
-	arr	    : ARRAY[0..10] OF INT;
-	result	: int;
+    arr	    : ARRAY[0..10] OF INT;
+    result	: int;
 END_VAR
 ```
 ```
@@ -237,8 +244,8 @@ ArrayHelper.FindLastOccupiedItem(arr, arr[0], result);
 ```
 METHOD PUBLIC GetElementCount : DINT
 VAR_INPUT
-	arr			: ANY;	// Array to be checked.
-	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
+    arr			: ANY;	// Array to be checked.
+    dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 END_VAR
 
 ```
@@ -261,8 +268,8 @@ END_VAR
 
 ```
 VAR
-	arr		: ARRAY[0..99] OF REAL;
-	arr2	: ARRAY[22..33] OF REAL;
+    arr		: ARRAY[0..99] OF REAL;
+    arr2	: ARRAY[22..33] OF REAL;
 END_VAR
 ```
 ```
@@ -280,9 +287,9 @@ ArrayHelper.GetElementCount(arr := arr2, dataType := arr2[0]);
 ```
 METHOD PUBLIC GetMaxIndex : DINT
 VAR_INPUT
-	arr			: ANY;	// Array to be checked.
-	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
-	startIndex	: T_ArrayIndexer;
+    arr			: ANY;	// Array to be checked.
+    dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
+    startIndex	: T_ArrayIndexer;
 END_VAR
 ```
 *Gets the maximum array index that can be used for looping or index accessing*
@@ -304,8 +311,8 @@ END_VAR
 
 ```
 VAR
-	arr		: ARRAY[0..99] OF REAL;
-	arr2	: ARRAY[22..33] OF REAL;
+    arr		: ARRAY[0..99] OF REAL;
+    arr2	: ARRAY[22..33] OF REAL;
 END_VAR
 
 ```
@@ -324,8 +331,8 @@ ArrayHelper.GetMaxIndex(arr := arr2, dataType := arr2[0], startIndex := 22);
 ```
 METHOD InsertAtStart : BOOL
 VAR_INPUT	
-	arr		: ANY;	// Array to be checked.
-	item	: ANY;	// Item to be inserted on start
+    arr		: ANY;	// Array to be checked.
+    item	: ANY;	// Item to be inserted on start
  END_VAR
 
 ```
@@ -347,20 +354,20 @@ VAR_INPUT
 
 ```
 VAR
-	i		: INT;
-	value	: STRING := '9';
-	arr		: ARRAY [0..10] OF STRING;
+    i		: INT;
+    value	: STRING := '9';
+    arr		: ARRAY [0..10] OF STRING;
 END_VAR
 ```
 ```
 FOR i := 0 TO 10 BY 1 DO
-	arr[i] := INT_TO_STRING(i);
+    arr[i] := INT_TO_STRING(i);
 END_FOR
 //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
 ArrayHelper.InsertAtStart(
-	arr := arr,
-	item := value);
+    arr := arr,
+    item := value);
 //['9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 ```
@@ -371,8 +378,8 @@ ArrayHelper.InsertAtStart(
 ```
 METHOD SetAtFirstEmptySlot
 VAR_INPUT
-	arr		: ANY;	// Array to be checked.
-	item	: ANY;	// Item to set
+    arr		: ANY;	// Array to be checked.
+    item	: ANY;	// Item to set
 END_VAR
 ```
 *>Iterates the array and sets the value when first empty slot is found. Note that this method uses memmory allocation. All occupied memory is released after method finishes.*
@@ -393,20 +400,20 @@ END_VAR
 
 ```
 VAR
-	arr		: ARRAY[0..69] OF T_ArrayIndexer;
-	valueToSet	: T_ArrayIndexer := 9999;
-	i	: T_ArrayIndexer;
+    arr		: ARRAY[0..69] OF T_ArrayIndexer;
+    valueToSet	: T_ArrayIndexer := 9999;
+    i	: T_ArrayIndexer;
 END_VAR
 ```
 ```
 FOR i := 0 TO 30 BY 1 DO
-	arr[i] := i + 1;
+    arr[i] := i + 1;
 END_FOR
 // [0, 1, 2, 3, ... 30, 0, 0, (69th element) 0]
 
 ArrayHelper.SetAtFirstEmptySlot(
-	arr := arr,
-	item := valueToSet);
+    arr := arr,
+    item := valueToSet);
 // [0, 1, 2, 3, ... 30, 9999, 0, 0, (69th element) 0]
 ```
 ---
@@ -416,8 +423,8 @@ ArrayHelper.SetAtFirstEmptySlot(
 ```
 METHOD ShiftDown
 VAR_INPUT
-	arr		: ANY;	// Array to be checked.
-	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
+    arr		: ANY;	// Array to be checked.
+    dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 END_VAR
 
 ```
@@ -433,7 +440,7 @@ END_VAR
 
 ```
 VAR
-	arr			: ARRAY[0..10] OF REAL;
+    arr			: ARRAY[0..10] OF REAL;
 END_VAR
 ```
 ```
@@ -453,8 +460,8 @@ ArrayHelper.ShiftDown(arr, arr[0]);
 ```
 METHOD ShiftUp
 VAR_INPUT
-	arr		: ANY;	// Array to be checked.
-	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
+    arr		: ANY;	// Array to be checked.
+    dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 END_VAR
 
 ```
@@ -470,7 +477,7 @@ END_VAR
 
 ```
 VAR
-	arr			: ARRAY[0..10] OF REAL;
+    arr			: ARRAY[0..10] OF REAL;
 END_VAR
 ```
 ```
