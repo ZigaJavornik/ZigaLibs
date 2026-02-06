@@ -17,7 +17,7 @@
 
   * **Array** ![](Folder.png)
     * [`ArrayHelper`](#arrayhelper) - **Program** ![alt](Program.png)
-    * `ST_ArrayProperties` - **Structure** ![](Structure.png)
+    * [`ST_ArrayProperties`](#st_arrayproperties) - **Structure** ![](Structure.png)
     * `T_ArrayIndexer` - **Alias** ![](Enum.png)
   * **Beckhoff** ![](Folder.png)
     * **Ads** ![](Folder.png)
@@ -488,4 +488,61 @@ arr[1] := 5.5;
 ArrayHelper.ShiftUp(arr, arr[0]);
 // [0, 0, 5.5, 0, 0, 0, 0, 0, 0, 0, 0]
 
+```
+
+---
+
+# **ST_ArrayProperties**
+
+```
+TYPE ST_ArrayProperties :
+STRUCT
+	Count		: DINT;
+	StartIndex	: T_ArrayIndexer;
+	EndIndex	: T_ArrayIndexer;
+END_STRUCT
+END_TYPE
+```
+
+>*The structure is used to return properties of an array required to work with array manipulation functions.*
+
+|Name|Data Type|Description|
+|---|---|---|
+|Count|DINT|Number of elements in the array|
+|StartIndex|T_ArrayIndexer|First index of the array|
+|EndIndex|T_ArrayIndexer|Last index of the array|
+
+**EXAMPLE**
+```
+arr : ARRAY[1..10] OF INT;
+```
+A function that would reference this array and uses the ST_ArrayProperties as a property should return the following:
+
+`foo(arr).Count` = 10   
+`foo(arr).StartIndex` = 1   
+`foo(arr).EndIndex` = 10
+
+---
+
+# T_ArrayIndexer
+
+```
+TYPE T_ArrayIndexer : DINT; END_TYPE
+```
+>*The data type is used for accessing array index - array index should always be a DINT. The dimension is defined as such by [Beckhoff](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/8825253771.html&id=468140306937122500).*
+
+
+**EXAMPLE**
+
+```
+VAR
+    arr : ARRAY[0..10] OF BOOL;
+    idx : T_ArrayIndexer;     
+END_VAR
+```
+```
+FOR idx := 0 TO 10 BY 1 DO
+    // Do something like this, by accesing the index without compiler warnings
+    arr[idx] := FALSE;
+END_FOR
 ```
