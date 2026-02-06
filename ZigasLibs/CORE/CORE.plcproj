@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Žiga</Company>
     <Title>ZigaLibs.Core</Title>
-    <ProjectVersion>0.0.3.5</ProjectVersion>
+    <ProjectVersion>0.0.3.6</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
     <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -398,10 +398,6 @@
     <Folder Include="TESTS\Test suites\Time" />
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderReference Include="Tc2_ControllerToolbox">
-      <DefaultResolution>Tc2_ControllerToolbox, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_ControllerToolbox</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_EtherCAT">
       <DefaultResolution>Tc2_EtherCAT, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_EtherCAT</Namespace>
@@ -464,9 +460,6 @@
     </LibraryReference>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderResolution Include="Tc2_ControllerToolbox">
-      <Resolution>Tc2_ControllerToolbox, 3.6.1.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_IoFunctions">
       <Resolution>Tc2_IoFunctions, 3.4.5.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
