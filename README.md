@@ -17,4 +17,4 @@ A good aproach to develop libraries would be, to have the development on a virtu
 ![image](https://github.com/user-attachments/assets/4869b1a3-e009-40e2-b90f-062e098f85e5)
 
 
-TwinCAT version: 4024.66 (06/02/2024)
+TwinCAT version: 4024.66 (06/02/2026)
