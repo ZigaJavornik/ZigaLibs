@@ -75,11 +75,12 @@ The libraries and their underlying objects:
     * `FB_LocalSystemTimeProvider` - **Function Block** ![alt](Program.png)
     * `I_DateTimeToStringConverter` - **Interface** ![alt](Interface.png)
     * `I_LocalSystemTimeProvider` - **Interface** ![alt](Interface.png)
-    * 
 
-# ArrayHelper ![](Program.png)
 
-Provides array helper methods for easier work with arrays accross programming.
+---
+ # ArrayHelper
+
+A helper program (class) that provides array helper methods for easier work with arrays accross programming.
 
 ## Methods ![alt](MethodIcon.png)
 
