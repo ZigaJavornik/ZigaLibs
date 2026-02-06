@@ -217,12 +217,6 @@
     <Compile Include="SOURCE\Errors\I_HasGenericError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Collections\FB_Collection.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\General\FB_BooleanObserver.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -384,7 +378,6 @@
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state" />
     <Folder Include="SOURCE\Errors\DUTs" />
-    <Folder Include="SOURCE\General\Collections" />
     <Folder Include="SOURCE\General\Variable information" />
     <Folder Include="SOURCE\General\Memory" />
     <Folder Include="SOURCE\General\Variable extensions" />
