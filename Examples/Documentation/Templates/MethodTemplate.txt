@@ -1,0 +1,33 @@
+---
+
+### *`METHOD_NAME()`*
+
+```
+METHOD_DECLERATION
+```
+*METHOD_DESCRIPTION*
+
+**Inputs** ![](MethodInputs.png)
+|Name|Type|Description|
+|---|---|---|
+|**VAR_NAME**|`VAR_TYPE`|*DESCRIPTION*|
+
+**Outputs** ![](MethodOutputs.png)
+|Name|Type|Description|
+|---|---|---|
+|**VAR_NAME**|`VAR_TYPE`|*DESCRIPTION*|
+
+**Returns** ![](MethodOutputs.png)
+|Type|Description|
+|---|---|
+|`vAR_TYPE`|*DESCRIPTION*|
+
+
+**Example**
+
+```
+VARIABLE_DECLERATIONS
+```
+```
+CODE_SNIPPET
+```
