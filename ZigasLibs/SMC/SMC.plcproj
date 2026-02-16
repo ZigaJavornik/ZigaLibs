@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{55884ef3-e593-4f31-b5e6-a46689cb1a8f}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{9886cab5-b79f-4d91-b6b8-260c983e5546}</Implicit_Jitter_Distribution>
     <LibraryReferences>{a93305cb-387b-46d3-bc1f-41bf65e7b7ff}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.SMC</Title>
     <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
@@ -93,7 +93,7 @@
     </SelectedLibraryCategories>
     <DefaultNamespace>ZigaLibs.SMC</DefaultNamespace>
     <Placeholder>ZigaLibs.SMC</Placeholder>
-    <Author>ZigaLibs.SMC</Author>
+    <Author>Ziga Javornik</Author>
     <Description>SMC library collection</Description>
   </PropertyGroup>
   <ItemGroup>

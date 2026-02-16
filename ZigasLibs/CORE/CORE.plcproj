@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{128fca6f-e694-4df5-b8c2-6bbfa2a2f7c9}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{c4f6ebc7-ab53-4cdb-9a8d-93089f0515ad}</Implicit_Jitter_Distribution>
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
-    <Company>Žiga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Core</Title>
     <ProjectVersion>0.0.3.6</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>

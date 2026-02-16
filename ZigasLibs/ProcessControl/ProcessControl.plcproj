@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{3c665f21-fc11-446e-afe1-344c7a86d411}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{b2f8b50b-cdeb-489c-a59a-6072e6812446}</Implicit_Jitter_Distribution>
     <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.ProcessControl</Title>
     <ProjectVersion>0.0.2.2</ProjectVersion>
     <LibraryCategories>

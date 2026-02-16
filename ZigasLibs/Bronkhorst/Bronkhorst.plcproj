@@ -16,7 +16,7 @@
     <LibraryReferences>{a1bc4204-6e2f-49f0-947e-3075d4bfd72a}</LibraryReferences>
     <CompilerDefines>
     </CompilerDefines>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>Bronkhorst</Title>
     <ProjectVersion>0.0.2.0</ProjectVersion>
     <LibraryCategories>
@@ -69,9 +69,9 @@
     <SelectedLibraryCategories>
       <Id>{1a128fe5-11ee-46c6-b73b-9a7a3430ed3e}</Id>
     </SelectedLibraryCategories>
-    <DefaultNamespace>ZigaLibs_Bronkhorst</DefaultNamespace>
-    <Placeholder>ZigaLibs_Bronkhorst</Placeholder>
-    <Author>Žiga Javornik</Author>
+    <DefaultNamespace>ZigaLibs.Bronkhorst</DefaultNamespace>
+    <Placeholder>ZigaLibs.Bronkhorst</Placeholder>
+    <Author>Ziga Javornik</Author>
     <Description>Various bronkhorst device impleentations.</Description>
   </PropertyGroup>
   <ItemGroup>

@@ -18,10 +18,10 @@
   * **Array** ![](Folder.png)
     * [`ArrayHelper`](#arrayhelper) - **Program** ![alt](Program.png)
     * [`ST_ArrayProperties`](#st_arrayproperties) - **Structure** ![](Structure.png)
-    * `T_ArrayIndexer` - **Alias** ![](Enum.png)
+    * [`T_ArrayIndexer`](#t_arrayindexer) - **Alias** ![](Enum.png)
   * **Beckhoff** ![](Folder.png)
     * **Ads** ![](Folder.png)
-      * `AdsHelper `- **Program** ![alt](Program.png)
+      * [`AdsHelper `](#adshelper)- **Program** ![alt](Program.png)
       * `FB_HasAmsAddressFromProcessImage `- **Function Block** ![alt](Program.png)
       * `I_HasAmsAddress `- **Interface** ![alt](Interface.png)
     * **EtherCAT** ![](Folder.png)
@@ -546,3 +546,14 @@ FOR idx := 0 TO 10 BY 1 DO
     arr[idx] := FALSE;
 END_FOR
 ```
+
+---
+
+# AdsHelper
+
+*A helper class providing various helpful methods when working with ads data.*
+
+## Methods ![alt](MethodIcon.png)
+
+- [GetEthercatMasterIdFromNetIdString](#GetEthercatMasterIdFromNetIdString)
+

@@ -16,7 +16,7 @@
     <Implicit_KindOfTask>{52717836-3689-4093-bde6-1def1e0414d9}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{c70abf01-98a0-4440-bef6-512d89ca0f1e}</Implicit_Jitter_Distribution>
     <LibraryReferences>{36b524b5-0ebe-42d9-b7ba-46bb7107ad2d}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Released>false</Released>
     <Title>ZigaLibs.Aventics</Title>
     <ProjectVersion>0.0.1.0</ProjectVersion>
