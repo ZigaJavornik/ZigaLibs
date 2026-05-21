@@ -6,7 +6,7 @@
 FUNCTION_BLOCK FB_TcpIpCommControl
 
 VAR
-	_socketCloseAll			: Tc2_TcpIp.FB_SocketCloseAll;
+	_socketClose			: Tc2_TcpIp.FB_SocketClose;
 	_error					: BOOL;
 	_errorReceiving			: BOOL;
 	_errorSending			: BOOL;
@@ -51,14 +51,14 @@ METHOD Disconnect : BOOL]]></Declaration>
 	_clientServerControl.bEnable := FALSE;
 END_IF
 
-IF NOT _socketCloseAll.bBusy THEN
-	_socketCloseAll(bExecute := TRUE, sSrvNetId := '');
+IF NOT _socketClose.bBusy THEN
+	_socketClose(bExecute := TRUE, sSrvNetId := '', hSocket := _socketHandle);
 END_IF
-_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+_socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);
 _errorSending := FALSE;
 _errorReceiving := FALSE;
 
-Disconnect := NOT _socketCloseAll.bBusy;
+Disconnect := NOT _socketClose.bBusy;
 
 
 ]]></ST>
