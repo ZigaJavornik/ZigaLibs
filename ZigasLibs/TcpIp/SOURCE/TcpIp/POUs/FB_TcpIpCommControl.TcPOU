@@ -3,22 +3,29 @@
   <POU Name="FB_TcpIpCommControl" Id="{c1a18772-55c5-40c9-9a81-d2bef65ca48e}" SpecialFunc="None">
     <Declaration><![CDATA[// A function block for TcpIp control. Body should be called, 
 // but all the logic is done with method calling and awaiting "TRUE" returned when the method finishes.
-FUNCTION_BLOCK FB_TcpIpCommControl
+FUNCTION_BLOCK FB_TcpIpCommControl 
+EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath 
+IMPLEMENTS I_TcpIpCommControl
 
 VAR
-	_socketCloseAll			: Tc2_TcpIp.FB_SocketCloseAll;
+	_socketClose			: Tc2_TcpIp.FB_SocketClose;
 	_error					: BOOL;
 	_errorReceiving			: BOOL;
 	_errorSending			: BOOL;
 	_isConnected			: BOOL;
 	_clientServerControl	: Tc2_TcpIp.FB_ClientServerConnection;
 	_socketHandle			: Tc2_TcpIp.T_HSOCKET;
+	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[_clientServerControl(nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG, hSocket => _socketHandle);
 _error := _errorReceiving OR _errorSending OR _clientServerControl.bError;]]></ST>
     </Implementation>
+    <Folder Name="Constructor" Id="{8e03ba55-7e0e-08dc-121d-63148ed4730e}" />
+    <Folder Name="Private" Id="{2efa374f-f01f-026b-1d46-811c1330f5ed}">
+      <Folder Name="Methods" Id="{e8932037-c29c-0039-0710-e32b2dab25e8}" />
+    </Folder>
     <Folder Name="Public" Id="{fad2bedc-c621-0e7a-10b3-e31e1f06606d}">
       <Folder Name="Methods" Id="{ca322448-3c94-05d4-3845-31017722f3e8}" />
       <Folder Name="Properties" Id="{22abed52-9456-006d-1b18-e9ce2512ef08}" />
@@ -30,9 +37,24 @@ VAR_INPUT
 	Ipv4Address	: Tc2_System.T_IPv4Addr;	// Ip Address
 	Port		: UINT;	// Port
 END_VAR
+VAR_INST
+	connected	: R_TRIG;
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF THIS^.IsConnected = FALSE THEN
+        <ST><![CDATA[connected(CLK := _clientServerControl.eState = Tc2_TcpIp.E_SocketConnectionState.eSOCKET_CONNECTED AND NOT _clientServerControl.bError);
+IF connected.Q THEN
+	sb.AddString('Connected to')
+		.AddWithQuotationMark(_clientServerControl.sRemoteHost)
+		.AddString(' with port ')
+		.AddAny(_clientServerControl.nRemotePort);
+	THIS^.WriteInfoLog(sb.Create());
+END_IF
+
+IF THIS^.IsConnected = FALSE THEN
 	_clientServerControl.bEnable := TRUE;
 	_clientServerControl.sRemoteHost := Ipv4Address;
 	_clientServerControl.nRemotePort := Port;
@@ -45,20 +67,35 @@ END_IF
     </Method>
     <Method Name="Disconnect" Id="{ed43bf91-0d1a-4937-b486-9810fb451075}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Disconnects from the server and closes all active socket connections. Returns TRUE when done.
-METHOD Disconnect : BOOL]]></Declaration>
+METHOD Disconnect : BOOL
+VAR_INST
+	disconnected	: Tc2_Standard.F_TRIG;
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF _clientServerControl.bEnable THEN
+        <ST><![CDATA[disconnected(CLK := _socketClose.bBusy AND NOT _socketClose.bError);
+IF disconnected.Q THEN
+	sb.AddString('Disconnected from ')
+		.AddWithQuotationMark(_clientServerControl.sRemoteHost)
+		.AddString(' with port ')
+		.AddAny(_clientServerControl.nRemotePort);
+	THIS^.WriteInfoLog(sb.Create());
+END_IF
+
+IF _clientServerControl.bEnable THEN
 	_clientServerControl.bEnable := FALSE;
 END_IF
 
-IF NOT _socketCloseAll.bBusy THEN
-	_socketCloseAll(bExecute := TRUE, sSrvNetId := '');
+IF NOT _socketClose.bBusy THEN
+	_socketClose(bExecute := TRUE, sSrvNetId := '', hSocket := _socketHandle);
 END_IF
-_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+_socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);
 _errorSending := FALSE;
 _errorReceiving := FALSE;
 
-Disconnect := NOT _socketCloseAll.bBusy;
+Disconnect := NOT _socketClose.bBusy;
 
 
 ]]></ST>
@@ -76,6 +113,28 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FB_init" Id="{7ffdea42-4472-0096-2bdd-6e582451a91a}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger REF= logger;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetLogPrefix" Id="{18ab9aea-3da0-09f1-3eba-322fd828d465}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD GetLogPrefix : STRING
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLogPrefix := Tc2_Standard.CONCAT(THIS^.InstancePath, ': ');]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="IsConnected" Id="{5e9ad8a1-6ad5-4c8b-a48a-e8e88fb474a1}" FolderPath="Public\Properties\">
       <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
 PROPERTY PUBLIC IsConnected : BOOL]]></Declaration>
@@ -101,6 +160,9 @@ VAR_INST
 	eSocketReceiveState	: E_SocketReceiveState;
 	fbSocketReceive		: Tc2_TcpIp.FB_SocketReceive;
 	bReceiveError		: BOOL;
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eSocketReceiveState OF
@@ -132,6 +194,12 @@ END_VAR]]></Declaration>
 	E_SocketReceiveState.ERROR:
 		bReceiveError := TRUE;
 		eSocketReceiveState := E_SocketReceiveState.DONE;
+		
+		sb.AddString('Error while receiving from ')
+			.AddWithDblQuotationMarks(_socketHandle.remoteAddr)
+			.AddString('. Error code received is ')
+			.AddWithQuotationMark(fbSocketReceive.nErrId);
+		THIS^.WriteErrorLog(sb.Create());
 END_CASE
 
 _errorReceiving := bReceiveError;]]></ST>
@@ -177,6 +245,10 @@ VAR_INST
 	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
 	nSendDataCount		: UDINT;
 	bSendError			: BOOL;
+END_VAR
+
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eSsocketSendState OF
@@ -228,10 +300,47 @@ END_VAR]]></Declaration>
 	E_SocketSendState.ERROR:
 		bSendError := TRUE;
 		eSsocketSendState := E_SocketSendState.DONE;
+		sb.AddString('Error while sending from ')
+			.AddWithQuotationMark(_socketHandle.localAddr)
+			.AddString(' to ')
+			.AddWithDblQuotationMarks(_socketHandle.remoteAddr)
+			.AddString('. Command being sent was ')
+			.AddWithQuotationMark(sCommand)
+			.AddString('. Error code received is ')
+			.AddWithQuotationMark(fbSocketSend.nErrId);
+		THIS^.WriteErrorLog(sb.Create());
 		
 END_CASE
 
 _errorSending := bSendError;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteErrorLog" Id="{73b3d1d9-35e8-0cdd-1254-94fd3c0ce0ac}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD WriteErrorLog
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(_logger) THEN
+	RETURN;
+END_IF
+
+_logger.LogError(Tc2_Standard.CONCAT(THIS^.GetLogPrefix(), (message)));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteInfoLog" Id="{5261de02-aff5-0ae2-3636-4265a63b170c}" FolderPath="Private\Methods\">
+      <Declaration><![CDATA[METHOD WriteInfoLog
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(_logger) THEN
+	RETURN;
+END_IF
+
+_logger.LogInfo(Tc2_Standard.CONCAT(THIS^.GetLogPrefix(), (message)));]]></ST>
       </Implementation>
     </Method>
   </POU>

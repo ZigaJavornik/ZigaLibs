@@ -16,7 +16,7 @@
     <LibraryReferences>{c491a77c-4145-4306-8ed1-01557af11e68}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>TcpIp</Title>
-    <ProjectVersion>0.0.0.1</ProjectVersion>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -73,6 +73,9 @@
     <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\TcpIp\POUs\I_TcpIpCommControl.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -111,14 +114,15 @@
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-      </Parameters>
       <Namespace>TcUnit</Namespace>
       <Optional>true</Optional>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Core">
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
