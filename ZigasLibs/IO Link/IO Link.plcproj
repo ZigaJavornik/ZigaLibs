@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{d061a39f-5275-4b13-82ce-edf080ae85d3}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{5061a575-3bcc-466c-9266-8d16f9908d30}</Implicit_Jitter_Distribution>
     <LibraryReferences>{0e7156d5-ff2c-4e3a-8554-d8ceae361f7f}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.IoLink</Title>
     <ProjectVersion>0.0.0.1</ProjectVersion>
     <DefaultNamespace>ZigaLibs.IoLink</DefaultNamespace>

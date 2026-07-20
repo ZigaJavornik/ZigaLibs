@@ -19,7 +19,7 @@
     <ProjectVersion>0.2.0.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.File</DefaultNamespace>
     <Placeholder>ZigaLibs.File</Placeholder>
-    <Author>Žiga Javornik</Author>
+    <Author>Ziga Javornik</Author>
     <Description>Library containing logic for file handling and helper programs.</Description>
     <LibraryCategories>
       <LibraryCategory>

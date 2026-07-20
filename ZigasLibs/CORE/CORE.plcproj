@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{128fca6f-e694-4df5-b8c2-6bbfa2a2f7c9}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{c4f6ebc7-ab53-4cdb-9a8d-93089f0515ad}</Implicit_Jitter_Distribution>
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Core</Title>
     <ProjectVersion>0.0.3.6</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
@@ -217,12 +217,6 @@
     <Compile Include="SOURCE\Errors\I_HasGenericError.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\General\Collections\FB_Collection.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\General\Collections\I_Collection.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\General\FB_BooleanObserver.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -371,6 +365,9 @@
     <Compile Include="TESTS\Test suites\FB_StringHelper_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\Test suites\Time\FB_LocalSystemTime_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GVLs" />
@@ -384,7 +381,6 @@
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs" />
     <Folder Include="SOURCE\Beckhoff\EtherCAT\Diagnosis\DUTs\Device state" />
     <Folder Include="SOURCE\Errors\DUTs" />
-    <Folder Include="SOURCE\General\Collections" />
     <Folder Include="SOURCE\General\Variable information" />
     <Folder Include="SOURCE\General\Memory" />
     <Folder Include="SOURCE\General\Variable extensions" />
@@ -402,12 +398,9 @@
     <Folder Include="TESTS">
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Folder>
+    <Folder Include="TESTS\Test suites\Time" />
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderReference Include="Tc2_ControllerToolbox">
-      <DefaultResolution>Tc2_ControllerToolbox, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_ControllerToolbox</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_EtherCAT">
       <DefaultResolution>Tc2_EtherCAT, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_EtherCAT</Namespace>
@@ -435,15 +428,28 @@
     <PlaceholderReference Include="TcError">
       <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
-      <Condition>
-      </Condition>
-      <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <DefaultResolution>TcUnit, 1.3.0.0 (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Optional>true</Optional>
-      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>200</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>200</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITBUFFERSIZE</Key>
+          <Value>1</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>1000</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -457,9 +463,6 @@
     </LibraryReference>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderResolution Include="Tc2_ControllerToolbox">
-      <Resolution>Tc2_ControllerToolbox, 3.6.1.0 (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_IoFunctions">
       <Resolution>Tc2_IoFunctions, 3.4.5.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
@@ -467,7 +470,7 @@
       <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, 1.3.0.0 (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

@@ -14,12 +14,12 @@
     <Implicit_KindOfTask>{0abca5e7-67f9-4790-941c-93fe3da5deba}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{86796462-c72d-460d-9267-64bcd8f31d87}</Implicit_Jitter_Distribution>
     <LibraryReferences>{b4e87170-0c7a-4df3-9dc5-e3afe647b07b}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Logging</Title>
     <ProjectVersion>0.0.4.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Logging</DefaultNamespace>
     <Placeholder>ZigaLibs.Logging</Placeholder>
-    <Author>Žiga Javornik</Author>
+    <Author>Ziga Javornik</Author>
     <Description>A library containing file/logging functionalities.</Description>
     <CompilerDefines>
     </CompilerDefines>

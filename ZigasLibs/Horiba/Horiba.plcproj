@@ -14,7 +14,7 @@
     <Implicit_KindOfTask>{8834c526-2395-46c8-be4e-68c7ce690af9}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{31e95cca-fa4e-490c-8e65-49e7ab54ec79}</Implicit_Jitter_Distribution>
     <LibraryReferences>{9d78e551-7909-4a40-b13a-8521e287f4f9}</LibraryReferences>
-    <Company>Ziga</Company>
+    <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Horiba</Title>
     <ProjectVersion>0.0.1.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Horiba</DefaultNamespace>

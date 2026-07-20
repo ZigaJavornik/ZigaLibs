@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <Itf Name="I_TcpIpCommControl" Id="{67043732-a237-03d9-32d4-f101b9201dbd}">
+    <Declaration><![CDATA[// An interface for a fully functioning TCPIP control with only method calling
+INTERFACE I_TcpIpCommControl
+]]></Declaration>
+    <Method Name="Connect" Id="{48628900-6f9d-06e4-30d6-4f2ef800c3e2}">
+      <Declaration><![CDATA[// Connets to the target client with the provided Ip address and port
+METHOD Connect : BOOL
+VAR_INPUT
+	Ipv4Address	: Tc2_System.T_IPv4Addr;	// Ip Address
+	Port		: UINT;	// Port
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Disconnect" Id="{b1fe599a-dae1-03f1-3dde-cbee642b75c9}">
+      <Declaration><![CDATA[// Disconnects from the server and closes all active socket connections. Returns TRUE when done.
+METHOD Disconnect : BOOL]]></Declaration>
+    </Method>
+    <Property Name="Error" Id="{e988c6ef-45ab-0af2-13a2-77c58972fea1}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{93b52573-9911-0715-189c-271862bab6e4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsConnected" Id="{d9d4ad06-0b47-04e8-2300-5362c4552cd5}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC IsConnected : BOOL]]></Declaration>
+      <Get Name="Get" Id="{984d42ad-10f9-0fc3-3507-7dba08149b32}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Receive" Id="{ba862019-9919-0016-16e9-b800d75a384e}">
+      <Declaration><![CDATA[// Awaits a response from the client and returns TRUE when done. Response string can be found in the refResponse
+// Method needs to be called untill TRUE is returned to finish the sending sequence!
+METHOD Receive : BOOL
+VAR_INPUT
+	refResponse	: REFERENCE TO Tc2_System.T_MaxString;	// Response will be written to the string variable here
+END_VAR
+VAR_INST
+	sResponse			: Tc2_System.T_MaxString;
+	eSocketReceiveState	: E_SocketReceiveState;
+	fbSocketReceive		: Tc2_TcpIp.FB_SocketReceive;
+	bReceiveError		: BOOL;
+END_VAR]]></Declaration>
+    </Method>
+    <Property Name="ReconnectPeriod" Id="{d5710ec5-0983-0d82-38f0-54fdb03edc04}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+(* Gets or sets the reconnect period. 
+The value should not be set too low, since timeout periods of > 30 s may occur in the event of a network interruption. 
+If the value is too low, command execution would be interrupted prematurely, and ADS error code 1861 (timeout elapsed) 
+would be returned instead of the Winsocket error WSAETIMEDOUT.*)
+PROPERTY PUBLIC ReconnectPeriod : TIME]]></Declaration>
+      <Get Name="Get" Id="{daa213cb-5110-0495-1e33-d0dfe2382bf5}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{84f8de42-a6fb-0e3b-2929-5c0a52e7867f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="Send" Id="{a058ff05-c22b-08fc-3ab9-c212bd27de3f}">
+      <Declaration><![CDATA[// Sends the command to the client and returns TRUE when done. 
+// Method needs to be called untill TRUE is returned to finish the sending sequence!
+METHOD Send : BOOL
+VAR_INPUT
+	sCommand	: Tc2_System.T_MaxString;	// Command to be send
+END_VAR
+VAR_INST
+	fbSocketSend		: Tc2_TcpIp.FB_SocketSend;
+	eSsocketSendState	: E_SocketSendState;
+	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
+	nSendDataCount		: UDINT;
+	bSendError			: BOOL;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

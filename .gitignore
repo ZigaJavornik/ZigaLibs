@@ -288,3 +288,5 @@ _ModuleInstall/
 /ZigasLibs/_Config/PLC
 *.sln
 /.Zeugwerk
+package-lock.json
+package.json
