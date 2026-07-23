@@ -75,7 +75,7 @@ VAR
 	sb			: ZigaLibs_Core.FB_StringBuilder;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[disconnected(CLK := _socketClose.bBusy AND NOT _socketClose.bError);
+        <ST><![CDATA[disconnected(CLK := THIS^.IsConnected AND NOT THIS^.Error);
 IF disconnected.Q THEN
 	sb.AddString('Disconnected from ')
 		.AddWithQuotationMark(_clientServerControl.sRemoteHost)
@@ -88,10 +88,11 @@ IF _clientServerControl.bEnable THEN
 	_clientServerControl.bEnable := FALSE;
 END_IF
 
+(*
 IF NOT _socketClose.bBusy AND (_socketHandle.handle <> 0) THEN
 	_socketClose(bExecute := TRUE, sSrvNetId := '', hSocket := _socketHandle);
 END_IF
-_socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);
+_socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);*)
 _errorSending := FALSE;
 _errorReceiving := FALSE;
 
