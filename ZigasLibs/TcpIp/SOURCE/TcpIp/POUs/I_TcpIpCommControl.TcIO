@@ -37,12 +37,6 @@ PROPERTY PUBLIC IsConnected : BOOL]]></Declaration>
 METHOD Receive : BOOL
 VAR_INPUT
 	refResponse	: REFERENCE TO Tc2_System.T_MaxString;	// Response will be written to the string variable here
-END_VAR
-VAR_INST
-	sResponse			: Tc2_System.T_MaxString;
-	eSocketReceiveState	: E_SocketReceiveState;
-	fbSocketReceive		: Tc2_TcpIp.FB_SocketReceive;
-	bReceiveError		: BOOL;
 END_VAR]]></Declaration>
     </Method>
     <Property Name="ReconnectPeriod" Id="{d5710ec5-0983-0d82-38f0-54fdb03edc04}">
@@ -65,13 +59,6 @@ PROPERTY PUBLIC ReconnectPeriod : TIME]]></Declaration>
 METHOD Send : BOOL
 VAR_INPUT
 	sCommand	: Tc2_System.T_MaxString;	// Command to be send
-END_VAR
-VAR_INST
-	fbSocketSend		: Tc2_TcpIp.FB_SocketSend;
-	eSsocketSendState	: E_SocketSendState;
-	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
-	nSendDataCount		: UDINT;
-	bSendError			: BOOL;
 END_VAR]]></Declaration>
     </Method>
   </Itf>

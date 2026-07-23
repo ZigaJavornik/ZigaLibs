@@ -72,7 +72,7 @@ VAR_INST
 	disconnected	: Tc2_Standard.F_TRIG;
 END_VAR
 VAR
-	sb	: ZigaLibs_Core.FB_StringBuilder;
+	sb			: ZigaLibs_Core.FB_StringBuilder;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[disconnected(CLK := _socketClose.bBusy AND NOT _socketClose.bError);
@@ -88,7 +88,7 @@ IF _clientServerControl.bEnable THEN
 	_clientServerControl.bEnable := FALSE;
 END_IF
 
-IF NOT _socketClose.bBusy THEN
+IF NOT _socketClose.bBusy AND (_socketHandle.handle <> 0) THEN
 	_socketClose(bExecute := TRUE, sSrvNetId := '', hSocket := _socketHandle);
 END_IF
 _socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);
@@ -196,9 +196,9 @@ END_VAR]]></Declaration>
 		eSocketReceiveState := E_SocketReceiveState.DONE;
 		
 		sb.AddString('Error while receiving from ')
-			.AddWithDblQuotationMarks(_socketHandle.remoteAddr)
+			.AddWithDblQuotationMarks(_socketHandle.remoteAddr.sAddr)
 			.AddString('. Error code received is ')
-			.AddWithQuotationMark(fbSocketReceive.nErrId);
+			.AddWithQuotationMark(TO_STRING(fbSocketReceive.nErrId));
 		THIS^.WriteErrorLog(sb.Create());
 END_CASE
 
@@ -301,13 +301,13 @@ END_VAR]]></Declaration>
 		bSendError := TRUE;
 		eSsocketSendState := E_SocketSendState.DONE;
 		sb.AddString('Error while sending from ')
-			.AddWithQuotationMark(_socketHandle.localAddr)
+			.AddWithQuotationMark(_socketHandle.localAddr.sAddr)
 			.AddString(' to ')
-			.AddWithDblQuotationMarks(_socketHandle.remoteAddr)
+			.AddWithDblQuotationMarks(_socketHandle.remoteAddr.sAddr)
 			.AddString('. Command being sent was ')
 			.AddWithQuotationMark(sCommand)
 			.AddString('. Error code received is ')
-			.AddWithQuotationMark(fbSocketSend.nErrId);
+			.AddWithQuotationMark(TO_STRING(fbSocketSend.nErrId));
 		THIS^.WriteErrorLog(sb.Create());
 		
 END_CASE
