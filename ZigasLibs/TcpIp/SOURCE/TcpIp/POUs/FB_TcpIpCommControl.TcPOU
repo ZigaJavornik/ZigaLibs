@@ -8,7 +8,6 @@ EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
 IMPLEMENTS I_TcpIpCommControl
 
 VAR
-	_socketClose			: Tc2_TcpIp.FB_SocketClose;
 	_error					: BOOL;
 	_errorReceiving			: BOOL;
 	_errorSending			: BOOL;
@@ -46,6 +45,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[connected(CLK := _clientServerControl.eState = Tc2_TcpIp.E_SocketConnectionState.eSOCKET_CONNECTED AND NOT _clientServerControl.bError);
+
 IF connected.Q THEN
 	sb.AddString('Connected to')
 		.AddWithQuotationMark(_clientServerControl.sRemoteHost)
@@ -76,6 +76,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[disconnected(CLK := THIS^.IsConnected AND NOT THIS^.Error);
+
 IF disconnected.Q THEN
 	sb.AddString('Disconnected from ')
 		.AddWithQuotationMark(_clientServerControl.sRemoteHost)
@@ -88,11 +89,6 @@ IF _clientServerControl.bEnable THEN
 	_clientServerControl.bEnable := FALSE;
 END_IF
 
-(*
-IF NOT _socketClose.bBusy AND (_socketHandle.handle <> 0) THEN
-	_socketClose(bExecute := TRUE, sSrvNetId := '', hSocket := _socketHandle);
-END_IF
-_socketClose(bExecute := FALSE, sSrvNetId := '', hSocket := _socketHandle);*)
 _errorSending := FALSE;
 _errorReceiving := FALSE;
 
@@ -156,6 +152,7 @@ METHOD Receive : BOOL
 VAR_INPUT
 	refResponse	: REFERENCE TO Tc2_System.T_MaxString;	// Response will be written to the string variable here
 END_VAR
+
 VAR_INST
 	sResponse			: Tc2_System.T_MaxString;
 	eSocketReceiveState	: E_SocketReceiveState;
