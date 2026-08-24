@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_ArrayHelper_Tests" Id="{6e9b477f-91da-07b8-384b-0f33de518108}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_ArrayHelper_Tests EXTENDS FB_TestSuite
 VAR_INPUT
@@ -20,7 +20,8 @@ Test09_InsertIntoEmptyArray_ExpectOnlyFirstItem();
 Test10_CheckIfArrayContainsItem();
 Test11_ClearArray_ExpectEmptyArray();
 Test12_ReferenceToArrayWithAllMethods_ExpectNormalResults();
-Test13_FindLastOccupiedItem();]]></ST>
+Test13_FindLastOccupiedItem();
+Test14_ShiftDown_ExpectFirstElementOverwriteLastElementZero();]]></ST>
     </Implementation>
     <Method Name="Test01_GetArrayElementCount" Id="{2f0a8400-5b23-0ca4-3735-368e9840cbd2}">
       <Declaration><![CDATA[METHOD Test01_GetArrayElementCount
@@ -185,41 +186,32 @@ TcUnit.TEST_FINISHED();]]></ST>
 VAR_INPUT
 END_VAR
 
-VAR
-	arr	: ARRAY[0..100] OF INT;
+VAR_INST
+	arr	: ARRAY[0..20] OF INT;
 	i	: int;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test06_ShiftUp_ExpectLastElementOverwriteFirstElementZero');
 
-FOR i := 0 TO 100 BY 1 DO
+FOR i := 0 TO 20 BY 1 DO
 	arr[i] := i;
 END_FOR
 
 ArrayHelper.ShiftUp(
 	arr := arr,
 	dataType := arr[0]);
-
 AssertEquals_INT(
 	Actual := arr[0],
 	Expected := 0,
-	Message := 'Shifting up, first element is not correct!');
+	Message := 'Shifting the array up, first element should be set to 0!');
 	
-AssertEquals_INT(
-	Actual := arr[1],
-	Expected := 0,
-	Message := 'Shifting up, second element is not correct!');
-	
-AssertEquals_INT(
-	Actual := arr[2],
-	Expected := 1,
-	Message := 'Shifting up, third element is not correct!');
-	
-AssertEquals_INT(
-	Actual := arr[100],
-	Expected := 99,
-	Message := 'Shifting up, last element is not correct!');
+FOR i := 1 TO 20 BY 1 DO
+	AssertEquals_INT(
+		Actual := arr[i],
+		Expected := i-1,
+		Message := Tc2_Standard.CONCAT('Shifting up failed! Incorrect value at position ', TO_STRING(i)));
+END_FOR
 	
 TcUnit.TEST_FINISHED();
 ]]></ST>
@@ -547,6 +539,43 @@ AssertEquals_INT(
 	Message := 'Incorrect result when finding last occupied element.');
 	
 TcUnit.TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test14_ShiftDown_ExpectFirstElementOverwriteLastElementZero" Id="{e80b21d9-d3f9-0ea9-07b5-130b5201d4b3}">
+      <Declaration><![CDATA[METHOD Test14_ShiftDown_ExpectFirstElementOverwriteLastElementZero
+VAR_INPUT
+END_VAR
+
+VAR
+	arr	: ARRAY[0..20] OF INT;
+	i	: int;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST('Test14_ShiftDown_ExpectFirstElementOverwriteLastElementZero');
+
+FOR i := 0 TO 20 BY 1 DO
+	arr[i] := i;
+END_FOR
+
+ArrayHelper.ShiftDown(
+	arr := arr,
+	dataType := arr[0]);
+	
+AssertEquals_INT(
+	Actual := arr[20],
+	Expected := 0,
+	Message := 'Shifting the array down, last element should be set to 0!');
+	
+FOR i := 19 TO 0 BY -1 DO
+	AssertEquals_INT(
+		Actual := arr[i],
+		Expected := i+1,
+		Message := Tc2_Standard.CONCAT('Shifting up failed! Incorrect value at position ', TO_STRING(i)));
+END_FOR
+	
+TcUnit.TEST_FINISHED();
+]]></ST>
       </Implementation>
     </Method>
   </POU>

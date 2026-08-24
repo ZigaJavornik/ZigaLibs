@@ -18,7 +18,7 @@ VAR
 	//EthercatDiagnosisTests			: FB_EthercatDiagnosis_Tests;
 	MallocTests						: FB_Malloc_Tests;
 	StringHelperTests				: FB_StringHelper_Tests;
-	LocalSystemTimeTests	: FB_LocalSystemTime_Tests;
+	LocalSystemTimeTests			: FB_LocalSystemTime_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

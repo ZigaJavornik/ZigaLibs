@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="ArrayHelper" Id="{1d7a0d08-3c88-00ea-2870-5cdbd9795f9a}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'enable_dynamic_creation'}
 // Provides array helper methods for easier work with arrays accross programming.
@@ -255,8 +255,7 @@ END_VAR
 	RETURN;
 END_IF
 
-// Shift items by copying
-Tc2_System.MEMCPY(
+Tc2_System.MEMMOVE(	
 	destAddr := arr.pValue,
 	srcAddr := arr.pValue + DINT_TO_UDINT(dataType.diSize),
 	n := DINT_TO_UDINT(arr.diSize - dataType.diSize));
@@ -275,14 +274,15 @@ VAR_INPUT
 	arr			: ANY;	// Array to be checked.
 	dataType	: ANY;	// Data type of the array elements, can be used like this : datayType := arr[0]
 END_VAR
+
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ValidateArrayVar(arr) = FALSE THEN
 	RETURN;
 END_IF
 
-// Shift items by copying
-Tc2_System.MEMCPY(
+
+Tc2_System.MEMMOVE(
 	destAddr := arr.pValue + DINT_TO_UDINT(dataType.diSize),
 	srcAddr := arr.pValue,
 	n := DINT_TO_UDINT(arr.diSize - dataType.diSize));
