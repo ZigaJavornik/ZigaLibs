@@ -16,7 +16,7 @@
     <LibraryReferences>{cb97b82f-404b-4a9b-a89e-8e8aa218b5fc}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Core</Title>
-    <ProjectVersion>0.0.3.6</ProjectVersion>
+    <ProjectVersion>0.0.3.7</ProjectVersion>
     <DefaultNamespace>ZigaLibs.Core</DefaultNamespace>
     <Placeholder>ZigaLibs.Core</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -306,9 +306,6 @@
     <Compile Include="SOURCE\Time\I_LocalSystemTimeProvider.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Time\TimeHelper.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TestsTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -426,28 +423,33 @@
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="TcError">
-      <DefaultResolution>TcError, 0.2.2.0 (Roald87)</DefaultResolution>
+      <DefaultResolution>TcError, * (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, 1.3.0.0 (www.tcunit.org)</DefaultResolution>
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
       <Parameters>
         <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>200</Value>
+          <Value>300</Value>
         </Parameter>
         <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>200</Value>
+          <Value>300</Value>
         </Parameter>
         <Parameter ListName="GVL_PARAM_TCUNIT">
           <Key>XUNITBUFFERSIZE</Key>
           <Value>1</Value>
         </Parameter>
         <Parameter ListName="GVL_PARAM_TCUNIT">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>1000</Value>
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#100ms</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
+          <Value>200</Value>
         </Parameter>
       </Parameters>
     </PlaceholderReference>
@@ -467,10 +469,10 @@
       <Resolution>Tc2_IoFunctions, 3.4.5.0 (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcError">
-      <Resolution>TcError, 0.2.2.0 (Roald87)</Resolution>
+      <Resolution>TcError, 0.2.2.1 (Roald87)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.0.0 (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
