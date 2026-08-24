@@ -230,55 +230,17 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
       <Optional>true</Optional>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSUITES</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
-          <Value>100</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
-          <Value>1000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITBUFFERSIZE</Key>
-          <Value>65535</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
-          <Value>2000</Value>
-        </Parameter>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
-          <Value>TIME#0ms</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
-      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Logging">
       <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
       <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="ZigaLibs_TcpIp">
-      <DefaultResolution>TcpIp, * (Ziga)</DefaultResolution>
+    <PlaceholderReference Include="ZigaLibs.TcpIp">
+      <DefaultResolution>TcpIp, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_TcpIp</Namespace>
     </PlaceholderReference>
   </ItemGroup>
@@ -288,8 +250,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderResolution Include="ZigaLibs_TcpIp">
-      <Resolution>TcpIp, 0.0.0.1 (Ziga)</Resolution>
+    <PlaceholderResolution Include="TcUnit">
+      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.Core">
+      <Resolution>ZigaLibs.Core, 0.0.3.6 (Ziga Javornik)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.TcpIp">
+      <Resolution>TcpIp, 0.0.2.1 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
