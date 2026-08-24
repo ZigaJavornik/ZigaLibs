@@ -47,7 +47,11 @@ END_IF
 
 IF sourceString.diSize <= SIZEOF(Tc2_System.T_MaxString) THEN
 	tmpStr := __NEW(BYTE, SIZEOF(Tc2_System.T_MaxString));
-	tmpStr := sourceString.pValue;
+	Tc2_System.MEMCPY(
+		destAddr := tmpStr,
+		srcAddr := sourceString.pValue,
+		n := DINT_TO_UDINT(sourceString.diSize));
+	//tmpStr := sourceString.pValue;
 	position :=  Tc2_Standard.FIND(tmpStr^, stringToFind);
 	FindStringWithin := position <> 0;
 	__DELETE(tmpStr);
