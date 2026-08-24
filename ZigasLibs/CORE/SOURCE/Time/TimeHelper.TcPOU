@@ -183,59 +183,59 @@ END_VAR]]></Declaration>
         <ST><![CDATA[CASE timeFormat OF
 	E_TimeFormat.DDMMYY:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.Create();
 
 	E_TimeFormat.HHMMSS:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(TimestructHourToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(TimestructMinuteToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.AddString(TimestructSecondToString(in, fillWithZeros))
 			.Create();
 			
 		IF IncludeMilliseconds THEN
 			result := stringBuilder.AddString(timeOfDaySeperator)
-				.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+				.AddString(TimestructMillisecondToString(in, fillWithZeros))
 				.Create();
 		END_IF
 			
 	E_TimeFormat.MMDDYY:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.Create();
 
 	E_TimeFormat.YYMMDD:	
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.Create();
 		
 	E_TimeFormat.DDMMYY_HHMMSS:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.AddString('_')
-			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(TimestructHourToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(TimestructMinuteToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.AddString(TimestructSecondToString(in, fillWithZeros))
 			.Create();
 			
 			IF IncludeMilliseconds THEN
@@ -246,43 +246,43 @@ END_VAR]]></Declaration>
 
 	E_TimeFormat.MMDDYY_HHMMSS:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.AddString('_')
-			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(TimestructHourToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(TimestructMinuteToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.AddString(TimestructSecondToString(in, fillWithZeros))
 			.Create();
 			
 			IF IncludeMilliseconds THEN
 				result := stringBuilder.AddString(timeOfDaySeperator)
-					.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+					.AddString(TimestructMillisecondToString(in, fillWithZeros))
 					.Create();
 			END_IF
 
 	E_TimeFormat.YYMMDD_HHMMSS:
 		result := stringBuilder.Reset()
-			.AddString(THIS^.TimestructYearToString(in))
+			.AddString(TimestructYearToString(in))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructMonthToString(in, fillWithZeros))
+			.AddString(TimestructMonthToString(in, fillWithZeros))
 			.AddString(dateSeperator)
-			.AddString(THIS^.TimestructDayToString(in, fillWithZeros))
+			.AddString(TimestructDayToString(in, fillWithZeros))
 			.AddString('_')
-			.AddString(THIS^.TimestructHourToString(in, fillWithZeros))
+			.AddString(TimestructHourToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructMinuteToString(in, fillWithZeros))
+			.AddString(TimestructMinuteToString(in, fillWithZeros))
 			.AddString(timeOfDaySeperator)
-			.AddString(THIS^.TimestructSecondToString(in, fillWithZeros))
+			.AddString(TimestructSecondToString(in, fillWithZeros))
 			.Create();
 			
 			IF IncludeMilliseconds THEN
 				result := stringBuilder.AddString(timeOfDaySeperator)
-					.AddString(THIS^.TimestructMillisecondToString(in, fillWithZeros))
+					.AddString(TimestructMillisecondToString(in, fillWithZeros))
 					.Create();
 			END_IF				
 END_CASE
