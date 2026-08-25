@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_Logger_Tests" Id="{56576e73-0b8d-04b4-2a1d-ddaf5d4df6a5}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_Logger_Tests EXTENDS FB_TestSuite
 VAR
@@ -10,9 +10,10 @@ VAR
 END_VAR
 
 VAR CONSTANT
-	FOLDER_PATH	: Tc2_System.T_MaxString := 'C:\ZigaLibsTestsFolder\';
-	NET_ID		: Tc2_System.T_AmsNetID := '192.168.53.126.1.1';
-	LOG_NAME	: Tc2_System.T_MaxString := 'MyLog';
+	FOLDER_PATH			: Tc2_System.T_MaxString 	:= '/home/Administrator/ZigaLibsTestFolder/LoggerTests/';
+	NET_ID				: Tc2_System.T_AmsNetID 	:= '';
+	LOG_NAME			: Tc2_System.T_MaxString 	:= 'MyLog';
+	DATE_TIME_MAX_VALUE	: DT  := DATE_AND_TIME#2106-02-07-06:28:15;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Configure logger...
@@ -38,8 +39,27 @@ Test03_LogInfo();
 Test04_LogGeneric();
 Test05_LogConfiguration_RollingIntervalSetTo0_ExpectOnlyFileName();
 Test06_FileExtension_DotAddedAutomaticallyIfNotProvided();
-Test07_ConfigurationDoesNotChangeUntilApplyIsCalled();]]></ST>
+Test07_ConfigurationDoesNotChangeUntilApplyIsCalled();
+Cleanup();]]></ST>
     </Implementation>
+    <Method Name="Cleanup" Id="{3947db41-fb1b-0621-0648-25267892de4b}">
+      <Declaration><![CDATA[METHOD Cleanup
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Cleanup') THEN
+	IF ZigaLibs_File.Utilities.Directory.DeleteFilesCreatedBefore(
+		path := FOLDER_PATH, 
+		fileNameContains := '.log', 
+		netId := '', 
+		thresholdDate := DATE_TIME_MAX_VALUE)
+	THEN
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Test01_LogError" Id="{d8907491-afae-0e50-10f7-6c16a49476f3}">
       <Declaration><![CDATA[METHOD Test01_LogError
 VAR_INST
