@@ -46,10 +46,18 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF directoryUtilities.ListAll(path := path, netId := netId, items :=files, error => error, errorInfo => errorInfo) THEN
 	lastPathPart := path;
-	WHILE Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorLeft) <> 0 DO
-		charPosiiton := Tc2_Standard.FIND(lastPathPart, pathSeperatorLeft);
-		lastPathPart := Tc2_Standard.DELETE(lastPathPart, charPosiiton, 1);
-	END_WHILE
+	
+	IF Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorLeft) <> 0 THEN
+		WHILE Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorLeft) <> 0 DO
+			charPosiiton := Tc2_Standard.FIND(lastPathPart, pathSeperatorLeft);
+			lastPathPart := Tc2_Standard.DELETE(lastPathPart, charPosiiton, 1);
+		END_WHILE		
+	ELSIF Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorRight) <> 0 THEN	
+		WHILE Tc2_Standard.FIND(STR1 := lastPathPart, STR2 := pathSeperatorRight) <> 0 DO
+			charPosiiton := Tc2_Standard.FIND(lastPathPart, pathSeperatorRight);
+			lastPathPart := Tc2_Standard.DELETE(lastPathPart, charPosiiton, 1);
+		END_WHILE	
+	END_IF
 	
 	FOR index := 0 TO 100 BY 1 DO
 		currentFileEntry := files[index];

@@ -8,9 +8,6 @@ VAR_OUTPUT
 END_VAR
 VAR
 	_directoryUtilities	: FB_DirectoryUtilities;
-END_VAR
-VAR CONSTANT
-	FILE_PATH	: Tc2_System.T_MaxString := 'Hard Disk\Tests\FileHandler\';
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod();
@@ -35,7 +32,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_CreateFile_Wait3Seconds_DeleteWithFileCreatedBeforeMethod') THEN
 	IF NOT fileCreated THEN
-		IF Utilities.File.Create(FILE_PATH, 'FileToDeleteViaDeleteBeforeMethod.txt', '', FALSE, 
+		IF Utilities.File.Create(PRG_TESTS.FILE_HANDLER_TESTS_PATH, 'FileToDeleteViaDeleteBeforeMethod.txt', '', FALSE, 
 			error => error ,errorInfo => errorInfo)
 		THEN
 			fileCreated := TRUE;
@@ -45,7 +42,7 @@ END_VAR]]></Declaration>
 		delayForDelete(IN := TRUE, PT := T#3S);
 		IF delayForDelete.Q THEN
 			getSystemTime(timeHiDW => fileTime.dwHighDateTime, timeLoDW => fileTime.dwLowDateTime);
-			IF _directoryUtilities.DeleteFilesCreatedBefore(FILE_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dtUpperLimit, 
+			IF _directoryUtilities.DeleteFilesCreatedBefore(PRG_TESTS.FILE_HANDLER_TESTS_PATH, 'FileToDeleteViaDeleteBeforeMet', '', dtUpperLimit, 
 				error=> error, errorInfo => errorInfo, deletedFiles => deletedFiles)
 			THEN
 				AssertTrue(deletedFiles[0] = 'FileToDeleteViaDeleteBeforeMethod.txt', 'Deleted files list contains no items!');
@@ -71,12 +68,9 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_TryDeletingButNoFilesMatchCriteria_ExpectNoErrors') THEN
-	IF Utilities.Directory.DeleteFilesCreatedBefore('C:\ZigaLibsTestsFolder\', 'MyLog', '192.168.53.126.1.1', dtUpperLimit, 
+	IF Utilities.Directory.DeleteFilesCreatedBefore(PRG_TESTS.FILE_HANDLER_TESTS_PATH, 'MyLog', PRG_TESTS.NET_ID, dtUpperLimit, 
 				error=> error, errorInfo => errorInfo, deletedFiles => deletedFiles) THEN
-	AssertFalse(
-		error, 
-		'An error has happened attempting to call the DeleteFilesCreatedBefore with no matching content provided.');		
-		
+	AssertFalse(error, 'An error has happened attempting to call the DeleteFilesCreatedBefore with no matching content provided.');
 	TcUnit.TEST_FINISHED();
 	END_IF
 END_IF]]></ST>

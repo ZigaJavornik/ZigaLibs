@@ -13,7 +13,13 @@ VAR
 	FileUtilitiesTests		: FB_FileUtilities_Tests;
 	DirectoryUtilitiesTests	: FB_DirectoryUtilities_Tests;
 END_VAR
-]]></Declaration>
+
+VAR CONSTANT
+	FILE_HANDLER_TESTS_PATH			: Tc2_System.T_MaxString := '/home/Administrator/ZigaLibsTestFolder/FileHandlerTests/';
+	FILE_HANDLER_TESTS_DIRECTORY	: Tc2_System.T_MaxString := '/home/Administrator/ZigaLibsTestFolder/FileHandlerTests';
+	NET_ID							: Tc2_System.T_AmsNetID := '';
+	DATE_TIME_MAX_VALUE				: DT  := DATE_AND_TIME#2106-02-07-06:28:15;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// Run tests in parallel
 //TcUnit.RUN();

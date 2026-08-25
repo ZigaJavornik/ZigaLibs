@@ -16,7 +16,7 @@
     <LibraryReferences>{a71ffb3f-1a1c-467b-9f97-f045e92e9308}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.File</Title>
-    <ProjectVersion>0.2.0.0</ProjectVersion>
+    <ProjectVersion>0.2.2.0</ProjectVersion>
     <DefaultNamespace>ZigaLibs.File</DefaultNamespace>
     <Placeholder>ZigaLibs.File</Placeholder>
     <Author>Ziga Javornik</Author>
@@ -214,23 +214,26 @@
       <DefaultResolution>TcError, * (Roald87)</DefaultResolution>
       <Namespace>TcError</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
+      <Optional>true</Optional>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
+    </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
-      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
-    </PlaceholderResolution>
   </ItemGroup>
   <ItemGroup>
     <None Include="File.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="ZigaLibs.Core">
+      <Resolution>ZigaLibs.Core, 0.0.3.7 (Ziga Javornik)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
