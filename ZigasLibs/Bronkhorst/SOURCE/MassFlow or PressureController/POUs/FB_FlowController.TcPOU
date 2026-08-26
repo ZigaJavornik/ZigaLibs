@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_FlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
     <Declaration><![CDATA[(* Bronkhorst mass flow/pressure controller device implementation.
 ============================================================================================================================================================================================
@@ -13,13 +13,12 @@ mode := E_ControllerMode.Controlling); // [E_ControllerMode] Controller initial 
 ============================================================================================================================================================================================
 *)
 
-FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath IMPLEMENTS ZigaLibs_Core.I_ReadsCoE
+FUNCTION_BLOCK FB_FlowController EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
 VAR_INPUT
-	bEnable			: BOOL;	// Enables controller
-	fSetpoint		: REAL;	// Setpoint to the controller
-	bReadParameters	: BOOL; // Reads CoE parameters on rising edge trigger
+	bEnable				: BOOL;	// Enables controller
+	fSetpoint			: REAL;	// Setpoint to the controller
+	bReadParameters		: BOOL; // Reads CoE parameters on rising edge trigger
 END_VAR
-
 VAR_OUTPUT
 	fMeassuredValue	: REAL;	// Measured value, reported from the controller
 	fValvePosition	: REAL;	// Valve position
@@ -45,13 +44,20 @@ VAR
 	_predictedFlowCapacity	: REAL;
 	_predictedGasType		: STRING;
 	_predictedFlowUnit		: STRING;
-	_writeModeRequired		: BOOL;
-	_validateModeWrite		: BOOL;
-	_controlModeTmp			: E_ControllerMode;
-	_coeReadWrite			: ZigaLibs_Core.FB_CoeReadWrite;
-	_readParametersRequest	: Tc2_Standard.R_TRIG;
-	_parametersReadingInProgress	: BOOL;
-	_readBoxName			: ZigaLibs_Core.FB_ReadBoxName;
+	_writeModeRequired					: BOOL;
+	_validateModeWrite					: BOOL;
+	_controlModeTmp						: E_ControllerMode;
+	_coeReadWrite						: ZigaLibs_Core.FB_CoeReadWrite;
+	_readParametersRequest				: Tc2_Standard.R_TRIG;
+	_parametersReadingInProgress		: BOOL;
+	_readBoxName						: ZigaLibs_Core.FB_ReadBoxName;
+	_controllerSpeed					: UINT := 1;
+	_updateControllerSpeedRequired		: BOOL;
+	_validateControllerSpeed			: BOOL;
+END_VAR
+
+VAR CONSTANT
+	VALVE_FULLY_OPENED_VALUE : REAL := 617.0;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -64,7 +70,7 @@ ELSE
 END_IF
 
 fMeassuredValue := CalculateMeasuredValue();
-fValvePosition := UINT_TO_REAL(Inputs.ValvePosition)/6.17;
+fValvePosition := 100.0 * UINT_TO_REAL(Inputs.ValvePosition)/VALVE_FULLY_OPENED_VALUE;
 
 IF bFirstExecution THEN
 	IF ReadCoE() THEN
@@ -84,7 +90,77 @@ IF _parametersReadingInProgress THEN
 	END_IF
 END_IF
 
-IF _writeModeRequired AND_THEN _coeReadWrite.WriteAny(
+// Controller mode writing and validation
+ControllerModeWriting();
+// Controller speed writing and validation
+ControllerSpeedWriting();
+
+// Status of the controller
+_status.ControllerOn := Inputs.StatusWord.0;
+_status.SelfOptimization := Inputs.StatusWord.1;
+_status.ManualMode := Inputs.StatusWord.2;
+_status.SetpointSwitch := Inputs.StatusWord.3;
+_status.OptimizationError := Inputs.StatusWord.4;
+_status.DataNotValid := Inputs.StatusWord.8;
+_status.Overload := Inputs.StatusWord.9;
+_status.NetOverload := Inputs.StatusWord.10;]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{1fe8449f-b94f-0219-22c8-3649cc7cb3b5}" />
+    <Folder Name="Methods" Id="{781a0c72-4665-06e8-0df1-e5645502800d}">
+      <Folder Name="Private" Id="{55280652-3923-0ff0-1e6d-a79890bbbafd}" />
+    </Folder>
+    <Folder Name="Properties" Id="{fa74778b-e175-0074-22d3-af8310e3452c}">
+      <Folder Name="Public" Id="{d42222ef-efab-0798-30b6-38d24b323a35}" />
+    </Folder>
+    <Method Name="CalculateMeasuredValue" Id="{ea423dd2-8de1-0f73-3034-64ced1bcd87c}" FolderPath="Methods\Private\">
+      <Declaration><![CDATA[METHOD PRIVATE CalculateMeasuredValue : REAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CalculateMeasuredValue :=  UINT_TO_REAL(Inputs.MeassuredValue) / LREAL_TO_REAL(EXPT(10,_CoeList.DecimalDigits.Value));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CalculateSetpointValue" Id="{86689ca6-4c77-0658-332d-fdb5f75df13a}" FolderPath="Methods\Private\">
+      <Declaration><![CDATA[METHOD PRIVATE CalculateSetpointValue : INT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CalculateSetpointValue := REAL_TO_INT(fSetpoint * LREAL_TO_REAL(EXPT(10, _CoeList.DecimalDigits.Value)));]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Capacity" Id="{151e0e68-21c0-0cd2-1fbe-f6ddb4155f36}" FolderPath="Properties\Public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets capacity of the device
+PROPERTY Capacity : REAL]]></Declaration>
+      <Get Name="Get" Id="{e4917337-5c75-0576-1f6e-fc4f12ed5d88}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Capacity := _CoeList.Capacity.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CapacityUnit" Id="{2b8d7175-dc8f-0228-2ee3-e0fa3fc3423f}" FolderPath="Properties\Public\">
+      <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the capacity unit of the device
+PROPERTY CapacityUnit : STRING(30)]]></Declaration>
+      <Get Name="Get" Id="{d53e5f36-16a4-0e81-13ff-1ee900c38d84}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CapacityUnit := _CoeList.CapacityUnit.Value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ControllerModeWriting" Id="{86573b76-921d-091b-05fa-1c781c85c976}" FolderPath="Methods\Private\">
+      <Declaration><![CDATA[METHOD PRIVATE ControllerModeWriting
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _writeModeRequired AND_THEN _coeReadWrite.WriteAny(
 		CoeEntry := ADR(_CoeList.ControlMode),
 		Value := _mode,
 		SlaveAddr := Inputs.AmsAddr)
@@ -125,63 +201,84 @@ THEN
 				.Create());
 		END_IF
 	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ControllerSpeed" Id="{33902a1a-128e-0979-257e-b44f523dabd9}" FolderPath="Properties\Public\">
+      <Declaration><![CDATA[{attribute 'monitoring'='call'}
+(*Gets or sets the controller speed.
+The controller speed is default set on 1, increasing THIS number will make it faster. 
+Please be aware that increasing the controller speed can lead to oscillation when setpoint steps are to steep, 
+this will need to be fine-tuned on site to find the optimum setting for the process*)
+PROPERTY PUBLIC ControllerSpeed : UINT := 1]]></Declaration>
+      <Get Name="Get" Id="{54a331f5-4c37-0900-0061-fef21ea101f6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ControllerSpeed := _controllerSpeed; ]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{e942ea90-11d2-073e-13fb-7e4be4358ddd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF ControllerSpeed <> _controllerSpeed THEN
+	_updateControllerSpeedRequired := TRUE;
+END_IF
+_controllerSpeed := ControllerSpeed;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="ControllerSpeedWriting" Id="{06283e55-0dfb-0fc5-08c2-23994032f88e}" FolderPath="Methods\Private\">
+      <Declaration><![CDATA[METHOD PRIVATE ControllerSpeedWriting
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _updateControllerSpeedRequired AND_THEN _coeReadWrite.WriteAny(
+		CoeEntry := ADR(_CoeList.ControllerSpeed),
+		Value := _controllerSpeed,
+		SlaveAddr := Inputs.AmsAddr)
+THEN
+	IF _writeLogs THEN
+	_logger.LogInfo(message := _stringBuilder.Reset()
+		.AddString(str := _logPrefix)
+		.AddString(str := 'Finished writing controller speed for EtherCAT device ')
+		.AddWithDblQuotationMarks(str := _ethercatBoxName)
+		.AddString(str := '.')
+		.Create());
+	END_IF
+	_validateControllerSpeed := TRUE;
+	_updateControllerSpeedRequired := FALSE;
 END_IF
 
-// Status of the controller
-_status.ControllerOn := Inputs.StatusWord.0;
-_status.SelfOptimization := Inputs.StatusWord.1;
-_status.ManualMode := Inputs.StatusWord.2;
-_status.SetpointSwitch := Inputs.StatusWord.3;
-_status.OptimizationError := Inputs.StatusWord.4;
-_status.DataNotValid := Inputs.StatusWord.8;
-_status.Overload := Inputs.StatusWord.9;
-_status.NetOverload := Inputs.StatusWord.10;]]></ST>
-    </Implementation>
-    <Folder Name="Constructor" Id="{1fe8449f-b94f-0219-22c8-3649cc7cb3b5}" />
-    <Method Name="CalculateMeasuredValue" Id="{ea423dd2-8de1-0f73-3034-64ced1bcd87c}">
-      <Declaration><![CDATA[METHOD PRIVATE CalculateMeasuredValue : REAL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CalculateMeasuredValue :=  UINT_TO_REAL(Inputs.MeassuredValue) / LREAL_TO_REAL(EXPT(10,_CoeList.DecimalDigits.Value));]]></ST>
+IF _validateControllerSpeed AND_THEN _coeReadWrite.ReadAny(
+		CoeEntry := ADR(_CoeList.ControllerSpeed),
+		Value := _CoeList.ControlMode.Value,
+		SlaveAddr := Inputs.AmsAddr)
+THEN
+	_validateControllerSpeed := FALSE;
+	IF _writeLogs THEN
+		IF _CoeList.ControlMode.Value <> _mode THEN
+			_logger.LogError(message := _stringBuilder.Reset()
+				.AddString(str := _logPRefix)
+				.AddString('Control speed validation failed! Actual speed read is ')
+				.AddWithDblQuotationMarks(str := TO_STRING(_CoeList.ControllerSpeed.Value))
+				.AddString(' required speed is ')
+				.AddWithDblQuotationMarks(str := TO_STRING(_controllerSpeed))
+				.Create());
+		ELSE
+			_logger.LogInfo(message := _stringBuilder.Reset()
+				.AddString(str := _logPrefix)
+				.AddString('Control speed setting validation successful.')
+				.Create());
+		END_IF
+	END_IF
+END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="CalculateSetpointValue" Id="{86689ca6-4c77-0658-332d-fdb5f75df13a}">
-      <Declaration><![CDATA[METHOD PRIVATE CalculateSetpointValue : INT
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CalculateSetpointValue := REAL_TO_INT(fSetpoint * LREAL_TO_REAL(EXPT(10, _CoeList.DecimalDigits.Value)));]]></ST>
-      </Implementation>
-    </Method>
-    <Property Name="Capacity" Id="{151e0e68-21c0-0cd2-1fbe-f6ddb4155f36}">
-      <Declaration><![CDATA[{attribute 'monitoring':='call'}
-// Gets capacity of the device
-PROPERTY Capacity : REAL]]></Declaration>
-      <Get Name="Get" Id="{e4917337-5c75-0576-1f6e-fc4f12ed5d88}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[Capacity := _CoeList.Capacity.Value;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Property Name="CapacityUnit" Id="{2b8d7175-dc8f-0228-2ee3-e0fa3fc3423f}">
-      <Declaration><![CDATA[{attribute 'monitoring':='call'}
-// Gets the capacity unit of the device
-PROPERTY CapacityUnit : STRING(30)]]></Declaration>
-      <Get Name="Get" Id="{d53e5f36-16a4-0e81-13ff-1ee900c38d84}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[CapacityUnit := _CoeList.CapacityUnit.Value;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
     <Method Name="FB_init" Id="{452560b1-3dd5-07ef-1f9c-d7749fdaa339}" FolderPath="Constructor\">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
@@ -204,7 +301,7 @@ _mode := mode;
 _writeLogs := __ISVALIDREF(logger);]]></ST>
       </Implementation>
     </Method>
-    <Property Name="FluidName" Id="{72233265-6bff-0f7e-33e9-3452c3568c33}">
+    <Property Name="FluidName" Id="{72233265-6bff-0f7e-33e9-3452c3568c33}" FolderPath="Properties\Public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets the fluid name of the device
 PROPERTY FluidName : STRING(30)]]></Declaration>
@@ -217,7 +314,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="Mode" Id="{4c7e1d0e-6e00-01e7-36c0-8b3b117df91e}">
+    <Property Name="Mode" Id="{4c7e1d0e-6e00-01e7-36c0-8b3b117df91e}" FolderPath="Properties\Public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets or sets the controller mode
 PROPERTY PUBLIC Mode : E_ControllerMode]]></Declaration>
@@ -244,9 +341,9 @@ _mode := Mode;]]></ST>
         </Implementation>
       </Set>
     </Property>
-    <Method Name="ReadCoE" Id="{1c46f6b9-c8bc-064d-0797-2b06657f41c3}">
+    <Method Name="ReadCoE" Id="{1c46f6b9-c8bc-064d-0797-2b06657f41c3}" FolderPath="Methods\Private\">
       <Declaration><![CDATA[(* Reads CoE items and updates them. Returns TRUE when done, even if an error occurs. Error is reported to log.*)
-METHOD PUBLIC ReadCoE : BOOL
+METHOD PRIVATE ReadCoE : BOOL
 VAR_INST
 	eReadCoeStep	: E_ParameterReadingStep;
 	bCoeReadError	: BOOL;
@@ -406,7 +503,7 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Status" Id="{0f8f3843-acd8-0cc9-1c5c-b80666ff4a26}">
+    <Property Name="Status" Id="{0f8f3843-acd8-0cc9-1c5c-b80666ff4a26}" FolderPath="Properties\Public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
 // Gets the controller status
 PROPERTY Status : REFERENCE TO ST_ControllerStatus]]></Declaration>

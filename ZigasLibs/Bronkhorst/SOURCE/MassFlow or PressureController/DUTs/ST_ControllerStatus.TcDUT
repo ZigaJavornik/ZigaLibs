@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <DUT Name="ST_ControllerStatus" Id="{fb7d768b-9ece-0aa5-0133-5713c70e8b26}">
     <Declaration><![CDATA[
 TYPE ST_ControllerStatus :

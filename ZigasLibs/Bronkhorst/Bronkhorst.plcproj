@@ -17,8 +17,8 @@
     <CompilerDefines>
     </CompilerDefines>
     <Company>Ziga Javornik</Company>
-    <Title>Bronkhorst</Title>
-    <ProjectVersion>0.0.2.0</ProjectVersion>
+    <Title>ZigaLibs.Bronkhorst</Title>
+    <ProjectVersion>0.0.3.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -81,22 +81,22 @@
     <Compile Include="SOURCE\GasTypes.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ControllerMode.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ControllerMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\E_ParameterReadingStep.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\E_ParameterReadingStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerCoeList.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerCoeList.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerInputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerInputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerOutputs.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerOutputs.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MassFlow or PressureController\POUs\DUTs\ST_ControllerStatus.TcDUT">
+    <Compile Include="SOURCE\MassFlow or PressureController\DUTs\ST_ControllerStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\MassFlow or PressureController\POUs\FB_FlowController.TcPOU">
@@ -122,8 +122,8 @@
     <Folder Include="GVLs" />
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\MassFlow or PressureController" />
+    <Folder Include="SOURCE\MassFlow or PressureController\DUTs" />
     <Folder Include="SOURCE\MassFlow or PressureController\POUs" />
-    <Folder Include="SOURCE\MassFlow or PressureController\POUs\DUTs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
@@ -146,11 +146,11 @@
       <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
-      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Logging">
-      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
@@ -160,11 +160,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderResolution Include="TcUnit">
+      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.3 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Core, 0.0.3.7 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Logging">
-      <Resolution>ZigaLibs.Logging, 0.0.4.0 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Logging, 0.0.4.1 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
