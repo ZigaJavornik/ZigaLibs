@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_TcpIpCommControl_Tests" Id="{ef158edd-0b71-4c2b-ba0c-90e4d3e3af98}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK INTERNAL FB_TcpIpCommControl_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+	_tcpIp	: FB_TcpIpCommControl(0);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+_tcpIp();
+// Need to realize this with a TCP server... For now disabled
+//THIS^.Test01_AttemptToConnect_ExpectError();]]></ST>
+    </Implementation>
+    <Method Name="Test01_AttemptToConnect_ExpectError" Id="{73f655e5-b999-49e6-95f7-1ed302b4d6e5}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_AttemptToConnect_ExpectError
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	testAddress	: Tc2_System.T_IPv4Addr := '192.168.0.1';
+	maxDelayForError	: Tc2_Standard.TON := (PT := T#35S);
+END_VAR
+
+// Place temporary variables here
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+IF TcUnit.TEST_ORDERED('Test01_AttemptToConnect_ExpectError') THEN
+	_tcpIp.ReconnectPeriod := T#30S;
+	_tcpIp.Connect(Ipv4Address := testAddress, Port := 3232);
+
+	maxDelayForError(IN := TRUE);
+
+	IF maxDelayForError.Q THEN
+		AssertTrue(Condition := _tcpIp.Error, Message := '10 seconds after connecting to a non existing address and port, the error should be raised!');
+		AssertFalse(Condition := _tcpIp.IsConnected, Message := 'Connecting to a non existing address and port, the IsConnected property should be false!');
+		TcUnit.TEST_FINISHED();	
+	END_IF
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

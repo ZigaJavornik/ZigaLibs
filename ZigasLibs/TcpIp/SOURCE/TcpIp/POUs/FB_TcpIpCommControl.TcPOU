@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_TcpIpCommControl" Id="{c1a18772-55c5-40c9-9a81-d2bef65ca48e}" SpecialFunc="None">
     <Declaration><![CDATA[// A function block for TcpIp control. Body should be called, 
 // but all the logic is done with method calling and awaiting "TRUE" returned when the method finishes.
@@ -92,7 +92,7 @@ END_IF
 _errorSending := FALSE;
 _errorReceiving := FALSE;
 
-Disconnect := NOT _socketClose.bBusy;
+Disconnect := _clientServerControl.eState = Tc2_TcpIp.E_SocketConnectionState.eSOCKET_DISCONNECTED;
 
 
 ]]></ST>
