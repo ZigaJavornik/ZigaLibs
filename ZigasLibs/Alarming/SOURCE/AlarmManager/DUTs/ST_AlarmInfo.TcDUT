@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <DUT Name="ST_AlarmInfo" Id="{463a7f24-175c-0f47-0a80-135f9f8b1f98}">
-    <Declaration><![CDATA[TYPE ST_AlarmInfo :
+    <Declaration><![CDATA[// Alarm information structure, containing all the informations requoired
+TYPE ST_AlarmInfo :
 STRUCT
-	Name			: Tc2_System.T_MaxString;
-	Id				: T_ArrayIndexer;
-	Message			: Tc2_System.T_MaxString;
-	IsActive		: BOOL;
-	IsAcknowledged	: BOOL;
-	Level			: E_AlarmLevel;
-	TimeInfos		: ST_AlarmTimeInfos;
+	Name			: Tc2_System.T_MaxString;	// Name of the alarm
+	Id				: T_ArrayIndexer;			// Id of the alarm
+	Message			: Tc2_System.T_MaxString;	// Message of the alarm
+	IsActive		: BOOL;						// Active state (TRUE = currently active, FALSE = not active)
+	IsAcknowledged	: BOOL;						// Acknowledge state of the alarm
+	Level			: E_AlarmLevel;				// Alarm level
+	TimeInfos		: ST_AlarmTimeInfos;		// Time informations (activated, acknowldiged, deactivated)
 END_STRUCT
 END_TYPE
 ]]></Declaration>

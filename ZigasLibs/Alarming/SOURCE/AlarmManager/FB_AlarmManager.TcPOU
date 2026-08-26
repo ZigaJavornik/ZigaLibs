@@ -12,6 +12,7 @@ Constructor template:
 logger : , // If you do not want logging, simply set this variable to 0, internal checks will ommit any logging.
 timeProvider : ); // Date time provider.*)
 
+{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
 FUNCTION_BLOCK FB_AlarmManager IMPLEMENTS I_AlarmManager
 
 VAR

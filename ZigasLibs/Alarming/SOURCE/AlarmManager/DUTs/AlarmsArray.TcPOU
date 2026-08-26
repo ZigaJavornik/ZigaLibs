@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="AlarmsArray" Id="{5ae36814-b12d-0cb1-107f-413dbe3482e3}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK AlarmsArray
+    <Declaration><![CDATA[// A dynamic collection of alarms as ST_AlarmInfo
+FUNCTION_BLOCK AlarmsArray
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -13,8 +14,12 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="AddNew" Id="{2ee8993c-2570-00f1-3b4b-e879418ac64d}">
-      <Declaration><![CDATA[METHOD AddNew
+    <Folder Name="Deconstructor" Id="{67a941c7-1b68-0392-0007-e7b1f0861b44}" />
+    <Folder Name="Methods - public" Id="{e5146804-b4e2-0774-31c2-bc780fa2fdcb}" />
+    <Folder Name="Properties - public" Id="{87ca90bf-20ee-06e7-2e17-d480b09c82f0}" />
+    <Method Name="AddNew" Id="{2ee8993c-2570-00f1-3b4b-e879418ac64d}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Adds a new alarm defintition to the collection
+METHOD AddNew
 VAR_INPUT
 	alarm	: ST_AlarmInfo;
 END_VAR
@@ -32,8 +37,9 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Clear" Id="{92ed3547-8981-00da-022d-962e473da65a}">
-      <Declaration><![CDATA[METHOD Clear
+    <Method Name="Clear" Id="{92ed3547-8981-00da-022d-962e473da65a}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Clear the entire collection of alarms
+METHOD Clear
 VAR_INPUT
 END_VAR
 ]]></Declaration>
@@ -41,8 +47,9 @@ END_VAR
         <ST><![CDATA[_malloc.Free();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Create" Id="{fc4c953e-f606-0e60-282d-9b1207596240}">
-      <Declaration><![CDATA[METHOD Create : BOOL
+    <Method Name="Create" Id="{fc4c953e-f606-0e60-282d-9b1207596240}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Creates a number of alarms defined by the count value
+METHOD Create : BOOL
 VAR_INPUT
 	count	: dint;
 END_VAR
@@ -52,7 +59,7 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="FB_exit" Id="{87506832-e9ba-0e8f-0275-a6b31064a319}">
+    <Method Name="FB_exit" Id="{87506832-e9ba-0e8f-0275-a6b31064a319}" FolderPath="Deconstructor\">
       <Declaration><![CDATA[METHOD FB_exit : BOOL
 VAR_INPUT
 	bInCopyCode : BOOL; // if TRUE, the exit method is called for exiting an instance that is copied afterwards (online change).
@@ -62,8 +69,9 @@ END_VAR
         <ST><![CDATA[_malloc.Free();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetPtr" Id="{ca61ee79-678d-0197-162b-14fe24230cdb}">
-      <Declaration><![CDATA[METHOD GetPtr : POINTER TO ST_AlarmInfo
+    <Method Name="GetPtr" Id="{ca61ee79-678d-0197-162b-14fe24230cdb}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Gets the pointer to the desired ST_AlarmInfo info at index
+METHOD GetPtr : POINTER TO ST_AlarmInfo
 VAR_INPUT
 	index	: DINT;
 END_VAR
@@ -74,8 +82,9 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="NumberOfAlarms" Id="{7d6cf9ac-d293-0789-06b6-07711939f44b}">
+    <Property Name="NumberOfAlarms" Id="{7d6cf9ac-d293-0789-06b6-07711939f44b}" FolderPath="Properties - public\">
       <Declaration><![CDATA[{attribute 'monitoring':='call'}
+// Gets the total number of alarms in the collection
 PROPERTY NumberOfAlarms : DINT]]></Declaration>
       <Get Name="Get" Id="{b4c6bcb7-e8ef-0c31-3f40-04f9718bff37}">
         <Declaration><![CDATA[VAR
@@ -86,8 +95,9 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Remove" Id="{0d3d4deb-38cb-044d-25d3-4040ec6dae84}">
-      <Declaration><![CDATA[METHOD Remove
+    <Method Name="Remove" Id="{0d3d4deb-38cb-044d-25d3-4040ec6dae84}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Romves an alarm at the provided index
+METHOD Remove
 VAR_INPUT
 	index	: DINT;
 END_VAR
@@ -96,8 +106,9 @@ END_VAR
         <ST><![CDATA[_malloc.Remove(index);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Set" Id="{ec4e9c2c-b666-0fb4-304e-98fde3130216}">
-      <Declaration><![CDATA[METHOD Set : BOOL
+    <Method Name="Set" Id="{ec4e9c2c-b666-0fb4-304e-98fde3130216}" FolderPath="Methods - public\">
+      <Declaration><![CDATA[// Sets the alarm at the index to the value provided in the alarm
+METHOD Set : BOOL
 VAR_INPUT
 	index	: DINT;
 	alarm	: REFERENCE TO ST_AlarmInfo;
