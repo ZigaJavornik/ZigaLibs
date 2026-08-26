@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <DUT Name="ST_PID_Parameters" Id="{800f5944-3099-0eff-2311-7476ee040734}">
     <Declaration><![CDATA[TYPE ST_PID_Parameters :
 STRUCT
-	Kp			: LREAL;	// Kp - Gain
-	Tn			: T_Second;	// Tn - Integral gain (s)
-	Tv			: T_Second;	// Tv - Derivative gain (s)
-	Td			: T_Second;	// Td - Derivative damping time (s)
-	CycleTime	: T_Second;	// Controller cycle time (s)
-	MinValue	: LREAL;
-	MaxValue	: LREAL;
-	MaxOutput	: LREAL := 100;	// Maximum output value to the controller
+	Kp						: LREAL;	// Kp - Gain
+	Tn						: T_Second;	// Tn - Integral gain (s)
+	Tv						: T_Second;	// Tv - Derivative gain (s)
+	Td						: T_Second;	// Td - Derivative damping time (s)
+	CycleTime				: T_Second;	// Controller cycle time (s)
+	ControllerLowerLimit	: LREAL;	// Defines the lower value of the output scaling
+	ControllerUpperLimit	: LREAL;	// Defines the upper value of the output scaling
+	MaxOutput				: LREAL := 100;	// Maximum output value to the controller
 	(* 0-100%, when switching from manual to automatic mode controller output will only be passed 
 	once it is in range of the manual setpoint. Range is defined by this parameter. 
 	Setting this parameter to 0 will ommit the check and instantly activate controller (control value will most likely drop to 0!)*)

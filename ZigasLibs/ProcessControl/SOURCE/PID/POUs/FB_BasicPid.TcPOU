@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_BasicPid" Id="{87a6a646-2e3c-0f51-25fc-4ebf8547d0b6}" SpecialFunc="None">
     <Declaration><![CDATA[// A discretized PID element. Transfer function:
 // G(s) = Kp*(1+ (1/(Tn)) + (Tv/(1+Td)) )
@@ -9,20 +9,23 @@ VAR_INPUT
 	setpoint		: LREAL;	// Setpoint for PID controller when in ACTIVE moed
 	manualSetpoint	: LREAL;	// Setpoint passed to output when MANUAL mode is active
 	feedback		: LREAL;	// Feedback value for PID
+	reset			: BOOL;		// Resets the controller
 END_VAR
 VAR_OUTPUT
-	output	: LREAL;	// Output for the control variable, spanning from 0-100 (%)
+	output	: LREAL;	// Output for the control variable, spanning from 0-100 (%) betwee Parameters.Minimum
 	error	: BOOL;		// TRUE if error (incorrect parameters)
 	errorId	: E_BasicPidErrorId;
 END_VAR
 VAR
-	_parameters				: ST_PID_Parameters;
+	_parameters					: ST_PID_Parameters;
 	_basicPid					: Tc2_Utilities.FB_BasicPID;
 	_mode						: E_ControllerMode := E_ControllerMode.ACTIVE;
 	_taskTimeAsSeconds			: LREAL;
 	_modeChanged				: BOOL;
 	_waitForControllerInRange	: BOOL;
 	_setpointFromManualMode		: LREAL;
+	_percentValueCurrent		: LREAL;
+	_output						: LREAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -56,45 +59,46 @@ IF NOT enable THEN
 		bReset := NOT _basicPid.bReset, 
 		fSetpointValue := 0, 
 		fActualValue := 0);
-	output := 0;
+	_output := 0;
 	_waitForControllerInRange := FALSE;
-	RETURN;
-END_IF
-
-CASE _mode OF
-	E_ControllerMode.MANUAL:
-		output := MAX(_parameters.MinValue, MIN(_parameters.MaxValue, manualSetpoint));
-		_setpointFromManualMode := output;
-		_basicPid(
-			bReset := NOT _basicPid.bReset, 
-			fSetpointValue := 0, 
-			fActualValue := 0);
-	
-	E_ControllerMode.ACTIVE:
-		IF _modeChanged THEN
-			_waitForControllerInRange := manualSetpoint <> 0;
-		END_IF
+ELSE
+	CASE _mode OF
+		E_ControllerMode.MANUAL:
+			_output := MIN(_parameters.MaxOutput, MAX(0, manualSetpoint));
+			_setpointFromManualMode := _output;
+			_basicPid(
+				bReset := NOT _basicPid.bReset, 
+				fSetpointValue := 0, 
+				fActualValue := 0);
 		
-		_basicPid(
-			fActualValue := feedback,
-			fSetpointValue := setpoint,
-			bReset := FALSE);
-			
-		// Wait for controller to reach the manual setpoint before activating it
-		IF _waitForControllerInRange AND _parameters.ManualSwitchInRange <> 0.0 THEN
-			IF (THIS^.ValueToPercentage(_basicPid.fCtrlOutput) + _parameters.ManualSwitchInRange) >= manualSetpoint  THEN
-				// Controller has reached the manual setpoint. Reset flag and instantly pass the value to output.
-				_waitForControllerInRange := FALSE;
-				output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
-			ELSE
-				// Wait for controller to reach the manual setpoint. Pass the last manual value until then.
-				output := _setpointFromManualMode;
+		E_ControllerMode.ACTIVE:
+			IF _modeChanged THEN
+				_waitForControllerInRange := manualSetpoint <> 0;
 			END_IF
-		ELSE
-			// Controller has reached the setpoint or the threshold is 0 - output is controlled by the PID
-			output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
-		END_IF
-END_CASE
+			
+			_basicPid(
+				fActualValue := feedback,
+				fSetpointValue := setpoint,
+				bReset := FALSE);
+				
+			_percentValueCurrent := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
+			
+			// Wait for controller to reach the manual setpoint before activating it
+			IF _waitForControllerInRange AND _parameters.ManualSwitchInRange <> 0.0 THEN
+				IF (_percentValueCurrent + _parameters.ManualSwitchInRange) >= _setpointFromManualMode  THEN
+					// Controller has reached the manual setpoint. Reset flag and instantly pass the value to output.
+					_waitForControllerInRange := FALSE;
+					_output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
+				ELSE
+					// Wait for controller to reach the manual setpoint. Pass the last manual value until then.
+					_output := _setpointFromManualMode;
+				END_IF
+			ELSE
+				// Controller has reached the setpoint or the threshold is 0 - output is controlled by the PID
+				_output := THIS^.ValueToPercentage(_basicPid.fCtrlOutput);
+			END_IF
+	END_CASE
+END_IF
 
 error := error OR _basicPid.nErrorStatus <> E_BasicPidErrorId.NO_ERROR;
 
@@ -109,9 +113,8 @@ CASE _basicPid.nErrorStatus OF
 		errorId := E_BasicPidErrorId.UNKNOWN_ERROR;
 END_CASE
 
-
-_modeChanged := FALSE;
-output := MIN(output, _parameters.MaxOutput);]]></ST>
+output := _output;
+_modeChanged := FALSE;]]></ST>
     </Implementation>
     <Property Name="Mode" Id="{24964d76-0a70-017a-24fb-9b10e8cb23f7}">
       <Declaration><![CDATA[PROPERTY Mode : E_ControllerMode]]></Declaration>
@@ -157,7 +160,7 @@ END_VAR
       </Set>
     </Property>
     <Method Name="ValueToPercentage" Id="{b5bfe616-6fa1-04ce-071b-5d542c68b494}">
-      <Declaration><![CDATA[// Calculates the percentage. Negative values are ommited and 0 is returned.
+      <Declaration><![CDATA[// Calculates the percentage. Negative values are ommited and 0 is returned. Output is limited to _parameters.MaxOutput.
 METHOD PRIVATE ValueToPercentage : LREAL
 VAR_INPUT
 	value	: LREAL;
@@ -167,13 +170,13 @@ VAR
 	rangeSpan	: LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[rangeSpan := (_parameters.MaxValue - _parameters.MinValue);
-IF value <= _parameters.MinValue OR rangeSpan <= 0THEN
+        <ST><![CDATA[rangeSpan := (_parameters.ControllerUpperLimit - _parameters.ControllerLowerLimit);
+IF value <= _parameters.ControllerLowerLimit OR rangeSpan <= 0THEN
 	ValueToPercentage := 0.0;
 	RETURN;
 END_IF
 
-ValueToPercentage := 100.0 * (value / rangeSpan);]]></ST>
+ValueToPercentage := MIN((100.0 * (value / rangeSpan)), _parameters.MaxOutput);]]></ST>
       </Implementation>
     </Method>
   </POU>

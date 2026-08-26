@@ -16,7 +16,7 @@
     <LibraryReferences>{6f359dbc-f098-442b-8ce1-ffd5e203570e}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.ProcessControl</Title>
-    <ProjectVersion>0.0.2.2</ProjectVersion>
+    <ProjectVersion>0.0.2.3</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -91,15 +91,6 @@
     <Compile Include="SOURCE\PID\POUs\FB_BasicPid.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\PID\POUs\FB_Controller_P.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\PID\POUs\FB_Controller_PI.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\PID\POUs\FB_Controller_PID.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Value deviation\E_ValueDeviationStatus.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -122,12 +113,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_BasicPid_Tests.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TESTS\Test suites\FB_Controller_PI_Tests.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TESTS\Test suites\FB_Controller_P_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_ValueDeviation_Tests.TcPOU">
@@ -181,7 +166,7 @@
       <Optional>true</Optional>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
-      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
@@ -193,6 +178,9 @@
   <ItemGroup>
     <PlaceholderResolution Include="TcUnit">
       <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.Core">
+      <Resolution>ZigaLibs.Core, 0.0.3.7 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
