@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_LaudaCommandGenerator" Id="{cefff616-22c6-43ae-8491-db34cfe691d3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaCommandGenerator
 VAR_INPUT
@@ -28,7 +28,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[KeyboardMasterLock := LaudaHelper.AddSuffix(CONCAT(
-	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UnlockLock, 
 	STR2 := '1'));]]></ST>
       </Implementation>
     </Method>
@@ -39,7 +39,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[KeyboardMasterUnlock := LaudaHelper.AddSuffix(CONCAT(
-	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UnlockLock, 
 	STR2 := '0'));]]></ST>
       </Implementation>
     </Method>

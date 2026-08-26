@@ -16,7 +16,7 @@
     <LibraryReferences>{0e7eab3b-a905-4040-8a55-2f7f853c1906}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.Lauda</Title>
-    <ProjectVersion>0.0.2.1</ProjectVersion>
+    <ProjectVersion>0.0.2.2</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -230,13 +230,14 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
       <Optional>true</Optional>
+      <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
       <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Logging">
-      <DefaultResolution>ZigaLibs.Logging, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.TcpIp">
@@ -251,13 +252,13 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
+      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.6 (Ziga Javornik)</Resolution>
+      <Resolution>ZigaLibs.Core, 0.0.3.7 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.TcpIp">
-      <Resolution>TcpIp, 0.0.2.1 (Ziga Javornik)</Resolution>
+      <Resolution>TcpIp, 0.0.2.2 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>

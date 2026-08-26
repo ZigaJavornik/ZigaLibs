@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="LaudaHelper" Id="{5acd5e62-03b6-479d-9df5-3168db57c12d}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
 {attribute 'hide_all_locals'}

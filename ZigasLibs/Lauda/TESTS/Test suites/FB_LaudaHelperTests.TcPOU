@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_LaudaHelperTests" Id="{5faf94d7-691e-03a1-0f67-bb8801813ad7}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LaudaHelperTests EXTENDS FB_TestSuite
 VAR_INPUT
