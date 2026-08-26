@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="TcpIpHelper" Id="{02b533d6-c01e-0028-3090-929c120dd591}" SpecialFunc="None">
+    <Declaration><![CDATA[// TcpIp helper class
+{attribute 'no_explicit_call' := 'Body contains no logic, calling methods only allowed.'}
+{attribute 'hide_all_locals'}
+PROGRAM TcpIpHelper
+VAR
+	_socketCloseAll	: Tc2_TcpIp.FB_SocketCloseAll;
+	_closeAllState	: (CLOSE_ALL_READY, CLOSE_ALL_BUSY, CLOSE_ALL_DONE);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="CloseAllSockets" Id="{0799683e-5fad-0dc0-0f3e-6f9981e5419d}">
+      <Declaration><![CDATA[// Closes all connections on the server that were opened by the PLC runtime system.
+// In each PLC runtime system that uses the socket function blocks, an instance of FB_SocketCloseAll should be called during the PLC start.
+// Method returns TRUE when done. If an error has ocured it is provided in the outputs.
+METHOD PUBLIC CloseAllSockets : BOOL
+VAR_INPUT
+	serverNetId	: Tc2_System.T_AmsNetID;	// TcpIp server's netID. For local set to empty string
+END_VAR
+VAR_OUTPUT
+	error	: BOOL;		// If an error occurs, the flag will be set to true.
+	errorId	: UDINT;	// ErrorId which has ocured when the function calling has finished
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_socketCloseAll(sSrvNetId := serverNetId);
+CASE _closeAllState OF
+	CLOSE_ALL_READY:
+		error := FALSE;
+		errorId := 0;
+		_socketCloseAll.bExecute := TRUE;
+		_closeAllState := CLOSE_ALL_BUSY;
+		
+	CLOSE_ALL_BUSY:
+		IF _socketCloseAll.bError  OR NOT _socketcloseAll.bBusy THEN
+			_closeAllState := CLOSE_ALL_DONE;
+		END_IF
+	
+	CLOSE_ALL_DONE:
+		error := _socketCloseAll.bError;
+		errorId := _socketCloseAll.nErrId;
+		_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+		CloseAllSockets := TRUE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
