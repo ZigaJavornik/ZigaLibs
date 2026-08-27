@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="PRG_TESTS" Id="{2d9e12bf-834a-4dab-ad4b-f8576f5dc6a6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
 VAR
-	fbSUT_Tests	: FB_SUT_Tests;
+	PFCA7_Tests	: FB_PFCA7_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

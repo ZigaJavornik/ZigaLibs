@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_PFCA7" Id="{8dc9b630-9794-007d-3de2-519416ea1546}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_PFCA7 EXTENDS FB_IoLinkState IMPLEMENTS I_PFCA7
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PFCA7 EXTENDS ZigaLibs_IoLink.FB_IoLinkState IMPLEMENTS I_PFCA7
 VAR
 	InputProcessData	AT %I* : ST_PFCA7_InputProcessData;
 	OutputProcessData	AT %Q* : ST_PFCA7_OutputProcessData;
@@ -46,6 +46,7 @@ END_IF
 VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger		: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	fMaxFlow	: REAL;
 END_VAR
 ]]></Declaration>

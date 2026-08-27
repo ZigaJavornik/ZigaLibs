@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
-  <POU Name="FB_SMC_AirFlowController_PFCA7_Tests" Id="{8b8e6cfa-06e5-042c-02e9-9d23b33ad663}" SpecialFunc="None">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_PFCA7_Tests" Id="{8b8e6cfa-06e5-042c-02e9-9d23b33ad663}" SpecialFunc="None">
     <Declaration><![CDATA[// A collection of tests for PFCA7 SMC series
-FUNCTION_BLOCK FB_SMC_AirFlowController_PFCA7_Tests EXTENDS FB_TestSuite
+FUNCTION_BLOCK INTERNAL FB_PFCA7_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -18,8 +18,8 @@ Test02_FlowLimiting();]]></ST>
     <Method Name="Test01_FlowScaling" Id="{27688cb3-bf24-0865-203c-521d7461593d}">
       <Declaration><![CDATA[METHOD PRIVATE Test01_FlowScaling
 VAR_INST
-	fbFlowController_100slm	: FB_SMC_AirFlowController_PFCA7(100.0);
-	fbFlowController_50slm	: FB_SMC_AirFlowController_PFCA7(50.0);
+	fbFlowController_100slm	: FB_PFCA7(logger := 0, fMaxFlow := 100.0);
+	fbFlowController_50slm	: FB_PFCA7(logger := 0, fMaxFlow := 50.0);
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TcUnit.TEST('Test01_FlowScaling');
@@ -62,9 +62,8 @@ TcUnit.TEST_FINISHED();]]></ST>
     <Method Name="Test02_FlowLimiting" Id="{1868dbc3-7cde-0358-2507-c3c10efcaa59}">
       <Declaration><![CDATA[METHOD PRIVATE Test02_FlowLimiting
 VAR_INST
-
-	fbFlowController_100slm	: FB_SMC_AirFlowController_PFCA7(100.0);
-	fbFlowController_50slm	: FB_SMC_AirFlowController_PFCA7(50.0);
+	fbFlowController_100slm	: FB_PFCA7(logger := 0, fMaxFlow := 100.0);
+	fbFlowController_50slm	: FB_PFCA7(logger := 0, fMaxFlow := 50.0);
 END_VAR
 ]]></Declaration>
       <Implementation>

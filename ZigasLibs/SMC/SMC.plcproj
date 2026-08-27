@@ -16,7 +16,7 @@
     <LibraryReferences>{a93305cb-387b-46d3-bc1f-41bf65e7b7ff}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.SMC</Title>
-    <ProjectVersion>0.0.2.0</ProjectVersion>
+    <ProjectVersion>0.0.3.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -200,7 +200,7 @@
     <Compile Include="TESTS\PRG_TESTS.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TESTS\Test suites\FB_SMC_AirFlowController_PFCA7_Tests.TcPOU">
+    <Compile Include="TESTS\Test suites\FB_PFCA7_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TESTS\Test suites\FB_SUT_Tests.TcPOU">
@@ -224,6 +224,8 @@
     <Folder Include="SOURCE\Flow controllers" />
     <Folder Include="SOURCE\Valve blocks" />
     <Folder Include="SOURCE\Valve blocks\MEC1" />
+    <Folder Include="SOURCE\Valve blocks\MEC1\DUTs" />
+    <Folder Include="SOURCE\Valve blocks\MEC1\POUs" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>
@@ -249,12 +251,16 @@
       <HideWhenReferencedAsDependency>true</HideWhenReferencedAsDependency>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.Core">
-      <DefaultResolution>ZigaLibs.Core, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.Core, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="ZigaLibs.IoLink">
-      <DefaultResolution>ZigaLibs.IoLink, * (Ziga)</DefaultResolution>
+      <DefaultResolution>ZigaLibs.IoLink, * (Ziga Javornik)</DefaultResolution>
       <Namespace>ZigaLibs_IoLink</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga Javornik)</DefaultResolution>
+      <Namespace>ZigaLibs_Logging</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
@@ -263,8 +269,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderResolution Include="TcUnit">
+      <Resolution>TcUnit, 1.3.1 (www.tcunit.org)</Resolution>
+    </PlaceholderResolution>
     <PlaceholderResolution Include="ZigaLibs.Core">
-      <Resolution>ZigaLibs.Core, 0.0.3.2 (Ziga)</Resolution>
+      <Resolution>ZigaLibs.Core, 0.0.3.7 (Ziga Javornik)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.IoLink">
+      <Resolution>ZigaLibs.IoLink, 0.0.0.1 (Ziga Javornik)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="ZigaLibs.Logging">
+      <Resolution>ZigaLibs.Logging, 0.0.4.1 (Ziga Javornik)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
