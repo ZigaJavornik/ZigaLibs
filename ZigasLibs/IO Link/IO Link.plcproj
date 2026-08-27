@@ -139,11 +139,20 @@
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs.Logging">
+      <DefaultResolution>ZigaLibs.Logging, * (Ziga Javornik)</DefaultResolution>
+      <Namespace>ZigaLibs_Logging</Namespace>
+    </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="IO Link.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="ZigaLibs.Logging">
+      <Resolution>ZigaLibs.Logging, 0.0.4.1 (Ziga Javornik)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
