@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_FqInverter_IO_Tests" Id="{403a309e-d4ea-0caf-277c-66a8cfa1247c}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_FqInverter_IO_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_FqInverter_IO_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT

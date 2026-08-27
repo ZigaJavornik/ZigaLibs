@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_LightTower_Tests" Id="{c6b6eac2-0357-0685-1fbf-4e2386c2a497}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LightTower_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	redLight	: BOOL;
+	greenLight	: BOOL;
+	orangeLight	: BOOL;
+	buzzer		: BOOL;
+	lightTower	: FB_LightTower	(
+		greenLight		:= greenLight,// REFERENCE TO BOOL;
+		orangeLight		:= orangeLight ,// REFERENCE TO BOOL;
+		redLight		:= redLight,// REFERENCE TO BOOL;
+		buzzer			:= buzzer);// REFERENCE TO BOOL;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[lightTower();
+
+Test01_GreenLight_ActivateDeactivate_VerifyReferencedVariableValue();
+Test02_OrangeLight_ActivateDeactivate_VerifyReferencedVariableValue();
+Test03_RedLight_ActivateDeactivate_VerifyReferencedVariableValue();
+Test04_Buzzer_ActivateDeactivate_VerifyReferencedVariableValue();]]></ST>
+    </Implementation>
+    <Method Name="Test01_GreenLight_ActivateDeactivate_VerifyReferencedVariableValue" Id="{99f888db-22f1-0d57-1d0b-bc2c1817a2d2}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_GreenLight_ActivateDeactivate_VerifyReferencedVariableValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_GreenLight_ActivateDeactivate_VerifyReferencedVariableValue') THEN
+	lightTower.GreenLight.Activate();
+	AssertTrue(Condition := greenLight, Message := 'Activating green light failed');
+	AssertFalse(Condition := orangeLight, Message := 'Activating green light should not affect orange light.');
+	AssertFalse(Condition := redLight, Message := 'Activating green light should not affect red light.');	
+	AssertFalse(Condition := buzzer, Message := 'Activating green light should not affect buzzer.');
+		
+	lightTower.GreenLight.Deactivate();
+	AssertFalse(Condition := greenLight, Message := 'Deactivating green light failed');
+	AssertFalse(Condition := orangeLight, Message := 'Deactivating green light should not affect orange light.');
+	AssertFalse(Condition := redLight, Message := 'Deactivating green light should not affect red light.');	
+	AssertFalse(Condition := buzzer, Message := 'Deactivating green light should not affect buzzer.');
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_OrangeLight_ActivateDeactivate_VerifyReferencedVariableValue" Id="{097e5f81-5d5d-0115-0a89-3ea6bd2d1672}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_OrangeLight_ActivateDeactivate_VerifyReferencedVariableValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test02_OrangeLight_ActivateDeactivate_VerifyReferencedVariableValue') THEN
+	lightTower.OrangeLight.Activate();
+	AssertTrue(Condition := orangeLight, Message := 'Activating orange light failed');
+	AssertFalse(Condition := greenLight, Message := 'Activating orange light should not affect green light.');
+	AssertFalse(Condition := redLight, Message := 'Activating orange light should not affect red light.');	
+	AssertFalse(Condition := buzzer, Message := 'Activating orange light should not affect buzzer.');
+		
+	lightTower.OrangeLight.Deactivate();
+	AssertFalse(Condition := orangeLight, Message := 'Deactivating orange light failed');
+	AssertFalse(Condition := greenLight, Message := 'Deactivating orange light should not affect green light.');
+	AssertFalse(Condition := redLight, Message := 'Deactivating orange light should not affect red light.');	
+	AssertFalse(Condition := buzzer, Message := 'Deactivating orange light should not affect buzzer.');
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_RedLight_ActivateDeactivate_VerifyReferencedVariableValue" Id="{854d17c1-e22a-00b7-3b31-251cb25fadd4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test03_RedLight_ActivateDeactivate_VerifyReferencedVariableValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test03_RedLight_ActivateDeactivate_VerifyReferencedVariableValue') THEN
+	lightTower.RedLight.Activate();
+	AssertTrue(Condition := redLight, Message := 'Activating red light failed');
+	AssertFalse(Condition := greenLight, Message := 'Activating red light should not affect green light.');
+	AssertFalse(Condition := orangeLight, Message := 'Activating red light should not affect orange light.');	
+	AssertFalse(Condition := buzzer, Message := 'Activating red light should not affect buzzer.');
+		
+	lightTower.RedLight.Deactivate();
+	AssertFalse(Condition := redLight, Message := 'Deactivating red light failed');
+	AssertFalse(Condition := greenLight, Message := 'Deactivating red light should not affect green light.');
+	AssertFalse(Condition := orangeLight, Message := 'Deactivating red light should not affect orange light.');	
+	AssertFalse(Condition := buzzer, Message := 'Deactivating red light should not affect buzzer.');
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_Buzzer_ActivateDeactivate_VerifyReferencedVariableValue" Id="{78901fcf-6097-03c8-0b3e-e580f568866f}">
+      <Declaration><![CDATA[METHOD PRIVATE Test04_Buzzer_ActivateDeactivate_VerifyReferencedVariableValue
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test04_Buzzer_ActivateDeactivate_VerifyReferencedVariableValue') THEN
+	lightTower.Buzzer.Activate();
+	AssertTrue(Condition := buzzer, Message := 'Activating buzzer failed');
+	AssertFalse(Condition := greenLight, Message := 'Activating buzzer should not affect green light.');
+	AssertFalse(Condition := orangeLight, Message := 'Activating buzzer should not affect orange light.');	
+	AssertFalse(Condition := redLight, Message := 'Activating buzzer should not affect red light.');
+		
+	lightTower.Buzzer.Deactivate();
+	AssertFalse(Condition := buzzer, Message := 'Deactivating buzzer light failed');
+	AssertFalse(Condition := greenLight, Message := 'Deactivating buzzer should not affect green light.');
+	AssertFalse(Condition := orangeLight, Message := 'Deactivating buzzer should not affect orange light.');	
+	AssertFalse(Condition := redLight, Message := 'Deactivating buzzer should not affect red light.');
+	
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

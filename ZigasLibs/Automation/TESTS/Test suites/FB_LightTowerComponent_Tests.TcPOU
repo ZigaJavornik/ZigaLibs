@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_LightTowerComponent_Tests" Id="{d730fdac-a82d-014c-34ad-463aa6395209}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LightTowerComponent_Tests EXTENDS FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_LightTowerComponent_Tests EXTENDS FB_TestSuite
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -22,35 +22,36 @@ VAR_INST
 	onOffTestDone	: BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TcUnit.TEST('Test01_AllFunctionalityTests');
-component();
-
-IF NOT onOffTestDone THEN
-	component.Activate();
-	AssertTrue(Condition := componentItem, Message := 'component activation failed.');
-	component.Deactivate();
-	onOffTestDone := TRUE;
-END_IF
-
-component.PulseWithInterval(DurationOn := T#100MS, DurationOff := T#100MS);
-timer(in := TRUE, PT := T#100MS);
-IF NOT timer.Q THEN
-	AssertTrue(
-		Condition := component.Value, 
-		Message := 'Component should be activated until duration on is elapsed.');
-ELSE
-	timerOff(IN := TRUE, PT := T#100MS);
-	IF timerOff.Q THEN
-		AssertTrue(
-			Condition := component.Value, 
-			Message := 'Component should be activated when duration off is elapsed.');
-		TcUnit.TEST_FINISHED();
-		RETURN;
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_AllFunctionalityTests') THEN
+	component();
+	IF NOT onOffTestDone THEN
+		component.Activate();
+		AssertTrue(Condition := component.Value, Message := 'Calling .Activate() should set the .Value property to TRUE.');
+		AssertTrue(Condition := componentItem, Message := 'Calling .Activate() should set the referenced variable to TRUE.');
+		component.Deactivate();
+		AssertFalse(Condition := component.Value, Message := 'Calling .Deactivate() should set the .Value property to FALSE.');
+		AssertFalse(Condition := componentItem, Message := 'Calling .Deactivate() should set the referenced variable to FALSE.');
+		onOffTestDone := TRUE;
 	END_IF
-	AssertFalse(
-		Condition := component.Value, 
-		Message := 'Component should be deactivated until duration off is elapsed.');
+	
+	component.PulseWithInterval(DurationOn := T#100MS, DurationOff := T#100MS);
+	timer(in := TRUE, PT := T#100MS);
+	IF NOT timer.Q THEN
+		AssertTrue(Condition := component.Value, Message := 'Component.Value should be TRUE until duration on is elapsed.');
+		AssertTrue(Condition := componentItem, Message := 'Referenced variable should be TRUE until duration on is elapsed.');
+	ELSE
+		timerOff(IN := TRUE, PT := T#100MS);
+		IF timerOff.Q THEN
+			AssertTrue(Condition := component.Value, Message := 'Component.Value should be TRUE when duration off is elapsed.');
+			AssertTrue(Condition := componentItem, Message := 'Reference variable should be TRUE when duration off is elapsed.');
+			TcUnit.TEST_FINISHED();
+			RETURN;
+		END_IF
+		AssertFalse(Condition := component.Value, Message := 'Component.Value should be FALSE until duration off is elapsed.');
+		AssertFalse(Condition := componentItem, Message := 'Reference variable should be FALSE until duration off is elapsed.');
+	END_IF	
 END_IF
+
 ]]></ST>
       </Implementation>
     </Method>
