@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
   <POU Name="FB_XV03ValveSystem_Tests" Id="{6e93b8ca-791a-0f0b-085c-81624b4b6d87}" SpecialFunc="None">
     <Declaration><![CDATA[// Subject under test
 FUNCTION_BLOCK INTERNAL FB_XV03ValveSystem_Tests EXTENDS FB_TestSuite
@@ -30,27 +30,30 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// The name of the test, is the same as method name!
-TcUnit.TEST('Test01_Disabled_AllOutputsAreAlwaysFalse');
-fbValves.Enable := FALSE;
-
-// Do your assertions here...
-AssertTrue(
-	Condition := Tc2_System.MEMCMP(pBuf1 := ADR(emptyArray), pBuf2 := ADR(fbValves.Coils), n := SIZEOF(ST_ValveCoils))  = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
-	Message := 'When disabled, output coils should all be set to 0.');
+IF TcUnit.TEST_ORDERED('Test01_Disabled_AllOutputsAreAlwaysFalse') THEN
+	fbValves.Enable := FALSE;
 	
-fbValves.Valves[1].Coil_12.Active := TRUE;
-fbValves.Valves[5].Coil_14.Active := TRUE;
-fbValves.Valves[8].Coil_12.Active := TRUE;
-fbValves.Valves[12].Coil_12.Active := TRUE;
+	AssertTrue(
+		Condition := Tc2_System.MEMCMP(pBuf1 := ADR(emptyArray), pBuf2 := ADR(fbValves.Coils), n := SIZEOF(ST_ValveCoils))  = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
+		Message := 'When disabled, output coils should all be set to 0.');
+		
+	fbValves.Valves[1].Coil_12.Active := TRUE;
+	fbValves.Valves[5].Coil_14.Active := TRUE;
+	fbValves.Valves[8].Coil_12.Active := TRUE;
+	fbValves.Valves[12].Coil_12.Active := TRUE;
+	
+	AssertTrue(
+		Condition := Tc2_System.MEMCMP(
+			pBuf1 := ADR(emptyArray), 
+			pBuf2 := ADR(fbValves.Coils), 
+			n := SIZEOF(ST_ValveCoils)) = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
+		Message := 'When disabled, output coils should all be set to 0.');
 
-AssertTrue(
-	Condition := Tc2_System.MEMCMP(
-		pBuf1 := ADR(emptyArray), 
-		pBuf2 := ADR(fbValves.Coils), 
-		n := SIZEOF(ST_ValveCoils)) = ZigaLibs_Core.E_MemCmpResults.IDENTICAL,
-	Message := 'When disabled, output coils should all be set to 0.');
+	TcUnit.TEST_FINISHED();	
+END_IF
 
-TcUnit.TEST_FINISHED();]]></ST>
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test02_Enabled_ExpectCorrectByteBitsSetToTrue" Id="{69a0d643-44bb-0985-2513-ae9bafacd361}">
@@ -78,72 +81,74 @@ VAR CONSTANT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// The name of the test, is the same as method name!
-TcUnit.TEST('Test02_Enabled_ExpectCorrectByteBitsSetToTrue');
-fbValveSystem_XV03.Enable := TRUE;
-
-FOR iteration := 1 TO 24 BY 1 DO
-	// Coil 1 of valve
-	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
-	fbValveSystem_XV03();
-	// add + 1 address when next byte should be looked at (4 valves with 2 coils per byte, 8 bits)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
-	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
-	expectedValue := LREAL_TO_USINT(EXPT(2, iteration - 1 + indexValueToAdd - indexValueToSubstract));
-	AssertTrue(
-		Condition := ptrUsint^ = expectedValue,
-		Message := stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 14 was not opened.')
-			.Create());
+IF TcUnit.TEST_ORDERED('Test02_Enabled_ExpectCorrectByteBitsSetToTrue') THEN
+	fbValveSystem_XV03.Enable := TRUE;
 	
-	fbValveSystem_XV03.Valves[iteration].Coil_14.Active := FALSE;
-	fbValveSystem_XV03();
-	AssertTrue(
-		Condition := ptrUsint^ = 0,
-		Message := stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 14 was not closed.')
-			.Create());
+	FOR iteration := 1 TO 24 BY 1 DO
+		// Coil 1 of valve
+		fbValveSystem_XV03.Valves[iteration].Coil_14.Active := TRUE;
+		fbValveSystem_XV03();
+		// add + 1 address when next byte should be looked at (4 valves with 2 coils per byte, 8 bits)
+		addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
+		ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
+		expectedValue := LREAL_TO_USINT(EXPT(2, iteration - 1 + indexValueToAdd - indexValueToSubstract));
+		AssertTrue(
+			Condition := ptrUsint^ = expectedValue,
+			Message := stringBuilder.Reset()
+				.AddString('Valve ')
+				.AddWithDblQuotationMarks(TO_STRING(iteration))
+				.AddString(', coil 14 was not opened.')
+				.Create());
+		
+		fbValveSystem_XV03.Valves[iteration].Coil_14.Active := FALSE;
+		fbValveSystem_XV03();
+		AssertTrue(
+			Condition := ptrUsint^ = 0,
+			Message := stringBuilder.Reset()
+				.AddString('Valve ')
+				.AddWithDblQuotationMarks(TO_STRING(iteration))
+				.AddString(', coil 14 was not closed.')
+				.Create());
+		
+		// Coil 2 of valve	
+		fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
+		fbValveSystem_XV03();
+		// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
+		addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
+		ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
+		expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
+		AssertTrue(ptrUsint^ = expectedValue,
+			stringBuilder.Reset()
+				.AddString('Valve ')
+				.AddWithDblQuotationMarks(TO_STRING(iteration))
+				.AddString(', coil 12 was not opened.')
+				.Create());
+				
+		indexValueToAdd := indexValueToAdd + 1;
+		
+		fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
+		fbValveSystem_XV03();
+		AssertTrue(
+			Condition := ptrUsint^ = 0,
+			Message := stringBuilder.Reset()
+				.AddString('Valve ')
+				.AddWithDblQuotationMarks(TO_STRING(iteration))
+				.AddString(', coil 12 was not closed.')
+				.Create());
+				
+		// In order to have 1 single loop, every loop iteration we need to add 1 value, to increase the 2^n+1 result.
+		// When the byte is finished, next iteration would start at 2^n, for example 2^5. But we need to reset back at 1st position.
+		// For that reson the substract index will be taken into account in the power calculation and every 4th iteration, 
+		// aka 1 byte, the power will be: 2^(iteration - 4*(byte number 0...3) + current coil index (0..1))		
+		IF indexValueToAdd = TO_UINT(VALVES_PER_BYTE) THEN
+			indexValueToAdd := 0;
+			indexValueToSubstract := indexValueToSubstract + TO_UINT(VALVES_PER_BYTE);
+		END_IF
+	END_FOR
 	
-	// Coil 2 of valve	
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := TRUE;
-	fbValveSystem_XV03();
-	// Every 4th valve proceeds to next byte (2 coils per valve, 2x4 = 8 bits = 1 byte, 48 coils total)
-	addressToAdd := LREAL_TO_DWORD((Tc2_Math.FLOOR(TO_LREAL(iteration - 1)/VALVES_PER_BYTE)));
-	ptrUsint := ADR(fbValveSystem_XV03.Coils) + addressToAdd;
-	expectedValue := LREAL_TO_USINT(EXPT(2, iteration + indexValueToAdd - indexValueToSubstract));
-	AssertTrue(ptrUsint^ = expectedValue,
-		stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not opened.')
-			.Create());
-			
-	indexValueToAdd := indexValueToAdd + 1;
-	
-	fbValveSystem_XV03.Valves[iteration].Coil_12.Active := FALSE;
-	fbValveSystem_XV03();
-	AssertTrue(
-		Condition := ptrUsint^ = 0,
-		Message := stringBuilder.Reset()
-			.AddString('Valve ')
-			.AddWithDblQuotationMarks(TO_STRING(iteration))
-			.AddString(', coil 12 was not closed.')
-			.Create());
-			
-	// In order to have 1 single loop, every loop iteration we need to add 1 value, to increase the 2^n+1 result.
-	// When the byte is finished, next iteration would start at 2^n, for example 2^5. But we need to reset back at 1st position.
-	// For that reson the substract index will be taken into account in the power calculation and every 4th iteration, 
-	// aka 1 byte, the power will be: 2^(iteration - 4*(byte number 0...3) + current coil index (0..1))		
-	IF indexValueToAdd = TO_UINT(VALVES_PER_BYTE) THEN
-		indexValueToAdd := 0;
-		indexValueToSubstract := indexValueToSubstract + TO_UINT(VALVES_PER_BYTE);
-	END_IF
-END_FOR
-
-TcUnit.TEST_FINISHED();]]></ST>
+	TcUnit.TEST_FINISHED();
+END_IF
+]]></ST>
       </Implementation>
     </Method>
   </POU>
