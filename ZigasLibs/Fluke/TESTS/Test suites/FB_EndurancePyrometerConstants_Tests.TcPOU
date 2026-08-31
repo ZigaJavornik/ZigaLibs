@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_EndurancePyrometerConstants_Tests" Id="{49283a30-15c8-0d9f-354d-e2e097b78301}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_EndurancePyrometerConstants_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test01_ErrorCodesValues();]]></ST>
+    </Implementation>
+    <Method Name="Test01_ErrorCodesValues" Id="{c191bb0c-7ec2-0262-115d-44b420d44353}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_ErrorCodesValues
+(*
+Fail safe error codes, from: https://media.fluke.com/048723ef-592e-4cbc-86d4-b4ad00bf9a87_original%20file.pdf
+
+Condition 											2-color 			1-color(wide band)**	1-color*(narrow band)**
+Heater temperature over range, >= 80°C (176°F) 		ECHH 				ECHH 					ECHH
+Heater temperature under range, <= 50°C (122°F) 	ECUU 				ECUU 					ECUU
+Internal temperature over range, >= 85°C (185°F) 	EIHH 				EIHH 					EIHH
+Internal temperature under range, <= 0°C (32°F) 	EIUU 				EIUU 					EIUU
+Wide band detector failure 							EHHH	 			EHHH 					<temperature>
+Narrow band detector failure 						EHHH 				<temperature> 			EHHH
+Energy too low 										EUUU 				<temperature> 			<temperature>
+Attenuation too high (>95%)*** 						EAAA 				<temperature> 			<temperature>
+[Attenuation too high >95%
+("dirty lens", relay will go to “alarm” state)***]	<temperature> 		<temperature> 			<temperature>
+2-color temperature under range 					EUUU 				<temperature> 			<temperature>
+2-color temperature over range 						EHHH 				<temperature> 			<temperature>
+Wide band temperature under range 					<temperature> 		EUUU 					<temperature>
+Wide band temperature over range 					<temperature> 		EHHH 					<temperature>
+Narrow band temperature under range 				<temperature> 		<temperature> 			EUUU
+Narrow band temperature over range 					<temperature> 		<temperature> 			EHHH
+
+
+* only available via ASCII command
+** wide and narrow band stands for the first and the second wavelength in 2-color mode
+*** note that the activation levels for these conditions may be set to different values (e.g., "dirty lens" at 95%, EAAA at 98%)
+*)]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED('Test01_ErrorCodesValues') THEN
+	
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.TemperatureOverrange.Code,
+		Expected := 'EHHH',
+		Message := 'Temperature overrange code is incorrect');
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.TemperatureUnderrange.Code,
+		Expected := 'EUUU',
+		Message := 'Temperature underrange code is incorrect');
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooLow.Code,
+		Expected := 'EIUU',
+		Message := 'Internal temperature too low code is incorrect');
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooHigh.Code,
+		Expected := 'EIHH',
+		Message := 'Internal temperature too high code is incorrect');
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.AttenuationTooHigh.Code,
+		Expected := 'EAAA',
+		Message := 'Attenutation too high code is incorrect');
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureUnderrange.Code,
+		Expected := 'ECUU',
+		Message := 'Heater temperature underrange code is incorrect');	
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureOverrange.Code,
+		Expected := 'ECHH',
+		Message := 'Heater temperature overrange code is incorrect');	
+		
+	AssertEquals_STRING(
+		Actual := EndurancePyrometerConstants.ErrorCodes.SyntaxError.Code,
+		Expected := '*Syntax Error',
+		Message := 'Syntax error code is incorrect');	
+		
+	TcUnit.TEST_FINISHED();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

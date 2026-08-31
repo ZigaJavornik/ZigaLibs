@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_EndurancePyrometer" Id="{d12d53a2-d572-00b1-219d-b2359cf76404}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EndurancePyrometer EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
+VAR_INPUT
+	connect		: BOOL;
+	readCycle	: TIME;	// Read cycle, should not be set under 300ms, limitation is done within
+	ipAddress	: Tc2_System.T_IPv4Addr;
+	port		: UINT;	
+END_VAR
+
+VAR_OUTPUT
+	temperature	: REAL;
+	error		: BOOL;
+	connected	: BOOL;
+	errorCode	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	_tcpIp			: ZigaLibs_TcpIp.FB_TcpIpCommControl(_logger);
+	_reconnectTimer	: Tc2_Standard.TON;
+	_readTimer		: Tc2_Standard.TON;
+	_readWriteStep	:(READY, SEND_READ_COMMAND, AWAIT_RESPONSE);
+	_response		: Tc2_System.T_MaxString;
+	_logger			: REFERENCE TO ZigaLibs_Logging.I_Logger;
+	_commParameters	: ST_EndurancePyrometerCommParameters;
+	_readTemperatureCommand	: STRING;	
+	_sb				: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_tcpIp.ReconnectPeriod := T#10S;
+
+_reconnectTimer(
+	IN := NOT _reconnectTimer.Q AND _tcpIp.Error, 
+	PT := T#30S);
+
+// Communication via TcpIp
+IF connect THEN
+	IF _reconnectTimer.Q THEN
+		_tcpIp.Disconnect();
+	ELSIF NOT _tcpIp.IsConnected THEN
+		_tcpIp.Connect(ipAddress, port);		
+	END_IF
+ELSE
+	_tcpIp.Disconnect();
+END_IF
+
+connected := _tcpIp.IsConnected;
+_tcpIp();
+
+IF _tcpIp.IsConnected THEN
+	_readTimer(PT := MIN (T#200MS, readCycle));
+	
+	CASE _readWriteStep OF
+		READY:
+			_readTimer.IN := TRUE;
+			IF _readTimer.Q THEN
+				_readTimer.IN := FALSE;
+				_readWriteStep := SEND_READ_COMMAND;
+			END_IF
+		
+		SEND_READ_COMMAND:
+			_readTemperatureCommand := CreateSendCommand(EndurancePyrometerConstants.Commands.ReadTemperatureCommand);
+			IF _tcpIp.Send(_readTemperatureCommand) THEN
+				_readWriteStep := AWAIT_RESPONSE;
+			END_IF
+		
+		AWAIT_RESPONSE:
+			IF _tcpIp.Receive(_response) THEN
+				ExtractResponse('T');
+				_readWriteStep := READY;
+			END_IF
+	END_CASE
+ELSE
+	// Tcp error - set temperature to max to prevent PID overheating.
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+END_IF
+
+error := _tcpIp.Error OR error;
+]]></ST>
+    </Implementation>
+    <Folder Name="Constructor" Id="{58b4b12b-7a9e-0375-10ae-d581185281f8}" />
+    <Folder Name="Methods" Id="{c12f3a79-c465-00ec-01fb-10d040cc2183}">
+      <Folder Name="Protected" Id="{7cfeede7-6e1d-0b65-1224-07fbb211becd}" />
+    </Folder>
+    <Property Name="CommParameters" Id="{c1faa509-a0d0-0a79-3291-a7ca1c3ea224}">
+      <Declaration><![CDATA[// Gets or sets communication parameters of the device.
+PROPERTY PUBLIC CommParameters : REFERENCE TO ST_EndurancePyrometerCommParameters]]></Declaration>
+      <Get Name="Get" Id="{633045c7-1fe5-09f1-1ada-47aae4d35d21}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CommParameters REF= _commParameters;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{23b76853-7e25-0ac5-3d11-ec204c22f13a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_commParameters := CommParameters;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="CreateSendCommand" Id="{078687a1-9ea4-0448-04c7-ac811891db15}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD CreateSendCommand : STRING
+VAR_INPUT
+	command	: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CreateSendCommand := Tc2_Standard.CONCAT(command, EndurancePyrometerConstants.Commands.CommandSuffix);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ExtractResponse" Id="{2fd5cee8-bcda-0f54-0830-264cd5a6d78e}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD INTERNAL ExtractResponse
+VAR_INPUT
+	sentCommand	: STRING;
+END_VAR
+
+VAR
+	response			: Tc2_System.T_MaxString;
+	responseTmp			: Tc2_System.T_MaxString;
+	suffixLength		: INT;
+
+	suffixRemoveAttempt	: DINT;
+END_VAR
+
+VAR_INST
+	syntaxErrorTrigger	: Tc2_Standard.R_TRIG;
+	errorTrigger		: Tc2_Standard.R_TRIG;
+	errorClearedTrigge	: Tc2_Standard.F_TRIG;
+	sb					: ZigaLibs_Core.FB_StringBuilder;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[response := _response;
+syntaxErrorTrigger();
+
+// Syntax error - return early
+IF Tc2_Standard.FIND(response, EndurancePyrometerConstants.ErrorCodes.SyntaxError.Code) <> 0 THEN
+	syntaxErrorTrigger(CLK := TRUE);
+	IF syntaxErrorTrigger.Q THEN
+		LogError(_sb.Reset()
+			.AddString('Syntax error! Sent command is ')
+			.AddWithDblQuotationMarks(sentCommand)
+			.AddString('.')
+			.Create());
+	END_IF
+	error := TRUE;
+	errorCode := 'Syntax error';
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	RETURN;
+END_IF
+
+syntaxErrorTrigger.CLK := FALSE;
+
+response := RemoveResponsePrefix(sentCommand, response);	
+response := RemoveResponseSuffix(response);
+
+error := FALSE;
+
+// Parse response
+IF response = EndurancePyrometerConstants.ErrorCodes.TemperatureOverrange.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.TemperatureOverrange.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.TemperatureUnderrange.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.TemperatureUnderrange.Message;	
+	temperature := GVL_Params_EndurancePyrometer.MIN_TEMPERATURE;	
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooLow.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooLow.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	error := TRUE;	
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooHigh.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooHigh.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	error := TRUE;	
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.AttenuationTooHigh.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.AttenuationTooHigh.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	error := TRUE;	
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureUnderrange.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureUnderrange.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	error := TRUE;	
+ELSIF response = EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureOverrange.Code THEN
+	errorCode := EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureOverrange.Message;
+	temperature := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE;
+	error := TRUE;	
+ELSE	
+	errorCode := 'No error';
+	temperature := STRING_TO_REAL(response);	
+END_IF
+
+errorTrigger(CLK := errorCode <> 'No error');
+IF errorTrigger.Q THEN
+	IF __ISVALIDREF(_logger) THEN
+		_logger.LogError(_sb.Reset()
+			.AddString(GetLogPrefix())
+			.AddString('Pyrometer response indicates error! Error description: ')
+			.AddWithDblQuotationMarks(errorCode)
+			.AddString('.')
+			.Create());
+	END_IF	
+END_IF
+
+errorClearedTrigge(CLK := errorCode = 'No error');
+IF errorClearedTrigge.Q THEN
+	IF __ISVALIDREF(_logger) THEN
+		_logger.LogInfo(_sb.Reset()
+			.AddString(GetLogPrefix())
+			.AddString('Previous pyrometer error code is no longer active.')
+			.Create());
+	END_IF	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{becd6e47-41aa-0cb9-027d-560cd2758fda}" FolderPath="Constructor\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	logger	: REFERENCE TO ZigaLibs_Logging.I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_logger REF= logger;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetLogPrefix" Id="{cdc30448-5ff4-0378-0d3a-8ea05c727444}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED GetLogPrefix : T_MaxString
+VAR_INPUT
+END_VAR
+
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLogPrefix := sb.AddString(THIS^.InstanceName)
+	.AddString(' ')
+	.AddWithDblQuotationMarks(ipAddress)
+	.AddString(': ')
+	.Create();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogError" Id="{a1b77c29-a682-0894-33b6-1696bb06ca41}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED LogError
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR 
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateLogger() THEN
+	RETURN;
+END_IF
+
+_logger.LogError(
+	sb.AddString(GetLogPrefix())
+		.AddString(message)
+		.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogInfo" Id="{451175c3-dee7-09b6-1c8e-922337829ead}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED LogInfo
+VAR_INPUT
+	message	: Tc2_System.T_MaxString;
+END_VAR 
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateLogger() THEN
+	RETURN;
+END_IF
+
+_logger.LogInfo(
+	sb.AddString(GetLogPrefix())
+		.AddString(message)
+		.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogWarning" Id="{0b19abfe-188a-0b89-0988-a4f83b922ff2}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED LogWarning
+VAR_INPUT
+	message : Tc2_System.T_MaxString;
+END_VAR
+VAR
+	sb	: ZigaLibs_Core.FB_StringBuilder;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT ValidateLogger() THEN
+	RETURN;
+END_IF
+
+_logger.LogWarning(
+	sb.AddString(GetLogPrefix())
+		.AddString(message)
+		.Create());]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveResponsePrefix" Id="{4954fdff-fd68-0e90-1499-c7a34c914582}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[// Removes the prefix from the received response and returns the trimmer string
+METHOD PROTECTED RemoveResponsePrefix : Tc2_System.T_MaxString
+VAR_INPUT
+	sentCommand	: Tc2_System.T_MaxString;
+	response	: Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Remove prefix
+RemoveResponsePrefix := Tc2_Standard.DELETE(
+	STR := response, 
+	LEN := Tc2_Standard.LEN(sentCommand) + LEN(EndurancePyrometerConstants.Commands.ResponsePrefix),
+	POS := 1);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveResponseSuffix" Id="{4915a903-7705-0a3b-161e-4b16ec3af71a}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[// Removes the suffix from the received response and returns the trimmer string
+METHOD PROTECTED RemoveResponseSuffix : T_MaxString
+VAR_INPUT
+	response	: STRING;
+END_VAR
+VAR
+	suffixPosition	: INT;	
+	trimmedResponse		: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+// Remove suffix - sometimes the suffix is sent in multiples (no idea why Fluke does this), remove all occurences!	
+suffixPosition := Tc2_Standard.FIND(STR1 := response, STR2 := EndurancePyrometerConstants.Commands.ResponseSuffix);
+trimmedResponse := response;
+IF suffixPosition <> 0 THEN
+	response := Tc2_Standard.LEFT(STR := trimmedResponse, SIZE := suffixPosition - 1);		
+END_IF
+
+RemoveResponseSuffix := trimmedResponse;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateLogger" Id="{bfa71228-4c25-0067-0921-10d23c4b1177}" FolderPath="Methods\Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED ValidateLogger : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateLogger := __ISVALIDREF(_logger);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="EndurancePyrometerConstants" Id="{24835011-0abb-0638-39a8-d03c153a56cd}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM EndurancePyrometerConstants
+VAR CONSTANT
+	ErrorCodes	: ST_EndurancePyrometerErrorCodes;
+	Commands	: ST_EndurancePyrometerCommands;	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

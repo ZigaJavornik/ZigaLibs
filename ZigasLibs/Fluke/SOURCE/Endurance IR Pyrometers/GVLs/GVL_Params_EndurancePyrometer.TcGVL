@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <GVL Name="GVL_Params_EndurancePyrometer" Id="{da1cde41-799f-0660-0780-48d68148626a}" ParameterList="True">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	MAX_TEMPERATURE	: REAL := 3000.0;	// Sets the maximum temperature of the pyromerer - should be set accordingly to pyrometer series
+	MIN_TEMPERATURE	: REAL := 1000.0;	// Sets the minimum temperatuer of the pyrometer - should be set accordingly to pyrometer series
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

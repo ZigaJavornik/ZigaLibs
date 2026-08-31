@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_EndurancePyrometer_Tests" Id="{a521f471-07b7-4631-a43d-7e1d634029b1}" SpecialFunc="None">
+    <Declaration><![CDATA[// Subject under test
+FUNCTION_BLOCK INTERNAL FB_EndurancePyrometer_Tests EXTENDS FB_TestSuite
+
+// Create instance variables that will be accesible for all tests
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Call your test methods here
+Test00_AttenuationTooHigh_ExpectMaxTemp();
+Test01_HeaterTemperatureOverrange_ExpectMaxTemp();
+Test02_HeaterTemperatureUnderrange_ExpectMaxTemp();
+Test03_InternalTemperatureTooHigh_ExpectMaxTemp();
+Test04_InternalTemperatureTooLow_ExpectMaxTemp();
+Test05_SyntaxError_ExpectMaxTemp();
+Test06_TemperatureOverrange_ExpectMaxTemp();
+Test07_TemperatureUnderrange_ExpectMinTemp();]]></ST>
+    </Implementation>
+    <Method Name="Test00_AttenuationTooHigh_ExpectMaxTemp" Id="{001073ea-c04b-44a2-b969-374396e63cf2}">
+      <Declaration><![CDATA[METHOD PRIVATE Test00_AttenuationTooHigh_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test00_AttenuationTooHigh_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.AttenuationTooHigh.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertTrue(Condition := pyrometer.error, Message := 'Attenuation too high should trigger an error');
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test01_HeaterTemperatureOverrange_ExpectMaxTemp" Id="{c7d571ea-eadf-07a9-377d-fb951e55bced}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_HeaterTemperatureOverrange_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test01_HeaterTemperatureOverrange_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureOverrange.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+
+	AssertTrue(Condition := pyrometer.error, Message := 'Heater temperature overrange should trigger an error');
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test02_HeaterTemperatureUnderrange_ExpectMaxTemp" Id="{dc5671d2-856d-0d04-0db3-6fba08778969}">
+      <Declaration><![CDATA[METHOD PRIVATE Test02_HeaterTemperatureUnderrange_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test02_HeaterTemperatureUnderrange_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.HeaterTemperatureUnderrange.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertTrue(Condition := pyrometer.error, Message := ' Heater temperature underrange should trigger an error');		
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test03_InternalTemperatureTooHigh_ExpectMaxTemp" Id="{82951e33-a876-08d6-3c1c-e9e39c95dc79}">
+      <Declaration><![CDATA[METHOD PRIVATE Test03_InternalTemperatureTooHigh_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test03_InternalTemperatureTooHigh_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooHigh.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertTrue(Condition := pyrometer.error, Message := 'Internal temperature too high should trigger an error');	
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test04_InternalTemperatureTooLow_ExpectMaxTemp" Id="{0a95edb7-10a8-04c2-0840-66923421fd03}">
+      <Declaration><![CDATA[METHOD PRIVATE Test04_InternalTemperatureTooLow_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test04_InternalTemperatureTooLow_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.InternalTemperatureTooLow.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertTrue(Condition := pyrometer.error, Message := 'Internal tempereature too low should trigger an error');	
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test05_SyntaxError_ExpectMaxTemp" Id="{0caf4961-56ce-04d0-0576-85e46677ab1d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test05_SyntaxError_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test05_SyntaxError_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.SyntaxError.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertTrue(Condition := pyrometer.error, Message := 'Syntax error should trigger an error');	
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test06_TemperatureOverrange_ExpectMaxTemp" Id="{c7740206-0c68-0207-3312-b9be4e7d7c66}">
+      <Declaration><![CDATA[METHOD PRIVATE Test06_TemperatureOverrange_ExpectMaxTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test06_TemperatureOverrange_ExpectMaxTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.TemperatureOverrange.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MAX_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+		
+	AssertFalse(Condition := pyrometer.error, Message := 'Temperature overrange should not trigger an error');	
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test07_TemperatureUnderrange_ExpectMinTemp" Id="{38eb50ed-7429-0e73-2620-f7b91bc71477}">
+      <Declaration><![CDATA[METHOD PRIVATE Test07_TemperatureUnderrange_ExpectMinTemp
+
+(* Instanced variables are VERY useful for writing tests since tests are run in paralel (by default).
+By instantiating local variables that are not placed on the same stack as method (values are retained between calls)
+you make sure that the SUT is not changed by some other test. *)
+VAR_INST
+	
+END_VAR
+
+// Place temporary variables here
+VAR
+	pyrometer	: FB_EndurancePyrometer(0);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The name of the test, is the same as method name!
+// Use this for paralel unit tests
+// TcUnit.TEST('TestXX_Template');
+
+// Use this for running tests in sequence
+IF TcUnit.TEST_ORDERED('Test07_TemperatureUnderrange_ExpectMinTemp') THEN
+	
+	TcUnit.WRITE_PROTECTED_STRING(
+		ADR(pyrometer._response), 
+		CONCAT('!T', EndurancePyrometerConstants.ErrorCodes.TemperatureUnderrange.Code));
+		
+	pyrometer.ExtractResponse('T');
+	AssertEquals_REAL(
+		Actual := pyrometer.temperature,
+		Expected := GVL_Params_EndurancePyrometer.MIN_TEMPERATURE,
+		Delta := 0.1,
+		Message := '');
+	
+	AssertFalse(Condition := pyrometer.error, Message := 'Temperature underrange should not trigger an error');	
+	TcUnit.TEST_FINISHED();	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

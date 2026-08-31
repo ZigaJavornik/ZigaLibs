@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <DUT Name="ST_EndurancePyrometerErrorResponse" Id="{44305f1c-1a9e-0507-18c4-34e5b47762e3}">
+    <Declaration><![CDATA[TYPE ST_EndurancePyrometerErrorResponse :
+STRUCT
+	Code	: Tc2_System.T_MaxString;
+	Message	: STRING;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <DUT Name="ST_EndurancePyrometerErrorCodes" Id="{34ea3c45-15bd-0747-388e-6bfbccb2555e}">
+    <Declaration><![CDATA[(*When an error or failure does occur, the temperature display indicates the possible failure area and the output
+circuits automatically adjust to the lowest or highest preset level. The following table shows the corresponding
+values and the error code transmitted over the digital interface.
+
+Fail safe error codes, from: https://media.fluke.com/048723ef-592e-4cbc-86d4-b4ad00bf9a87_original%20file.pdf
+
+Condition 											2-color 			1-color(wide band)**	1-color*(narrow band)**
+Heater temperature over range, >= 80°C (176°F) 		ECHH 				ECHH 					ECHH
+Heater temperature under range, <= 50°C (122°F) 	ECUU 				ECUU 					ECUU
+Internal temperature over range, >= 85°C (185°F) 	EIHH 				EIHH 					EIHH
+Internal temperature under range, <= 0°C (32°F) 	EIUU 				EIUU 					EIUU
+Wide band detector failure 							EHHH	 			EHHH 					<temperature>
+Narrow band detector failure 						EHHH 				<temperature> 			EHHH
+Energy too low 										EUUU 				<temperature> 			<temperature>
+Attenuation too high (>95%)*** 						EAAA 				<temperature> 			<temperature>
+Attenuation too high >95%
+("dirty lens", relay will go to “alarm” state)***	<temperature> 		<temperature> 			<temperature>
+2-color temperature under range 					EUUU 				<temperature> 			<temperature>
+2-color temperature over range 						EHHH 				<temperature> 			<temperature>
+Wide band temperature under range 					<temperature> 		EUUU 					<temperature>
+Wide band temperature over range 					<temperature> 		EHHH 					<temperature>
+Narrow band temperature under range 				<temperature> 		<temperature> 			EUUU
+Narrow band temperature over range 					<temperature> 		<temperature> 			EHHH
+
+
+* only available via ASCII command
+** wide and narrow band stands for the first and the second wavelength in 2-color mode
+*** note that the activation levels for these conditions may be set to different values (e.g., "dirty lens" at 95%, EAAA at 98%)
+*)
+TYPE ST_EndurancePyrometerErrorCodes :
+STRUCT
+	TemperatureOverrange		: ST_EndurancePyrometerErrorResponse := (Code := 'EHHH', Message := 'Temperature over  range');
+	TemperatureUnderrange		: ST_EndurancePyrometerErrorResponse := (Code := 'EUUU', Message := 'Temperature under range');
+	InternalTemperatureTooLow	: ST_EndurancePyrometerErrorResponse := (Code := 'EIUU', Message := 'Internal temperature under range, <= 0°C (32°F) ');
+	InternalTemperatureTooHigh	: ST_EndurancePyrometerErrorResponse := (Code := 'EIHH', Message := 'Internal temperature over range, >= 85°C (185°F)');
+	AttenuationTooHigh			: ST_EndurancePyrometerErrorResponse := (Code := 'EAAA', Message := 'Attenuation too high (>95%)');
+	HeaterTemperatureUnderrange	: ST_EndurancePyrometerErrorResponse := (Code := 'ECUU', Message := 'Heater temperature under range, <= 50°C (122°F) ');
+	HeaterTemperatureOverrange	: ST_EndurancePyrometerErrorResponse := (Code := 'ECHH', Message := 'Heater temperature over range, >= 80°C (176°F)');
+	SyntaxError					: ST_EndurancePyrometerErrorResponse := (Code := '*Syntax Error', Message := 'A value entered in an incorrect format');
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

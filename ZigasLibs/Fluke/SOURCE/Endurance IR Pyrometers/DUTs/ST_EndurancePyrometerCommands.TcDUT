@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <DUT Name="ST_EndurancePyrometerCommands" Id="{c92fdb61-b6da-020a-3b6b-c09c4ad8cabe}">
+    <Declaration><![CDATA[TYPE ST_EndurancePyrometerCommands :
+STRUCT
+	ReadTemperatureCommand 			: STRING := '?T';	// Asks the pyrometer for current temperature
+	ReadSensorInternalTemperature	: STRING := '?I';	// Asks for the internal temperature of the sensor
+	ReadTargetTemperatureEnergy		: STRING := '?Q';	// Asks for the energy value of the target temperature
+	ReadEmissivity					: STRING := '?E';	// Asks for the current emissivity value
+	SetEmissivity					: STRING := 'E=';	// Command for setting emissivity, followed value will be set
+	SetTemperatuerPhysicalUnit_C	: STRING := 'U=C';	// Sets the physical unit for temperature to °C
+	SetTemperatuerPhysicalUnit_F	: STRING := 'U=F';	// Sets the physical unit for temperature to °F
+	
+	ResponseSuffix			: STRING := '$R$N';	// Response from pyrometer ends with the suffix
+	ResponsePrefix			: STRING := '!';	// Response from pyrometer starts with the prefix
+	CommandSuffix 			: STRING := '$R';	// Every command needs to end with the suffix
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

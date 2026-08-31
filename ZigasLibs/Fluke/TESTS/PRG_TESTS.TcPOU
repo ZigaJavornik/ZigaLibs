@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <POU Name="PRG_TESTS" Id="{6e34c45a-3ca6-4d60-98ec-a84888e107c1}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM PRG_TESTS
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="PRG_TESTS" Id="{dd239b23-fd06-45c2-8d55-97bc3cfa2578}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM INTERNAL PRG_TESTS
 
 (* Instantiate test suites here. Naming convention for tests should be a suffix with _Tests.
 Good practice for creating test methods is to end them with _test as well. *)
+
 VAR
-	fbSUT_Tests	: FB_SUT_Tests;
+	EndurancePyrometer_Tests			: FB_EndurancePyrometer_Tests;
+	EndurancePyrometerConstants_Tests	: FB_EndurancePyrometerConstants_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -33,12 +35,5 @@ TcUnit.RUN_IN_SEQUENCE();]]></ST>
         </TypeList>
       </XmlArchive>
     </ObjectProperties>
-    <LineIds Name="PRG_TESTS">
-      <LineId Id="23" Count="0" />
-      <LineId Id="2" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="22" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
