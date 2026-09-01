@@ -663,19 +663,6 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<Project Disabled="true" GUID="{A7EE925C-44DA-4DEF-92A0-C91C41E61569}" Name="Horiba" PrjFilePath="Horiba\Horiba.plcproj" TmcFilePath="Horiba\Horiba.tmc" ReloadTmc="true" AmsPort="862" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x085022c0" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
-					<Name>Horiba Instance</Name>
-					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
-					<Contexts>
-						<Context>
-							<Id>1</Id>
-							<Name>Default</Name>
-						</Context>
-					</Contexts>
-					<JsonDynPous><![CDATA[null]]></JsonDynPous>
-				</Instance>
-			</Project>
 			<Project Disabled="true" GUID="{9A9EF37D-0ED9-4C85-857D-A1AE39EB7795}" Name="IO Link" PrjFilePath="IO Link\IO Link.plcproj" TmcFilePath="IO Link\IO Link.tmc" ReloadTmc="true" AmsPort="863" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502300" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{094E0BBB-3511-BF05-8488-DA24F1849366}" TmcPath="IO Link\IO Link.tmc">
 					<Name>IO Link Instance</Name>
