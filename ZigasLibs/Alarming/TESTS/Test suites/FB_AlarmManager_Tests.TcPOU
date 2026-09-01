@@ -1014,7 +1014,7 @@ FOR i := 0 TO 5 BY 1 DO
 END_FOR
 
 fbAlarmManager.DeleteAll();
-AssertEquals_DINT(0, fbAlarmManager.RegisteredAlarmsCount, 'Deleteing all alarms should result in the registered alarm count being 0.');
+AssertEquals_UDINT(0, fbAlarmManager.RegisteredAlarmsCount, 'Deleteing all alarms should result in the registered alarm count being 0.');
 AssertEquals_DINT(0, fbAlarmMAnager.ActiveAlarmsCount, 'Deleting all alarms should result in active alarms count being 0');
 AssertEquals_DINT(0, fbAlarmManager.UnacknowledgedAlarmsCount, 'Deleting all alarms should result in unacknowledged alarms count being 0');
 AssertFalse(__ISVALIDREF(fbAlarmManager.GetAlarmById(1)), 'Attempting to retrive an alarm when they have all been deleted should return an empty reference.');
