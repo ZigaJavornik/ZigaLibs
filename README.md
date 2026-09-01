@@ -1,3 +1,5 @@
+**Tc_v4026+ is a new default branch for this library repo. The libraries are updated to work with TwinCAT v4026+ and include all of the QOL updates and tests being verified on this build as well.**
+
 Various libraries for TwinCAT using OOP style. For example on usage see tests in the ```TESTS``` folder of the library project. Report any possible bugs.
 There are many project to choose from, but they all, for the most part, reference ```Core``` library - this is a library with core functionalities and interfaces.
 
