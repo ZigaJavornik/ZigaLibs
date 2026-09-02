@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="FB_FlowController" Id="{4ae6103e-c357-05b9-305d-07911a2f3e97}" SpecialFunc="None">
     <Declaration><![CDATA[(* Bronkhorst mass flow/pressure controller device implementation.
 ============================================================================================================================================================================================
@@ -118,7 +118,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CalculateMeasuredValue :=  UINT_TO_REAL(Inputs.MeassuredValue) / LREAL_TO_REAL(EXPT(10,_CoeList.DecimalDigits.Value));]]></ST>
+        <ST><![CDATA[CalculateMeasuredValue :=  INT_TO_REAL(Inputs.MeassuredValue) / LREAL_TO_REAL(EXPT(10,_CoeList.DecimalDigits.Value));]]></ST>
       </Implementation>
     </Method>
     <Method Name="CalculateSetpointValue" Id="{86689ca6-4c77-0658-332d-fdb5f75df13a}" FolderPath="Methods\Private\">
