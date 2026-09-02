@@ -291,3 +291,5 @@ _ModuleInstall/
 package-lock.json
 package.json
 *.~u
+/.changeset
+/pnpm-lock.yaml
