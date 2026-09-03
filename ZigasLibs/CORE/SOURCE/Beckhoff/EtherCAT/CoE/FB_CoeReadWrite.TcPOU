@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="FB_CoeReadWrite" Id="{ce2c41e1-ef6c-0e2a-1397-146748892c85}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CoeReadWrite
 VAR
@@ -12,9 +12,14 @@ END_VAR
       <Declaration><![CDATA[// Reads the CoE parameter at Index:Subindex and writes the value to Value. Returns TRUE when done.
 METHOD PUBLIC ReadAny : BOOL
 VAR_INPUT
-	CoeEntry	: POINTER TO ST_CoeEntry;	// CoE entry, index and subindex
-	Value		: ANY;	// Value to where the read result is stored
-	SlaveAddr	: AMSADDR;		// Slave AMS address of the device
+	CoeEntry	: POINTER TO ST_CoeEntry;	// Pointer to CoE entry, index and subindex
+	Value		: ANY;						// Value to where the read result is stored (you can use extended ST_CoeEntry_<DataType> from the library
+	SlaveAddr	: Global.AMSADDR;			// Slave AMS address of the device
+END_VAR
+
+VAR_OUTPUT
+	error	: BOOL;						// Will be TRUE if the reading failed
+	errorId	: TcError.AdsErrorCodes;	// Error ID when an error has occured.
 END_VAR
 
 VAR_INST
@@ -32,10 +37,9 @@ END_VAR
 	cbBufLen:= DINT_TO_UDINT(Value.diSize), 
 	bExecute:= NOT fbCoeRead.bBusy, 
 	tTimeout:= T#5S, 
-	bError=> , 
-	nErrId=> , 
-	cbRead=> );
-
+	bError=> error);
+	
+errorId := TcError.ToAdsErrorCode(fbCoeRead.nErrId);
 FtrigReadDone(CLK := fbCoeRead.bBusy);
 ReadAny := FtrigReadDone.Q;]]></ST>
       </Implementation>
@@ -44,9 +48,14 @@ ReadAny := FtrigReadDone.Q;]]></ST>
       <Declaration><![CDATA[// Writes the CoE parameter at Index:Subindex and returns TRUE when done.
 METHOD WriteAny : BOOL
 VAR_INPUT
-	CoeEntry	: POINTER TO ST_CoeEntry;	// CoE entry, index and subindex
-	Value		: ANY;	// Value to where the read result is stored
-	SlaveAddr	: AMSADDR;		// Slave AMS address of the device
+	CoeEntry	: POINTER TO ST_CoeEntry;	// Pointer to CoE entry, index and subindex
+	Value		: ANY;						// Value that should be written to the CoE entry
+	SlaveAddr	: Global.AMSADDR;					// Slave AMS address of the device
+END_VAR
+
+VAR_OUTPUT
+	error	: BOOL;						// Will be TRUE if the writing failed
+	errorId	: TcError.AdsErrorCodes;	// Error ID when an error has occured.
 END_VAR
 
 VAR_INST
@@ -63,8 +72,10 @@ END_VAR
 	pSrcBuf:= Value.pValue, 
 	cbBufLen:= DINT_TO_UDINT(Value.diSize), 
 	bExecute:= NOT fbCoeWrite.bBusy, 
-	tTimeout:= T#3S);
+	tTimeout:= T#3S,
+	bError => error,);
 	
+errorId := TcError.ToAdsErrorCode(errorCode := fbCoeWrite.nErrId);
 FtrigWriteDone(CLK := fbCoeWrite.bBusy, Q => WriteAny);]]></ST>
       </Implementation>
     </Method>
