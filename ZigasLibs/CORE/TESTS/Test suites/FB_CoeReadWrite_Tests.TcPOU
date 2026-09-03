@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_CoeReadWrite_Tests" Id="{d4644e10-296a-0010-3beb-361fd7ca2ce2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_CoeReadWrite_Tests EXTENDS FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_coeReadWrite			: FB_CoeReadWrite();
+	_coeReadWriteError		: BOOL;
+	_coeReadWriteErorId		: TcError.AdsErrorCodes;
+	_coeDeviceAmsAddress	: Global.AMSADDR;
+	_coeEntry				: ST_CoeEntry_DINT();
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test00_ReadAny_ExpectError();
+Test01_WriteAny_ExpectError();]]></ST>
+    </Implementation>
+    <Method Name="Test00_ReadAny_ExpectError" Id="{f9e8c9a8-a377-0b68-2119-746725d057a3}">
+      <Declaration><![CDATA[METHOD PRIVATE Test00_ReadAny_ExpectError
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(__POUNAME()) THEN
+	IF _coeReadWrite.ReadAny(ADR(_coeEntry), _coeEntry.Value, _coeDeviceAmsAddress, error => _coeReadWriteError, errorId => _coeReadWriteErorId) THEN
+		AssertTrue(
+			Condition := _coeReadWriteError,
+			Message := 'Reading an invalid slave COE should return an error!');
+			TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test01_WriteAny_ExpectError" Id="{adc85195-c36e-06ed-04f6-54d5cb6b82a8}">
+      <Declaration><![CDATA[METHOD PRIVATE Test01_WriteAny_ExpectError
+VAR_INPUT
+END_VAR
+VAR
+	valueToWrite	: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(__POUNAME()) THEN
+	IF _coeReadWrite.WriteAny(ADR(_coeEntry), valueToWrite, _coeDeviceAmsAddress, error => _coeReadWriteError, errorId => _coeReadWriteErorId) THEN
+		AssertTrue(
+			Condition := _coeReadWriteError,
+			Message := 'Writing to invalid slave COE should return an error');
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
