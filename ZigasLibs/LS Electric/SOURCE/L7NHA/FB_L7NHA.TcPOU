@@ -130,7 +130,8 @@ CASE eAxisStateInternal OF
 							.AddString('L7NHA axis ')
 							.AddWithDblQuotationMarks(THIS^.InstanceName)
 							.AddString(': Mode of operation is not supported! Selected mode is ')
-							.AddWithDblQuotationMarks(TO_STRING(eModeOfOperation)));
+							.AddWithDblQuotationMarks(TO_STRING(eModeOfOperation))
+							.Create());
 					END_IF
 				END_IF
 		END_CASE
