@@ -16,7 +16,7 @@
     <LibraryReferences>{1c9573d5-9294-4979-b5f9-897531f036bf}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.LsElectric</Title>
-    <ProjectVersion>0.0.0.2</ProjectVersion>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -134,6 +134,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\L7NHA\DUTs\ST_L7NHA_PositioningStatus.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\L7NHA\DUTs\ST_L7NHA_ProfileTorqueCommands.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\L7NHA\DUTs\ST_L7NHA_UserUnitParams.TcDUT">

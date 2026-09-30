@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="FB_L7NHA" Id="{eb8da92c-d07d-4e07-b97c-65d4e28a779c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_L7NHA EXTENDS ZigaLibs_Core.FB_HasInstanceNameAndPath
 
@@ -15,8 +15,9 @@ VAR_INPUT
 	eModeOfOperation		: E_L7NHA_ModeOfOperation;	// Mode of operation
 	
 	stVelocityCommands		: ST_L7NHA_VelocityCommands;		// Velocity commands when in profile velocity mode
-	stPositioningCommands	: ST_L7NHA_PositioningCommands;	// Positioning commands when in profile position mode
+	stPositioningCommands	: ST_L7NHA_PositioningCommands;		// Positioning commands when in profile position mode
 	stHomingCommands		: ST_L7NHA_HomingCommands;			// Homing commands when in homing sequence
+	stProfileTorqueCommands	: ST_L7NHA_ProfileTorqueCommands;	// Profile torque commands when using Profile Torque mode
 	
 	fRatedTorque			: REAL; // Rated torque in mNm - required for torque calculation
 
@@ -43,6 +44,8 @@ VAR_OUTPUT
 	stMotionFeedback		: ST_L7NHA_MotionFeedback;	// Motion feedback from the drive
 
 	stDigitalInputs	:		 ST_L7NHA_DigitalInputs;
+	
+	bModeOfOperationNotImplemented	: BOOL;	// Will be TRUE if the selected mode of operation is not implemented (axis has to be in enabled state for this flag to be valid!)
 END_VAR
 
 // Local variables
@@ -56,6 +59,8 @@ VAR
 	RtrigResetTrigger		: Tc2_Standard.R_TRIG;
 	RtrigHomingFinished		: Tc2_Standard.R_TRIG;
 	TonMotorMovingStatusValid	: Tc2_Standard.TON;
+	RtrigModeOfOperationNotImplemented	: Tc2_Standard.R_TRIG;
+	eModeOfOpereationOld		: E_L7NHA_ModeOfOperation;
 	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
 	_sb						: ZigaLibs_Core.FB_StringBuilder;
 END_VAR
@@ -83,6 +88,8 @@ stDataToDriveInternal.ControlWord.8 := FALSE;
 // State machine based on the drive's feedback
 eAxisStateInternal := THIS^.GetDriveState();
 
+bModeOfOperationNotImplemented := FALSE;
+		
 // State machine based on actual state reported back from the drive
 CASE eAxisStateInternal OF
 	E_L7NHA_DriveState.SWITCH_ON_DISABLED:	
@@ -100,7 +107,7 @@ CASE eAxisStateInternal OF
 	E_L7NHA_DriveState.OPERATION_ENABLED:
 		TonCommandTimeout.IN := FALSE;
 		SwitchOnEnableOperation();
-		
+
 		// Execute different mode based on mode of operation setting
 		CASE eModeOfOperation OF
 			E_L7NHA_ModeOfOperation.PROFILE_POSITION:
@@ -111,6 +118,21 @@ CASE eAxisStateInternal OF
 				
 			E_L7NHA_ModeOfOperation.HOMING:
 				Homing();
+				
+			E_L7NHA_ModeOfOperation.PROFILE_TORQUE:
+				ProfileTorque();
+				
+			ELSE
+				bModeOfOperationNotImplemented := TRUE;
+				IF eModeOfOperation <> eModeOfOpereationOld THEN
+					IF __ISVALIDREF(_logger) THEN
+						_logger.LogError(_sb.Reset()
+							.AddString('L7NHA axis ')
+							.AddWithDblQuotationMarks(THIS^.InstanceName)
+							.AddString(': Mode of operation is not supported! Selected mode is ')
+							.AddWithDblQuotationMarks(TO_STRING(eModeOfOperation)));
+					END_IF
+				END_IF
 		END_CASE
 		
 	E_L7NHA_DriveState.FAULT:
@@ -227,6 +249,8 @@ fCalculatedTargetTorque := CalculateTorque(fRatedTorque := fRatedTorque, nDriveT
 
 // Actual mode of operation, read from the drive
 eActualModeOfOperation := stDataFromDrive.ModeOfOperation;
+
+eModeOfOpereationOld := eModeOfOperation;
 
 // =======================================================================
 // ==================== SETTING OUTPUT STRUCTURE TO DRIVE ================
@@ -466,6 +490,11 @@ ELSE
 	// If homing has not been executed, halt axis
 	Halt();
 END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="ProfileTorque" Id="{0456e217-0bbc-0ad2-0101-17fd02b1c5b6}" FolderPath="Modes of operation\">
+      <Implementation>
+        <ST><![CDATA[stDataToDriveInternal.TorqueCommands := stProfileTorqueCommands;]]></ST>
       </Implementation>
     </Action>
     <Action Name="ProfileVelocity" Id="{ca6e31c0-beef-44b0-8925-04e717abb05a}" FolderPath="Modes of operation\">

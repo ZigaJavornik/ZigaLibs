@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_L7NHA_ProfileTorqueCommands" Id="{c06a779b-2e26-0570-1c98-704a432bd6c3}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_ProfileTorqueCommands :
+STRUCT
+	TargetTorque			: UINT; // Target value - 0.1% of rated torque
+	MaxTorque				: UINT; // Limits torque in both directions - 0.1% of rated torque
+	MaximumProfileVelocity 	: UDINT; // Maximum velocity when driving using the torque mode - UU/s
+	TorqueSlope				: UDINT; // Slope of the generated torque profile - 0.1%/s
+	PositiveTorqueLimit		: UINT;	// Limit when driving in positive direction - 0.1%
+	NegativeTorqueLimit		: UINT;	// Limit when driving in negative direction - 0.1%
+	TorqueOffset			: UINT;	// Offset added to the TargeTorque
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
