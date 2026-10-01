@@ -16,7 +16,7 @@
     <LibraryReferences>{1c9573d5-9294-4979-b5f9-897531f036bf}</LibraryReferences>
     <Company>Ziga Javornik</Company>
     <Title>ZigaLibs.LsElectric</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <ProjectVersion>0.0.1.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -97,6 +97,9 @@
     <Description>LS Electric device libraries collection.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SOURCE\L7NHA\DUTs\CoE\ST_L7NHA_CoE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\L7NHA\DUTs\E_L7NHA_DriveState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -107,6 +110,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\L7NHA\DUTs\E_L7NHA_ModeOfOperation.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\L7NHA\DUTs\ST_L7NHA_GearRatio.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\L7NHA\DUTs\ST_L7NHA_DataFromDrive.TcDUT">
@@ -163,6 +169,7 @@
     <Folder Include="SOURCE" />
     <Folder Include="SOURCE\L7NHA" />
     <Folder Include="SOURCE\L7NHA\DUTs" />
+    <Folder Include="SOURCE\L7NHA\DUTs\CoE" />
     <Folder Include="TESTS\Test suites" />
     <Folder Include="TESTS" />
   </ItemGroup>

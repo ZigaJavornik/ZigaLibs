@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_L7NHA_CoE" Id="{75b82cad-e678-086a-15cb-39e65fde6316}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_CoE :
+STRUCT
+	HomingMethod	: ZigaLibs_Core.ST_CoeEntry_SINT := (Index := 16#6098);
+	GearRatio_Motor	: ZigaLibs_Core.ST_CoeEntry_DINT := (Index := 16#6091, Subindex := 1);
+	GearRatio_Shaft	: ZigaLibs_Core.ST_CoeEntry_DINT := (Index := 16#6091, Subindex := 2);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

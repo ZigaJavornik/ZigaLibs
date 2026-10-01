@@ -21,7 +21,7 @@ VAR_INPUT
 	
 	fRatedTorque			: REAL; // Rated torque in mNm - required for torque calculation
 
-	stUserUnitParameters	: ST_L7NHA_UserUnitParams;
+	stGearRatio				: ST_L7NHA_GearRatio;	// Used to set gear ratio
 END_VAR
 
 VAR_OUTPUT
@@ -50,26 +50,27 @@ END_VAR
 
 // Local variables
 VAR
-	eAxisStateInternal		: E_L7NHA_DriveState;
-	stDataToDriveInternal	: ST_L7NHA_DataToDrive;
-	TonCommandTimeout		: Tc2_Standard.TON := (PT := T#1S);
-	RtrigMoveToPosition		: Tc2_Standard.R_TRIG;
-	RtrigStartHoming		: Tc2_Standard.R_TRIG;
-	nPreviousPosition		: DINT;
-	RtrigResetTrigger		: Tc2_Standard.R_TRIG;
-	RtrigHomingFinished		: Tc2_Standard.R_TRIG;
-	TonMotorMovingStatusValid	: Tc2_Standard.TON;
+	eAxisStateInternal					: E_L7NHA_DriveState;
+	stDataToDriveInternal				: ST_L7NHA_DataToDrive;
+	TonCommandTimeout					: Tc2_Standard.TON := (PT := T#1S);
+	RtrigMoveToPosition					: Tc2_Standard.R_TRIG;
+	RtrigStartHoming					: Tc2_Standard.R_TRIG;
+	nPreviousPosition					: DINT;
+	RtrigResetTrigger					: Tc2_Standard.R_TRIG;
+	RtrigHomingFinished					: Tc2_Standard.R_TRIG;
+	TonMotorMovingStatusValid			: Tc2_Standard.TON;
 	RtrigModeOfOperationNotImplemented	: Tc2_Standard.R_TRIG;
-	eModeOfOpereationOld		: E_L7NHA_ModeOfOperation;
-	_logger					: REFERENCE TO ZigaLibs_Logging.I_Logger;
-	_sb						: ZigaLibs_Core.FB_StringBuilder;
+	eModeOfOpereationOld				: E_L7NHA_ModeOfOperation;
+	_logger								: REFERENCE TO ZigaLibs_Logging.I_Logger;
+	_sb									: ZigaLibs_Core.FB_StringBuilder;
+	_coeEntries							: ST_L7NHA_CoE;
 END_VAR
 
 // IO
 VAR
 	stDataFromDrive	AT %I* : ST_L7NHA_DataFromDrive;
 	stDataToDrive	AT %Q* : ST_L7NHA_DataToDrive;
-	stEthercatInfo	AT %I* : ST_L7NHA_EthercatData;
+	stAmsAddress	AT %I* : Global.AMSADDR;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -142,7 +143,7 @@ CASE eAxisStateInternal OF
 		ELSE
 			stDataToDriveInternal.ControlWord.7 := FALSE;
 		END_IF
-	
+
 END_CASE
 
 // Override any command if enable is false (transitioning states) - exception is fault, where reset needs to be sent
@@ -258,6 +259,7 @@ eModeOfOpereationOld := eModeOfOperation;
 // =======================================================================
 stDataToDrive := stDataToDriveInternal;]]></ST>
     </Implementation>
+    <Folder Name="CoE" Id="{78448ec6-d74d-077c-2547-93720d78bff4}" />
     <Folder Name="Commands" Id="{467138cf-83df-4b25-81eb-d9f74aa509c2}" />
     <Folder Name="Modes of operation" Id="{d85e02d1-cf3b-4d2d-8776-69be560bc17b}" />
     <Method Name="CalculateTorque" Id="{d7606ade-1dc1-4560-9428-c0c8f7068a54}">
@@ -504,6 +506,83 @@ END_IF]]></ST>
 stDataToDriveInternal.TargetVelocity := stVelocityCommands.VelocitySetpoint;]]></ST>
       </Implementation>
     </Action>
+    <Method Name="SetGearRatio" Id="{70f10c9e-70ba-0b99-3ed3-a52942f27c38}" FolderPath="CoE\">
+      <Declaration><![CDATA[// Observes the stGearRatio.Shaft and stGearRatio.Motor. If the setting changes the new value is written to the CoE parameter.
+METHOD pubLIC SetGearRatio : BOOL
+
+VAR_INST
+	coeReadWrite	: ZigaLibs_Core.FB_CoeReadWrite;
+	sb				: ZigaLibs_Core.FB_StringBuilder;
+	writeShaftDone 	: BOOL;
+	writeMotorDone	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF writeMotorDone = FALSE THEN
+	IF coeReadWrite.WriteAny(
+		Value := stGearRatio.Motor, 
+		CoeEntry := ADR(_coeEntries.GearRatio_Motor), 
+		SlaveAddr := stAmsAddress)
+	THEN
+		writeMotorDone := TRUE;
+		IF __ISVALIDREF(_logger) then
+			sb.Reset()
+				.AddString('L7NHA axis ')
+				.AddWithDblQuotationMarks(THIS^.InstanceName)
+				.AddString(': Motor gear ratio changed to ')
+				.AddString(TO_STRING(stGearRatio.Motor));
+			_logger.LogInfo(sb.Create());
+		END_IF
+	END_IF	
+END_IF
+
+IF writeMotorDone THEN
+	IF coeReadWrite.WriteAny(
+		Value := stGearRatio.Shaft, 
+		CoeEntry := ADR(_coeEntries.GearRatio_Motor), 
+		SlaveAddr := stAmsAddress)
+	THEN
+		SetGearRatio := TRUE;
+		writeMotorDone := FALSE;
+		IF __ISVALIDREF(_logger) then
+			sb.Reset()
+				.AddString('L7NHA axis ')
+				.AddWithDblQuotationMarks(THIS^.InstanceName)
+				.AddString(': Shaft gear ratio changed to ')
+				.AddString(TO_STRING(stGearRatio.Shaft));
+			_logger.LogInfo(sb.Create());
+		END_IF
+	END_IF		
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetHomingMethod" Id="{398ec0e3-49af-0e09-1be5-ccd5f2bc12c7}" FolderPath="CoE\">
+      <Declaration><![CDATA[// Writes the current homing method provided in stHomingCommands.HomingMethod to the CoE of the axis. Returns TRUE when done
+METHOD PUBLIC SetHomingMethod : BOOL
+VAR_INST
+	coeReadWrite	: ZigaLibs_Core.FB_CoeReadWrite;
+	sb				: ZigaLibs_Core.FB_StringBuilder;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF coeReadWrite.WriteAny(
+		Value := stHomingCommands.HomingMethod, 
+		CoeEntry := ADR(_coeEntries.HomingMethod), 
+		SlaveAddr := stAmsAddress)
+THEN 
+	IF __ISVALIDREF(_logger) then
+		sb.Reset()
+			.AddString('L7NHA axis ')
+			.AddWithDblQuotationMarks(THIS^.InstanceName)
+			.AddString(': Homing method changing to ')
+			.AddString(TO_STRING(stHomingCommands.HomingMethod));
+		_logger.LogInfo(sb.Create());
+	END_IF
+	SetHomingMethod := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Shutdown" Id="{251a3e90-0e6d-48ef-bfa4-28d18e2d967a}" FolderPath="Commands\">
       <Declaration><![CDATA[METHOD PRIVATE Shutdown
 ]]></Declaration>

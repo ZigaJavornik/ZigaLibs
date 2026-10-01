@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_L7NHA_GearRatio" Id="{4df6fb16-9dc5-0480-1f1e-9f5650c441cc}">
+    <Declaration><![CDATA[TYPE ST_L7NHA_GearRatio :
+STRUCT
+	Motor	: DINT;
+	Shaft	: DINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
